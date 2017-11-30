@@ -10,15 +10,25 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
 }
-body{
+body {
   margin: 0 0;
+}
+.wh100{
+  height: 100%;
+  width: 100%;
+}
+
+.router{
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>

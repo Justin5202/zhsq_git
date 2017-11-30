@@ -18,6 +18,7 @@
 
 <script>
 export default {
+  props: ['map'],
   name: 'toolbar',
   data () {
     return {
@@ -37,9 +38,10 @@ export default {
 $height_box: 40px;
 
 #toolbar {
+  z-index: 2;
   position: absolute;
-  bottom: -$height_box*2;
-  right: $height_box;
+  top: 20px;
+  right: 20px;
 }
 .el-menu--horizontal .el-menu-item{
     height: $height_box;

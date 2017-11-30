@@ -27,6 +27,7 @@ body {
 }
 
 .router{
+  z-index: 3;
   position: absolute;
   top: 0;
   left: 0;

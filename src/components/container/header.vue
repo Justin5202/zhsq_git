@@ -1,12 +1,12 @@
 <template>
   <div id="header">
       <el-row>
-        <el-col :span="12">
+        <el-col :span="10">
           <div id="logo">
             <p>logo</p>
           </div>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="10">
             <v-menu/>
         </el-col>
         <el-col :span="4">

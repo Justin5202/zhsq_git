@@ -29,6 +29,7 @@ export default {
 </script>
 <style lang="scss">
 #header{
-  background-color: rgb(84, 92, 100)
+  background-color: rgb(84, 92, 100);
+  color: white;
 }
 </style>

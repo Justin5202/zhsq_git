@@ -1,10 +1,16 @@
 <template>
-  <div id="map" class="wh100"></div>
+  <div id="map" class="wh100">
+    <v-toolbar :map='map'/>
+  </div>
 </template>
 <script>
+import vToolbar from '../content/toolbar'
 export default {
   name: 'd2cmap',
   props: ['option'],
+  components: {
+    vToolbar
+  },
   data () {
     return {
       map: null

@@ -6,14 +6,18 @@ import router from './router'
 import elementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css' // elementUI css
 import './assets/d2c/d2c.css' // d2c css
+import http from './util/http'
+import store from './store/index'
 Vue.config.productionTip = false
 
 Vue.use(elementUI)
 
+Vue.prototype.http = http
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: {App}
 })

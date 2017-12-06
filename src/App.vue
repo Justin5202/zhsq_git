@@ -25,11 +25,9 @@ body {
   height: 100%;
   width: 100%;
 }
-
-.router{
-  z-index: 3;
-  position: absolute;
-  top: 0;
-  left: 0;
+html {
+    -ms-overflow-style:none;
+    overflow:-moz-scrollbars-none;
 }
+html::-webkit-scrollbar{width:0px}
 </style>

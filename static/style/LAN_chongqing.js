@@ -1,9 +1,9 @@
 /*
- * @Description: 重庆底图
+ * @Description: 内网重庆底图
  * @Author: xia
  * @Date: 2017-11-30 09:42:46
  * @Last Modified by: xia
- * @Last Modified time: 2017-11-30 09:42:46
+ * @Last Modified time: 2017-12-06 20:35:04
  */
 
 export default {
@@ -3901,7 +3901,7 @@ export default {
     'filter': ['all', ['<=', 'nd', 2016]],
     'minzoom': 13,
     'layout': {
-      'visibility': 'none'
+      'visibility': 'visible'
     },
     'paint': {
       'fill-extrusion-color': '#fcf9f4',

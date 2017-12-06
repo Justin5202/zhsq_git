@@ -3,9 +3,9 @@
  * @Author: xia
  * @Date: 2017-11-30 09:34:45
  * @Last Modified by: xia
- * @Last Modified time: 2017-11-30 09:38:28
+ * @Last Modified time: 2017-12-04 16:50:10
  */
-import style from '../../static/style/chongqing'
+import style from '../../static/style/LAN_chongqing'
 export default (option) => ({
   container: 'map',
   style: style,

@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import vToolbar from '../content/toolbar'
+import vToolbar from '../container/toolbar'
 export default {
   name: 'd2cmap',
   props: ['option'],
@@ -22,10 +22,12 @@ export default {
   },
   beforeDestroy () {
     this.map.remove()
+    this.map = null
   },
   methods: {
     initMap () {
       this.map = new window.d2c.map(this.option)
+      this.map.option = this.option
     },
     resize () {
       this.map.resize()

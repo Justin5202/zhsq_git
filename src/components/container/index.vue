@@ -7,21 +7,21 @@
         </el-row>
         <el-row>
             <el-col :span="24">
-              <v-map/>
-              <router-view class="router"/>
+              <keep-alive>
+                <router-view v-if="$route.meta.keepAlive" class="router"/>
+              </keep-alive>
+                <router-view v-if="!$route.meta.keepAlive" class="router"/>
             </el-col>
         </el-row>
     </div>
 </template>
 
 <script>
-import vHeader from './header'
-import vMap from '../content/map_test'
+import vHeader from '../content/header'
 export default {
   name: 'container',
   components: {
-    vHeader,
-    vMap
+    vHeader
   }
 }
 </script>

@@ -18,9 +18,4 @@ export default {
 </script>
 
 <style>
-#testPage{
-  height: 400px;
-  width: 400px;
-  background-color: red
-}
 </style>

@@ -93,7 +93,7 @@ $height_box: 40px;
 .el-menu--horizontal .el-menu-item {
   height: $height_box;
   line-height: $height_box;
-  padding: 0 15px;
+  padding: 0 11px;
   user-select: none;
   border: 0px;
 }

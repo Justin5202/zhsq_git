@@ -3,17 +3,27 @@
  * @Author: xia
  * @Date: 2017-12-04 00:05:41
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-06 16:01:06
+ * @Last Modified time: 2017-12-07 14:44:34
  */
+import measure from '@/lib/measure'
+
+let measureHandler = null
 
 /**
- * 关闭当前控制弹出框
- *
+ * @description init measure
+ * @param {Object} map
+ */
+const initMeasureHandler = function (map) {
+  if (!measureHandler) {
+    measureHandler = measure(map)
+  }
+}
+/**
+ * @description 关闭当前控制弹出框
  * @param {any} toolbar 工具栏组件
  * @param {any} currentRoute 当前路由
  * @param {any} lastRoute 上一次路由
  */
-
 const closeRouterView = function (toolbar, currentRoute, lastRoute) {
   if (currentRoute === lastRoute) {
     toolbar.$router.push({
@@ -65,13 +75,44 @@ const resetPosition = {
   }
 }
 
+const distanceMeasure = {
+  title: '距离测量',
+  icon: require('../assets/images/measure.png'),
+  route: PAGE_ROUTE + '/distance',
+  action (map, toolbar, currentRoute, lastRoute) {
+    if (closeRouterView(toolbar, currentRoute, lastRoute)) {
+      map.doubleClickZoom.enable()
+      return measureHandler.removeAll()
+    }
+    initMeasureHandler(map)
+    measureHandler.removeAll()
+    measureHandler.drawLine()
+    map.doubleClickZoom.disable()
+  }
+}
+
+const areaMeasure = {
+  title: '面积测量',
+  icon: require('../assets/images/measure_polygon.png'),
+  route: PAGE_ROUTE + '/area',
+  action (map, toolbar, currentRoute, lastRoute) {
+    if (closeRouterView(toolbar, currentRoute, lastRoute)) {
+      map.doubleClickZoom.enable()
+      return measureHandler.removeAll()
+    }
+    initMeasureHandler(map)
+    measureHandler.removeAll()
+    measureHandler.drawPolygon()
+    map.doubleClickZoom.disable()
+  }
+}
+
 // 图层控制菜单
 const layerControl = {
   title: '图层控制',
   icon: require('../assets/images/layercontrol.png'),
   route: PAGE_ROUTE + '/layerControl',
   action (map, toolbar, currentRoute, lastRoute) {
-    // 如果已经打开 则关闭
     closeRouterView(toolbar, currentRoute, lastRoute)
   },
   component: r => require(['@/components/content/layerControl'], r)
@@ -98,7 +139,11 @@ const singleSearch = {
 const layerStyle = {
   title: '图层样式',
   icon: require('../assets/images/stylecust.png'),
-  route: PAGE_ROUTE + '/styleControl'
+  route: PAGE_ROUTE + '/styleControl',
+  action (map, toolbar, currentRoute, lastRoute) {
+    closeRouterView(toolbar, currentRoute, lastRoute)
+  },
+  component: r => require(['@/components/content/layerControl'], r)
 }
 
 // 数据叠加
@@ -107,11 +152,9 @@ const sourceControl = {
   icon: require('../assets/images/sourcecontrol2.png'),
   route: PAGE_ROUTE + '/sourceControl',
   action (map, toolbar, currentRoute, lastRoute) {
-    // 如果已经打开 则关闭
-    console.log('====================================')
-    console.log(map.getStyle())
-    console.log('====================================')
+
   }
+
 }
 
 // 为菜单绑定唯一id值
@@ -146,9 +189,11 @@ const settings = [
   zoomOut,
   resetPosition,
   resetNorth,
-  layerControl,
-  sourceControl,
+  distanceMeasure,
+  areaMeasure,
   singleSearch,
+  layerControl,
+  // sourceControl,
   layerStyle
 ]
 

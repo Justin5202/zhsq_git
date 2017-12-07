@@ -3,19 +3,16 @@
  * @Author: xia
  * @Date: 2017-12-04 00:05:41
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-07 14:44:34
+ * @Last Modified time: 2017-12-07 20:35:44
  */
-import measure from '@/lib/measure'
-
-let measureHandler = null
 
 /**
- * @description init measure
- * @param {Object} map
+ * @description action handler
+ * @param {Function} action
  */
-const initMeasureHandler = function (map) {
-  if (!measureHandler) {
-    measureHandler = measure(map)
+const actionHandler = (action) => {
+  return (map, toolbar, currentRoute, lastRoute) => {
+    const result = action(map, toolbar, currentRoute, lastRoute)
   }
 }
 /**
@@ -24,7 +21,7 @@ const initMeasureHandler = function (map) {
  * @param {any} currentRoute 当前路由
  * @param {any} lastRoute 上一次路由
  */
-const closeRouterView = function (toolbar, currentRoute, lastRoute) {
+const closeRouterView = function (map, toolbar, currentRoute, lastRoute) {
   if (currentRoute === lastRoute) {
     toolbar.$router.push({
       path: '/'
@@ -79,32 +76,16 @@ const distanceMeasure = {
   title: '距离测量',
   icon: require('../assets/images/measure.png'),
   route: PAGE_ROUTE + '/distance',
-  action (map, toolbar, currentRoute, lastRoute) {
-    if (closeRouterView(toolbar, currentRoute, lastRoute)) {
-      map.doubleClickZoom.enable()
-      return measureHandler.removeAll()
-    }
-    initMeasureHandler(map)
-    measureHandler.removeAll()
-    measureHandler.drawLine()
-    map.doubleClickZoom.disable()
-  }
+  action: closeRouterView,
+  component: r => require(['@/components/content/distance'], r)
 }
 
 const areaMeasure = {
   title: '面积测量',
   icon: require('../assets/images/measure_polygon.png'),
   route: PAGE_ROUTE + '/area',
-  action (map, toolbar, currentRoute, lastRoute) {
-    if (closeRouterView(toolbar, currentRoute, lastRoute)) {
-      map.doubleClickZoom.enable()
-      return measureHandler.removeAll()
-    }
-    initMeasureHandler(map)
-    measureHandler.removeAll()
-    measureHandler.drawPolygon()
-    map.doubleClickZoom.disable()
-  }
+  action: closeRouterView,
+  component: r => require(['@/components/content/area'], r)
 }
 
 // 图层控制菜单
@@ -112,9 +93,7 @@ const layerControl = {
   title: '图层控制',
   icon: require('../assets/images/layercontrol.png'),
   route: PAGE_ROUTE + '/layerControl',
-  action (map, toolbar, currentRoute, lastRoute) {
-    closeRouterView(toolbar, currentRoute, lastRoute)
-  },
+  action: closeRouterView,
   component: r => require(['@/components/content/layerControl'], r)
 }
 
@@ -124,13 +103,16 @@ const singleSearch = {
   icon: require('../assets/images/pointselection.png'),
   route: PAGE_ROUTE + '/singleSearch',
   action (map, toolbar, currentRoute, lastRoute) {
-    map.on('click', function (e) {
-      // 查询所点击位置的图层信息，第二个参数为要查询的图层
+    const callback = (e) => {
       var result = map.queryRenderedFeatures(e.point)
       console.log('====================================')
       console.log(result)
       console.log('====================================')
-    })
+    }
+    if (closeRouterView(toolbar, currentRoute, lastRoute)) {
+      map.off('click', callback)
+    }
+    map.on('click', callback)
     closeRouterView(toolbar, currentRoute, lastRoute)
   }
 }
@@ -151,10 +133,19 @@ const sourceControl = {
   title: '数据叠加',
   icon: require('../assets/images/sourcecontrol2.png'),
   route: PAGE_ROUTE + '/sourceControl',
-  action (map, toolbar, currentRoute, lastRoute) {
+  action: closeRouterView
 
+}
+
+// action binder
+const bindAction = (object) => {
+  for (const iterator in object) {
+    if (object[iterator].action) {
+      const action = object[iterator].action
+      object[iterator].action = actionHandler(action)
+    }
   }
-
+  return object
 }
 
 // 为菜单绑定唯一id值
@@ -199,4 +190,4 @@ const settings = [
 
 export const route = transformToRoute(settings)
 
-export default bindId(settings)
+export default bindAction(bindId(settings))

@@ -96,18 +96,24 @@ export default {
       this.activeSource.map((source) => {
         const url = source.url
         if (this.mapStyles[url]) {
-          console.log('layers', this.mapStyles[url].layers)
+          // console.log('layers', this.mapStyles[url].layers)
           option.style.sources = {
             ...option.style.sources,
             ...this.mapStyles[url].sources
           }
           option.style.layers = option.style.layers.concat(this.mapStyles[url].layers)
+          if (!option.style.glyphs || option.style.glyphs === '') {
+            option.style.glyphs = this.mapStyles.glyphs
+          }
+          if (!option.style.sprite || option.style.sprite === '') {
+            option.style.sprite = this.mapStyles.sprite
+          }
         }
       })
       // console.log('> APPLY_SOURCE', option.style.sources)
       // console.log('> APPLY_LAYERS', option.style.layers)
       console.log('> APPLY_STYLE', option.style)
-      this.$parent.$children[0].map.setStyle(option.style, {diff: false})
+      this.$parent.$children[0].map.setStyle(option.style, {diff: true})
     },
     /**
      * @description 全选

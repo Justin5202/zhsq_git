@@ -100,7 +100,6 @@ $height_box: 40px;
 .toolbar-router {
   box-shadow: 0px 0px 1px 1px #888888;
   background-color: white;
-  padding:5px 10px 0px;
   position: absolute;
   top: 60px;
 }

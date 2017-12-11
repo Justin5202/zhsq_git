@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import {searchTypes, client, index, searchSize, searchSource} from '@/settings/search'
+import {client, index} from '@/settings/search'
 import query from '@/settings/textSearch'
 export default {
   name: 'textSearch',

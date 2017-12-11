@@ -8,7 +8,7 @@
 <script>
 import vMap from '../common/d2cmap'
 import mWindow from '@/util/window'
-import mapOption from '@/settings/option'
+import mapOption from '@/settings/map'
 import vSourceControl from '../content/sourceControl'
 export default {
   name: 'test_map',

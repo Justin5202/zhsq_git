@@ -14,12 +14,15 @@
 
 <script>
 import {searchLayers, client, index} from '@/settings/search'
+import {selectionConfig, selectionFilter} from '@/settings/clickSearch'
 export default {
   name: 'clickSearch',
   props: ['map'],
   data () {
     return {
       searchLayers,
+      selectionConfig,
+      selectionFilter,
       client,
       index,
       data: null,
@@ -36,17 +39,17 @@ export default {
       this.bindEvent()
     },
     setConfig () {
-      window.d2c.selectionLayer.LAYER.paint['fill-extrusion-base'] = {type: 'identity', property: '1'}
-      window.d2c.selectionLayer.LAYER.paint['fill-extrusion-height'] = {type: 'identity', property: 'gd'}
+      window.d2c.selectionLayer.LAYER = this.selectionConfig
+      // window.d2c.selectionLayer.LAYER.paint['fill-extrusion-base'] = {type: 'identity', property: '1'}
+      // window.d2c.selectionLayer.LAYER.paint['fill-extrusion-height'] = {type: 'identity', property: 'gd'}
     },
     initSelection () {
       this.selection = new window.d2c.selectionLayer(this.map, {
         cb: (features) => {
-          const result = features.filter(feature => feature.layer.type === 'fill-extrusion')
+          const result = this.selectionFilter(features)
           this.handleClick(result)
           return result
-        },
-        all: true
+        }
       })
     },
     bindEvent () {
@@ -57,6 +60,9 @@ export default {
         this.data = '暂无数据'
         return
       }
+      this.search(feature)
+    },
+    search (feature) {
       try {
         this.client.searchProperty({
           index: this.index,

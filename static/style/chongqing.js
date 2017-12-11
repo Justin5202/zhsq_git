@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-12-02 14:39:53
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-02 14:39:53
+ * @Last Modified time: 2017-12-10 23:54:25
  */
 
 export default {
@@ -16,6 +16,14 @@ export default {
       'tiles': [
         'http://106.14.65.62:4321/new_gs_data/{z}/{x}/{y}.mvt'
       ]
+    },
+    'sc': {
+      'type': 'vector',
+      'tiles': ['http://192.168.11.149:8088/sc_data/{z}/{x}/{y}.mvt']
+    },
+    'bd': {
+      'type': 'vector',
+      'tiles': ['http://192.168.11.149:8088/build_data/{z}/{x}/{y}.mvt']
     }
   },
   'layers': [
@@ -4023,6 +4031,120 @@ export default {
         'text-size': 14
       },
       'paint': {}
+    }, {
+      'id': '3d_building_layer_one',
+      'type': 'fill-extrusion',
+      'source': 'bd',
+      'source-layer': 'building',
+      'filter': ['all', ['<=', 'nd', 1900]],
+      'minzoom': 13,
+      'layout': {
+        'visibility': 'none'
+      },
+      'paint': {
+        'fill-extrusion-color': '#fcf9f4',
+        'fill-extrusion-opacity': 0.6,
+        'fill-extrusion-height': {
+          'type': 'identity',
+          'property': 'height'
+        },
+        'fill-extrusion-base': {
+          'type': 'identity',
+          'property': 'min_height'
+        }
+      }
+    },
+    {
+      'id': '3d_building_layer_two',
+      'type': 'fill-extrusion',
+      'source': 'bd',
+      'source-layer': 'building',
+      'filter': ['all', ['<=', 'nd', 2000]],
+      'minzoom': 13,
+      'layout': {
+        'visibility': 'none'
+      },
+      'paint': {
+        'fill-extrusion-color': '#fcf9f4',
+        'fill-extrusion-opacity': 0.6,
+        'fill-extrusion-height': {
+          'type': 'identity',
+          'property': 'height'
+        },
+        'fill-extrusion-base': {
+          'type': 'identity',
+          'property': 'min_height'
+        }
+      }
+    },
+    {
+      'id': '3d_building_layer_th',
+      'type': 'fill-extrusion',
+      'source': 'bd',
+      'source-layer': 'building',
+      'filter': ['all', ['<=', 'nd', 2010]],
+      'minzoom': 13,
+      'layout': {
+        'visibility': 'none'
+      },
+      'paint': {
+        'fill-extrusion-color': '#fcf9f4',
+        'fill-extrusion-opacity': 0.6,
+        'fill-extrusion-height': {
+          'type': 'identity',
+          'property': 'height'
+        },
+        'fill-extrusion-base': {
+          'type': 'identity',
+          'property': 'min_height'
+        }
+      }
+    },
+    {
+      'id': '3d_building_layer_fou',
+      'type': 'fill-extrusion',
+      'source': 'bd',
+      'source-layer': 'building',
+      'filter': ['all', ['<=', 'nd', 2014]],
+      'minzoom': 13,
+      'layout': {
+        'visibility': 'none'
+      },
+      'paint': {
+        'fill-extrusion-color': '#fcf9f4',
+        'fill-extrusion-opacity': 0.6,
+        'fill-extrusion-height': {
+          'type': 'identity',
+          'property': 'height'
+        },
+        'fill-extrusion-base': {
+          'type': 'identity',
+          'property': 'min_height'
+        }
+      }
+    },
+    {
+      'id': '3d_building_layer_fiv',
+      'type': 'fill-extrusion',
+      'source': 'bd',
+      'source-layer': 'building',
+      'filter': ['all', ['<=', 'nd', 2016]],
+      'minzoom': 13,
+      'layout': {
+        'visibility': 'visible'
+      },
+      'paint': {
+        'fill-extrusion-color': '#fcf9f4',
+        'fill-extrusion-opacity': 0.6,
+        'fill-extrusion-height': {
+          'type': 'identity',
+          'property': 'height'
+        },
+        'fill-extrusion-base': {
+          'type': 'identity',
+          'property': 'min_height'
+        }
+      }
     }
   ]
 }

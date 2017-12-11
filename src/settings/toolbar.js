@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-12-04 00:05:41
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-11 10:53:08
+ * @Last Modified time: 2017-12-11 15:04:32
  */
 import { closeRouterView, bindId, transformToRoute } from '@/util/toolbarSetting'
 
@@ -94,6 +94,15 @@ const rangeSearch = {
   route: PAGE_ROUTE + '/rangeSearch',
   action: closeRouterView,
   component: r => require(['@/components/content/rangeSearch'], r)
+
+}
+/* 全文查询菜单 */
+const textSearch = {
+  title: '全文查询',
+  icon: require('../assets/images/text.png'),
+  route: PAGE_ROUTE + '/textSearch',
+  action: closeRouterView,
+  component: r => require(['@/components/content/textSearch'], r)
 }
 
 /* 图层样式菜单 */
@@ -124,6 +133,7 @@ const settings = [
   areaMeasure,
   clickSearch,
   rangeSearch,
+  textSearch,
   layerControl,
   layerStyle
 ]

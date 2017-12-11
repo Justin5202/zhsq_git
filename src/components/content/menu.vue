@@ -9,13 +9,11 @@
       text-color="#fff"
       active-text-color="#ffd04b"
       :router="true">
-      <el-menu-item index="/map_test">mapTest</el-menu-item>
+      <el-menu-item index="/map_test">地图</el-menu-item>
       <el-menu-item index="/test_page">测试页面</el-menu-item>
     </el-menu>
   </div>
 </template>
-
-
 <script>
 export default {
   data () {

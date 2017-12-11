@@ -3,11 +3,11 @@
  * @Author: xia
  * @Date: 2017-12-05 11:03:53
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-06 19:40:51
+ * @Last Modified time: 2017-12-11 10:59:38
  */
 
 import axios from '@/util/http'
-import {TOOLBAR as URL} from '@/settings/url'
+import URL from '@/settings/sourceControl'
 
 const timeout = 5000
 

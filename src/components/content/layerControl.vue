@@ -59,6 +59,7 @@ export default {
     display: block;
     padding: 5px 0px;
   }
+  padding: 5px 10px 0px;
 }
 
 .check-item{

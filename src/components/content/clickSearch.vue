@@ -96,5 +96,6 @@ export default {
   overflow-y: scroll;
   max-height: 500px;
   line-height: 2em;
+  padding: 5px 10px 0px;
 }
 </style>

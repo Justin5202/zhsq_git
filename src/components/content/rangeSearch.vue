@@ -126,5 +126,6 @@ export default {
   .el-table th{
     text-align: center!important
   }
+  padding: 5px 10px 0px;
 }
 </style>

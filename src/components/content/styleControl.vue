@@ -117,6 +117,7 @@ export default {
     margin-bottom: 5px
   }
   width: 240px;
+  padding: 5px 10px 0px;
 }
 
 .check-item{

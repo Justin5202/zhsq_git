@@ -1,3 +1,6 @@
+/**
+ * @description deep clone tool
+ */
 export function deepClone (data) {
   var type = getType(data)
   var obj

@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-12-04 00:05:41
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-11 15:04:32
+ * @Last Modified time: 2017-12-12 16:14:04
  */
 import { closeRouterView, bindId, transformToRoute } from '@/util/toolbarSetting'
 
@@ -44,10 +44,14 @@ const resetNorth = {
 const resetPosition = {
   title: '初始地图范围',
   icon: require('../assets/images/all.png'),
-  route: PAGE_ROUTE + '/resetNorth',
+  route: PAGE_ROUTE + '/resetPosition',
   action (map) {
-    map.flyTo({center: map.option.center, zoom: map.option.zoom})
-    map.resetNorth()
+    map.jumpTo({
+      center: map.option.center,
+      zoom: map.option.zoom,
+      pitch: map.option.pitch || 0,
+      bearing: map.option.bearing || 0
+    })
   }
 }
 

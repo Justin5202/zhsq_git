@@ -58,7 +58,8 @@ export default {
       this.bindEvent()
     },
     initLayer () {
-      delete this.selectionConfig.source
+      delete this.selectionConfig['source']
+      delete this.selectionConfig['source-layer']
       this.layer = this.map.addGeoLayer(this.selectionConfig)
     },
     initMarker () {

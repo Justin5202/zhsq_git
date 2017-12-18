@@ -3,10 +3,9 @@
  * @Author: xia
  * @Date: 2017-12-08 11:34:02
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-15 14:59:39
+ * @Last Modified time: 2017-12-18 17:32:07
  */
 
-import selection from './selection'
 import * as search from './search'
 
 /**
@@ -28,17 +27,14 @@ const config = {
  * @param {Array} features 每次click获取的所有feature
  * @returns 满足条件的feature
  */
-export function selectionFilter (features) {
-  // return features.filter(feature => feature.layer.type === 'fill-extrusion')
-  console.log(features)
-  return features
-};
+export function queryFilter (features) {
+  return features.filter(feature => feature.properties && feature.properties.mapguid)
+}
 
 /**
  * @description 选中时的图层样式等配置
  */
 export const selectionConfig = {
-  ...selection,
   id: 'clickSelection',
   paint: {
     'fill-extrusion-color': 'red',

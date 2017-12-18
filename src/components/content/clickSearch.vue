@@ -13,19 +13,20 @@
 </template>
 
 <script>
-import {selectionConfig, selectionFilter, searchConfig} from '@/settings/clickSearch'
+import {queryFilter, selectionConfig, searchConfig} from '@/settings/clickSearch'
 export default {
   name: 'clickSearch',
   props: ['map'],
   data () {
     return {
       selectionConfig,
-      selectionFilter,
+      queryFilter,
       client: searchConfig.client,
       index: searchConfig.index,
       query: searchConfig.query,
       data: null,
-      selection: null
+      selection: null,
+      layer: null
     }
   },
   created () {
@@ -33,33 +34,26 @@ export default {
   },
   methods: {
     init () {
-      this.setConfig()
-      this.initSelection()
       this.bindEvent()
+      this.initLayer()
     },
-    setConfig () {
-      window.d2c.selectionLayer.LAYER = this.selectionConfig
-      // window.d2c.selectionLayer.LAYER.paint['fill-extrusion-base'] = {type: 'identity', property: '1'}
-      // window.d2c.selectionLayer.LAYER.paint['fill-extrusion-height'] = {type: 'identity', property: 'gd'}
-    },
-    initSelection () {
-      this.selection = new window.d2c.selectionLayer(this.map, {
-        cb: (features) => {
-          const result = this.selectionFilter(features)
-          this.handleClick(result)
-          return result
-        }
-      }, this.selectionConfig)
+    initLayer () {
+      delete this.selectionConfig['source']
+      delete this.selectionConfig['source-layer']
+      this.layer = this.map.addGeoLayer(this.selectionConfig)
     },
     bindEvent () {
-      this.map.on('click', this.selection.add)
+      this.map.on('click', this.handleClick)
     },
-    handleClick (feature) {
-      if (!feature || feature.length === 0) {
+    handleClick (e) {
+      let features = this.map.queryRenderedFeatures(e.point)
+      if (!features || features.length === 0) {
         this.data = '暂无数据'
         return
       }
-      this.search(feature)
+      if (this.queryFilter)features = this.queryFilter(features)
+      if (features.length === 0) return
+      this.search(features)
     },
     search (feature) {
       try {
@@ -71,18 +65,32 @@ export default {
             this.data = '暂无数据'
           } else {
             this.data = res.hits.hits[0]._source
+            this.updateLayer()
           }
         })
       } catch (error) {
         console.log(error)
       }
     },
+    updateLayer () {
+      const feature = {
+        geometry: this.data.geometry,
+        type: 'Feature'
+      }
+      this.map.setGeojson(this.selectionConfig.id, {
+        type: 'FeatureCollection',
+        features: [feature]
+      })
+    },
     offEvent () {
-      this.map.off('click', this.selection.add)
+      this.map.off('click', this.handleClick)
+    },
+    removeLayer () {
+      this.map.removeGeoLayer(this.selectionConfig.id)
     },
     destroye () {
       this.offEvent()
-      this.selection.clean()
+      this.removeLayer()
     }
   },
   beforeDestroy () {

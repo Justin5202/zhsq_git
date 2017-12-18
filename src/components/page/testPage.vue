@@ -11,7 +11,7 @@ export default {
   name: 'testPage',
   data () {
     return {
-      msg: ' TEST PAGE'
+      msg: ' page content'
     }
   }
 }

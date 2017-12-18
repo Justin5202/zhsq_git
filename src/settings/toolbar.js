@@ -3,12 +3,12 @@
  * @Author: xia
  * @Date: 2017-12-04 00:05:41
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-12 16:14:04
+ * @Last Modified time: 2017-12-12 17:41:58
  */
 import { closeRouterView, bindId, transformToRoute } from '@/util/toolbarSetting'
 
 /* parent reoute */
-const PAGE_ROUTE = '/map_test'
+const PAGE_ROUTE = ''
 
 /* 地图放大菜单 */
 const zoomIn = {
@@ -103,7 +103,7 @@ const rangeSearch = {
 /* 全文查询菜单 */
 const textSearch = {
   title: '全文查询',
-  icon: require('../assets/images/text.png'),
+  icon: require('../assets/images/input.png'),
   route: PAGE_ROUTE + '/textSearch',
   action: closeRouterView,
   component: r => require(['@/components/content/textSearch'], r)

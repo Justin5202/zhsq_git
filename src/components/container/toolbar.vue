@@ -15,7 +15,7 @@
         :key="index" 
         :title="item.title"
         @click="handleClick(item.action)">
-        <img :src="item.icon"/>
+        <span><img :src="item.icon"/></span>
       </el-menu-item>
       <router-view class="toolbar-router" :style="routerStyle" :map='d2cmap'/>
     </el-menu>
@@ -81,7 +81,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$height_box: 40px;
+$height_box: 35px;
 
 #toolbar {
   z-index: 2;
@@ -93,10 +93,20 @@ $height_box: 40px;
 .el-menu--horizontal .el-menu-item {
   height: $height_box;
   line-height: $height_box;
-  padding: 0 11px;
   user-select: none;
-  border: 0px;
+  border-bottom: 0px;
+  padding: 0 0px;
+  span{
+    border-left: 1px #dbdee2 dashed;
+      padding: 0 10px;
+    }
 }
+.el-menu-item:first-child{
+  span {
+    border-left: 0px;
+  }
+}
+
 .toolbar-router {
   box-shadow: 0px 0px 1px 1px #888888;
   background-color: white;

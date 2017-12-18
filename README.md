@@ -28,18 +28,17 @@
 │  │  └─images # 图片
 │  │
 │  ├─components
-│  │  ├─common # 通用
+│  │  ├─common # 通用组件
 │  │  │      d2cmap.vue
 │  │  │
 │  │  ├─container # 容器
-│  │  │      index.vue
-│  │  │      toolbar.vue
-│  │  │
-│  │  ├─content # 部件
+│  │  │      index.vue # 整个页面的 container
+│  │  │      toolbar.vue # 工具栏 container
+│  │  │      header.vue # header container
+│  │  ├─content # 部件 ---> 对应的配置在/settings
 │  │  │      area.js # 面积测量
 │  │  │      clickSearch.vue # 点击查询
 │  │  │      distance.js # 距离测量
-│  │  │      header.vue # 页面header
 │  │  │      layerControl.vue # 图层控制
 │  │  │      menu.vue # 菜单
 │  │  │      rangeSearch.vue # 空间搜索
@@ -48,7 +47,8 @@
 │  │  │
 │  │  └─page # 页面
 │  │          map_test.vue # 地图
-│  │          testPage.vue # 测试页面
+│  │          testPage.vue # 其他页面示例
+|  |          ......其他页面
 │  │
 │  ├─router # 路由
 │  │      index.js
@@ -72,6 +72,7 @@
 │  └─util
 │          http.js # axios
 │          object.js
+|          map.js
 │          toolbarSetting.js
 │          window.js
 │
@@ -97,15 +98,11 @@
 ## 规范
 
 - 页面编写 /page
-
 - 配置编写 /settings
-
 - 部件 /content
-
 - 第三方库 /static
-
+- container /container
 - 静态资源 /assets
-
 - 通用组件 /common
 
 

@@ -10,14 +10,14 @@
               <keep-alive>
                 <router-view v-if="$route.meta.keepAlive" class="router"/>
               </keep-alive>
-                <router-view v-if="!$route.meta.keepAlive" class="router"/>
+              <router-view v-if="!$route.meta.keepAlive" class="router"/>
             </el-col>
         </el-row>
     </div>
 </template>
 
 <script>
-import vHeader from '../content/header'
+import vHeader from './header'
 export default {
   name: 'container',
   components: {

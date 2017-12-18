@@ -13,18 +13,17 @@
 </template>
 
 <script>
-import {searchLayers, client, index} from '@/settings/search'
-import {selectionConfig, selectionFilter} from '@/settings/clickSearch'
+import {selectionConfig, selectionFilter, searchConfig} from '@/settings/clickSearch'
 export default {
   name: 'clickSearch',
   props: ['map'],
   data () {
     return {
-      searchLayers,
       selectionConfig,
       selectionFilter,
-      client,
-      index,
+      client: searchConfig.client,
+      index: searchConfig.index,
+      query: searchConfig.query,
       data: null,
       selection: null
     }
@@ -50,7 +49,7 @@ export default {
           this.handleClick(result)
           return result
         }
-      })
+      }, this.selectionConfig)
     },
     bindEvent () {
       this.map.on('click', this.selection.add)
@@ -66,10 +65,10 @@ export default {
       try {
         this.client.searchProperty({
           index: this.index,
-          mapguid: feature[0].properties.mapguid
+          query: this.query(feature)
         }, (error = '> click search', res) => {
           if (res.hits.hits.length === 0) {
-            this.data = null
+            this.data = '暂无数据'
           } else {
             this.data = res.hits.hits[0]._source
           }

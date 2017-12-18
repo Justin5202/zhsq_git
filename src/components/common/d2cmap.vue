@@ -18,7 +18,6 @@ export default {
   },
   mounted () {
     this.initMap()
-    window.addEventListener('resize', this.resize)
   },
   beforeDestroy () {
     this.map.remove()
@@ -26,11 +25,38 @@ export default {
   },
   methods: {
     initMap () {
-      this.map = new window.d2c.map(this.option)
-      this.map.option = this.option
+      if (typeof this.option === 'string') {
+        this.http.get(this.option).then(res => {
+          const mapOption = this.getConfig(res.data)
+          this.map = new window.d2c.map(mapOption)
+          this.map.option = mapOption
+          window.addEventListener('resize', this.resize)
+        })
+      } else {
+        this.map = new window.d2c.map(this.option)
+        this.map.option = this.option
+        window.addEventListener('resize', this.resize)
+      }
     },
     resize () {
       this.map.resize()
+    },
+    getConfig (data) {
+      return {
+        container: data.container || 'map',
+        center: data.center,
+        bearing: data.bearing,
+        zoom: data.zoom,
+        maxzoom: data.maxzoom || 18,
+        minzoom: data.minzoom || 0,
+        style: {
+          version: data.version || 8,
+          glyphs: data.glyphs,
+          sprite: data.sprite,
+          sources: data.sources,
+          layers: data.layers
+        }
+      }
     }
   }
 }

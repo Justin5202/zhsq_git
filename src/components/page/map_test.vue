@@ -19,13 +19,13 @@ export default {
   mixins: [mWindow],
   data () {
     return {
-      option: mapOption()
+      option: mapOption
     }
   },
   computed: {
     style () {
       return {
-        height: this.window.height - 61 + 'px',
+        height: this.window.height - 104 + 'px',
         width: this.window.width + 'px'
       }
     }
@@ -37,7 +37,7 @@ export default {
 .source_control{
   position: absolute;
   top: 50px;
-  left: 50px;
+  left: 0px;
   box-shadow: 0px 0px 1px 1px #888888;
 }
 </style>

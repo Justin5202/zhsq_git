@@ -58,8 +58,14 @@ export default {
     border-bottom: 1px solid rgb(204, 204, 204);
     display: block;
     padding: 5px 0px;
+    text-align: center;
   }
-  padding: 5px 10px 0px;
+  font-size: 14px;
+  padding: 10px 20px 5px;
+  .check-item{
+    text-align: left;
+    font-size: 24px;
+  }
 }
 
 .check-item{

@@ -108,28 +108,32 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 #styleControl {
-  span{
+  width: 240px;
+  padding: 5px 10px 0px;
+  >span{
     border-bottom: 1px solid rgb(204, 204, 204);
     display: block;
     padding: 5px 0px;
     margin-bottom: 5px
   }
-  width: 240px;
-  padding: 5px 10px 0px;
+  font-size: 14px;
+  .check-item{
+    line-height: 25px;
+  }
+
+  .el-checkbox-group{
+    margin-top: 10px;
+  }
+
+  .el-select{
+    width: 120px;
+    input {
+      font-size: 12px;
+    }
+  }
 }
 
-.check-item{
-  line-height: 25px;
-}
-
-.el-checkbox-group{
-  margin-top: 10px;
-}
-
-.el-select{
-  width: 120px;
-}
 
 </style>

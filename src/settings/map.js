@@ -1,9 +1,9 @@
 /*
- * @Description: 根据默认配置生成map option
+ * @Description: 底图配置 1、根据url 2、本地json配置 3、空白底图
  * @Author: xia
  * @Date: 2017-11-30 09:34:45
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-15 17:37:48
+ * @Last Modified time: 2017-12-18 10:55:54
  */
 import chongqingLocal from '../../static/style/chongqing_local'
 import chongqing from '../../static/style/chongqing'
@@ -46,6 +46,7 @@ const sz1 = {
   maxZoom: 18
 }
 
+/* 空白底图 */
 const empty = {
   container: 'map',
   style: {
@@ -58,6 +59,7 @@ const empty = {
   maxZoom: 17
 }
 
+// 根据url配置底图
 const baseMap = 'http://192.168.11.160/oms/stylejson/d68370f70b53106cff50ac68ff1ec49f'
 
 /* 默认底图 */

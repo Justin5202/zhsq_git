@@ -128,7 +128,6 @@ export default {
     },
     removeLayer () {
       this.map.removeGeoLayer(this.selectionConfig.id)
-      console.log(this.map.getLayer(this.selectionConfig.id))
     },
     removeMarker () {
       this.marker && this.marker.remove()

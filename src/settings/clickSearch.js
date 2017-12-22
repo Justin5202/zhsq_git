@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-12-08 11:34:02
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-18 17:32:07
+ * @Last Modified time: 2017-12-22 16:55:44
  */
 
 import * as search from './search'
@@ -21,7 +21,6 @@ const config = {
     }
   }
 }
-
 /**
  * @description 点击查询过滤条件
  * @param {Array} features 每次click获取的所有feature
@@ -35,17 +34,10 @@ export function queryFilter (features) {
  * @description 选中时的图层样式等配置
  */
 export const selectionConfig = {
-  id: 'clickSelection',
+  id: 'clickSearch',
+  type: 'fill',
   paint: {
-    'fill-extrusion-color': 'red',
-    'fill-extrusion-height': {
-      'type': 'identity',
-      'property': 'height'
-    },
-    'fill-extrusion-base': {
-      'type': 'identity',
-      'property': 'min_height'
-    }
+    'fill-color': 'red'
   }
 }
 

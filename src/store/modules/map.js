@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-12-05 11:03:53
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-11 10:59:38
+ * @Last Modified time: 2017-12-25 09:28:09
  */
 
 import axios from '@/util/http'
@@ -37,11 +37,12 @@ async function loadStyle (styles, cb) {
 }
 
 const state = {
-  sourceLoading: false,
-  mapSource: null,
-  checkedRows: [],
   activeSource: [],
-  mapStyles: {}
+  checkedRows: [],
+  map: null,
+  mapSource: null,
+  mapStyles: {},
+  sourceLoading: false
 }
 
 const mutations = {
@@ -52,15 +53,19 @@ const mutations = {
     state.sourceLoading = false
   },
   LOAD_SOURCE (state, source) {
-    console.log('> LOAD_SOURCE', source)
+    console.info('> LOAD_SOURCE', source)
     state.mapSource = source
   },
   UPDATE_ACTIVE_SOURCE (state, source) {
     state.activeSource = source
   },
   LOAD_STYLE (state, styles) {
-    console.log('> LOAD_STYLES', styles)
+    console.info('> LOAD_STYLES', styles)
     state.mapStyles = styles
+  },
+  SET_MAP (state, map) {
+    console.info('> SET_MAP', map)
+    state.map = map
   }
 }
 

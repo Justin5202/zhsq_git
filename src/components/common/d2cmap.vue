@@ -1,16 +1,10 @@
 <template>
-  <div id="map" class="wh100">
-    <v-toolbar :map='map'/>
-  </div>
+  <div id="map" class="wh100"></div>
 </template>
 <script>
-import vToolbar from '../container/toolbar'
 export default {
   name: 'd2cmap',
   props: ['option'],
-  components: {
-    vToolbar
-  },
   data () {
     return {
       map: null
@@ -37,6 +31,7 @@ export default {
         this.map.option = this.option
         window.addEventListener('resize', this.resize)
       }
+      this.$store.commit('SET_MAP', this.map)
     },
     resize () {
       this.map.resize()

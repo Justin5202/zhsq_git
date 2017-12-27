@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-12-04 00:05:41
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-12 17:41:58
+ * @Last Modified time: 2017-12-27 15:08:05
  */
 import { closeRouterView, bindId, transformToRoute } from '@/util/toolbarSetting'
 
@@ -20,6 +20,15 @@ const zoomIn = {
   }
 }
 
+/* 拉框放大 */
+const zoomInBox = {
+  title: '拉框放大',
+  icon: require('../assets/images/zoomInBox.png'),
+  route: PAGE_ROUTE + '/zoomInBox',
+  action: closeRouterView,
+  component: r => require(['@/components/content/zoomInBox'], r)
+}
+
 /* 地图缩小菜单 */
 const zoomOut = {
   title: '缩小',
@@ -27,6 +36,16 @@ const zoomOut = {
   route: PAGE_ROUTE + '/zoomOut',
   action (map) {
     map.zoomOut()
+  }
+}
+
+/* 平移 */
+const translate = {
+  title: '平移',
+  icon: require('../assets/images/translation.png'),
+  route: PAGE_ROUTE + '/translate',
+  action (map) {
+    map.dragPan.enable()
   }
 }
 
@@ -131,6 +150,8 @@ const sourceControl = {
 const settings = [
   zoomIn,
   zoomOut,
+  zoomInBox,
+  translate,
   resetPosition,
   resetNorth,
   distanceMeasure,

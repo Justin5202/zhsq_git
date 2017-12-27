@@ -24,13 +24,12 @@ export default {
           const mapOption = this.getConfig(res.data)
           this.map = new window.d2c.map(mapOption)
           this.map.option = mapOption
-          window.addEventListener('resize', this.resize)
         })
       } else {
         this.map = new window.d2c.map(this.option)
         this.map.option = this.option
-        window.addEventListener('resize', this.resize)
       }
+      window.addEventListener('resize', this.resize)
       this.$store.commit('SET_MAP', this.map)
     },
     resize () {

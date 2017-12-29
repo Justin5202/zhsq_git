@@ -15,7 +15,7 @@
                 :row-key="handleKey">
                 <el-table-column type="index"></el-table-column>
                 <el-table-column type="selection"></el-table-column>
-                <el-table-column label="服务名称" prop="name" :show-overflow-tooltip='true'>
+              <el-table-column label="服务名称" prop="name" :show-overflow-tooltip='true'>
                 </el-table-column>
               </el-table>
         </el-collapse-item>
@@ -174,7 +174,7 @@ export default {
 #sourceControl{
   background-color: white;
   text-align: left;
-  max-height: calc(100% - 104px);
+  max-height: calc(100% - 61px);
   width: 270px;
   .el-table .cell.el-tooltip{
     cursor: pointer;

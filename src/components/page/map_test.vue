@@ -27,7 +27,7 @@ export default {
   computed: {
     style () {
       return {
-        height: this.window.height - 104 + 'px',
+        height: this.window.height - 61 + 'px',
         width: this.window.width + 'px'
       }
     }

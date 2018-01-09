@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-11-30 09:34:45
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-18 10:55:54
+ * @Last Modified time: 2018-01-09 10:38:17
  */
 import chongqingLocal from '../../static/style/chongqing_local'
 import chongqing from '../../static/style/chongqing'

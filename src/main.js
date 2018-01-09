@@ -7,11 +7,14 @@ import elementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css' // elementUI css
 import http from './util/http'
 import store from './store/index'
+import * as TYPES from './store/type'
+
 Vue.config.productionTip = false
 
 Vue.use(elementUI)
 
 Vue.prototype.http = http
+Vue.prototype.$types = TYPES
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

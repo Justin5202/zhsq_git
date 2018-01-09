@@ -2,21 +2,23 @@
   <div id="map_test" :style="style">
     <v-map ref="d2cmap" :option='option'/>
     <v-source-control class="source_control"/>
-    <v-toolbar/>
+    <v-tool-bar :map='$store.state.d2cmap.mainMap'/>
   </div>
 </template>
+
 <script>
-import vMap from '../common/d2cmap'
 import mWindow from '@/util/window'
 import mapOption from '@/settings/map'
-import vSourceControl from '../content/sourceControl'
-import vToolbar from '../container/toolbar'
+
+import vMap from '@/components/common/d2cmap'
+import vSourceControl from '@/components/content/sourceControl'
+import vToolBar from '@/components/container/toolbar.vue'
 export default {
   name: 'test_map',
   components: {
     vMap,
     vSourceControl,
-    vToolbar
+    vToolBar
   },
   mixins: [mWindow],
   data () {

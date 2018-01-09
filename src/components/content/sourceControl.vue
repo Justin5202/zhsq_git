@@ -1,8 +1,8 @@
 <template>
     <div id="sourceControl">
-      <p>资源目录</p>
+      <p>资源目录 <span><img :src="loadingImg" class="loading" v-show="isLoading"/></span></p>
       <el-collapse accordion>
-        <el-collapse-item v-for="(col,index) in mapSource" :key="index" :title="col.name" :name="index">
+        <el-collapse-item v-for="(col,index) in data" :key="index" :title="col.name" :name="index">
               <el-table 
                 ref="childTable"
                 id="innerTable" 
@@ -14,8 +14,8 @@
                 :show-header="false"
                 :row-key="handleKey">
                 <el-table-column type="index"></el-table-column>
-                <el-table-column type="selection"></el-table-column>
-              <el-table-column label="服务名称" prop="name" :show-overflow-tooltip='true'>
+                <el-table-column type="selection" :selectable="handleSelectable"></el-table-column>
+                <el-table-column label="服务名称" prop="name" :show-overflow-tooltip='true'>
                 </el-table-column>
               </el-table>
         </el-collapse-item>
@@ -24,7 +24,13 @@
 </template>
 
 <script>
+import {deepClone} from '@/util/object.js'
 export default {
+  data () {
+    return {
+      loadingImg: require('@/assets/images/loading.gif')
+    }
+  },
   computed: {
     data () {
       return this.mapSource && this.mapSource.map((child, index) => {
@@ -47,6 +53,9 @@ export default {
     },
     mapStyles () {
       return this.$store.state.d2cmap.mapStyles
+    },
+    isLoading () {
+      return this.$store.state.d2cmap.styleLoading
     }
   },
   mounted () {
@@ -63,23 +72,35 @@ export default {
        * @param {Array} active
        */
     toggleSelection (rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.childTable.toggleRowSelection(row, true)
-        })
-      } else {
-        this.$refs.childTable.clearSelection()
-      }
+      this.$nextTick(() => {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.childTable.toggleRowSelection(row, true)
+          })
+        } else {
+          this.$refs.childTable.clearSelection()
+        }
+      })
     },
       /**
        * @description 选择
        * @param {Array} checked
        */
-    handleSelectionChange (val) {},
+    handleSelectionChange (val) {
+      // console.log(' ')
+      // val.map(item => {
+      //   console.log(item.name)
+      // })
+      // console.log(' ')
+      // this.$store.commit('UPDATE_ACTIVE_SOURCE', val)
+    },
     /**
      * @description 全选
      */
-    handleSelectALl (selection) {},
+    handleSelectALl (selection) {
+      // console.log(selection)
+      // this.updateStyle()
+    },
     /**
      * @description 单选
      */
@@ -91,17 +112,30 @@ export default {
       if (compared.length === length) {
         compared.push(row)
       }
-      this.$store.commit('UPDATE_ACTIVE_SOURCE', compared)
+      this.$store.commit(this.$types.UPDATE_ACTIVE_SOURCE, compared)
       let add = false
       add = compared.some(newRow => {
         if (row.name === newRow.name) {
           return true
         }
       })
-      this.updateStyle(row.url, add)
+      this.updateStyle2(row.url, add)
+    },
+    handleSelectable (row, index) {
+      return row.url in this.mapStyles
     },
     handleKey (row) {
       return row.id
+    },
+    /**
+     * @description 展开
+     * @param {Object} cuurent
+     * @param {Array} active
+     */
+    handleExpand (row, expand) {
+      if (expand.length !== 0) {
+        this.toggleSelection([...this.activeSource], true)
+      }
     },
     /**
      * @description 定位
@@ -118,7 +152,24 @@ export default {
     /**
      * @description 更新style
      */
-    updateStyle (url, add) {
+    updateStyle () {
+      const option = deepClone(this.$parent.option)
+      const map = this.$parent.$children[0].map
+      Object.assign(option.style.sources, this.updateSources())
+      this.updateSpriteAndGlyphs(option)
+      map.setStyle(option.style, {diff: true})
+      if (map.isStyleLoaded()) {
+        this.updateLayers(map)
+      } else {
+        setTimeout(() => {
+          this.updateLayers(map)
+        }, 500)
+      }
+    },
+    /**
+     * @description 更新style
+     */
+    updateStyle2 (url, add) {
       const map = this.$parent.$children[0].map
       let update = false
       const otherSource = {}
@@ -166,6 +217,53 @@ export default {
           })
         }
       }
+    },
+    /**
+     * @description 更新sources
+     */
+    updateSources () {
+      const sources = {}
+      this.activeSource.map((source) => {
+        const url = source.url
+        if (this.mapStyles[url]) {
+          Object.assign(sources, this.mapStyles[url].sources)
+        }
+      })
+      return sources
+    },
+    /**
+     * @description 更新sprite glyphs
+     */
+    updateSpriteAndGlyphs (option) {
+      this.activeSource.map((source) => {
+        const url = source.url
+        if (this.mapStyles[url]) {
+          if (!option.style.glyphs || option.style.glyphs === '') {
+            option.style.glyphs = this.mapStyles[url].glyphs
+          }
+          if (!option.style.sprite || option.style.sprite === '') {
+            option.style.sprite = this.mapStyles[url].sprite
+          }
+        }
+      })
+    },
+    /**
+     * @description 更新图层
+     */
+    updateLayers (map) {
+      console.log('render layers')
+      this.activeSource.map((source) => {
+        const url = source.url
+        if (this.mapStyles[url]) {
+          this.mapStyles[url].layers.map(layer => {
+            if (map.getLayer(layer.id)) {
+
+            } else {
+              map.addLayer(layer)
+            }
+          })
+        }
+      })
     }
   }
 }
@@ -174,8 +272,9 @@ export default {
 #sourceControl{
   background-color: white;
   text-align: left;
-  max-height: calc(100% - 61px);
+  max-height: calc(100% - 104px);
   width: 270px;
+  overflow-y: scroll;
   .el-table .cell.el-tooltip{
     cursor: pointer;
   }
@@ -191,6 +290,12 @@ export default {
   }
   p,.el-collapse-item__header{
     padding-left: 20px;
+  }
+  .loading{
+    font-size: 14px;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
   }
 }
 

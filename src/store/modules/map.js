@@ -3,88 +3,108 @@
  * @Author: xia
  * @Date: 2017-12-05 11:03:53
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-25 09:28:09
+ * @Last Modified time: 2018-01-09 10:20:54
  */
 
 import axios from '@/util/http'
+
 import URL from '@/settings/sourceControl'
+import * as TYPE from '../type'
 
 const timeout = 5000
 
 /* 请求配置 */
-const http = axios.create({
-  timeout: timeout
-})
+const http = axios.create({timeout: timeout})
 
-function requestStyles (url, result) {
+function requestStyles (url, cb) {
   try {
-    return http.get(url).then(res => {
-      result[url] = res.data
-    })
+    return http
+      .get(url)
+      .then(res => {
+        const result = {[url]: res.data}
+        cb(result)
+      })
   } catch (error) {
     console.error(`> ${url}`, error)
   }
 }
 /* 加载样式 */
-async function loadStyle (styles, cb) {
-  const result = {}
+function loadStyle (styles, cb) {
   for (var j = 0; j < styles.length; j++) {
     for (var i = 0; i < styles[j].data.length; i++) {
-      await requestStyles(styles[j].data[i].url, result)
+      requestStyles(styles[j].data[i].url, cb)
     }
   }
-  cb(result)
 }
 
 const state = {
-  activeSource: [],
-  checkedRows: [],
-  map: null,
+  sourceLoading: false,
+  styleLoading: false,
   mapSource: null,
+  checkedRows: [],
+  activeSource: [],
   mapStyles: {},
-  sourceLoading: false
+  mainMap: null
 }
 
 const mutations = {
-  REQUEST_SOURCE (state) {
+  /** SOURCE */
+  [TYPE.REQUEST_SOURCE_START] (state) {
     state.sourceLoading = true
   },
-  REQUESETED_SOURCE (state) {
+  [TYPE.REQUEST_SOURCE_END] (state) {
     state.sourceLoading = false
   },
-  LOAD_SOURCE (state, source) {
-    console.info('> LOAD_SOURCE', source)
+  [TYPE.LOAD_SOURCE] (state, source) {
+    console.info(`[${TYPE.LOAD_SOURCE}]`, source)
     state.mapSource = source
   },
-  UPDATE_ACTIVE_SOURCE (state, source) {
+  [TYPE.UPDATE_ACTIVE_SOURCE] (state, source) {
     state.activeSource = source
   },
-  LOAD_STYLE (state, styles) {
-    console.info('> LOAD_STYLES', styles)
-    state.mapStyles = styles
+  /** STYLE */
+  [TYPE.REQUEST_STYLE_START] (state, source) {
+    state.styleLoading = true
   },
-  SET_MAP (state, map) {
-    console.info('> SET_MAP', map)
-    state.map = map
+  [TYPE.REQUEST_STYLE_END] (state, source) {
+    state.styleLoading = false
+  },
+  [TYPE.LOAD_STYLE] (state, styles) {
+    console.info(`[${TYPE.LOAD_STYLE}]`, styles)
+    state.mapStyles = Object.assign({}, state.mapStyles, styles)
+  },
+  /** MAP */
+  [TYPE.SET_MAIN_MAP] (state, mainMap) {
+    state.mainMap = mainMap
   }
 }
 
 const actions = {
-  LOAD_SOURCE ({commit, state}, url) {
-    commit('REQUEST_SOURCE')
+  LOAD_SOURCE ({
+    commit,
+    state
+  }, url) {
+    commit(TYPE.REQUEST_SOURCE_START)
     try {
-      http.get(URL.MAP_SOURCE).then(res => {
-        commit('REQUESETED_SOURCE')
-        if (res.data.meta.success) {
-          commit('LOAD_SOURCE', res.data.data)
-        }
-      })
+      http
+        .get(URL.MAP_SOURCE)
+        .then(res => {
+          commit(TYPE.REQUEST_SOURCE_END)
+          if (res.data.meta.success) {
+            commit(TYPE.LOAD_SOURCE, res.data.data)
+          }
+        })
     } catch (error) {
-      console.error('> LOAD_SOURCE', error)
+      console.error(`> ${TYPE.LOAD_SOURCE}`, error)
     }
   },
-  LOAD_STYLE ({commit, state}, source) {
-    loadStyle(source, (styles) => commit('LOAD_STYLE', styles))
+  async LOAD_STYLE ({
+    commit,
+    state
+  }, source) {
+    commit(TYPE.REQUEST_STYLE_START)
+    await loadStyle(source, (styles) => commit(TYPE.LOAD_STYLE, styles))
+    commit(TYPE.REQUEST_STYLE_END)
   }
 }
 

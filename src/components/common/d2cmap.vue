@@ -1,5 +1,6 @@
 <template>
-  <div id="map" class="wh100"></div>
+  <div id="map" ref="map" :style="style" class="wh100">
+  </div>
 </template>
 <script>
 export default {
@@ -7,30 +8,39 @@ export default {
   props: ['option'],
   data () {
     return {
-      map: null
+      map: null,
+      style: {
+        left: 0,
+        top: 0,
+        position: 'absolute',
+        textAlign: 'left'
+      }
     }
   },
   mounted () {
-    this.initMap()
+    this.initOption(this.initMap)
   },
   beforeDestroy () {
     this.map.remove()
     this.map = null
   },
   methods: {
-    initMap () {
+    initOption (next) {
       if (typeof this.option === 'string') {
         this.http.get(this.option).then(res => {
           const mapOption = this.getConfig(res.data)
-          this.map = new window.d2c.map(mapOption)
-          this.map.option = mapOption
+          next(mapOption)
         })
       } else {
-        this.map = new window.d2c.map(this.option)
-        this.map.option = this.option
+        next(this.option)
       }
+    },
+    initMap (option) {
+      this.$refs.map.id = option.container
+      this.map = new window.d2c.map(option)
+      this.$store.commit(this.$types.SET_MAIN_MAP, this.map)
+      this.map.option = option
       window.addEventListener('resize', this.resize)
-      this.$store.commit('SET_MAP', this.map)
     },
     resize () {
       this.map.resize()

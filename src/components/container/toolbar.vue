@@ -25,6 +25,7 @@
 <script>
 import menuSetting from '@/settings/toolbar'
 export default {
+  props: ['map'],
   name: 'toolbar',
   data () {
     return {
@@ -44,7 +45,7 @@ export default {
   },
   computed: {
     d2cmap () {
-      return this.$store.state.d2cmap.map
+      return this.map
     },
     currentTool () {
       return this.menu.filter((item, index) => item.route === this.activeIndex)
@@ -73,7 +74,7 @@ export default {
       )
     },
     handleClick (action) {
-      action && action(this.d2cmap, this.$refs.toolbar, this.activeIndex, this.lastIndex)
+      action && action(this.map, this.$refs.toolbar, this.activeIndex, this.lastIndex)
     }
   }
 }

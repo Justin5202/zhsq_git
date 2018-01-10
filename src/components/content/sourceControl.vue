@@ -55,7 +55,7 @@ export default {
       return this.$store.state.d2cmap.mapStyles
     },
     isLoading () {
-      return this.$store.state.d2cmap.styleLoading
+      return this.$store.state.d2cmap.styleLoading || this.$store.state.d2cmap.sourceLoading
     }
   },
   mounted () {

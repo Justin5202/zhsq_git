@@ -3,38 +3,38 @@
  * @Author: xia
  * @Date: 2017-12-05 11:03:53
  * @Last Modified by: xia
- * @Last Modified time: 2018-01-09 10:20:54
+ * @Last Modified time: 2018-01-10 16:27:35
  */
 
 import axios from '@/util/http'
 
 import URL from '@/settings/sourceControl'
+import {parallel} from '@/util/async'
 import * as TYPE from '../type'
 
-const timeout = 5000
+const timeout = 15000
 
 /* 请求配置 */
 const http = axios.create({timeout: timeout})
 
-function requestStyles (url, cb) {
-  try {
-    return http
-      .get(url)
-      .then(res => {
-        const result = {[url]: res.data}
-        cb(result)
-      })
-  } catch (error) {
-    console.error(`> ${url}`, error)
-  }
-}
 /* 加载样式 */
-function loadStyle (styles, cb) {
-  for (var j = 0; j < styles.length; j++) {
-    for (var i = 0; i < styles[j].data.length; i++) {
-      requestStyles(styles[j].data[i].url, cb)
+function loadStyle (styles, afterLoad) {
+  const tasks = []
+  for (let j = 0; j < styles.length; j++) {
+    const data = styles[j].data
+    for (let i = 0; i < data.length; i++) {
+      tasks.push(() => {
+        const url = data[i].url
+        return http
+          .get(url)
+          .then(res => afterLoad({[url]: res.data}))
+          .catch(error => {
+            console.error(`${url} load false \n${error}`)
+          })
+      })
     }
   }
+  return parallel(tasks)
 }
 
 const state = {
@@ -67,6 +67,7 @@ const mutations = {
     state.styleLoading = true
   },
   [TYPE.REQUEST_STYLE_END] (state, source) {
+    console.info(`[LOAD_STYLE_END]`)
     state.styleLoading = false
   },
   [TYPE.LOAD_STYLE] (state, styles) {
@@ -103,7 +104,9 @@ const actions = {
     state
   }, source) {
     commit(TYPE.REQUEST_STYLE_START)
-    await loadStyle(source, (styles) => commit(TYPE.LOAD_STYLE, styles))
+    await loadStyle(source, (styles) => {
+      commit(TYPE.LOAD_STYLE, styles)
+    })
     commit(TYPE.REQUEST_STYLE_END)
   }
 }

@@ -1,9 +1,23 @@
 <template>
     <div id='layerControl'>
         <span>图层控制</span>
-        <el-checkbox-group v-model="activeLayers" @change="handleItemChange">
-          <div class="check-item" v-for="layer in validLayers" :key="layer">
-            <el-checkbox :label="layer" />
+        <el-checkbox-group 
+          v-model="activeLayers" 
+          @change="handleItemChange">
+          <div 
+            @dragover='allowDrop'
+            ref='draglist'>
+            <div
+              draggable 
+              class="check-item" 
+              v-for="(layer,index) in validLayers" 
+              :key="layer"
+              :ref="`layer${index}`"
+              :id="layer"
+              @dragstart="(event)=>handleDragStart(event,index)"
+              @drop="(event)=>handleDrop(event,index)">
+              <el-checkbox :label="layer" />
+            </div>
           </div>
         </el-checkbox-group>
     </div>
@@ -18,7 +32,11 @@ export default {
       validLayers: [],
       basemapLayers: this.map.option.style.layers.reduce((sum, layer) => {
         if (layer.aliasName) {
-          sum[layer.aliasName] = layer.id
+          let name = layer.aliasName
+          if (name in sum) {
+            name = name + (this.getAliasCount(name, sum) + 1)
+          }
+          sum[name] = layer.id
         } else {
           sum[layer.id] = layer.id
         }
@@ -39,7 +57,11 @@ export default {
       this.activeSource.reduce((sum, value) => {
         this.mapStyles[value].layers.map(layer => {
           if (layer.aliasName) {
-            sum[layer.aliasName] = layer.id
+            let name = layer.aliasName
+            if (name in sum) {
+              name = name + (this.getAliasCount(name, sum) + 1)
+            }
+            sum[name] = layer.id
           } else {
             sum[layer.id] = layer.id
           }
@@ -58,9 +80,60 @@ export default {
     this.updateActiveLayers()
   },
   methods: {
+    allowDrop (event) {
+      event.preventDefault()
+    },
     handleItemChange (val) {
       this.hideAll()
       this.showLayers(val)
+    },
+    handleDragStart (event, index) {
+      event.dataTransfer.setData('index', index)
+    },
+    handleDrop (event, index) {
+      const dragIndex = event.dataTransfer.getData('index')
+      const current = this.$refs[`layer${dragIndex}`][0]
+      const target = event.target.parentNode.parentNode
+      const parent = current.parentNode
+      const currentIndex = this.getDragOrder(dragIndex)
+      const targetIndex = this.getDragOrder(index)
+      if (parent.firstElementChild === target) {
+        parent.insertBefore(current, parent.firstElementChild)
+      } else if (parent.lastElementChild === target) {
+        parent.appendChild(current)
+      } else if (parseInt(currentIndex) < parseInt(targetIndex)) {
+        parent.insertBefore(current, this.$refs.draglist.children[targetIndex + 1])
+      } else {
+        parent.insertBefore(current, target)
+      }
+      const currentLayer = this.layers[this.$refs[`layer${dragIndex}`][0].id]
+      const targetLayer = this.layers[this.$refs[`layer${index}`][0].id]
+      if (parseInt(currentIndex) < parseInt(targetIndex)) {
+        this.map.moveLayer(currentLayer, targetLayer)
+      } else {
+        this.map.moveLayer(targetLayer, currentLayer)
+      }
+    },
+    getAliasCount (name, sum) {
+      let count = 0
+      for (let key in sum) {
+        if (key.indexOf(name) !== -1) {
+          count++
+        }
+      }
+      return count
+    },
+    getDragOrder (dragIndex) {
+      const currentChild = this.$refs[`layer${dragIndex}`][0]
+      let result
+      Array.prototype.map.call(this.$refs.draglist.children, (child, index) => {
+        if (child === currentChild) {
+          result = index
+          return index
+        }
+      })
+      return result
+      // return result
     },
     updateActiveLayers () {
       this.validLayers = []

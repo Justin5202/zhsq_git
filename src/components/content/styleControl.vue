@@ -39,7 +39,11 @@ export default {
       opacity: 0,
       basemapLayers: this.map.option.style.layers.reduce((sum, layer) => {
         if (layer.aliasName) {
-          sum[layer.aliasName] = layer.id
+          let name = layer.aliasName
+          if (name in sum) {
+            name = name + (this.getAliasCount(name, sum) + 1)
+          }
+          sum[name] = layer.id
         } else {
           sum[layer.id] = layer.id
         }
@@ -63,7 +67,11 @@ export default {
       this.activeSource.reduce((sum, value) => {
         this.mapStyles[value].layers.map(layer => {
           if (layer.aliasName) {
-            sum[layer.aliasName] = layer.id
+            let name = layer.aliasName
+            if (name in sum) {
+              name = name + (this.getAliasCount(name, sum) + 1)
+            }
+            sum[name] = layer.id
           } else {
             sum[layer.id] = layer.id
           }
@@ -79,6 +87,15 @@ export default {
     }
   },
   methods: {
+    getAliasCount (name, sum) {
+      let count = 0
+      for (let key in sum) {
+        if (key.indexOf(name) !== -1) {
+          count++
+        }
+      }
+      return count
+    },
     getColor (layer) {
       const paint = this.map.getLayer(layer).paint
       for (const key in paint) {

@@ -28,21 +28,55 @@
     </div>
 </template>
 <script>
-import layers from '@/settings/styleControl'
 export default {
   props: ['map'],
   name: 'styleControl',
   data () {
     return {
-      layers: layers,
       validLayers: [],
       activeLayer: null,
       color: '',
-      opacity: 0
+      opacity: 0,
+      basemapLayers: this.map.option.style.layers.reduce((sum, layer) => {
+        if (layer.aliasName) {
+          sum[layer.aliasName] = layer.id
+        } else {
+          sum[layer.id] = layer.id
+        }
+        return sum
+      }, {})
     }
   },
   created () {
     this.getValideLayers()
+  },
+  computed: {
+    mapStyles () {
+      return this.$store.state.d2cmap.mapStyles
+    },
+    activeSource () {
+      return this.$store.state.d2cmap.activeSource.map(source => source.url)
+    },
+    layers () {
+      const result = {...this.basemapLayers}
+      // key:aliasName value:id
+      this.activeSource.reduce((sum, value) => {
+        this.mapStyles[value].layers.map(layer => {
+          if (layer.aliasName) {
+            sum[layer.aliasName] = layer.id
+          } else {
+            sum[layer.id] = layer.id
+          }
+        })
+        return sum
+      }, result)
+      return result
+    }
+  },
+  watch: {
+    layers () {
+      this.getValideLayers()
+    }
   },
   methods: {
     getColor (layer) {
@@ -56,6 +90,7 @@ export default {
       }
     },
     getValideLayers () {
+      this.activeLayer = null
       for (const key in this.layers) {
         if (!this.map.getLayer(this.layers[key])) {
           delete this.layers[key]
@@ -67,7 +102,7 @@ export default {
       for (const key in paint) {
         if (paint.hasOwnProperty(key)) {
           if (key.indexOf('opacity') === -1) continue
-          this.opacity = this.map.getPaintProperty(layer, key)
+          this.opacity = paint[key]
           break
         }
       }

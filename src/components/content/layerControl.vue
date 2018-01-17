@@ -1,37 +1,57 @@
 <template>
     <div id='layerControl'>
         <span>图层控制</span>
-        <el-checkbox-group 
-          v-model="activeLayers" 
-          @change="handleItemChange">
-          <div 
-            @dragover='allowDrop'
-            ref='draglist'
-           >
-            <div 
-              class="check-item" 
-              draggable 
-              @dragstart="(event)=>handleDragStart(event,index)"
-              v-for="(layer,index) in validLayers" 
-              :key="index"
-              :ref="`layer${index}`"
-              @drop="(event)=>handleDrop(event,index)">
-              <el-checkbox :label="layer" />
-            </div>
+        <el-checkbox-group v-model="activeLayers" @change="handleItemChange">
+          <div class="check-item" v-for="layer in validLayers" :key="layer">
+            <el-checkbox :label="layer" />
           </div>
         </el-checkbox-group>
     </div>
 </template>
 <script>
-import layers from '@/settings/layerControl'
 export default {
   props: ['map'],
   name: 'layerControl',
   data () {
     return {
-      layers: layers,
+      activeLayers: [],
       validLayers: [],
-      activeLayers: []
+      basemapLayers: this.map.option.style.layers.reduce((sum, layer) => {
+        if (layer.aliasName) {
+          sum[layer.aliasName] = layer.id
+        } else {
+          sum[layer.id] = layer.id
+        }
+        return sum
+      }, {})
+    }
+  },
+  computed: {
+    mapStyles () {
+      return this.$store.state.d2cmap.mapStyles
+    },
+    activeSource () {
+      return this.$store.state.d2cmap.activeSource.map(source => source.url)
+    },
+    layers () {
+      const result = {...this.basemapLayers}
+      // key:aliasName value:id
+      this.activeSource.reduce((sum, value) => {
+        this.mapStyles[value].layers.map(layer => {
+          if (layer.aliasName) {
+            sum[layer.aliasName] = layer.id
+          } else {
+            sum[layer.id] = layer.id
+          }
+        })
+        return sum
+      }, result)
+      return result
+    }
+  },
+  watch: {
+    layers () {
+      this.updateActiveLayers()
     }
   },
   created () {
@@ -42,50 +62,15 @@ export default {
       this.hideAll()
       this.showLayers(val)
     },
-    handleDragStart (event, index) {
-      event.dataTransfer.setData('index', index)
-    },
-    handleDrop (event, index) {
-      const dragIndex = event.dataTransfer.getData('index')
-      const current = this.$refs[`layer${dragIndex}`][0]
-      const target = event.target.parentNode.parentNode
-      const parent = current.parentNode
-      const currentIndex = this.getDragOrder(dragIndex)
-      const targetIndex = this.getDragOrder(index)
-      if (parent.firstElementChild === target) {
-        return parent.insertBefore(current, parent.firstElementChild)
-      } else if (parent.lastElementChild === target) {
-        return parent.appendChild(current)
-      }
-      if (parseInt(currentIndex) < parseInt(targetIndex)) {
-        parent.insertBefore(current, this.$refs.draglist.children[targetIndex + 1])
-      } else {
-        parent.insertBefore(current, target)
-      }
-    },
-    allowDrop (event) {
-      event.preventDefault()
-    },
-    getDragOrder (dragIndex) {
-      const currentChild = this.$refs[`layer${dragIndex}`][0]
-      let result
-      Array.prototype.map.call(this.$refs.draglist.children, (child, index) => {
-        if (child === currentChild) {
-          debugger
-          result = index
-          return index
-        }
-      })
-      return result
-      // return result
-    },
     updateActiveLayers () {
+      this.validLayers = []
+      this.activeLayers = []
       for (const key in this.layers) {
         if (this.map.getLayer(this.layers[key])) {
           this.validLayers.push(key)
           if (
-            this.map.getLayoutProperty(this.layers[key], 'visibility') ===
-            'visible'
+            this.map.getLayoutProperty(this.layers[key], 'visibility') !==
+            'none'
           ) {
             this.activeLayers.push(key)
           }
@@ -114,6 +99,8 @@ export default {
     padding: 5px 0px;
     text-align: center;
   }
+  max-height: 500px;
+  overflow-y: scroll;
   font-size: 14px;
   padding: 10px 20px 5px;
   .check-item {

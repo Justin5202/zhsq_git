@@ -1,9 +1,9 @@
 /*
- * @Description: 底图配置 1、根据url 2、本地json配置 3、空白底图
+ * @Description: 根据默认配置生成map option
  * @Author: xia
  * @Date: 2017-11-30 09:34:45
  * @Last Modified by: xia
- * @Last Modified time: 2018-01-09 10:38:17
+ * @Last Modified time: 2018-01-17 14:44:54
  */
 import chongqingLocal from '../../static/style/chongqing_local'
 import chongqing from '../../static/style/chongqing'
@@ -63,4 +63,4 @@ const empty = {
 const baseMap = 'http://192.168.11.160/oms/stylejson/d68370f70b53106cff50ac68ff1ec49f'
 
 /* 默认底图 */
-export default empty
+export default window.mapUrl || empty

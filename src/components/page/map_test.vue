@@ -1,8 +1,8 @@
 <template>
   <div id="map_test" :style="style">
     <v-map @style-load="handleMapLoad" ref="d2cmap" :option='option'/>
-    <v-source-control class="source_control"/>
-    <v-tool-bar :map='$store.state.d2cmap.mainMap'/>
+    <v-source-control class="source_control" :map='mainMap'/>
+    <v-tool-bar :map='mainMap'/>
   </div>
 </template>
 
@@ -23,7 +23,8 @@ export default {
   mixins: [mWindow],
   data () {
     return {
-      option: mapOption
+      option: mapOption,
+      mainMap: null
     }
   },
   computed: {
@@ -39,6 +40,7 @@ export default {
     handleMapLoad (e) {
       // e.tartet: map
       this.$store.commit(this.$types.SET_MAIN_MAP, e.target)
+      this.mainMap = e.target
     }
   }
 }

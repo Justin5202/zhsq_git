@@ -26,6 +26,7 @@
 <script>
 import {deepClone} from '@/util/object.js'
 export default {
+  props: ['map'],
   data () {
     return {
       loadingImg: require('@/assets/images/loading.gif')
@@ -143,7 +144,7 @@ export default {
     handleCell (row, column, cell, event) {
       if (column.type === 'default') {
         const style = this.mapStyles[row.url]
-        this.$parent.$children[0].map.flyTo({
+        this.map.flyTo({
           center: style.center,
           zoom: style.zoom
         })
@@ -154,23 +155,21 @@ export default {
      */
     updateStyle () {
       const option = deepClone(this.$parent.option)
-      const map = this.$parent.$children[0].map
+      const map = this.mapx
       Object.assign(option.style.sources, this.updateSources())
       this.updateSpriteAndGlyphs(option)
       map.setStyle(option.style, {diff: true})
       if (map.isStyleLoaded()) {
         this.updateLayers(map)
       } else {
-        setTimeout(() => {
-          this.updateLayers(map)
-        }, 500)
+        this.updateLayers(map)
       }
     },
     /**
      * @description 更新style
      */
     updateStyle2 (url, add) {
-      const map = this.$parent.$children[0].map
+      const map = this.map
       let update = false
       const otherSource = {}
       if (add) {

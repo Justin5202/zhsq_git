@@ -1,6 +1,6 @@
 <template>
   <div id="map_test" :style="style">
-    <v-map ref="d2cmap" :option='option'/>
+    <v-map @style-load="handleMapLoad" ref="d2cmap" :option='option'/>
     <v-source-control class="source_control"/>
     <v-tool-bar :map='$store.state.d2cmap.mainMap'/>
   </div>
@@ -32,6 +32,13 @@ export default {
         height: this.window.height - 61 + 'px',
         width: this.window.width + 'px'
       }
+    }
+  },
+  methods: {
+    // 地图加载完成时执行
+    handleMapLoad (e) {
+      // e.tartet: map
+      this.$store.commit(this.$types.SET_MAIN_MAP, e.target)
     }
   }
 }

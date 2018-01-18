@@ -38,7 +38,7 @@ export default {
     initMap (option) {
       this.$refs.map.id = option.container
       this.map = new window.d2c.map(option)
-      this.$store.commit(this.$types.SET_MAIN_MAP, this.map)
+      this.map.on('style.load', (e) => this.$emit('style-load', e))
       this.map.option = option
       window.addEventListener('resize', this.resize)
     },

@@ -149,6 +149,7 @@ export default {
           }
         }
       }
+      this.validLayers.reverse()
     },
     // 隐藏所有layer
     hideAll () {

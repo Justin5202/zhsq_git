@@ -33,7 +33,7 @@ export default {
   name: 'styleControl',
   data () {
     return {
-      validLayers: [],
+      validLayers: {},
       activeLayer: null,
       color: '',
       opacity: 0,
@@ -78,7 +78,7 @@ export default {
         })
         return sum
       }, result)
-      return result
+      return this.reverseObject(result)
     }
   },
   watch: {
@@ -156,6 +156,12 @@ export default {
       this.activeLayer = val
       this.getColor(val)
       this.getOpacity(val)
+    },
+    reverseObject (obj, result = {}) {
+      return Object.keys(obj).reverse().reduce((sum, item) => {
+        sum[' ' + item] = obj[item]
+        return sum
+      }, result)
     }
   }
 }

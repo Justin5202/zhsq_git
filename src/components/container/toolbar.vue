@@ -74,7 +74,7 @@ export default {
       )
     },
     handleClick (action) {
-      action && action(this.map, this.$refs.toolbar, this.activeIndex, this.lastIndex)
+      action && action({map: this.map, toolbar: this.$refs.toolbar, currentRoute: this.activeIndex, lastRoute: this.lastIndex})
     }
   }
 }

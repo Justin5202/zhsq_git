@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-12-04 00:05:41
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-27 15:08:05
+ * @Last Modified time: 2018-01-19 12:04:22
  */
 import { closeRouterView, bindId, transformToRoute } from '@/util/toolbarSetting'
 
@@ -15,7 +15,7 @@ const zoomIn = {
   title: '放大',
   icon: require('../assets/images/zoomin.png'),
   route: PAGE_ROUTE + '/zoomIn',
-  action (map) {
+  action ({map}) {
     return map.zoomIn()
   }
 }
@@ -34,7 +34,7 @@ const zoomOut = {
   title: '缩小',
   icon: require('../assets/images/zoomout.png'),
   route: PAGE_ROUTE + '/zoomOut',
-  action (map) {
+  action ({map}) {
     map.zoomOut()
   }
 }
@@ -44,7 +44,7 @@ const translate = {
   title: '平移',
   icon: require('../assets/images/translation.png'),
   route: PAGE_ROUTE + '/translate',
-  action (map) {
+  action ({map}) {
     map.dragPan.enable()
   }
 }
@@ -54,7 +54,7 @@ const resetNorth = {
   title: '指北',
   icon: require('../assets/images/refertonorth.png'),
   route: PAGE_ROUTE + '/resetNorth',
-  action (map) {
+  action ({map}) {
     map.resetNorth()
   }
 }
@@ -64,7 +64,7 @@ const resetPosition = {
   title: '初始地图范围',
   icon: require('../assets/images/all.png'),
   route: PAGE_ROUTE + '/resetPosition',
-  action (map) {
+  action ({map}) {
     map.jumpTo({
       center: map.option.center,
       zoom: map.option.zoom,

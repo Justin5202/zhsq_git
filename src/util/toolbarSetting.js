@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-12-05 10:41:40
  * @Last Modified by: xia
- * @Last Modified time: 2017-12-11 10:48:29
+ * @Last Modified time: 2018-01-19 12:05:42
  */
 
 /**
@@ -12,7 +12,7 @@
  * @param {any} currentRoute 当前路由
  * @param {any} lastRoute 上一次路由
  */
-export function closeRouterView (map, toolbar, currentRoute, lastRoute) {
+export function closeRouterView ({map, toolbar, currentRoute, lastRoute}) {
   if (currentRoute === lastRoute) {
     toolbar.$router.push({
       path: '/'

@@ -36,6 +36,7 @@ export default {
       }
     },
     initMap (option) {
+      option.container += new Date().getTime()
       this.$refs.map.id = option.container
       this.map = new window.d2c.map(option)
       this.map.on('style.load', (e) => this.$emit('style-load', e))

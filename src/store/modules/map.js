@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-12-05 11:03:53
  * @Last Modified by: xia
- * @Last Modified time: 2018-01-10 16:27:35
+ * @Last Modified time: 2018-01-22 16:13:05
  */
 
 import axios from '@/util/http'
@@ -85,9 +85,12 @@ const actions = {
     commit,
     state
   }, url) {
-    commit(TYPE.REQUEST_SOURCE_START)
-    try {
-      http
+    if (typeof URL.MAP_SOURCE !== 'string') {
+      commit(TYPE.LOAD_SOURCE, URL.MAP_SOURCE)
+    } else {
+      commit(TYPE.REQUEST_SOURCE_START)
+      try {
+        http
         .get(URL.MAP_SOURCE)
         .then(res => {
           commit(TYPE.REQUEST_SOURCE_END)
@@ -95,8 +98,9 @@ const actions = {
             commit(TYPE.LOAD_SOURCE, res.data.data)
           }
         })
-    } catch (error) {
-      console.error(`> ${TYPE.LOAD_SOURCE}`, error)
+      } catch (error) {
+        console.error(`> ${TYPE.LOAD_SOURCE}`, error)
+      }
     }
   },
   async LOAD_STYLE ({

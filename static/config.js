@@ -10,11 +10,14 @@ var server = 'http://192.168.11.160:8200',
   index = 'cqdata'
 /* 地图地址 不设置默认为空底图 */
 var mapUrl = null
+var emptyMap = { // 可配置项：center/zoom/style等 未配置则使用默认配置
+  center: [106.647217, 29.566210] // 示例
+}
 
 /* 资源目录：URL或者数组 */
-var sourceDirUrl = 'http://192.168.11.160/oms/innerdata/maps'
+var sourceDirUrl = 'http://192.168.11.160/oms/innerdata/maps' // url
 // var baseUrl = 'http://zhsq.digitalcq.com/D2CJsonV2'
-// sourceDirUrl = [
+// sourceDirUrl = [ // 自定义数组
 //   {
 //     name: '城市建筑',
 //     data: [

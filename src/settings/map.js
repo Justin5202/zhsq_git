@@ -3,7 +3,7 @@
  * @Author: xia
  * @Date: 2017-11-30 09:34:45
  * @Last Modified by: xia
- * @Last Modified time: 2018-01-17 14:44:54
+ * @Last Modified time: 2018-01-24 10:49:06
  */
 import chongqingLocal from '../../static/style/chongqing_local'
 import chongqing from '../../static/style/chongqing'
@@ -56,7 +56,8 @@ const empty = {
   },
   center: [106.647217, 29.566210],
   zoom: 7,
-  maxZoom: 17
+  maxZoom: 17,
+  ...window.emptyMap
 }
 
 // 根据url配置底图

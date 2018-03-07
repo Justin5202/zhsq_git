@@ -77,7 +77,12 @@
 						width: 25%;
 						padding: 10px 0;
 						font-size: 12px;
-						color: #333;
+						color: #888;
+						cursor: pointer;
+						&:hover {
+							text-decoration: underline;
+							color: #2c3e50;
+						}
 					}
 				}
 	    	}

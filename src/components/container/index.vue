@@ -2,7 +2,7 @@
     <div>
       <div class="side-box">
         <el-row>
-          <el-col :span="6">
+          <el-col :span="24">
               <!-- <v-header/> -->
               <div class="side-top-box" :class="!isShow?'slideOutLeft':'slideInLeft'">
                 <v-search/>

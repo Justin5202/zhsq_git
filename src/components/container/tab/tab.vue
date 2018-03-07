@@ -8,18 +8,23 @@
 				</div>
 			</li>
 		</ul>
-		<tab-pane></tab-pane>
+		<tab-pane :arrayData="arrayData"></tab-pane>
+		<div class="table-box" v-show="nowIndex === 4">
+			<v-table :tableData="allData" @handleClick="handleClick"></v-table>
+		</div>
 	</div>
 </template>
 
 <script>
 	import TabPane from '../tabPane/tabPane'
-	
+	import vTable from '../table/table'
+	import {getDataSheets} from '@/api/datasheets.js'
 
 	export default {
 		name: 'tab',
 		components: {
-			TabPane
+			TabPane,
+			vTable
 		},
 		data() {
 			return {
@@ -45,12 +50,30 @@
 						icon: require('../../../assets/images/catalog/更多@2x.png')
 					}
 				],
-				nowIndex: 0
+				nowIndex: 0,
+				allData: [],
+				arrayData: []
 			}
+		},
+		mounted() {
+			this._getDataSheets()
 		},
 		methods: {
 			handleTabs(index) {
 				this.nowIndex = index
+				if(index === 4) {
+					return
+				}
+				this.arrayData = this.allData[index].children
+			},
+			handleClick() {
+				this.nowIndex = -1
+			},
+			_getDataSheets() {
+				getDataSheets().then(res => {
+					this.allData = res.data
+					this.arrayData = this.allData[0].children
+				})
 			}
 		}
 	}
@@ -96,5 +119,14 @@
 		.active {
 			background-color: #e4e7ed;
 		}
+	}
+	.table-box {
+		position: absolute;
+		top: 0;
+		left: 400px;
+		background-color: #fff;
+		border-radius: 4px;
+		-webkit-box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
+    	box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
 	}
 </style>

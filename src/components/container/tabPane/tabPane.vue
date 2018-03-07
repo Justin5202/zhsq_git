@@ -3,16 +3,12 @@
 		<div class="tab-pane-content">
 			<!-- <ul :class="upOrDown?'slideInDown':'slideOutUp'"> -->
 			<ul v-show="upOrDown">
-				<li class="tab-pane-li">
+				<li class="tab-pane-li" v-for="(item, index) in arrayData">
 					<div class="tab-pane-li-title">
-						<p class="item-title">【城乡建设】</p>
+						<p class="item-title">【{{item.name}}】</p>
 					</div>
 					<div class="tab-pane-li-content">
-						<span>建设用地</span>
-						<span>建设用地</span>
-						<span>建设用地</span>
-						<span>建设用地</span>
-						<span>建设用地</span>
+						<span v-for="(i, idx) in item.hot">{{i.dataname}}</span>
 					</div>
 				</li>
 			</ul>
@@ -27,6 +23,12 @@
 	
 	export default {
 		name: 'tabPane',
+		props: {
+			arrayData: {
+				type: Array,
+				dafault: []
+			}
+		},
 		data() {
 			return {
 				upOrDown: true

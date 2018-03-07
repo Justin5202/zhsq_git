@@ -104,6 +104,9 @@
 - container /container
 - 静态资源 /assets
 - 通用组件 /common
+- css预编译工具 /sass
+- css布局 /flex
+- 数据交互 /axios
 
 
 ## Build Setup

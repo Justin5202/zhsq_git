@@ -25,6 +25,13 @@
 </script>
 
 <style>
+	
+	.search {
+		border-radius: 4px;
+		background-color: #fff;
+		-webkit-box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
+	    box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
+	}
 	.el-select .el-input {
     	width: 90px;
   	}

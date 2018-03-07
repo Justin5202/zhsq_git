@@ -41,7 +41,6 @@
 </script>
 
 <style lang="scss" scoped>
-	@import url(../../../assets/css/common.css);
 
 	.tab-pane {
 		margin-top: 15px;

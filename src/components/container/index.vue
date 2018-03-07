@@ -1,5 +1,6 @@
 <template>
-    <div class="side-box">
+    <div>
+      <div class="side-box">
         <el-row>
           <el-col :span="6">
               <!-- <v-header/> -->
@@ -7,13 +8,6 @@
               <v-tab/>
           </el-col>
         </el-row>
-        <div class="topic-box">
-          <el-row>
-            <el-col :span="4">
-                <v-topic/>
-            </el-col>
-          </el-row>
-        </div>
         <el-row>
             <el-col :span="24">
               <keep-alive>
@@ -22,6 +16,10 @@
               <router-view v-if="!$route.meta.keepAlive" class="router"/>
             </el-col>
         </el-row>
+      </div>
+      <div class="topic-box">
+        <v-topic/>
+      </div>
     </div>
 </template>
 
@@ -48,8 +46,8 @@
   }
   .topic-box {
     position: absolute;
-    bottom: 230px;
-    left: 0px;
+    bottom: 15px;
+    left: 15px;
   }
 </style>
 

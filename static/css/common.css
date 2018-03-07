@@ -124,3 +124,33 @@
   -webkit-animation: slideInLeft .5s forwards;
   animation: slideInLeft .5s forwards;
 }
+
+@-webkit-keyframes slideOutLeft {
+  from {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    visibility: hidden;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    -webkit-transform: translate3d(-108%, 0, 0);
+    transform: translate3d(-108%, 0, 0);
+  }
+}
+
+.slideOutLeft {
+  -webkit-animation: slideOutLeft .5s forwards;
+  animation: slideOutLeft .5s forwards;
+}

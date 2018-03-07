@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css' // elementUI css
 import http from './util/http'
 import store from './store/index'
 import * as TYPES from './store/type'
+import 'normalize.css'
 
 Vue.config.productionTip = false
 

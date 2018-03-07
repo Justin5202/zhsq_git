@@ -1,10 +1,19 @@
 <template>
-    <div>
+    <div class="side-box">
         <el-row>
-          <el-col :span="24">
-              <v-header/>
+          <el-col :span="6">
+              <!-- <v-header/> -->
+              <v-search/>
+              <v-tab/>
           </el-col>
         </el-row>
+        <div class="topic-box">
+          <el-row>
+            <el-col :span="4">
+                <v-topic/>
+            </el-col>
+          </el-row>
+        </div>
         <el-row>
             <el-col :span="24">
               <keep-alive>
@@ -17,16 +26,30 @@
 </template>
 
 <script>
-import vHeader from './header'
-export default {
-  name: 'container',
-  components: {
-    vHeader
+// import vHeader from './header'
+  import vSearch from './search/search'
+  import vTab from './tab/tab'
+  import vTopic from './topic/topic'
+  export default {
+    name: 'container',
+    components: {
+      vSearch,
+      vTab,
+      vTopic
+    }
   }
-}
 </script>
 
 <style lang="scss" scoped>
-
+  .side-box {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+  }
+  .topic-box {
+    position: absolute;
+    bottom: 230px;
+    left: 0px;
+  }
 </style>
 

@@ -1,8 +1,8 @@
 <template>
   <div id="map_test" :style="style">
     <v-map @style-load="handleMapLoad" ref="d2cmap" :option='option'/>
-    <v-source-control class="source_control" :map='mainMap'/>
-    <v-tool-bar :map='mainMap'/>
+    <!-- <v-source-control class="source_control" :map='mainMap'/>
+    <v-tool-bar :map='mainMap'/> -->
   </div>
 </template>
 
@@ -11,14 +11,14 @@ import mWindow from '@/util/window'
 import mapOption from '@/settings/map'
 
 import vMap from '@/components/common/d2cmap'
-import vSourceControl from '@/components/content/sourceControl'
-import vToolBar from '@/components/container/toolbar.vue'
+// import vSourceControl from '@/components/content/sourceControl'
+// import vToolBar from '@/components/container/toolbar.vue'
 export default {
   name: 'test_map',
   components: {
     vMap,
-    vSourceControl,
-    vToolBar
+    // vSourceControl,
+    // vToolBar
   },
   mixins: [mWindow],
   data () {

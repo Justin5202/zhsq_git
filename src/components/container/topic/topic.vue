@@ -48,19 +48,17 @@
 	}
 
 	.topic-box {
-		display: flex;
 		.topic-item {
-			flex: 1;
 			display: inline-block;
 			margin: 0 8px;
-			width: 55px;
-			height: 55px;
+			width: 40px;
+			height: 40px;
+			padding: 7.5px;
 			background-color: rgba(0, 0, 0, .6);
 			border-radius: 100%;
 			cursor: pointer;
 			img {
 				margin: 0 auto;
-				margin-top: 5px;
 				display: block;
 				width: 25px;
 				height: 25px;
@@ -74,6 +72,7 @@
 		  	}
 		}
 		.init-state {
+			background-color: #2475e0;
 			-webkit-transform: translate3d(-100%, 0, 0);
 		    transform: translate3d(-100%, 0, 0);
 		    visibility: hidden;

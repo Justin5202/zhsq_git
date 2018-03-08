@@ -25,12 +25,12 @@
 					<li class="search-pane-li" v-if="searchList.length === 0">
 						<p style="margin: 0;">暂无搜索数据</p>
 					</li>
-					<li class="search-pane-li" v-else v-for="item in searchList">
+					<li class="search-pane-li" v-else v-for="(item, index) in searchList">
 						<div class="area-icon-box">
 							<i class="area-icon"></i>
 						</div>
 						<div class="area-content">
-							<h2>{{item.macro.name}}</h2>
+							<h2>{{(page-1)*10+index+1}}.{{item.macro.name}}</h2>
 							<p>{{item.macro.areaName}}</p>
 							<p>{{item.macro.year}}</p>
 						</div>
@@ -41,8 +41,8 @@
 					</li>
 				</ul>
 				<p v-if="searchList.length > 0">
-				  <el-button size="mini" icon="el-icon-arrow-left" @click="next()">上一页</el-button>
-				  <el-button size="mini" @click="prev()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+				  <el-button size="mini" icon="el-icon-arrow-left" @click="prev()">上一页</el-button>
+				  <el-button size="mini" @click="next()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 				</p>
 			</div>
 			<div class="up-control">
@@ -84,7 +84,7 @@
 				const params = {
 					type: index || this.type,
 					start: (this.page - 1) * 10,
-					rows: this.page * 10
+					rows: 10
 				}
 				this.buttonType = 'info'
 				this.nowIndex = index - 1

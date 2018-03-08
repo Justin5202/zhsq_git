@@ -44,7 +44,12 @@ const state = {
   checkedRows: [],
   activeSource: [],
   mapStyles: {},
-  mainMap: null
+  mainMap: null,
+  searchPaneShow: false
+}
+
+const getters = {
+  searchPaneShow: state => state.searchPaneShow
 }
 
 const mutations = {
@@ -77,6 +82,9 @@ const mutations = {
   /** MAP */
   [TYPE.SET_MAIN_MAP] (state, mainMap) {
     state.mainMap = mainMap
+  },
+  [TYPE.SEARCH_PANE_IS_SHOW] (state, searchPaneShow) {
+    state.searchPaneShow = searchPaneShow
   }
 }
 
@@ -112,11 +120,15 @@ const actions = {
       commit(TYPE.LOAD_STYLE, styles)
     })
     commit(TYPE.REQUEST_STYLE_END)
+  },
+  searchPaneShow({commit, state}, isShow) {
+    commit(TYPE.SEARCH_PANE_IS_SHOW, isShow)
   }
 }
 
 export default {
   state,
+  getters,
   mutations,
   actions
 }

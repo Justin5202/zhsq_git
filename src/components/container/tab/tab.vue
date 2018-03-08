@@ -19,6 +19,7 @@
 	import TabPane from '../tabPane/tabPane'
 	import vTable from '../table/table'
 	import {getDataSheets} from '@/api/datasheets.js'
+	import {mapGetters, mapActions} from 'vuex'
 
 	export default {
 		name: 'tab',
@@ -65,6 +66,7 @@
 					return
 				}
 				this.arrayData = this.allData[index].children
+				this.searchPaneShow(false)
 			},
 			handleClick() {
 				this.nowIndex = -1
@@ -74,13 +76,16 @@
 					this.allData = res.data
 					this.arrayData = this.allData[0].children
 				})
-			}
+			},
+			...mapActions([
+				'searchPaneShow'
+			])
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-	
+
 	.tab {
 		margin-top: 15px;
 	}

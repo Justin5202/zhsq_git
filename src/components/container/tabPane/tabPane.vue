@@ -3,12 +3,12 @@
 		<div class="tab-pane-content">
 			<!-- <ul :class="upOrDown?'slideInDown':'slideOutUp'"> -->
 			<ul v-show="upOrDown && tablePaneShow && !searchPaneShow">
-				<li class="tab-pane-li" v-for="(item, index) in arrayData">
+				<li class="tab-pane-li" v-for="(item, index) in arrayData" :key="index">
 					<div class="tab-pane-li-title">
 						<p class="item-title">【{{item.name}}】</p>
 					</div>
 					<div class="tab-pane-li-content">
-						<span v-for="(i, idx) in item.hot" @click="getAreaData(i.dataCode)">{{i.dataname}}</span>
+						<span v-for="(i, idx) in item.hot" :key="idx" @click="getAreaData(i.dataCode)">{{i.dataname}}</span>
 					</div>
 				</li>
 			</ul>
@@ -17,6 +17,7 @@
 					<button
 						class="type-button"
 						v-for="(item, index) in ['全部', '数据', '类型']"
+						:key="index"
 						@click="getType(index+1)"
 						:class="{clicked: nowIndex === index}"
 					>{{item}}</button>
@@ -25,7 +26,7 @@
 					<li class="search-pane-li" v-if="searchList.length === 0">
 						<p style="margin: 0;">暂无搜索数据</p>
 					</li>
-					<li class="search-pane-li" v-else v-for="(item, index) in searchList">
+					<li class="search-pane-li" v-else v-for="item in searchList" :key="item">
 						<div class="area-icon-box">
 							<i class="area-icon"></i>
 						</div>
@@ -45,7 +46,7 @@
 				  <el-button size="mini" @click="next()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 				</p>
 			</div>
-			<div class="child-table-pane" v-show="upOrDown && !tablePaneShow && !searchPaneShow">
+			<div class="child-table-content" v-show="upOrDown && !tablePaneShow && !searchPaneShow">
 				<child-table></child-table>
 			</div>
 			<div class="up-control">
@@ -58,7 +59,6 @@
 <script>
 	import ChildTable from '@/components/container/childTable/childTable'
 	import {mapGetters, mapActions} from 'vuex'
-	import {getDetailInfo} from '@/api/dataSheets'
 
 	export default {
 		components: {
@@ -112,8 +112,8 @@
 			},
 			getAreaData(code) {
 				const params = {
-					id: code,
-					areacode: 500000
+					areacode: 500000,
+					id: code
 				}
 				this.getAreaDetail(params)
 			},
@@ -122,7 +122,8 @@
 			},
 			...mapActions([
 				'getSearchParams',
-				'getAreaDetail'
+				'getAreaDetail',
+				'tablePaneShow'
 			])
 		}
 	}

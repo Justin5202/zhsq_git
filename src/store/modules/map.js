@@ -159,6 +159,7 @@ const actions = {
     dispatch('getSearchResult')
   },
   getAreaDetail({commit, state}, params) {
+    console.log(params)
     getDetailInfo(Object.assign({}, params)).then(res => {
       commit(TYPE.GET_AREA_DATA, res.data)
       // 隐藏目录列表、搜索列表

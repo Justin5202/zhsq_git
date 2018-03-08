@@ -3,12 +3,12 @@
 		<div class="tab-pane-content">
 			<!-- <ul :class="upOrDown?'slideInDown':'slideOutUp'"> -->
 			<ul v-show="upOrDown && !searchPaneShow">
-				<li class="tab-pane-li" v-for="(item, index) in arrayData">
+				<li class="tab-pane-li" v-for="(item, index) in arrayData" :key="index">
 					<div class="tab-pane-li-title">
 						<p class="item-title">【{{item.name}}】</p>
 					</div>
 					<div class="tab-pane-li-content">
-						<span v-for="(i, idx) in item.hot">{{i.dataname}}</span>
+						<span v-for="(i, idx) in item.hot" :key="idx">{{i.dataname}}</span>
 					</div>
 				</li>
 			</ul>
@@ -17,6 +17,7 @@
 					<button
 						class="type-button"
 						v-for="(item, index) in ['全部', '数据', '类型']"
+						:key="index"
 						@click="getType(index+1)"
 						:class="{clicked: nowIndex === index}"
 					>{{item}}</button>
@@ -25,7 +26,7 @@
 					<li class="search-pane-li" v-if="searchList.length === 0">
 						<p style="margin: 0;">暂无搜索数据</p>
 					</li>
-					<li class="search-pane-li" v-else v-for="item in searchList">
+					<li class="search-pane-li" v-else v-for="item in searchList" :key="item">
 						<div class="area-icon-box">
 							<i class="area-icon"></i>
 						</div>

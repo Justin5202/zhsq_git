@@ -67,6 +67,7 @@
 				}
 				this.arrayData = this.allData[index].children
 				this.searchPaneShow(false)
+				this.tablePaneShow(true)
 			},
 			handleClick() {
 				this.nowIndex = -1
@@ -78,7 +79,8 @@
 				})
 			},
 			...mapActions([
-				'searchPaneShow'
+				'searchPaneShow',
+				'tablePaneShow'
 			])
 		}
 	}

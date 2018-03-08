@@ -2,6 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 import {commonParams, url} from './config'
 
+// 目录列表
 export function getDataSheets() {
 	const data = Object.assign({}, commonParams, {
 		method: 'getDataHot',
@@ -21,6 +22,7 @@ export function getDataSheets() {
   	})
 }
 
+// 选择区域
 export function getSelect(id) {
 	const parentId = id || -1
 
@@ -34,8 +36,18 @@ export function getSelect(id) {
 	})
 }
 
+//数据搜索接口
 export function getSearch(params) {
 	const data = Object.assign({}, commonParams, params, {method: 'queryLikeNameEntity'})
+
+	return axios.post(url, qs.stringify(data)).then(res => {
+		return Promise.resolve(res.data)
+	})
+}
+
+// 分类详细信息
+export function getDetailInfo(params) {
+	const data = Object.assign({}, commonParams, params, {method: 'getDataInfoAllById'})
 
 	return axios.post(url, qs.stringify(data)).then(res => {
 		return Promise.resolve(res.data)

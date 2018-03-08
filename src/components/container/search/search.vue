@@ -12,7 +12,7 @@
 </template>
 
 <script>
-	import {getSelect, getSearch} from '@/api/dataSheets'
+	import {getSelect} from '@/api/dataSheets'
   import {mapGetters, mapActions} from 'vuex'
 
 	export default {
@@ -42,7 +42,16 @@
 					start = '区县'
 					code = 501002
 				}
-				this._getSearch(start, this.searchContent, code)
+				const params = {
+					name: this.searchContent,
+					start: 0,
+					rows: 10,
+					areacode: code,
+					areaname: start,
+					type: 1,
+					point: "106.627441893, 29.7208926650001"
+				}
+				this._getSearchParams(params)
 			},
 			showSearchPane() {
 				this.searchPaneShow(true)
@@ -52,13 +61,13 @@
 					console.log(res.data)
 				})
 			},
-			_getSearch(s, n, code) {
-				getSearch(s, n, code).then(res => {
-					console.log(res.data)
-				})
+			_getSearchParams(params) {
+				this.getSearchParams({'typeParams': {}, 'params': params})
 			},
 			...mapActions([
-				'searchPaneShow'
+				'searchPaneShow',
+				'getSearchParams',
+				'getSearchResult'
 			])
 		}
 	}

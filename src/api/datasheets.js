@@ -34,21 +34,8 @@ export function getSelect(id) {
 	})
 }
 
-export function getSearch(s, n, code) {
-	const start = s || '重庆市'
-	const name = n
-	const areacode = code
-
-	const data = Object.assign({}, commonParams, {
-		method: 'queryLikeNameEntity',
-		name: n,
-		start: start,
-		rows: 10,
-		areacode: code,
-		areaname: start,
-		type: '',
-		point: ''
-	})
+export function getSearch(params) {
+	const data = Object.assign({}, commonParams, params, {method: 'queryLikeNameEntity'})
 
 	return axios.post(url, qs.stringify(data)).then(res => {
 		return Promise.resolve(res.data)

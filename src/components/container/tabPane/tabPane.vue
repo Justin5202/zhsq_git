@@ -14,25 +14,36 @@
 			</ul>
 			<div class="search-pane-content" v-show="upOrDown && searchPaneShow">
 				<div class="search-type-button">
-					<el-button size="mini" round>全部</el-button>
-					<el-button size="mini" round>数据</el-button>
-					<el-button size="mini" round>类型</el-button>
+					<button
+						class="type-button"
+						v-for="(item, index) in ['全部', '数据', '类型']"
+						@click="getType(index+1)"
+						:class="{clicked: nowIndex === index}"
+					>{{item}}</button>
 				</div>
 				<ul>
-					<li class="search-pane-li">
+					<li class="search-pane-li" v-if="searchList.length === 0">
+						<p style="margin: 0;">暂无搜索数据</p>
+					</li>
+					<li class="search-pane-li" v-else v-for="item in searchList">
 						<div class="area-icon-box">
 							<i class="area-icon"></i>
 						</div>
 						<div class="area-content">
-							<h2>重庆市开县工业园区</h2>
-							<p>开州区</p>
+							<h2>{{item.macro.name}}</h2>
+							<p>{{item.macro.areaName}}</p>
+							<p>{{item.macro.year}}</p>
 						</div>
-						<div class="detail">
+						<div class="detail" v-if="item.macro.filedsData">
 							<i class="detail-icon"></i>
 							<span>详情</span>
 						</div>
 					</li>
 				</ul>
+				<p v-if="searchList.length > 0">
+				  <el-button size="mini" icon="el-icon-arrow-left" @click="next()">上一页</el-button>
+				  <el-button size="mini" @click="prev()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+				</p>
 			</div>
 			<div class="up-control">
 				<i class="control-icon" :class="{down: !upOrDown}" @click="toggleSlide()"></i>
@@ -42,7 +53,7 @@
 </template>
 
 <script>
-	import {mapGetters} from 'vuex'
+	import {mapGetters, mapActions} from 'vuex'
 
 	export default {
 		name: 'tabPane',
@@ -54,30 +65,53 @@
 		},
 		data() {
 			return {
-				upOrDown: true
+				upOrDown: true,
+				type: 1,
+				page: 1,
+				buttonType: '',
+				nowIndex: 0
 			}
 		},
 		computed: {
 			...mapGetters([
-				'searchPaneShow'
+				'searchPaneShow',
+				'searchList'
 			])
 		},
 		methods: {
+			getType(index) {
+				this.type = index || this.type
+				const params = {
+					type: index || this.type,
+					start: (this.page - 1) * 10,
+					rows: this.page * 10
+				}
+				this.buttonType = 'info'
+				this.nowIndex = index - 1
+				this.getSearchParams({'typeParams': params, 'params': {}})
+			},
+			next() {
+				this.page += 1
+				this.getType()
+			},
+			prev() {
+				if(this.page === 1) {
+					return
+				}
+				this.page -= 1
+				this.getType()
+			},
 			toggleSlide() {
 				this.upOrDown = !this.upOrDown
-			}
+			},
+			...mapActions([
+				'getSearchParams'
+			])
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-		// 自定义button
-		.el-button--mini, .el-button--mini.is-round {
-    	padding: 7px 36px;
-		}
-		.el-button.is-round {
-    	border-radius: 25px;
-		}
 
 	.tab-pane {
 		margin-top: 15px;
@@ -125,10 +159,29 @@
 		.search-pane-content {
 			.search-type-button {
 				padding: 10px 0;
+				.type-button {
+					margin: 0 5px;
+					font-size: 12px;
+					padding: 7px 36px;
+					border-radius: 25px;
+					border: 0;
+					cursor: pointer;
+			    background: #fff;
+			    border: 1px solid #dcdfe6;
+			    border-color: #dcdfe6;
+					color: #606266;
+				}
+				.clicked {
+					color: #fff;
+			    background-color: #909399;
+			    border-color: #909399;
+				}
 			}
 			ul {
 				margin: 0;
 				padding: 0 0 0 10px;
+				max-height: 526px;
+				overflow-y: scroll;
 				.search-pane-li {
 					display: flex;
 					justify-content: space-around;
@@ -168,9 +221,10 @@
 						flex: 1;
 						display: flex;
 					  flex-direction: column;
-					  justify-content: space-between;
 					  align-items: center;
+						cursor: pointer;
 						.detail-icon {
+							margin-top: 10px;
 							display: block;
 							width: 20px;
 							height: 20px;
@@ -178,7 +232,6 @@
 							background-size: 100%;
 						}
 						span {
-							margin-top: 3px;
 							font-size: 12px;
 							color: #20be8c;
 						}

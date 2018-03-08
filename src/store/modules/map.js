@@ -10,6 +10,7 @@ import axios from '@/util/http'
 
 import URL from '@/settings/sourceControl'
 import {parallel} from '@/util/async'
+import {getSearch} from '@/api/dataSheets'
 import * as TYPE from '../type'
 
 const timeout = 15000
@@ -45,11 +46,15 @@ const state = {
   activeSource: [],
   mapStyles: {},
   mainMap: null,
-  searchPaneShow: false
+  searchPaneShow: false,
+  searchParams: {},
+  searchList: []
 }
 
 const getters = {
-  searchPaneShow: state => state.searchPaneShow
+  searchPaneShow: state => state.searchPaneShow,
+  searchParams: state => state.searchParams,
+  searchList: state => state.searchList
 }
 
 const mutations = {
@@ -85,6 +90,12 @@ const mutations = {
   },
   [TYPE.SEARCH_PANE_IS_SHOW] (state, searchPaneShow) {
     state.searchPaneShow = searchPaneShow
+  },
+  [TYPE.SEARCH_PARAMS] (state, searchParams) {
+    state.searchParams = searchParams
+  },
+  [TYPE.GET_SEARCH_RESULT] (state, searchList) {
+    state.searchList = searchList
   }
 }
 
@@ -123,6 +134,20 @@ const actions = {
   },
   searchPaneShow({commit, state}, isShow) {
     commit(TYPE.SEARCH_PANE_IS_SHOW, isShow)
+  },
+  getSearchParams({dispatch, commit, state}, {typeParams, params}) {
+    console.log({typeParams, params})
+    commit(TYPE.SEARCH_PARAMS, Object.assign({}, state.searchParams, params, typeParams))
+    // 首先选择type时不做请求
+    if(params == {}) {
+      return
+    }
+    dispatch('getSearchResult')
+  },
+  getSearchResult({commit, state}) {
+    getSearch(state.searchParams).then(res => {
+      commit(TYPE.GET_SEARCH_RESULT, res.data)
+    })
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
 	<div class="search">
 	  	<el-input placeholder="搜地点、查数据" v-model="searchContent" @focus="showSearchPane()" class="input-with-select">
-				<el-button slot="prepend" @click="showBox()">{{activeName}}</el-button>
+				<el-button slot="prepend" @click="showBox()">{{activeName}}<i class="el-icon-arrow-down"></i></el-button>
 	    	<el-button slot="append" icon="el-icon-search" @click="clickSearch()"></el-button>
 	  	</el-input>
 			<div class="select-box" v-show="showSelectBox">
@@ -175,7 +175,7 @@
 		padding: 0;
 		margin: 0;
 		display: flex;
-		justify-content: space-between;
+		justify-content: flex-start;
 		flex-wrap: wrap;
 		padding-bottom: 5px;
 	}

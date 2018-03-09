@@ -14,7 +14,15 @@ export default {
         top: 0,
         position: 'absolute',
         textAlign: 'left'
-      }
+      },
+      // option:{
+      //   container: 'map',
+      //   center: [106.994999, 30.17728484178069],
+      //   style: chongqingLocal,
+      //   zoom: 10,
+      //   cq1: 18
+      // }
+      //option:'http://zhsq.digitalcq.com/d2c/oms/static/stylejson/ZHSQDT.json'
     }
   },
   mounted () {
@@ -39,7 +47,7 @@ export default {
       option.container += new Date().getTime()
       this.$refs.map.id = option.container
       this.map = new window.d2c.map(option)
-      this.map.on('style.load', (e) => this.$emit('style-load', e))
+      window.d2cMap = this.map
       this.map.option = option
       window.addEventListener('resize', this.resize)
     },

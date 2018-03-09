@@ -47,7 +47,7 @@ const state = {
   mapStyles: {},
   mainMap: null,
   searchPaneShow: false,
-  tablePaneShow: true,
+  tableMenuPaneShow: true,
   areacode: {areacode: 500000},
   searchParams: {},
   searchList: [],
@@ -59,7 +59,7 @@ const getters = {
   searchParams: state => state.searchParams,
   searchList: state => state.searchList,
   areaInfoData: state => state.areaInfoData,
-  tablePaneShow: state => state.tablePaneShow
+  tableMenuPaneShow: state => state.tableMenuPaneShow
 }
 
 const mutations = {
@@ -96,8 +96,8 @@ const mutations = {
   [TYPE.SEARCH_PANE_IS_SHOW] (state, searchPaneShow) {
     state.searchPaneShow = searchPaneShow
   },
-  [TYPE.TABLE_PANE_SHOW] (state, tablePaneShow) {
-    state.tablePaneShow = tablePaneShow
+  [TYPE.TABLE_PANE_SHOW] (state, tableMenuPaneShow) {
+    state.tableMenuPaneShow = tableMenuPaneShow
   },
   [TYPE.SEARCH_PARAMS] (state, searchParams) {
     state.searchParams = searchParams

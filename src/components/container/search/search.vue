@@ -62,6 +62,7 @@
 			},
 			showSearchPane() {
 				this.searchPaneShow(true)
+				this.tablePaneShow(false)
 			},
 			_getSelect(areacode) {
 				getSelect(areacode).then(res => {
@@ -73,6 +74,7 @@
 			},
 			...mapActions([
 				'searchPaneShow',
+				'tablePaneShow',
 				'getSearchParams',
 				'getSearchResult'
 			]),

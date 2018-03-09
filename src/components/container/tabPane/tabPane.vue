@@ -2,7 +2,7 @@
 	<div class="tab-pane">
 		<div class="tab-pane-content">
 			<!-- <ul :class="upOrDown?'slideInDown':'slideOutUp'"> -->
-			<ul v-show="upOrDown && tablePaneShow && !searchPaneShow">
+			<ul v-show="upOrDown && tableMenuPaneShow && !searchPaneShow">
 				<li class="tab-pane-li" v-for="(item, index) in arrayData">
 					<div class="tab-pane-li-title">
 						<p class="item-title">【{{item.name}}】</p>
@@ -12,7 +12,7 @@
 					</div>
 				</li>
 			</ul>
-			<div class="search-pane-content" v-show="upOrDown && !tablePaneShow && searchPaneShow">
+			<div class="search-pane-content" v-show="upOrDown && !tableMenuPaneShow && searchPaneShow">
 				<div class="search-type-button">
 					<button
 						class="type-button"
@@ -45,7 +45,7 @@
 				  <el-button size="mini" @click="next()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 				</p>
 			</div>
-			<div class="child-table-content" v-show="upOrDown && !tablePaneShow && !searchPaneShow">
+			<div class="child-table-content" v-show="upOrDown && !tableMenuPaneShow && !searchPaneShow">
 				<child-table></child-table>
 			</div>
 			<div class="up-control">
@@ -82,7 +82,7 @@
 		computed: {
 			...mapGetters([
 				'searchPaneShow',
-				'tablePaneShow',
+				'tableMenuPaneShow',
 				'searchList'
 			])
 		},

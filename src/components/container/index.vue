@@ -54,8 +54,8 @@
 <style lang="scss" scoped>
   .side-box {
     position: absolute;
-    top: 15px;
-    left: 15px;
+    top: 0;
+    left: 0;
   }
   .side-top-box {
     width: 350px;

@@ -22,7 +22,7 @@
 	import {mapGetters, mapActions} from 'vuex'
 
 	export default {
-		name: 'tab',
+		name: 'tab3132432',
 		components: {
 			TabPane,
 			vTable

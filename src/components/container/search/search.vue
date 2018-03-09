@@ -7,12 +7,12 @@
 			<div class="select-box" v-show="showSelectBox">
 				<span class="triangle"></span>
 				<ul class="tabs clearfix">
-					<li v-for="(item, index) in area" :key="index" :class="{active: index===activeIndex}" @click="handleClick(index, item.name, item.code)">{{ item.name }}</li>
+					<li v-for="(item, index) in area" :class="{active: index===activeIndex}" @click="handleClick(index, item.name, item.code)">{{ item.name }}</li>
 					<li class="icon"><i class="el-icon-delete"></i></li>
 				</ul>
 				<div class="subMenu" v-if="showSubmenu">
 					<ul class="areas">
-						<li v-for="item in areaData" :key="item.areaname" @click="handleArea(item.areaname, item.areacode)">{{item.areaname}}</li>
+						<li v-for="item in areaData" @click="handleArea(item.areaname, item.areacode)">{{item.areaname}}</li>
 					</ul>
 				</div>
 			</div>

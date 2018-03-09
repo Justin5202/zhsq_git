@@ -20,3 +20,24 @@ export function getDataSheets() {
     	return Promise.resolve(res.data)
   	})
 }
+
+export function getSelect(id) {
+	const parentId = id || -1
+
+	const data = Object.assign({}, commonParams, {
+		method: 'queryXZQHInfoByParentId',
+		parentId: parentId
+	})
+
+	return axios.post(url, qs.stringify(data)).then(res => {
+		return Promise.resolve(res.data)
+	})
+}
+
+export function getSearch(params) {
+	const data = Object.assign({}, commonParams, params, {method: 'queryLikeNameEntity'})
+
+	return axios.post(url, qs.stringify(data)).then(res => {
+		return Promise.resolve(res.data)
+	})
+}

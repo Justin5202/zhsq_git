@@ -63,6 +63,7 @@
     left: 15px;
   }
   .side-top-box {
+    max-width: 350px;
     position: absolute;
     top: 15px;
     left: 15px;

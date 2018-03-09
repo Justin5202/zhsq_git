@@ -22,13 +22,13 @@
 </template>
 
 <script>
-	
+
 	export default {
 		props: {
 			tableData: {
 				type: Array,
 				defalut: []
-			},
+			}
 		},
 		data() {
 			return {

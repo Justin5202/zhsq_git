@@ -11,3 +11,9 @@ export const LOAD_STYLE = 'LOAD_STYLE'
 
 /* MAP */
 export const SET_MAIN_MAP = 'SET_MAIN_MAP'
+
+export const SEARCH_PANE_IS_SHOW = 'SEARCH_PANE_IS_SHOW'
+
+export const SEARCH_PARAMS = 'SEARCH_PARAMS'
+
+export const GET_SEARCH_RESULT = 'GET_SEARCH_RESULT'

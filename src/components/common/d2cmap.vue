@@ -36,7 +36,6 @@ export default {
   },
   methods: {
     initOption (next) {
-      console.log(this.option);
       if (typeof this.option === 'string') {
         this.http.get(this.option).then(res => {
           const mapOption = this.getConfig(res.data)
@@ -51,7 +50,37 @@ export default {
       // this.$refs.map.id = option.container
       this.map = new window.d2c.map(option)
       window.d2cMap = this.map
-      this.map.on('style.load', (e) => this.$emit('style-load', e))
+      this.map.on('load',function(){
+        this.map.addGeoLayer({
+                'id': 'remote-scense-layer',
+                'type': 'raster',
+                'source': {
+                    'type': 'raster',
+                    'tiles': [
+                        'http://zhsq.digitalcq.com:6080/arcgis/rest/services/IMG_MCT/MapServer/tile/{z}/{y}/{x}'
+                    ],
+                    'tileSize': 256
+                },
+                "layout": {
+                    "visibility":"none"
+                }
+            });
+
+            this.map.addGeoLayer({
+                'id': 'dem-layer',
+                'type': 'raster',
+                'source': {
+                    'type': 'raster',
+                    'tiles': [
+                        'http://zhsq.digitalcq.com:8399/arcgis/rest/services/CQMap_DEM/MapServer'
+                    ],
+                    'tileSize': 256
+                },
+                "layout": {
+                    "visibility":"none"
+                }
+            });
+      })
       this.map.option = option
       window.addEventListener('resize', this.resize)
     },

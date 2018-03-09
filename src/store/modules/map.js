@@ -10,7 +10,7 @@ import axios from '@/util/http'
 
 import URL from '@/settings/sourceControl'
 import {parallel} from '@/util/async'
-import {getSearch} from '@/api/dataSheets'
+import {getSearch, getDetailInfo} from '@/api/dataSheets'
 import * as TYPE from '../type'
 
 const timeout = 15000
@@ -47,14 +47,19 @@ const state = {
   mapStyles: {},
   mainMap: null,
   searchPaneShow: false,
+  tableMenuPaneShow: true,
+  areacode: {areacode: 500000},
   searchParams: {},
-  searchList: []
+  searchList: [],
+  areaInfoData: []
 }
 
 const getters = {
   searchPaneShow: state => state.searchPaneShow,
   searchParams: state => state.searchParams,
-  searchList: state => state.searchList
+  searchList: state => state.searchList,
+  areaInfoData: state => state.areaInfoData,
+  tableMenuPaneShow: state => state.tableMenuPaneShow
 }
 
 const mutations = {
@@ -91,11 +96,17 @@ const mutations = {
   [TYPE.SEARCH_PANE_IS_SHOW] (state, searchPaneShow) {
     state.searchPaneShow = searchPaneShow
   },
+  [TYPE.TABLE_PANE_SHOW] (state, tableMenuPaneShow) {
+    state.tableMenuPaneShow = tableMenuPaneShow
+  },
   [TYPE.SEARCH_PARAMS] (state, searchParams) {
     state.searchParams = searchParams
   },
   [TYPE.GET_SEARCH_RESULT] (state, searchList) {
     state.searchList = searchList
+  },
+  [TYPE.GET_AREA_DATA] (state, areaInfoData) {
+    state.areaInfoData = areaInfoData
   }
 }
 
@@ -135,6 +146,9 @@ const actions = {
   searchPaneShow({commit, state}, isShow) {
     commit(TYPE.SEARCH_PANE_IS_SHOW, isShow)
   },
+  tablePaneShow({commit, state}, isShow) {
+    commit(TYPE.TABLE_PANE_SHOW, isShow)
+  },
   getSearchParams({dispatch, commit, state}, {typeParams, params}) {
     console.log({typeParams, params})
     commit(TYPE.SEARCH_PARAMS, Object.assign({}, state.searchParams, params, typeParams))
@@ -143,6 +157,15 @@ const actions = {
       return
     }
     dispatch('getSearchResult')
+  },
+  getAreaDetail({commit, state}, params) {
+    console.log(params)
+    getDetailInfo(Object.assign({}, params)).then(res => {
+      commit(TYPE.GET_AREA_DATA, res.data)
+      // 隐藏目录列表、搜索列表
+      commit(TYPE.SEARCH_PANE_IS_SHOW, false)
+      commit(TYPE.TABLE_PANE_SHOW, false)
+    })
   },
   getSearchResult({commit, state}) {
     getSearch(state.searchParams).then(res => {

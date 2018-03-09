@@ -12,7 +12,7 @@
 					<li class="list-group-item clearfix" v-for="i in item.children">
 						<span class="list-group-item-title">[{{i.name}}]</span>
 						<span class="list-group-item-content clearfix">
-							<span v-for="childrenItem in i.hot">{{childrenItem.dataname}}</span>
+							<span v-for="childrenItem in i.hot" @click="getAreaData(childrenItem.dataCode)">{{childrenItem.dataname}}</span>
 						</span>
 					</li>
 				</ul>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-
+	import {mapActions} from 'vuex'
 	export default {
 		props: {
 			tableData: {
@@ -38,7 +38,17 @@
 		methods: {
 			handleClick() {
 				this.$emit('handleClick')
-			}
+			},
+			getAreaData(code) {
+				const params = {
+					id: code,
+					areacode: 500000
+				}
+				this.getAreaDetail(params)
+			},
+			...mapActions([
+				'getAreaDetail'
+			])
 		}
 	}
 </script>

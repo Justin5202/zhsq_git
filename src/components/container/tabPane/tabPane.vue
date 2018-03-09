@@ -2,17 +2,17 @@
 	<div class="tab-pane">
 		<div class="tab-pane-content">
 			<!-- <ul :class="upOrDown?'slideInDown':'slideOutUp'"> -->
-			<ul v-show="upOrDown && !searchPaneShow">
-				<li class="tab-pane-li" v-for="(item, index) in arrayData" :key="index">
+			<ul v-show="upOrDown && tableMenuPaneShow && !searchPaneShow">
+				<li class="tab-pane-li" v-for="(item, index) in arrayData">
 					<div class="tab-pane-li-title">
 						<p class="item-title">【{{item.name}}】</p>
 					</div>
 					<div class="tab-pane-li-content">
-						<span v-for="(i, idx) in item.hot" :key="idx">{{i.dataname}}</span>
+						<span v-for="(i, idx) in item.hot" @click="getAreaData(i.dataCode)">{{i.dataname}}</span>
 					</div>
 				</li>
 			</ul>
-			<div class="search-pane-content" v-show="upOrDown && searchPaneShow">
+			<div class="search-pane-content" v-show="upOrDown && !tableMenuPaneShow && searchPaneShow">
 				<div class="search-type-button">
 					<button
 						class="type-button"
@@ -46,6 +46,9 @@
 				  <el-button size="mini" @click="next()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 				</p>
 			</div>
+			<div class="child-table-content" v-show="upOrDown && !tableMenuPaneShow && !searchPaneShow">
+				<child-table></child-table>
+			</div>
 			<div class="up-control">
 				<i class="control-icon" :class="{down: !upOrDown}" @click="toggleSlide()"></i>
 			</div>
@@ -54,9 +57,13 @@
 </template>
 
 <script>
+	import ChildTable from '@/components/container/childTable/childTable'
 	import {mapGetters, mapActions} from 'vuex'
 
 	export default {
+		components: {
+			ChildTable
+		},
 		name: 'tabPane',
 		props: {
 			arrayData: {
@@ -76,6 +83,7 @@
 		computed: {
 			...mapGetters([
 				'searchPaneShow',
+				'tableMenuPaneShow',
 				'searchList'
 			])
 		},
@@ -102,11 +110,20 @@
 				this.page -= 1
 				this.getType()
 			},
+			getAreaData(code) {
+				const params = {
+					areacode: 500000,
+					id: code
+				}
+				this.getAreaDetail(params)
+			},
 			toggleSlide() {
 				this.upOrDown = !this.upOrDown
 			},
 			...mapActions([
-				'getSearchParams'
+				'getSearchParams',
+				'getAreaDetail',
+				'tablePaneShow'
 			])
 		}
 	}

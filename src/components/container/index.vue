@@ -23,6 +23,9 @@
       <div class="topic-box">
         <v-topic/>
       </div>
+      <div class="right-tool">
+        <v-tool/>
+      </div>
     </div>
 </template>
 
@@ -31,12 +34,14 @@
   import vSearch from './search/search'
   import vTab from './tab/tab'
   import vTopic from './topic/topic'
+  import vTool from './tool/tool'
   export default {
     name: 'container',
     components: {
       vSearch,
       vTab,
-      vTopic
+      vTopic,
+      vTool
     },
     data() {
       return {
@@ -82,6 +87,11 @@
     position: absolute;
     bottom: 15px;
     left: 15px;
+  }
+  .right-tool{
+    position: absolute;
+    right: 15px;
+    top:30px;
   }
 </style>
 

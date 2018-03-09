@@ -3,9 +3,10 @@
   </div>
 </template>
 <script>
+import chongqingLocal from '../../../static/style/chongqing_local'
 export default {
   name: 'd2cmap',
-  props: ['option'],
+  //props: ['option']
   data () {
     return {
       map: null,
@@ -14,11 +15,20 @@ export default {
         top: 0,
         position: 'absolute',
         textAlign: 'left'
-      }
+      },
+      // option:{
+      //   container: 'map',
+      //   center: [106.994999, 30.17728484178069],
+      //   style: chongqingLocal,
+      //   zoom: 10,
+      //   cq1: 18
+      // }
+      option:'http://zhsq.digitalcq.com/d2c/oms/static/stylejson/ZHSQDT.json'
     }
   },
   mounted () {
     this.initOption(this.initMap)
+    // this.initMap(this.option);
   },
   beforeDestroy () {
     this.map.remove()
@@ -26,6 +36,7 @@ export default {
   },
   methods: {
     initOption (next) {
+      console.log(this.option);
       if (typeof this.option === 'string') {
         this.http.get(this.option).then(res => {
           const mapOption = this.getConfig(res.data)
@@ -36,9 +47,10 @@ export default {
       }
     },
     initMap (option) {
-      option.container += new Date().getTime()
-      this.$refs.map.id = option.container
+      // option.container += new Date().getTime()
+      // this.$refs.map.id = option.container
       this.map = new window.d2c.map(option)
+      window.d2cMap = this.map
       this.map.on('style.load', (e) => this.$emit('style-load', e))
       this.map.option = option
       window.addEventListener('resize', this.resize)

@@ -29,7 +29,6 @@
 				type: Array,
 				defalut: []
 			},
-
 		},
 		data() {
 			return {

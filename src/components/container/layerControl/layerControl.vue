@@ -73,12 +73,13 @@ export default {
       width: 0;
       height: 0;
       position: absolute;
-      right: -15px;
+      right: -10px;
       top: 30px;
       border-top: 9px solid transparent;
       border-left: 18px solid #fff;
       border-bottom: 9px solid transparent;
       border-radius: 4px;
+      z-index: 1;
     }
     ul {
       .layer-li {

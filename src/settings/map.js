@@ -12,52 +12,52 @@ import shenzhen from '../../static/style/shenzhen'
 
 /* 内网重庆底图 */
 const cq1 = {
-  container: 'map',
-  center: [106.994999, 30.17728484178069],
-  style: chongqingLocal,
-  zoom: 6.5,
-  cq1: 18
+    container: 'map',
+    center: [106.994999, 30.17728484178069],
+    style: chongqingLocal,
+    zoom: 6.5,
+    cq1: 18
 }
 
 /* 外网重庆底图 */
 const cq2 = {
-  container: 'map',
-  style: chongqing,
-  center: [106.647217, 29.566210],
-  zoom: 7,
-  maxZoom: 17
+    container: 'map',
+    style: chongqing,
+    center: [106.647217, 29.566210],
+    zoom: 7,
+    maxZoom: 17
 }
 
 /* 内网贵阳底图 */
 const gy1 = {
-  container: 'map',
-  center: [106.694999, 26.67728484178069],
-  style: guiyangLocal,
-  zoom: 8,
-  maxZoom: 18
+    container: 'map',
+    center: [106.694999, 26.67728484178069],
+    style: guiyangLocal,
+    zoom: 8,
+    maxZoom: 18
 }
 
 /* 外网深圳底图 */
 const sz1 = {
-  container: 'map',
-  center: [113.924103, 22.782512000000001],
-  style: shenzhen,
-  zoom: 11,
-  maxZoom: 18
+    container: 'map',
+    center: [113.924103, 22.782512000000001],
+    style: shenzhen,
+    zoom: 11,
+    maxZoom: 18
 }
 
 /* 空白底图 */
 const empty = {
-  container: 'map',
-  style: {
-    version: 8,
-    sources: {},
-    layers: []
-  },
-  center: [106.647217, 29.566210],
-  zoom: 7,
-  maxZoom: 17,
-  ...window.emptyMap
+    container: 'map',
+    style: {
+        version: 8,
+        sources: {},
+        layers: []
+    },
+    center: [106.647217, 29.566210],
+    zoom: 7,
+    maxZoom: 17,
+    ...window.emptyMap
 }
 
 // 根据url配置底图

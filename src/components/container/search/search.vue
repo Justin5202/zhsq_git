@@ -2,7 +2,7 @@
 	<div class="search">
 	  	<el-input placeholder="搜地点、查数据" v-model="searchContent" @focus="showSearchPane()" class="input-with-select">
 				<el-button slot="prepend" @click="showBox()">{{activeName}}<i class="el-icon-arrow-down"></i></el-button>
-	    	<el-button slot="append" icon="el-icon-search" @click="clickSearch()"></el-button>
+	    	<el-button slot="append" icon="el-icon-search" @click="clickSearch(selectStart, selectCode)"></el-button>
 	  	</el-input>
 			<div class="select-box" v-show="showSelectBox">
 				<span class="triangle"></span>
@@ -28,7 +28,8 @@
 		data() {
 			return {
 				searchContent: '',
-				selectContent: '',
+				selectCode: '',
+				selectStart: '',
 				area: [
 					{name: '重庆市', code: '500000'},
 					{name: '主城区', code: '500002'},
@@ -49,6 +50,7 @@
 				if(this.searchContent === '') {
 					return
 				}
+
 				const params = {
 					name: this.searchContent,
 					start: 0,
@@ -87,15 +89,18 @@
 			},
 			handleClick(index, start, code) {
 				this.setActive(index)
-				this.activeName = start
-				this.clickSearch(start, code)
+				this.activeName = this.selectStart = start
+				this.selectCode = code
+				// this.clickSearch(start, code)
 				if (index === 2) {
 					this._getSelect(code)
 				}
 			},
 			handleArea(start, code) {
-				this.activeName = start
-				this.clickSearch(start, code)
+				this.showSubmenu = false
+				this.activeName = this.selectStart = start
+				this.selectCode = code
+				// this.clickSearch(start, code)
 			}
 		},
 	}

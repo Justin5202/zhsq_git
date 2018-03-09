@@ -126,6 +126,7 @@
 		border-top-right-radius: 4px; */
 		border-radius: 4px;
 		border: 1px solid rgba(0, 0, 0, 0.2);
+		box-sizing: border-box;
 	}
 	.triangle {
 		width: 15px;
@@ -159,7 +160,7 @@
 	.tabs li.icon {
 		float: right;
 		width: 10%;
-		border-left: 1px solid #2c3e50;
+		border-left: 1px solid rgba(0, 0, 0, .1);
 	}
 	.active {
 		color: #409EFF;

@@ -1,7 +1,7 @@
 <template>
   <div class="child-table-content">
     <ul v-if="areaInfoData.length!==0">
-      <li class="child-table-content-li" @click="closeLiBox()">
+      <li class="child-table-content-li" :class="{active: areaInfoList.length !== falseLength}" @click="closeLiBox()">
         <div class="arrow">
           <i class="arrow-icon" :class="{down: isClose}"></i>
         </div>
@@ -19,7 +19,11 @@
         </div>
       </li>
       <ul v-show="isClose">
-        <li class="child-table-content-li" v-for="childItem in areaInfoData[0].children">
+        <li class="child-table-content-li"
+            v-for="childItem in areaInfoList"
+            :class="{active: childItem.isActive}"
+            @click="isActiveItem(childItem.isActive, childItem.name)"
+        >
           <div class="blank"></div>
           <div class="text">
             <h2>{{childItem.name}}</h2>
@@ -40,7 +44,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
 
   export default {
       data() {
@@ -50,13 +54,29 @@
       },
       computed: {
         ...mapGetters([
-          'areaInfoData'
-        ])
+          'areaInfoData',
+          'areaInfoList'
+        ]),
+        falseLength() {
+          let len = 0
+          this.areaInfoList.map(v => {
+            if(!v.isActive) {
+              len += 1
+            }
+          })
+          return len
+        }
       },
       methods: {
         closeLiBox() {
           this.isClose = !this.isClose
-        }
+        },
+        isActiveItem(bol, name) {
+          this.setAreaList({'bol': !bol, 'name': name})
+        },
+        ...mapActions([
+          'setAreaList'
+        ])
       }
   }
 </script>
@@ -70,7 +90,6 @@
       display: flex;
       padding: 10px 0 5px 0;
       border-bottom: 1px solid rgba(0, 0, 0, .1);
-      // border-bottom: 1px solid #fff;
       .blank {
         flex: 1;
       }
@@ -132,6 +151,9 @@
           background-size: 100%;
         }
       }
+    }
+    .active {
+      background-color: #dcdfe6;
     }
   }
 </style>

@@ -21,3 +21,5 @@ export const SEARCH_PARAMS = 'SEARCH_PARAMS'
 export const GET_SEARCH_RESULT = 'GET_SEARCH_RESULT'
 
 export const GET_AREA_DATA = 'GET_AREA_DATA'
+
+export const SET_AREA_LIST = 'SET_AREA_LIST'

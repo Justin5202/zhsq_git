@@ -1,18 +1,18 @@
 <template>
   <div class="layer-table">
-    <div class="layer-box">
+    <div class="layer-box" v-show="areaInfoList.length !== falseLength">
       <div class="layer-title-box">
         <h2>图层</h2>
-        <span class="trash-icon"></span>
+        <span class="trash-icon" @click="removeAll()"></span>
       </div>
       <div class="radio-box">
-        <el-checkbox :indeterminate="isIndeterminate" v-model="checked" @change="handleCheckAllChange">全不选</el-checkbox>
+        <el-checkbox :indeterminate="isIndeterminate" v-model="checked" @change="handleCheckAllChange">全选</el-checkbox>
         <el-checkbox v-model="checkedTransparency">透明度</el-checkbox>
       </div>
       <div class="layer-tool-arrow"></div>
       <div class="check">
         <el-checkbox-group v-model="checkedItem" @change="handleCheckedItemsChange">
-          <div class="check-box" v-for="item in areaInfoData[0].children">
+          <div class="check-box" v-for="item in areaInfoList" v-if="item.isActive">
             <div class="check-item">
               <el-checkbox :label="item.name" :key="item.name"></el-checkbox>
               <div class="cross-box">
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   data() {
@@ -39,13 +39,22 @@ export default {
       checkedItem: [],
       checkedTransparency: false,
       isIndeterminate: false,
-      value1: '',
+      value1: ''
     }
   },
   computed: {
     ...mapGetters([
-      'areaInfoData'
-    ])
+      'areaInfoList'
+    ]),
+    falseLength() {
+      let len = 0
+      this.areaInfoList.map(v => {
+        if(!v.isActive) {
+          len += 1
+        }
+      })
+      return len
+    }
   },
   methods: {
     handleCheckAllChange(val) {
@@ -58,12 +67,18 @@ export default {
       this.checked = checkedCount === this.checkedItem.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedItem.length
     },
+    removeAll() {
+
+    },
     removeItem(name) {
-      this.areaInfoData[0].children.filter(item => item.name === name)
+      this.setAreaList({'bol': false, 'name': name})
     },
     getCheckedItem() {
-      this.checkedItem = this.areaInfoData[0].children.map(item => item.name)
-    }
+      this.checkedItem = this.areaInfoList.map(item => item.name)
+    },
+    ...mapActions([
+      'setAreaList'
+    ])
   }
 }
 </script>

@@ -51,7 +51,8 @@ const state = {
   areacode: {areacode: 500000},
   searchParams: {},
   searchList: [],
-  areaInfoData: []
+  areaInfoData: [],
+  areaInfoList: []
 }
 
 const getters = {
@@ -59,6 +60,7 @@ const getters = {
   searchParams: state => state.searchParams,
   searchList: state => state.searchList,
   areaInfoData: state => state.areaInfoData,
+  areaInfoList: state => state.areaInfoList,
   tableMenuPaneShow: state => state.tableMenuPaneShow
 }
 
@@ -107,6 +109,9 @@ const mutations = {
   },
   [TYPE.GET_AREA_DATA] (state, areaInfoData) {
     state.areaInfoData = areaInfoData
+  },
+  [TYPE.SET_AREA_LIST] (state, areaInfoList) {
+    state.areaInfoList = areaInfoList
   }
 }
 
@@ -161,6 +166,7 @@ const actions = {
   getAreaDetail({dispatch, commit, state}, params) {
     getDetailInfo(Object.assign({}, params)).then(res => {
       commit(TYPE.GET_AREA_DATA, res.data)
+      commit(TYPE.SET_AREA_LIST, res.data[0].children.filter(v => v.isActive = true))
       // 隐藏目录列表、搜索列表
       commit(TYPE.SEARCH_PANE_IS_SHOW, false)
       commit(TYPE.TABLE_PANE_SHOW, false)
@@ -170,6 +176,19 @@ const actions = {
     getSearch(state.searchParams).then(res => {
       commit(TYPE.GET_SEARCH_RESULT, res.data)
     })
+  },
+  setAreaList({commit, state}, {bol, name}) {
+    let tempArray = []
+    // 判断剔除的数据图层，设置active为false
+    for(let val of state.areaInfoList) {
+      if(val.name === name && !bol) {
+        val.isActive = false
+      } else if(val.name === name && bol) {
+        val.isActive = true
+      }
+      tempArray.push(val)
+    }
+    commit(TYPE.SET_AREA_LIST, tempArray)
   }
 }
 

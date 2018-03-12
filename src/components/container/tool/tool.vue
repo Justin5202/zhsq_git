@@ -8,13 +8,13 @@
 				<img src="../../../assets/images/map/区域.png" alt="">
 			</span>
 			<span class="tool-item ">
-				<img src="../../../assets/images/map/报表.png" alt="">
+                <report-Form/>
 			</span>
             <span class="tool-item ">
 				<img src="../../../assets/images/map/量算.png" alt="">
 			</span>
             <span class="tool-item ">
-				<img src="../../../assets/images/map/统计.png" alt="">
+                <v-statistics/>
 			</span>
             <span class="tool-item ">
 				<img src="../../../assets/images/map/用户.png" alt="">
@@ -34,33 +34,43 @@
         </div>
         <div class="layer-tool-box" v-show="layerToolVisible">
             <div class="layer-tool-item">
-                <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="">
+                <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="50" alt="">
+                <div class="layer-tool-font">矢量</div>
             </div>
             <div class="layer-tool-item">
-                <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="">
+                <img src="../../../assets/images/map/渲染图标.png" title="晕染地图" width="90" height="50" alt="">
+                <div  class="layer-tool-font">晕染</div>
             </div>
             <div class="layer-tool-item">
-                <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="">
+                <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="50" alt="">
+                <div  class="layer-tool-font">影像</div>
             </div>
+            <div class="layer-tool-arrow"></div>
         </div>
     </div>
 </template>
 <script>
+import vStatistics from '../statistics/statistics.vue'
+import reportForm from '../reportForm/reportForm.vue'
 export default {
-  data(){
-      return{
-          toolHeight:window.innerHeight *0.8,
-          is2Dmap:true,
-          layerToolVisible:false
-      }
-  },
-  methods:{
+    components: {
+        vStatistics,
+        reportForm
+	},
+    data(){
+        return{
+            toolHeight:window.innerHeight *0.8,
+            is2Dmap:true,
+            layerToolVisible:false
+        }
+    },
+    methods:{
     //2D 3D切换
-    changeMapStatus:function(){
-        this.is2Dmap = !this.is2Dmap;
-        if(this.is2Dmap){
-            d2cMap.easeTo({pitch: 0});
-        }else{
+        changeMapStatus:function(){
+            this.is2Dmap = !this.is2Dmap;
+            if(this.is2Dmap){
+                d2cMap.easeTo({pitch: 0});
+            }else{
             d2cMap.easeTo({pitch: 60});
         }
     },
@@ -104,10 +114,24 @@ export default {
             border:1px solid #eee;
             border-radius: 5px;
             top:-10px;
-            right: 60px;
+            right: 75px;
             .layer-tool-item{
                 float: left;
                 margin: 10px 0 0 10px ;
+                cursor: pointer;
+                .layer-tool-font{
+                    font-size: 12px;
+                }
+            }
+            .layer-tool-arrow{
+                width: 0; 
+                height: 0; 
+                position: absolute;
+                right: -20px;
+                top:30px;
+                border-top: 10px solid transparent; 
+                border-left: 20px solid#fff; 
+                border-bottom: 10px solid transparent; 
             }
         }
     }

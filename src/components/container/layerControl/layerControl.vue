@@ -6,39 +6,62 @@
         <span class="trash-icon"></span>
       </div>
       <div class="radio-box">
-        <el-checkbox v-model="checked">全不选</el-checkbox>
-        <el-checkbox v-model="checked">透明度</el-checkbox>
+        <el-checkbox :indeterminate="isIndeterminate" v-model="checked" @change="handleCheckAllChange">全不选</el-checkbox>
+        <el-checkbox v-model="checkedTransparency">透明度</el-checkbox>
       </div>
       <div class="layer-tool-arrow"></div>
-      <ul>
-        <li class="layer-li">
-          <div class="layer-li-content">
-            <el-checkbox v-model="checked"></el-checkbox>
-            <p>建设用地</p>
+      <div class="check">
+        <el-checkbox-group v-model="checkedItem" @change="handleCheckedItemsChange">
+          <div class="check-item" v-for="item in areaInfoData[0].children">
+            <el-checkbox :label="item.name" :key="item.name"></el-checkbox>
             <div class="cross-box">
               <i class="cross-icon"></i>
             </div>
           </div>
-        </li>
-      </ul>
-    </div>
+        </el-checkbox-group>
+      </div>
+      </div>
   </div>
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
+
 export default {
   data() {
     return {
-      checked: false
+      checked: true,
+      checkedItem: [],
+      checkedTransparency: false,
+      isIndeterminate: false
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'areaInfoData'
+    ])
+  },
+  methods: {
+    handleCheckAllChange(val) {
+      this.getCheckedItem()
+      this.checkedItem = val ? this.checkedItem : []
+      this.isIndeterminate = false
+    },
+    handleCheckedItemsChange(value) {
+      let checkedCount = value.length
+      this.checked = checkedCount === this.checkedItem.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedItem.length
+    },
+    getCheckedItem() {
+      this.checkedItem = this.areaInfoData[0].children.map(item => item.name)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+
 .layer-table {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
   .layer-box {
     background-color: #fff;
     font-size: 12px;
@@ -63,30 +86,31 @@ export default {
       justify-content: space-between;
       background-color: #e4e7ed;
     }
-    ul {
-      .layer-li {
-        padding-left: 10px;
-        list-style: none;
-        .layer-li-content {
-          display: flex;
-          justify-content: space-between;
-          line-height: 40px;
-          p {
-            flex: 1;
+    .check {
+      position: relative;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+        .el-checkbox-group {
+          .check-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding-left: 10px;
-            text-align: left;
-          }
-          .cross-box {
-            .cross-icon {
-              display: block;
-              width: 40px;
-              height: 40px;
-              background: url('../../../assets/images/catalog/关闭搜索.png') no-repeat;
-              background-size: 100%;
+            .el-checkbox+.el-checkbox {
+              margin-left: 0;
+              margin-top: 23px;
+            }
+            .cross-box {
+              .cross-icon {
+                display: block;
+                width: 40px;
+                height: 40px;
+                background: url('../../../assets/images/catalog/关闭搜索.png') no-repeat;
+                background-size: 100%;
+              }
             }
           }
         }
-      }
     }
   }
 }

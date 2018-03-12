@@ -5,7 +5,6 @@
               <span class="tool-item" @click="openLayerTool()">
   				          <img src="../../../assets/images/map/图层.png" alt="">
   			      </span>
-              <layer-control></layer-control>
             </div>
 			<span class="tool-item ">
 				<img src="../../../assets/images/map/区域.png" alt="">
@@ -36,19 +35,18 @@
 			</span>
         </div>
         <div class="layer-tool-box" v-show="layerToolVisible">
-            <div class="layer-tool-item">
-                <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="50" alt="">
-                <div class="layer-tool-font">矢量</div>
+            <div class="layer-tool-content">
+              <div class="layer-tool-item">
+                  <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="">
+              </div>
+              <div class="layer-tool-item">
+                  <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="">
+              </div>
+              <div class="layer-tool-item">
+                  <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="">
+              </div>
             </div>
-            <div class="layer-tool-item">
-                <img src="../../../assets/images/map/渲染图标.png" title="晕染地图" width="90" height="50" alt="">
-                <div  class="layer-tool-font">晕染</div>
-            </div>
-            <div class="layer-tool-item">
-                <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="50" alt="">
-                <div  class="layer-tool-font">影像</div>
-            </div>
-            <div class="layer-tool-arrow"></div>
+            <layer-control></layer-control>
         </div>
     </div>
 </template>
@@ -112,31 +110,25 @@ export default {
             left: 0;
         }
         .layer-tool-box{
+          display: flex;
+          flex-direction: column;
             width: 310px;
-            height: 80px;
-            background-color:#fff;
+            background-color: #fff;
             position: absolute;
-            border:1px solid #eee;
-            border-radius: 5px;
-            top:-10px;
-            right: 75px;
-            .layer-tool-item{
-                float: left;
-                margin: 10px 0 0 10px ;
-                cursor: pointer;
-                .layer-tool-font{
-                    font-size: 12px;
-                }
-            }
-            .layer-tool-arrow{
-                width: 0; 
-                height: 0; 
-                position: absolute;
-                right: -20px;
-                top:30px;
-                border-top: 10px solid transparent; 
-                border-left: 20px solid#fff; 
-                border-bottom: 10px solid transparent; 
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            top: 0;
+            right: 70px;
+            .layer-tool-content {
+              display: flex;
+              border-bottom: 1px solid #e4e7ed;
+              .layer-tool-item{
+                  margin: 10px 0 10px 10px;
+                  cursor: pointer;
+                  img {
+                    display: block;
+                  }
+              }
             }
         }
     }

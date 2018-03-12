@@ -12,10 +12,15 @@
       <div class="layer-tool-arrow"></div>
       <div class="check">
         <el-checkbox-group v-model="checkedItem" @change="handleCheckedItemsChange">
-          <div class="check-item" v-for="item in areaInfoData[0].children">
-            <el-checkbox :label="item.name" :key="item.name"></el-checkbox>
-            <div class="cross-box">
-              <i class="cross-icon"></i>
+          <div class="check-box" v-for="item in areaInfoData[0].children">
+            <div class="check-item">
+              <el-checkbox :label="item.name" :key="item.name"></el-checkbox>
+              <div class="cross-box">
+                <i class="cross-icon" @click="removeItem(item.name)"></i>
+              </div>
+            </div>
+            <div class="slider-box" v-if="checkedTransparency">
+              <el-slider v-model="value1"></el-slider>
             </div>
           </div>
         </el-checkbox-group>
@@ -33,7 +38,8 @@ export default {
       checked: true,
       checkedItem: [],
       checkedTransparency: false,
-      isIndeterminate: false
+      isIndeterminate: false,
+      value1: '',
     }
   },
   computed: {
@@ -51,6 +57,9 @@ export default {
       let checkedCount = value.length
       this.checked = checkedCount === this.checkedItem.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedItem.length
+    },
+    removeItem(name) {
+      this.areaInfoData[0].children.filter(item => item.name === name)
     },
     getCheckedItem() {
       this.checkedItem = this.areaInfoData[0].children.map(item => item.name)
@@ -91,6 +100,11 @@ export default {
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;
         .el-checkbox-group {
+          .check-box {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #e4e7ed;
+          }
           .check-item {
             display: flex;
             justify-content: space-between;
@@ -107,7 +121,20 @@ export default {
                 height: 40px;
                 background: url('../../../assets/images/catalog/关闭搜索.png') no-repeat;
                 background-size: 100%;
+                cursor: pointer;
               }
+            }
+          }
+          .slider-box {
+            padding: 0 10px;
+            padding-left: 17px;
+            .el-slider__button{
+              width: 10px;
+              height: 10px;
+            }
+            .el-slider__runway {
+              margin: 10px 0;
+              padding-bottom: 5px;
             }
           }
         }

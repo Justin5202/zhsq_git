@@ -68,7 +68,7 @@ export default {
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedItem.length
     },
     removeAll() {
-
+      this.removeAllAreaList()
     },
     removeItem(name) {
       this.setAreaList({'bol': false, 'name': name})
@@ -77,7 +77,8 @@ export default {
       this.checkedItem = this.areaInfoList.map(item => item.name)
     },
     ...mapActions([
-      'setAreaList'
+      'setAreaList',
+      'removeAllAreaList'
     ])
   }
 }
@@ -102,6 +103,7 @@ export default {
         height: 40px;
         background: url(../../../assets/images/legend/allDelLayers@2x.png) no-repeat;
         background-size: 100%;
+        cursor: pointer;
       }
     }
     .radio-box {

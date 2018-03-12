@@ -11,8 +11,8 @@
           <p v-if="areaInfoData[0].target.length!==0">{{areaInfoData[0].target[0].cityTarget}}</p>
         </div>
         <div class="detail" v-if="areaInfoData[0].target.length!==0">
-          <i class="detail-icon"></i>
-          <span>详情</span>
+          <i class="detail-icon" :class="{avtiveDetailIcon: areaInfoList.length === falseLength}"></i>
+          <span :class="{activeColor: areaInfoList.length === falseLength}">详情</span>
         </div>
         <div class="collection">
           <i class="collection-icon"></i>
@@ -31,8 +31,8 @@
             <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
           </div>
           <div class="detail" v-if="childItem.target.length!==0">
-            <i class="detail-icon"></i>
-            <span>详情</span>
+            <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
+            <span :class="{activeColor: !childItem.isActive}">详情</span>
           </div>
           <div class="collection">
             <i class="collection-icon"></i>
@@ -84,8 +84,9 @@
 <style lang="scss" scoped>
 
   .child-table-content {
+    max-height: 635px;
     background-color: #fff;
-    // background-color: #dcdfe6;
+    overflow-y: scroll;
     .child-table-content-li {
       display: flex;
       padding: 10px 0 5px 0;
@@ -133,9 +134,17 @@
           background: url(../../../assets/images/catalog/文档@2x.png) no-repeat;
           background-size: 100%;
         }
+        .avtiveDetailIcon {
+          background: url(../../../assets/images/catalog/数据详情@2x.png) no-repeat;
+          background-size: 100%;
+        }
         span {
           margin-top: 3px;
           font-size: 12px;
+          color: #58595c;
+        }
+        .activeColor{
+          color: #20be8c;
         }
       }
       .collection {

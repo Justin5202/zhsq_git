@@ -189,6 +189,15 @@ const actions = {
       tempArray.push(val)
     }
     commit(TYPE.SET_AREA_LIST, tempArray)
+  },
+  removeAllAreaList({commit, state}) {
+    // 设置areainfolist每个isactive为false
+    let tempArray = []
+    for(let val of state.areaInfoList) {
+      val.isActive = false
+      tempArray.push(val)
+    }
+    commit(TYPE.SET_AREA_LIST, tempArray)
   }
 }
 

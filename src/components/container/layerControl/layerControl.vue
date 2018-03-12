@@ -37,17 +37,11 @@ export default {
 
 <style lang="scss" scoped>
 .layer-table {
-  position: absolute;
-  top: 0;
-  right: 70px;
-  width: 300px;
-  z-index: 99;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
   .layer-box {
     background-color: #fff;
     font-size: 12px;
-    border-radius: 4px;
-    -webkit-box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
-    box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
     .layer-title-box {
       display: flex;
       justify-content: space-between;
@@ -68,18 +62,6 @@ export default {
       display: flex;
       justify-content: space-between;
       background-color: #e4e7ed;
-    }
-    .layer-tool-arrow{
-      width: 0;
-      height: 0;
-      position: absolute;
-      right: -10px;
-      top: 30px;
-      border-top: 9px solid transparent;
-      border-left: 18px solid #fff;
-      border-bottom: 9px solid transparent;
-      border-radius: 4px;
-      z-index: 1;
     }
     ul {
       .layer-li {

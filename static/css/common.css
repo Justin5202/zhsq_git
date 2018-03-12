@@ -164,3 +164,17 @@
   -webkit-animation: slideOutLeft .5s forwards;
   animation: slideOutLeft .5s forwards;
 }
+
+/*arrow*/
+.layer-tool-arrow{
+  width: 0;
+  height: 0;
+  position: absolute;
+  right: -10px;
+  top: 30px;
+  border-top: 9px solid transparent;
+  border-left: 18px solid #fff;
+  border-bottom: 9px solid transparent;
+  border-radius: 4px;
+  z-index: 1;
+}

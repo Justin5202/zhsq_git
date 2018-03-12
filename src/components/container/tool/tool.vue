@@ -1,9 +1,12 @@
 <template>
     <div class="tool" :style="{height:toolHeight +'px'}">
         <div class="tool-top">
-            <span class="tool-item" @click="openLayerTool()">
-				<img src="../../../assets/images/map/图层.png" alt="">
-			</span>
+            <div class="layer">
+              <span class="tool-item" @click="openLayerTool()">
+  				          <img src="../../../assets/images/map/图层.png" alt="">
+  			      </span>
+              <layer-control></layer-control>
+            </div>
 			<span class="tool-item ">
 				<img src="../../../assets/images/map/区域.png" alt="">
 			</span>
@@ -52,10 +55,12 @@
 <script>
 import vStatistics from '../statistics/statistics.vue'
 import reportForm from '../reportForm/reportForm.vue'
+import LayerControl from '@/components/container/layerControl/layerControl'
 export default {
     components: {
         vStatistics,
-        reportForm
+        reportForm,
+        LayerControl
 	},
     data(){
         return{
@@ -136,5 +141,3 @@ export default {
         }
     }
 </style>
-
-

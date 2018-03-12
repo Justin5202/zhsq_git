@@ -26,18 +26,68 @@
 					<li class="search-pane-li" v-if="searchList.length === 0">
 						<p style="margin: 0;">暂无搜索数据</p>
 					</li>
-					<li class="search-pane-li" v-else v-for="item in searchList" :key="item">
-						<div class="area-icon-box">
-							<i class="area-icon"></i>
+					<li class="search-pane-li" v-else v-for="(item, index) in searchList">
+						<div class="search-pane-box" v-if="item.searchType === 1">
+							<div class="area-icon-box">
+								<i class="poi-icon"></i>
+							</div>
+							<div class="area-content" >
+								<h2>{{(page-1)*10+index+1}}.{{item.poi.name}}</h2>
+								<p>{{item.poi.address}}</p>
+							</div>
+							<div class="detail">
+							</div>
 						</div>
-						<div class="area-content">
-							<h2>{{(page-1)*10+index+1}}.{{item.macro.name}}</h2>
-							<p>{{item.macro.areaName}}</p>
-							<p>{{item.macro.year}}</p>
+						<div class="search-pane-box" v-else-if="item.searchType === 2">
+							<div class="area-icon-box">
+								<i class="area-icon"></i>
+							</div>
+							<div class="area-content" >
+								<h2>{{item.area.areaname}}</h2>
+								<p>{{item.area.address}}</p>
+							</div>
+							<div class="detail">
+								<i class="detail-icon"></i>
+								<span>详情</span>
+							</div>
 						</div>
-						<div class="detail" v-if="item.macro.filedsData">
-							<i class="detail-icon"></i>
-							<span>详情</span>
+						<div class="search-pane-box" v-else-if="item.searchType === 4">
+							<div class="area-icon-box">
+								<i class="data-icon"></i>
+							</div>
+							<div class="area-content" >
+								<h2>{{item.macro.name}}</h2>
+								<p>{{item.macro.address}}</p>
+								<p>{{item.macro.year}}</p>
+							</div>
+							<div class="detail" v-if="item.macro.filedsData">
+								<i class="detail-icon"></i>
+								<span>详情</span>
+							</div>
+						</div>
+						<div class="search-pane-box" v-else-if="item.searchType === 5">
+							<div class="area-icon-box">
+								<i class="macro-icon"></i>
+							</div>
+							<div class="area-content" >
+								<h2>{{item.element.name}}</h2>
+								<p>{{item.element.desc}}</p>
+							</div>
+							<div class="detail">
+							</div>
+						</div>
+						<div class="search-pane-box" v-else-if="item.searchType === 6">
+							<div class="area-icon-box">
+								<i class="unit-icon"></i>
+							</div>
+							<div class="area-content" >
+								<h2>{{item.area.areaname}}</h2>
+								<p>{{item.area.address}}</p>
+							</div>
+							<div class="detail">
+								<i class="detail-icon"></i>
+								<span>详情</span>
+							</div>
 						</div>
 					</li>
 				</ul>
@@ -201,21 +251,45 @@
 				max-height: 526px;
 				overflow-y: scroll;
 				.search-pane-li {
-					display: flex;
-					justify-content: space-around;
 					list-style: none;
 					padding: 5px 0 15px 10px;
 					border-bottom: 1px solid #dcdfe6;
+					.search-pane-box {
+						display: flex;
+						justify-content: space-around;
+					}
 					.area-icon-box {
 						-webkit-box-flex: 0;
 				    -ms-flex: 0 0 20px;
 				    flex: 0 0 20px;
 				    padding-right: 10px;
-						.area-icon {
+						i {
 							display: block;
 							width: 20px;
 							height: 20px;
+						}
+						.area-icon {
+							background: url('../../../assets/images/catalog/社会经济@2x.png') no-repeat;
+							background-size: 100%;
+						}
+						.poi-icon {
 							background: url('../../../assets/images/catalog/搜索定位.png') no-repeat;
+							background-size: 100%;
+						}
+						.macro-icon {
+							background: url('../../../assets/images/catalog/搜索定位.png') no-repeat;
+							background-size: 100%;
+						}
+						.data-icon {
+							background: url('../../../assets/images/catalog/文档@2x.png') no-repeat;
+							background-size: 100%;
+						}
+						.regions-icon {
+							background: url('../../../assets/images/catalog/行政区划@2x.png') no-repeat;
+							background-size: 100%;
+						}
+						.unit-icon {
+							background: url('../../../assets/images/catalog/社会经济@2x.png') no-repeat;
 							background-size: 100%;
 						}
 					}

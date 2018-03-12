@@ -30,7 +30,7 @@ export default {
   computed: {
     style () {
       return {
-        height: this.window.height - 61 + 'px',
+        height: this.window.height + 'px',
         width: this.window.width + 'px'
       }
     }
@@ -54,4 +54,3 @@ export default {
   box-shadow: 0px 0px 1px 1px #888888;
 }
 </style>
-

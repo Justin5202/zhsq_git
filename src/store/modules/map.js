@@ -10,7 +10,7 @@ import axios from '@/util/http'
 
 import URL from '@/settings/sourceControl'
 import {parallel} from '@/util/async'
-import {getSearch, getDetailInfo} from '@/api/dataSheets'
+import {getSelect, getSearch, getDetailInfo, getNextAreaInfo} from '@/api/dataSheets'
 import * as TYPE from '../type'
 
 const timeout = 15000
@@ -48,7 +48,10 @@ const state = {
   mainMap: null,
   searchPaneShow: false,
   tableMenuPaneShow: true,
-  areacode: {areacode: 500000},
+  areaInfo: {
+    areacode: 500000,
+    areaname: '重庆'
+  },
   searchParams: {},
   searchList: [],
   areaInfoData: [],
@@ -56,6 +59,7 @@ const state = {
 }
 
 const getters = {
+  areaInfo: state => state.areaInfo,
   searchPaneShow: state => state.searchPaneShow,
   searchParams: state => state.searchParams,
   searchList: state => state.searchList,
@@ -112,6 +116,9 @@ const mutations = {
   },
   [TYPE.SET_AREA_LIST] (state, areaInfoList) {
     state.areaInfoList = areaInfoList
+  },
+  [TYPE.SET_AREA_INFO] (state, areaInfo) {
+    state.areaInfo = areaInfo
   }
 }
 
@@ -156,7 +163,7 @@ const actions = {
   },
   getSearchParams({dispatch, commit, state}, {typeParams, params}) {
     console.log({typeParams, params})
-    commit(TYPE.SEARCH_PARAMS, Object.assign({}, state.searchParams, params, typeParams))
+    commit(TYPE.SEARCH_PARAMS, Object.assign({}, state.searchParams, params, typeParams, state.areaInfo))
     // 首先选择type时不做请求
     if(params == {}) {
       return
@@ -171,6 +178,9 @@ const actions = {
       commit(TYPE.SEARCH_PANE_IS_SHOW, false)
       commit(TYPE.TABLE_PANE_SHOW, false)
     })
+  },
+  setAreaInfo({commit, state}, areaInfo) {
+    commit(TYPE.SET_AREA_INFO, areaInfo)
   },
   getSearchResult({commit, state}) {
     getSearch(state.searchParams).then(res => {
@@ -189,6 +199,12 @@ const actions = {
       tempArray.push(val)
     }
     commit(TYPE.SET_AREA_LIST, tempArray)
+  },
+  // 区县区域下一级详细信息
+  getNextAreaInfo({commit, state}) {
+    getNextAreaInfo(state.areaInfo.areacode).then(res => {
+      console.log(JSON.parse(res.data))
+    })
   },
   removeAllAreaList({commit, state}) {
     // 设置areainfolist每个isactive为false

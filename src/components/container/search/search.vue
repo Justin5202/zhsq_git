@@ -12,7 +12,7 @@
 				</ul>
 				<div class="subMenu" v-if="showSubmenu">
 					<ul class="areas">
-						<li v-for="item in areaData" @click="handleArea(item.areaname, item.areacode)">{{item.areaname}}</li>
+						<li v-for="item in areaData" @click="handleArea(item.areacode, item.areaname)">{{item.areaname}}</li>
 					</ul>
 				</div>
 			</div>
@@ -56,21 +56,13 @@
 					name: this.searchContent,
 					start: 0,
 					rows: 10,
-					areacode: code,
-					areaname: start,
-					type: 1,
-					point: "106.627441893, 29.7208926650001"
+					type: 1
 				}
 				this._getSearchParams(params)
 			},
 			showSearchPane() {
 				this.searchPaneShow(true)
 				this.tablePaneShow(false)
-			},
-			_getSelect(areacode) {
-				getSelect(areacode).then(res => {
-					this.areaData = res.data;
-				})
 			},
 			_getSearchParams(params) {
 				this.getSearchParams({'typeParams': {}, 'params': params})
@@ -79,7 +71,9 @@
 				'searchPaneShow',
 				'tablePaneShow',
 				'getSearchParams',
-				'getSearchResult'
+				'getSearchResult',
+				'setAreaInfo',
+				'getNextAreaInfo'
 			]),
 			setActive(index) {
 				this.activeIndex = index
@@ -88,20 +82,30 @@
 			showBox() {
 				this.showSelectBox = this.showSelectBox === true ? false : true;
 			},
-			handleClick(index, start, code) {
+			handleClick(index, areaname, areacode) {
 				this.setActive(index)
-				this.activeName = this.selectStart = start
-				this.selectCode = code
-				// this.clickSearch(start, code)
-				if (index === 2) {
-					this._getSelect(code)
+				this.activeName = this.selectStart = areaname
+				this.selectCode = areacode
+				let areaInfo = {
+					areacode: areacode,
+			    areaname: areaname
+				}
+				this.setAreaInfo(areaInfo)
+				if(index === 2) {
+					getSelect(areacode).then(res => {
+						this.areaData = res.data
+					})
 				}
 			},
-			handleArea(start, code) {
+			handleArea(id, name) {
 				this.showSubmenu = false
-				this.activeName = this.selectStart = start
-				this.selectCode = code
-				// this.clickSearch(start, code)
+				this.activeName = this.selectStart = name
+				let areaInfo = {
+					areacode: id,
+			    areaname: name
+				}
+				this.setAreaInfo(areaInfo)
+				this.getNextAreaInfo()
 			}
 		},
 	}

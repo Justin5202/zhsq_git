@@ -36,6 +36,15 @@ export function getSelect(id) {
 	})
 }
 
+// 区县区域详细信息
+export function getNextAreaInfo(areacode) {
+	const data = Object.assign({}, commonParams, {areacode: areacode}, {method: 'queryShapeByAreaCode'})
+
+	return axios.post(url, qs.stringify(data)).then(res => {
+		return Promise.resolve(res.data)
+	})
+}
+
 //数据搜索接口
 export function getSearch(params) {
 	const data = Object.assign({}, commonParams, params, {method: 'queryLikeNameEntity'})

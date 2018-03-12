@@ -52,6 +52,7 @@ const state = {
     areacode: 500000,
     areaname: '重庆'
   },
+  areaList: [],
   searchParams: {},
   searchList: [],
   areaInfoData: [],
@@ -60,6 +61,7 @@ const state = {
 
 const getters = {
   areaInfo: state => state.areaInfo,
+  areaList: state => state.areaList,
   searchPaneShow: state => state.searchPaneShow,
   searchParams: state => state.searchParams,
   searchList: state => state.searchList,
@@ -119,6 +121,21 @@ const mutations = {
   },
   [TYPE.SET_AREA_INFO] (state, areaInfo) {
     state.areaInfo = areaInfo
+  },
+  [TYPE.SET_SELECTED_AREA_LIST] (state, areainfo) {
+    let temp = state.areaList
+    let bol = false
+    for(let val of temp) {
+      if(val.areacode === areainfo.areacode) {
+        bol = true
+      }
+    }
+    if(bol) {
+      console.log(123)
+      temp.splice(temp.findIndex(v => v.areacode === areainfo.areacode), 1)
+    } else {
+      temp.push(areainfo)
+    }
   }
 }
 
@@ -181,6 +198,9 @@ const actions = {
   },
   setAreaInfo({commit, state}, areaInfo) {
     commit(TYPE.SET_AREA_INFO, areaInfo)
+  },
+  setSelectedAreaList({commit, state}, areainfo) {
+    commit(TYPE.SET_SELECTED_AREA_LIST, areainfo)
   },
   getSearchResult({commit, state}) {
     getSearch(state.searchParams).then(res => {

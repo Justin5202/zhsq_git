@@ -25,3 +25,5 @@ export const GET_AREA_DATA = 'GET_AREA_DATA'
 export const SET_AREA_LIST = 'SET_AREA_LIST'
 
 export const SET_AREA_INFO = 'SET_AREA_INFO'
+
+export const SET_SELECTED_AREA_LIST = 'SET_SELECTED_AREA_LIST'

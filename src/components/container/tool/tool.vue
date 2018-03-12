@@ -1,14 +1,18 @@
 <template>
     <div class="tool" :style="{height:toolHeight +'px'}">
         <div class="tool-top">
-            <div class="layer">
+            <div class="tool-box">
               <span class="tool-item" @click="openLayerTool()">
   				          <img src="../../../assets/images/map/图层.png" alt="">
   			      </span>
+              <span class="circle" v-if="areaLayerLength > 0">{{areaLayerLength}}</span>
             </div>
-			<span class="tool-item ">
-				<img src="../../../assets/images/map/区域.png" alt="">
-			</span>
+			      <div class="tool-box">
+              <span class="tool-item" @click="showAreaBox()">
+        				<img src="../../../assets/images/map/区域.png" alt="">
+        			</span>
+              <span class="circle" v-if="areaList.length > 0">{{areaList.length}}</span>
+            </div>
 			<span class="tool-item ">
 				<img src="../../../assets/images/map/报表.png" alt="">
 			</span>
@@ -48,21 +52,44 @@
             </div>
             <layer-control></layer-control>
         </div>
+        <div class="area-box" v-show="areaBoxIsShow">
+          <area-control></area-control>
+        </div>
     </div>
 </template>
 <script>
 import LayerControl from '@/components/container/layerControl/layerControl'
+import AreaControl from '@/components/container/areaControl/areaControl'
+
+import {mapGetters} from 'vuex'
 
 export default {
   components: {
-    LayerControl
+    LayerControl,
+    AreaControl
   },
   data(){
       return{
           toolHeight:window.innerHeight *0.8,
           is2Dmap:true,
-          layerToolVisible:false
+          layerToolVisible:false,
+          areaBoxIsShow: false
       }
+  },
+  computed: {
+    ...mapGetters([
+      'areaList',
+      'areaInfoList'
+    ]),
+    areaLayerLength() {
+      let len = 0
+      this.areaInfoList.map(v => {
+        if(v.isActive) {
+          len += 1
+        }
+      })
+      return len
+    }
   },
   methods:{
     //2D 3D切换
@@ -77,11 +104,28 @@ export default {
     //打开图层切换
     openLayerTool:function(){
         this.layerToolVisible = !this.layerToolVisible;
+    },
+    showAreaBox() {
+      this.layerToolVisible = false
+      this.areaBoxIsShow = !this.areaBoxIsShow
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+    .circle {
+      position: absolute;
+      top: 5px;
+      right: 0;
+      display: block;
+      width: 16px;
+      height: 16px;
+      border-radius: 100%;
+      background-color: red;
+      color: #fff;
+      font-size: 12px;
+      line-height: 16px;
+    }
     .tool{
         width: 60px;
         .tool-top{
@@ -89,17 +133,20 @@ export default {
             top: 0;
             left: 0;
         }
+        .tool-box {
+          position: relative;
+        }
         .tool-item{
             display: inline-block;
             width:60px;
             height: 60px;
-            img {
-				margin: 0 auto;
-				display: block;
-				width: 60px;
-				height: 60px;
-			}
             cursor: pointer;
+            img {
+      				margin: 0 auto;
+      				display: block;
+      				width: 60px;
+      				height: 60px;
+      			}
         }
         .tool-bottom{
             position:absolute;
@@ -127,6 +174,12 @@ export default {
                   }
               }
             }
+        }
+        .area-box {
+          width: 310px;
+          position: absolute;
+          top: 65px;
+          right: 70px;
         }
     }
 </style>

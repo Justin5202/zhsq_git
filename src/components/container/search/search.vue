@@ -73,7 +73,8 @@
 				'getSearchParams',
 				'getSearchResult',
 				'setAreaInfo',
-				'getNextAreaInfo'
+				'getNextAreaInfo',
+				'setSelectedAreaList'
 			]),
 			setActive(index) {
 				this.activeIndex = index
@@ -105,6 +106,7 @@
 			    areaname: name
 				}
 				this.setAreaInfo(areaInfo)
+				this.setSelectedAreaList(areaInfo)
 				this.getNextAreaInfo()
 			}
 		},

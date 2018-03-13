@@ -41,9 +41,8 @@
         <li class="child-table-content-li sec-child-li"
             v-for="(childItem, index) in areaInfoList"
             v-if="childItem.children.length > 0"
-            :class="{active: childItem.isActive}"
         >
-          <div class="sec-child-title">
+          <div class="sec-child-title" :class="{active: childItem.isActive}">
             <div class="third-blank"></div>
             <div class="arrow" @click="thirdChildSlide(index)">
               <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
@@ -153,6 +152,7 @@
       border-bottom: 1px solid rgba(0, 0, 0, .1);
       .sec-child-title {
         display: flex;
+        padding-top: 10px;
         padding-bottom: 5px;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
       }
@@ -236,7 +236,7 @@
       background-color: #dcdfe6;
     }
     .sec-child-li {
-      padding-bottom: 0;
+      padding: 0;
       flex-direction: column;
       border-bottom: 0;
     }

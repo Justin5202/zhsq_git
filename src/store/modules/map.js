@@ -184,6 +184,15 @@ const mutations = {
     } else {
       let index = state.areaInfoList.findIndex(v => v.name === name)
       let temp = state.areaInfoList[index]
+      if(temp.children.length > 0) {
+        temp.children.filter(v => {
+          if(!bol) {
+            v.isActive = false
+          } else if(bol) {
+            v.isActive = true
+          }
+        })
+      }
       if(!bol) {
         temp.isActive = false
       } else if(bol) {
@@ -263,17 +272,29 @@ const actions = {
     })
   },
   setAreaList({commit, state}, {bol, name}) {
+    console.log({bol, name})
     let tempArray = []
     // 判断剔除的数据图层，设置active为false
     for(let val of state.areaInfoList) {
       if(val.children.length > 0) {
-        for(let value of val.children) {
-          if(value.name === name && !bol) {
-            value.isActive = false
-          } else if(value.name === name && bol) {
-            value.isActive = true
+        if(val.name === name) {
+          for(let value of val.children) {
+            if(!bol) {
+              value.isActive = false
+            } else if(bol) {
+              value.isActive = true
+            }
+            tempArray.push(value)
           }
-          tempArray.push(value)
+        } else {
+          for(let value of val.children) {
+            if(value.name === name && !bol) {
+              value.isActive = false
+            } else if(value.name === name && bol) {
+              value.isActive = true
+            }
+            tempArray.push(value)
+          }
         }
       } else {
         if(val.name === name && !bol) {

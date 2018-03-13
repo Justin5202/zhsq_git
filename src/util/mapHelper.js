@@ -116,9 +116,11 @@ const addLayerByIdAndGeojson = function (id, geojson) {
 /**
 * @function 添加json到地图
 * @param 目录中的编码,样式json
-* @returns null
+* @returns minzoom(当前json中所有layer的最小出现层级)
 */
 const addLayerByCodeAndJson = function (code, json) {
+    // 当前json的最小层级
+    let minzoom = 22;
 
     // 加source
     if (!sourcesName[code]) {
@@ -143,8 +145,20 @@ const addLayerByCodeAndJson = function (code, json) {
                 map.addLayer(element);
                 // 记录 id 与 code 对应关系
                 layersId[code].push(element.id);
+                // 冒泡找最小值
+                if (element.minzoom) {
+                    if(element.minzoom < minzoom){
+                        minzoom = element.minzoom;
+                    }
+                }else{
+                    if(6 < minzoom){
+                        minzoom = 6;
+                    }                    
+                }
             });
     }
+
+    return minzoom;
 };
 
 /**
@@ -315,15 +329,15 @@ const flyByPointAndZoom = function (center, zoom) {
 
 /**
 * @function 设置小标注点
-* @param layerId,geoPoint,text,textSize,icon,iconColor
+* @param layerId,geoPoint,text,textSize,icon,iconSize,minzoom,maxzoom
 * @returns null
 */
-const setMarkToMap = function (layerId, geoPoint, text, textSize, icon, iconSize) {
+const setMarkToMap = function (layerId, geoPoint, text, textSize, icon, iconSize, minzoom, maxzoom) {
     let option = {
         id: layerId,
         type: "symbol",
-        layout:{},
-        paint:{},
+        layout: {},
+        paint: {},
         source: {
             type: "geojson",
             data: {
@@ -352,6 +366,14 @@ const setMarkToMap = function (layerId, geoPoint, text, textSize, icon, iconSize
         option.layout["text-font"] = ["Arial Unicode MS Regular"];
 
         option.paint["text-color"] = "white";
+    }
+
+    if (maxzoom) {
+        option["maxzoom"] = maxzoom;
+    }
+
+    if (minzoom) {
+        option["minzoom"] = minzoom;
     }
 
     map.addLayer(option);

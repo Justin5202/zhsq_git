@@ -1,7 +1,7 @@
 <template>
   <div class="child-table-content">
     <ul v-if="areaInfoData.length!==0">
-      <li class="child-table-content-li" :class="{active: activeAreaInfoList.length == falseLength}" @click="closeLiBox()">
+      <li class="child-table-content-li" :class="{active: activeAreaInfoList.length !== falseLength}" @click="closeLiBox()">
         <div class="arrow">
           <i class="arrow-icon" :class="{down: isClose}"></i>
         </div>
@@ -48,7 +48,7 @@
             <div class="arrow" @click="thirdChildSlide(index)">
               <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
             </div>
-            <div class="text">
+            <div class="text" @click="isActiveItem(childItem.isActive, childItem.name)">
               <h2>{{childItem.name}}</h2>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
@@ -120,7 +120,6 @@
               }
             }
           })
-          console.log(len)
           return len
         }
       },
@@ -237,6 +236,7 @@
       background-color: #dcdfe6;
     }
     .sec-child-li {
+      padding-bottom: 0;
       flex-direction: column;
       border-bottom: 0;
     }

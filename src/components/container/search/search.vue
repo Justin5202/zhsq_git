@@ -115,7 +115,6 @@
 				}
 			},
 			handleArea(id, name) { // 二级点击时触发的事件
-				// this.showSubmenu = false
 				this.activeName = this.selectStart = name
 				let areaInfo = {
 					areacode: id,
@@ -126,9 +125,9 @@
 				this.getNextAreaInfo()
 				getSelect(id).then(res => {
 					this.subAreaData = res.data
-					this.showThreeLevelMenu = true
-					this.showSubmenuMore = false
 				})
+				this.showThreeLevelMenu = true
+				this.showSubmenuMore = false
 			},
 			handleSubArea(id, name) { // 三级菜单点击时触发的事件
 				this.activeName = this.selectStart = name
@@ -139,6 +138,7 @@
 				this.setAreaInfo(areaInfo)
 				this.setSelectedAreaList(areaInfo)
 				this.getNextAreaInfo()
+				// this.showSubmenu = false
 			},
 			showSubMore() { // 显示二级菜单，隐藏三级菜单
 				this.showSubmenuMore = true

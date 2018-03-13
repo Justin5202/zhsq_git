@@ -1,15 +1,18 @@
 <template>
     <div class="tool" :style="{height:toolHeight +'px'}">
         <div class="tool-top">
-            <div class="layer">
+            <div class="tool-box">
               <span class="tool-item" @click="openLayerTool()">
   				          <img src="../../../assets/images/map/图层.png" alt="">
   			      </span>
-              <layer-control></layer-control>
+              <span class="circle" v-if="areaLayerLength > 0">{{areaLayerLength}}</span>
             </div>
-			<span class="tool-item ">
-				<img src="../../../assets/images/map/区域.png" alt="">
-			</span>
+			      <div class="tool-box">
+              <span class="tool-item" @click="showAreaBox()">
+        				<img src="../../../assets/images/map/区域.png" alt="">
+        			</span>
+              <span class="circle" v-if="areaList.length > 0">{{areaList.length}}</span>
+            </div>
 			<span class="tool-item ">
 				<img src="../../../assets/images/map/报表.png" alt="">
 			</span>
@@ -36,35 +39,61 @@
 			</span>
         </div>
         <div class="layer-tool-box" v-show="layerToolVisible">
-            <div class="layer-tool-item">
-                <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="">
+            <div class="layer-tool-content">
+              <div class="layer-tool-item">
+                  <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="">
+              </div>
+              <div class="layer-tool-item">
+                  <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="">
+              </div>
+              <div class="layer-tool-item">
+                  <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="">
+              </div>
             </div>
-            <div class="layer-tool-item">
-                <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="">
-            </div>
-            <div class="layer-tool-item">
-                <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="">
-            </div>
+            <layer-control></layer-control>
+        </div>
+        <div class="area-box" v-show="areaBoxIsShow">
+          <area-control></area-control>
         </div>
     </div>
 </template>
 <script>
 import LayerControl from '@/components/container/layerControl/layerControl'
+import AreaControl from '@/components/container/areaControl/areaControl'
+
+import {mapGetters} from 'vuex'
 
 export default {
   components: {
-    LayerControl
+    LayerControl,
+    AreaControl
   },
   data(){
       return{
           toolHeight:window.innerHeight *0.8,
           is2Dmap:true,
-          layerToolVisible:false
+          layerToolVisible:false,
+          areaBoxIsShow: false
       }
+  },
+  computed: {
+    ...mapGetters([
+      'areaList',
+      'activeAreaInfoList'
+    ]),
+    areaLayerLength() {
+      let len = 0
+      this.activeAreaInfoList.map(v => {
+        if(v.isActive) {
+          len += 1
+        }
+      })
+      return len
+    }
   },
   methods:{
     //2D 3D切换
-    changeMapStatus:function(){
+    changeMapStatus() {
         this.is2Dmap = !this.is2Dmap;
         if(this.is2Dmap){
             d2cMap.easeTo({pitch: 0});
@@ -73,13 +102,30 @@ export default {
         }
     },
     //打开图层切换
-    openLayerTool:function(){
+    openLayerTool() {
         this.layerToolVisible = !this.layerToolVisible;
+    },
+    showAreaBox() {
+      this.layerToolVisible = false
+      this.areaBoxIsShow = !this.areaBoxIsShow
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+    .circle {
+      position: absolute;
+      top: 5px;
+      right: 0;
+      display: block;
+      width: 16px;
+      height: 16px;
+      border-radius: 100%;
+      background-color: red;
+      color: #fff;
+      font-size: 12px;
+      line-height: 16px;
+    }
     .tool{
         width: 60px;
         .tool-top{
@@ -87,17 +133,20 @@ export default {
             top: 0;
             left: 0;
         }
+        .tool-box {
+          position: relative;
+        }
         .tool-item{
             display: inline-block;
             width:60px;
             height: 60px;
-            img {
-				margin: 0 auto;
-				display: block;
-				width: 60px;
-				height: 60px;
-			}
             cursor: pointer;
+            img {
+      				margin: 0 auto;
+      				display: block;
+      				width: 60px;
+      				height: 60px;
+      			}
         }
         .tool-bottom{
             position:absolute;
@@ -105,18 +154,32 @@ export default {
             left: 0;
         }
         .layer-tool-box{
+          display: flex;
+          flex-direction: column;
             width: 310px;
-            height: 80px;
-            background-color:#fff;
+            background-color: #fff;
             position: absolute;
-            border:1px solid #eee;
-            border-radius: 5px;
-            top:-10px;
-            right: 60px;
-            .layer-tool-item{
-                float: left;
-                margin: 10px 0 0 10px ;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            top: 0;
+            right: 70px;
+            .layer-tool-content {
+              display: flex;
+              border-bottom: 1px solid #e4e7ed;
+              .layer-tool-item{
+                  margin: 10px 0 10px 10px;
+                  cursor: pointer;
+                  img {
+                    display: block;
+                  }
+              }
             }
+        }
+        .area-box {
+          width: 310px;
+          position: absolute;
+          top: 65px;
+          right: 70px;
         }
     }
 </style>

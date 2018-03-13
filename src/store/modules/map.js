@@ -10,7 +10,8 @@ import axios from '@/util/http'
 
 import URL from '@/settings/sourceControl'
 import {parallel} from '@/util/async'
-import {getSelect, getSearch, getDetailInfo, getNextAreaInfo} from '@/api/dataSheets'
+import {getSelect, getSearch, getDetailInfo, getNextAreaInfo, getJson} from '@/api/dataSheets'
+import mapHelper from '@/util/mapHelper'
 import * as TYPE from '../type'
 
 const timeout = 15000
@@ -140,6 +141,11 @@ const mutations = {
     state.areaInfoList = areaInfoList
     /*所有子集push到一个数组里面*/
     state.activeAreaInfoList = temp
+    temp.map(v => {
+      getJson(v.datapath).then(res => {
+        mapHelper.addLayerByCodeAndJson(v.id, res)
+      })
+    })
   },
   [TYPE.SET_ACTIVE_AREA_LIST] (state, activeAreaInfoList) {
     state.activeAreaInfoList = activeAreaInfoList

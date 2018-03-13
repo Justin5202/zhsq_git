@@ -62,3 +62,10 @@ export function getDetailInfo(params) {
 		return Promise.resolve(res.data)
 	})
 }
+
+// 获取json
+export function getJson(name) {
+	return axios.get(`http://zhsq.digitalcq.com/D2CJsonV3${name}`).then(res => {
+		return Promise.resolve(res.data)
+	})
+}

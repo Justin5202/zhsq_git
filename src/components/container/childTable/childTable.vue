@@ -25,7 +25,7 @@
             :class="{active: childItem.isActive}"
         >
           <div class="sec-blank"></div>
-          <div class="text" @click="isActiveItem(childItem.isActive, childItem.name)">
+          <div class="text" @click="isActiveItem(childItem.isActive, childItem.id)">
             <h2>{{childItem.name}}</h2>
             <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
             <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
@@ -50,7 +50,7 @@
             <div class="arrow" @click="thirdChildSlide(index)">
               <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
             </div>
-            <div class="text" @click="isActiveItem(childItem.isActive, childItem.name)">
+            <div class="text" @click="isActiveItem(childItem.isActive, childItem.id)">
               <h2>{{childItem.name}}</h2>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
@@ -67,7 +67,7 @@
             <li class="child-table-content-li"
                 v-for="thirdChild in childItem.children"
                 :class="{active: thirdChild.isActive}"
-                @click="isActiveItem(thirdChild.isActive, thirdChild.name)"
+                @click="isActiveItem(thirdChild.isActive, thirdChild.id)"
             >
               <div class="fourth-blank"></div>
               <div class="text">
@@ -139,21 +139,19 @@
               lenArray.push(-1)
             }
           })
-          console.log(lenArray)
           return lenArray
         }
       },
       methods: {
         closeLiBox() {
-          console.log(this.childFalseLenArray)
           this.isClose = !this.isClose
         },
         thirdChildSlide(index) {
           this.thirdChildIsShow = !this.thirdChildIsShow
           this.nowIndex = index
         },
-        isActiveItem(bol, name) {
-          this.setAreaList({'bol': !bol, 'name': name})
+        isActiveItem(bol, id) {
+          this.setAreaList({'bol': !bol, 'id': id})
         },
         ...mapActions([
           'setAreaList'

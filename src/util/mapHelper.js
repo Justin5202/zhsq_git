@@ -153,7 +153,7 @@ const addLayerByCodeAndJson = function (code, json) {
                 }else{
                     if(6 < minzoom){
                         minzoom = 6;
-                    }                    
+                    }
                 }
             });
     }

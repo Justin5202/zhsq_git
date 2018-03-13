@@ -171,11 +171,11 @@ const mutations = {
       state.areaList = []
     }
   },
-  [TYPE.SET_LEFT_ACTIVE_AREA_LIST] (state, {bol, name}) {
-    if(state.areaInfoList.findIndex(v => v.name === name) < 0) {
+  [TYPE.SET_LEFT_ACTIVE_AREA_LIST] (state, {bol, id}) {
+    if(state.areaInfoList.findIndex(v => v.id === id) < 0) {
       state.areaInfoList.filter(v => {
         if(v.children.length > 0) {
-          let index = v.children.findIndex(i => i.name === name)
+          let index = v.children.findIndex(i => i.id === id)
           if(index >= 0) {
             let temp = v.children[index]
             if(!bol) {
@@ -188,7 +188,7 @@ const mutations = {
         }
       })
     } else {
-      let index = state.areaInfoList.findIndex(v => v.name === name)
+      let index = state.areaInfoList.findIndex(v => v.id === id)
       let temp = state.areaInfoList[index]
       if(temp.children.length > 0) {
         temp.children.filter(v => {
@@ -277,13 +277,13 @@ const actions = {
       commit(TYPE.GET_SEARCH_RESULT, res.data)
     })
   },
-  setAreaList({commit, state}, {bol, name}) {
-    console.log({bol, name})
+  setAreaList({commit, state}, {bol, id}) {
+    console.log({bol, id})
     let tempArray = []
     // 判断剔除的数据图层，设置active为false
     for(let val of state.areaInfoList) {
       if(val.children.length > 0) {
-        if(val.name === name) {
+        if(val.id === id) {
           for(let value of val.children) {
             if(!bol) {
               value.isActive = false
@@ -294,24 +294,26 @@ const actions = {
           }
         } else {
           for(let value of val.children) {
-            if(value.name === name && !bol) {
+            if(value.id === id && !bol) {
               value.isActive = false
-            } else if(value.name === name && bol) {
+            } else if(value.id === id && bol) {
               value.isActive = true
             }
             tempArray.push(value)
           }
         }
       } else {
-        if(val.name === name && !bol) {
+        if(val.id === id && !bol) {
           val.isActive = false
-        } else if(val.name === name && bol) {
+        } else if(val.id === id && bol) {
           val.isActive = true
         }
         tempArray.push(val)
       }
     }
-    commit(TYPE.SET_LEFT_ACTIVE_AREA_LIST, {bol, name})
+    /*删除对应id图层*/
+    mapHelper.removeLayerByCode(id)
+    commit(TYPE.SET_LEFT_ACTIVE_AREA_LIST, {bol, id})
     commit(TYPE.SET_ACTIVE_AREA_LIST, tempArray)
   },
   // 区县区域下一级详细信息
@@ -330,6 +332,8 @@ const actions = {
       val.isActive = false
       tempArray.push(val)
     }
+    /*清空所有图层*/
+    tempArray.map(v => mapHelper.removeLayerByCode(v.id))
     commit(TYPE.SET_ACTIVE_AREA_LIST, tempArray)
   }
 }

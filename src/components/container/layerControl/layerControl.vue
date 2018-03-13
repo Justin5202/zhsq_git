@@ -19,7 +19,7 @@
             <div class="check-item">
               <el-checkbox :label="item.name" :key="item.name"></el-checkbox>
               <div class="cross-box">
-                <i class="cross-icon" @click="removeItem(item.name)"></i>
+                <i class="cross-icon" @click="removeItem(item.id)"></i>
               </div>
             </div>
             <div class="slider-box" v-if="checkedTransparency">
@@ -37,7 +37,7 @@
               <div class="check-item">
                 <el-checkbox :label="v.name" :key="v.name"></el-checkbox>
                 <div class="cross-box">
-                  <i class="cross-icon" @click="removeItem(v.name)"></i>
+                  <i class="cross-icon" @click="removeItem(v.id)"></i>
                 </div>
               </div>
               <div class="slider-box" v-if="checkedTransparency">
@@ -93,8 +93,8 @@ export default {
     removeAll() {
       this.removeAllAreaList()
     },
-    removeItem(name) {
-      this.setAreaList({'bol': false, 'name': name})
+    removeItem(id) {
+      this.setAreaList({'bol': false, 'id': id})
     },
     getCheckedItem() {
       this.checkedItem = this.activeAreaInfoList.map(item => item.name)

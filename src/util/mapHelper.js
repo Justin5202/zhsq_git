@@ -101,7 +101,6 @@ const onClick = function (e) {
     if (features.length > 0 ) {
         // onClickCallback传入
         callback(features[0].properties.mapguid);
-        console.log(features);
     }
 };
 

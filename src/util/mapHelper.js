@@ -27,7 +27,6 @@ var callback = null;
 
 //
 
-
 /**
 * @function 初始化地图
 * @param option
@@ -98,7 +97,7 @@ const onPitch = function (e) {
 const onClick = function (e) {
     var features = map.queryRenderedFeatures([e.lngLat.lng, e.lngLat.lat]);
     // 要素的mapguid
-    if (features.length > 0 ) {
+    if (features.length > 0) {
         // onClickCallback传入
         callback(features[0].properties.mapguid);
     }
@@ -457,6 +456,15 @@ const getCenter = function () {
 };
 
 /**
+* @function 设置边界坐标来飞
+* @param 点构成的2维数组 [[106.29035996418713,29.46329059299842], [106.29362592578252,29.463419456600406]]
+* @returns 无
+*/
+const flyByBounds = function (lngLatBounds) {
+    map.fitBounds(lngLatBounds);
+};
+
+/**
 * @function 获取边界坐标
 * @param 无
 * @returns LngLatBounds
@@ -481,13 +489,14 @@ export default {
 
     setMarkToMap,
     flyByPointAndZoom,
+    flyByBounds,
 
     setBearing,
     setPitch,
     setCenter,
 
     getZoom,
-    getCenter,
+    getCenter,    
     getBounds,
 
     onClickCallback

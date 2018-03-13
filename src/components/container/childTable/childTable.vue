@@ -1,7 +1,7 @@
 <template>
   <div class="child-table-content">
     <ul v-if="areaInfoData.length!==0">
-      <li class="child-table-content-li" :class="{active: activeAreaInfoList.length == falseLength}" @click="closeLiBox()">
+      <li class="child-table-content-li" :class="{active: activeAreaInfoList.length !== falseLength}" @click="closeLiBox()">
         <div class="arrow">
           <i class="arrow-icon" :class="{down: isClose}"></i>
         </div>
@@ -41,14 +41,13 @@
         <li class="child-table-content-li sec-child-li"
             v-for="(childItem, index) in areaInfoList"
             v-if="childItem.children.length > 0"
-            :class="{active: childItem.isActive}"
         >
-          <div class="sec-child-title">
+          <div class="sec-child-title" :class="{active: childItem.isActive}">
             <div class="third-blank"></div>
             <div class="arrow" @click="thirdChildSlide(index)">
               <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
             </div>
-            <div class="text">
+            <div class="text" @click="isActiveItem(childItem.isActive, childItem.name)">
               <h2>{{childItem.name}}</h2>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
@@ -120,7 +119,6 @@
               }
             }
           })
-          console.log(len)
           return len
         }
       },
@@ -154,6 +152,7 @@
       border-bottom: 1px solid rgba(0, 0, 0, .1);
       .sec-child-title {
         display: flex;
+        padding-top: 10px;
         padding-bottom: 5px;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
       }
@@ -237,6 +236,7 @@
       background-color: #dcdfe6;
     }
     .sec-child-li {
+      padding: 0;
       flex-direction: column;
       border-bottom: 0;
     }

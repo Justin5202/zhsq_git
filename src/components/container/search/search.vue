@@ -136,7 +136,7 @@
 			    areaname: name
 				}
 				this.setAreaInfo(areaInfo)
-				this.setSelectedAreaList(areaInfo)
+				this.setSelectedAreaList({'areainfo': areaInfo, 'isRemoveAll': false})
 				this.getNextAreaInfo()
 				// this.showSubmenu = false
 			},

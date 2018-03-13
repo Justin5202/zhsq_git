@@ -3,7 +3,7 @@
       <div class="layer-box">
         <div class="layer-title-box">
           <h2>区域</h2>
-          <span class="trash-icon"></span>
+          <span class="trash-icon" @click="removeAll()"></span>
         </div>
         <div class="layer-tool-arrow"></div>
         <div class="check">
@@ -29,10 +29,14 @@
     },
     methods: {
       remove(areainfo) {
-        this.setSelectedAreaList(areainfo)
+        this.setSelectedAreaList({'areainfo': areainfo, 'isRemoveAll': false})
+      },
+      removeAll() {
+        this.setSelectedAreaList({'areainfo': '', 'isRemoveAll': true})
       },
       ...mapActions([
-        'setSelectedAreaList'
+        'setSelectedAreaList',
+        'removeAllAreaList'
       ])
     }
   }

@@ -121,7 +121,8 @@
 			    areaname: name
 				}
 				this.setAreaInfo(areaInfo)
-				this.setSelectedAreaList(areaInfo)
+				// this.setSelectedAreaList(areaInfo)
+				this.setSelectedAreaList({'areainfo': areaInfo, 'isRemoveAll': false})
 				this.getNextAreaInfo()
 				getSelect(id).then(res => {
 					this.subAreaData = res.data

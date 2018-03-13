@@ -202,7 +202,7 @@ const removeLayerByCode = function (code) {
     // 用code 找到对应的 图层id 逐一删除
     if (layersId[code]) {
         layersId[code].forEach(element => {
-            map.removeLayer(id);
+            map.removeLayer(element);
         });
         layersId[code] = null;
     } else {

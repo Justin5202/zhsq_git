@@ -33,9 +33,9 @@
                       <td class="table-item"></td>
                       <td class="table-item"></td>
                     </tr>
-                    <tr v-for="data in item.dataByYear" :key="data.id">
+                    <tr v-for="data in item.dataByYear">
                       <td style="width:32%">{{data.type}}</td>
-                      <td class="table-item">{{data["area"]}}</td>
+                      <td class="table-item">{{data["areaName"]}}</td>
                       <td class="table-item num-color">{{data["2017"]||"--"}}</td>
                       <td class="table-item num-color">{{data["2016"]||"--"}}</td>
                       <td class="table-item num-color">{{data["2015"]||"--"}}</td>
@@ -49,10 +49,6 @@
             </table>
           </div>
         </span>
-        <!-- <span slot="footer" class="dialog-footer">
-            <el-button @click="reportFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="reportFormVisible = false">确 定</el-button>
-        </span> -->
         </el-dialog>
   </div>
 </template>
@@ -64,12 +60,14 @@ export default {
       return{
         reportFormVisible:false,
         dataId:'',
+        areaCode:'',
         dataList:[]
       }
   },
   computed:{
     ...mapGetters([
-      'areaInfoData'
+      'areaInfoData',
+      'areaList'
     ])
   },
   methods:{
@@ -77,13 +75,15 @@ export default {
       openReportForm:function(){
         this.reportFormVisible = true
         this.dataId = ""
-        this.dataList = []
         this.getDataId(this.areaInfoData)
+        this.getAreaCode(this.areaList)
+        this.areaCode = this.areaCode.substring(1)
         this.dataId = this.dataId.substring(1)
         var typeNum = 0;//用于保存数据类型数量
         var areaNum = 0;//用于保存不同的地区数量
+        var arrayList = []
         //获取详情
-        getMsMacroData(this.dataId).then(res =>{
+        getMsMacroData(this.areaCode,this.dataId).then(res =>{
           for(let i in res.data){
             typeNum++
             areaNum = 0 //只取一次循环的数量
@@ -95,24 +95,26 @@ export default {
                 var filedsData = res.data[i][j][yearList][0].filedsData.split('|ZX|')
                 for(var p=0;p< filedsData.length;p++){
                   if(dataByYear.length < filedsData.length){
-                    dataByYear.push({"type":filedsData[p].split(':')[0],"areaName":res.data[i][j][yearList][0].areaName,"areaCode":j,"id":p})
+                    dataByYear.push({"type":filedsData[p].split(':')[0],"areaName":res.data[i][j][yearList][0].areaName,"areaCode":j})
                   }
                   dataByYear[p][yearList] = filedsData[p].split(':')[1]||"--"
                 }
                 if(k == res.data[i][j]['year'].length-1){
-                  this.dataList.push({"name":res.data[i][j][yearList][0].name,"id":res.data[i][j][yearList][0].dataId,"dataByYear":dataByYear})
+                  arrayList.push({"name":res.data[i][j][yearList][0].name,"id":res.data[i][j][yearList][0].dataId,"dataByYear":dataByYear})
                 }
               }
             }
           }
           //将type相同的数组进行合并
-          this.connectArray(this.dataList,typeNum,areaNum)
+          this.connectArray(arrayList,typeNum,areaNum)
         })
       },
       //将areaInfoData中dataId拼凑返回
       getDataId:function(data){
         for(let i in data){
-          this.dataId += ','+ data[i].id
+          if(data[i].target.length>0){
+            this.dataId += ','+ data[i].id
+          }
           if(data[i].children.length > 0){
             this.getDataId(data[i].children)
           }else{
@@ -120,20 +122,39 @@ export default {
           }
         } 
       },
+      //将areaList中的areaCode拼凑返回
+      getAreaCode:function(data){
+        if(data.length > 0){
+          for(let i in data){
+            this.areaCode += ','+ data[i].areacode
+          }
+        }else{
+          this.areaCode = ',500000'
+        }
+      },
       //数组合并i
       connectArray:function(array,typeNum,areaNum){
-        var result =[];
+        var result =[]
+         this.dataList = []
         for (var i= 0;  i< Math.ceil(array.length / areaNum); i++) {
             var start = i * areaNum;
             var end = start + areaNum;
             result.push(array.slice(start, end));
         }
         for(var m = 0;m<result.length;m++){
-          for(var n = 0;n<result[m].length;n++){
+          for(var n = 0;n<result[m].length;n += areaNum){
+            var temporary = [];
             for(var k = 0;k<result[m][n].dataByYear.length;k++){
-              console.log(result[m][n].dataByYear);
+              for(var j = 0;j<areaNum;j++){
+                if( (n+j)>0){
+                  result[m][n+j].dataByYear[k].type = ""
+                }
+                temporary.push(result[m][n+j].dataByYear[k])
+              }
             }
+            result[m][0].dataByYear = temporary
           }
+          this.dataList.push(result[m][0])
         }
       },
       //清空按钮点击

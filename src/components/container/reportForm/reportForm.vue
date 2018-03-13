@@ -54,7 +54,7 @@
 </template>
 <script>
 import {getMsMacroData} from '@/api/datasheets.js'
-import {mapGetters} from 'Vuex'
+import {mapGetters,mapActions} from 'Vuex'
 export default {
   data(){
       return{
@@ -159,12 +159,19 @@ export default {
       },
       //清空按钮点击
       clearForm:function(key){
+        console.log(this.dataList)
         if(key!=""||key!=undefined||key!=null){
           this.dataList.splice(key,1)
+          this.setAreaList({'bol': false, 'id': this.dataList[key].id})
         }else{
-           this.dataList = [];
+           for(var i in this.dataList){
+             this.setAreaList({'bol': false, 'id': this.dataList[i].id})
+           }
         }
-      }
+      },
+      ...mapActions([
+        'setAreaList'
+      ])
   }
 }
 </script>

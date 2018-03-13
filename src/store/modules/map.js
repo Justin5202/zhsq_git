@@ -29,7 +29,8 @@ function loadStyle(styles, afterLoad) {
                 return http
                     .get(url)
                     .then(res => afterLoad({
-                        [url]: res.data }))
+                        [url]: res.data
+                    }))
                     .catch(error => {
                         console.error(`${url} load false \n${error}`)
                     })

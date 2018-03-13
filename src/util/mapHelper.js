@@ -22,6 +22,11 @@ var layersId = {};
 // code 与 source 的对应关系
 var sourcesName = {};
 
+// 地图点击事件的回调函数(等待传入)
+var onClickCallback = function(mapguid){
+    console.log(mapguid);
+};
+
 /**
 * @function 初始化地图
 * @param option
@@ -61,7 +66,12 @@ const initMap = function (option) {
         .map(option);
 
     //绑定右键拖动事件 2D 3D 图层显示用
-    map.on('pitch', onPitchCallBack);
+    map.on('pitch', onPitch);
+
+    // 绑定点击事件返回 mapguid
+    map.on('click', onClick);
+
+
 
     return map;
 };
@@ -71,7 +81,7 @@ const initMap = function (option) {
 * @param event
 * @returns null
 */
-const onPitchCallBack = function (e) {
+const onPitch = function (e) {
     if (map.getPitch() > 0.00001) {
         set2dLayersVisibility(false);
         set3dLayersVisibility(true);
@@ -80,6 +90,12 @@ const onPitchCallBack = function (e) {
         set3dLayersVisibility(false);
     }
 };
+
+/**
+* @function 点击地图时的回调函数(私有)
+* @param event
+* @returns null
+*/
 
 /**
 * @function 添加geojson到地图(画行政区划线)
@@ -186,7 +202,7 @@ const removeLayerByCode = function (code) {
     // 用code 找到对应的 图层id 逐一删除
     if (layersId[code]) {
         layersId[code].forEach(element => {
-            removeLayerById(element);
+            map.removeLayer(id);
         });
         layersId[code] = null;
     } else {
@@ -456,6 +472,8 @@ export default {
 
     getZoom,
     getCenter,
-    getBounds
+    getBounds,
+
+    onClickCallback
 
 }

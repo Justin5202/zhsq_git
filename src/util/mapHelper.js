@@ -22,10 +22,11 @@ var layersId = {};
 // code 与 source 的对应关系
 var sourcesName = {};
 
-// 地图点击事件的回调函数(等待传入)
-var onClickCallback = function(mapguid){
-    console.log(mapguid);
-};
+// 中转callback onClickCallback 用
+var callback = null;
+
+//
+
 
 /**
 * @function 初始化地图
@@ -71,8 +72,6 @@ const initMap = function (option) {
     // 绑定点击事件返回 mapguid
     map.on('click', onClick);
 
-
-
     return map;
 };
 
@@ -96,6 +95,23 @@ const onPitch = function (e) {
 * @param event
 * @returns null
 */
+const onClick = function (e) {
+    var features = map.queryRenderedFeatures([e.lngLat.lng, e.lngLat.lat]);
+    // 要素的mapguid
+    if (features.length > 0 ) {
+        // onClickCallback传入
+        callback(features[0].properties.mapguid);
+    }
+};
+
+/**
+* @function 设置点击地图回调函数
+* @param callback
+* @returns null
+*/
+const onClickCallback = function (_callback) {
+    callback = _callback;
+};
 
 /**
 * @function 添加geojson到地图(画行政区划线)
@@ -163,13 +179,13 @@ const addLayerByCodeAndJson = function (code, json) {
                 layersId[code].push(element.id);
                 // 冒泡找最小值
                 if (element.minzoom) {
-                    if(element.minzoom < minzoom){
+                    if (element.minzoom < minzoom) {
                         minzoom = element.minzoom;
                     }
-                }else{
-                    if(6 < minzoom){
+                } else {
+                    if (6 < minzoom) {
                         minzoom = 6;
-                    }                    
+                    }
                 }
             });
     }

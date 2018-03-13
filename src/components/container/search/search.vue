@@ -12,7 +12,15 @@
 				</ul>
 				<div class="subMenu" v-if="showSubmenu">
 					<ul class="areas">
-						<li v-for="item in areaData" @click="handleArea(item.areaname, item.areacode)">{{item.areaname}}</li>
+						<li v-for="item in areaData1" @click="handleArea(item.areacode, item.areaname)">{{item.areaname}}</li>
+						<li v-if="!showSubmenuMore" @click="showSubMore()">更多...</li>
+						<li v-else v-for="item in areaData2" @click="handleArea(item.areacode, item.areaname)">{{item.areaname}}</li>
+					</ul>
+				</div>
+				<div class="three-level-menu" v-if="showThreeLevelMenu">
+					<p>镇乡街</p>
+					<ul class="areas">
+						<li v-for="item in subAreaData" @click="handleSubArea(item.areacode, item.areaname)">{{item.areaname}}</li>
 					</ul>
 				</div>
 			</div>
@@ -39,7 +47,11 @@
 				activeName: '重庆市',
 				showSelectBox: false,
 				showSubmenu: false,
-				areaData: []
+				showSubmenuMore: false,
+				areaData1: [],
+				areaData2: [],
+				subAreaData: [],
+				showThreeLevelMenu: false
 			}
 		},
 		methods: {
@@ -56,21 +68,13 @@
 					name: this.searchContent,
 					start: 0,
 					rows: 10,
-					areacode: code,
-					areaname: start,
-					type: 1,
-					point: "106.627441893, 29.7208926650001"
+					type: 1
 				}
 				this._getSearchParams(params)
 			},
 			showSearchPane() {
 				this.searchPaneShow(true)
 				this.tablePaneShow(false)
-			},
-			_getSelect(areacode) {
-				getSelect(areacode).then(res => {
-					this.areaData = res.data;
-				})
 			},
 			_getSearchParams(params) {
 				this.getSearchParams({'typeParams': {}, 'params': params})
@@ -79,7 +83,10 @@
 				'searchPaneShow',
 				'tablePaneShow',
 				'getSearchParams',
-				'getSearchResult'
+				'getSearchResult',
+				'setAreaInfo',
+				'getNextAreaInfo',
+				'setSelectedAreaList'
 			]),
 			setActive(index) {
 				this.activeIndex = index
@@ -88,20 +95,55 @@
 			showBox() {
 				this.showSelectBox = this.showSelectBox === true ? false : true;
 			},
-			handleClick(index, start, code) {
+			handleClick(index, areaname, areacode) { // 一级菜单点击时触发的事件
 				this.setActive(index)
-				this.activeName = this.selectStart = start
-				this.selectCode = code
-				// this.clickSearch(start, code)
-				if (index === 2) {
-					this._getSelect(code)
+				this.activeName = this.selectStart = areaname
+				this.selectCode = areacode
+				let areaInfo = {
+					areacode: areacode,
+			    areaname: areaname
+				}
+				this.setAreaInfo(areaInfo)
+				if(index === 2) {
+					getSelect(areacode).then(res => {
+						this.areaData1 = res.data.slice(0, 8)
+						this.areaData2 = res.data.slice(8)
+					})
+				} else {
+					this.showSubmenuMore = false
+					this.showThreeLevelMenu = false
 				}
 			},
-			handleArea(start, code) {
-				this.showSubmenu = false
-				this.activeName = this.selectStart = start
-				this.selectCode = code
-				// this.clickSearch(start, code)
+			handleArea(id, name) { // 二级点击时触发的事件
+				this.activeName = this.selectStart = name
+				let areaInfo = {
+					areacode: id,
+			    areaname: name
+				}
+				this.setAreaInfo(areaInfo)
+				// this.setSelectedAreaList(areaInfo)
+				this.setSelectedAreaList({'areainfo': areaInfo, 'isRemoveAll': false})
+				this.getNextAreaInfo()
+				getSelect(id).then(res => {
+					this.subAreaData = res.data
+				})
+				this.showThreeLevelMenu = true
+				this.showSubmenuMore = false
+			},
+			handleSubArea(id, name) { // 三级菜单点击时触发的事件
+				this.activeName = this.selectStart = name
+				let areaInfo = {
+					areacode: id,
+			    areaname: name
+				}
+				this.setAreaInfo(areaInfo)
+				this.setSelectedAreaList({'areainfo': areaInfo, 'isRemoveAll': false})
+				this.getNextAreaInfo()
+				// this.showSubmenu = false
+			},
+			showSubMore() { // 显示二级菜单，隐藏三级菜单
+				this.showSubmenuMore = true
+				this.showThreeLevelMenu = false
 			}
 		},
 	}
@@ -198,5 +240,11 @@
 	}
 	.areas li:nth-of-type(3n-2), .areas li:nth-of-type(3n-1) {
 		border-right: 1px solid lightgrey;
+	}
+	.three-level-menu p {
+		color:#888;
+		font-size: 14px;
+		padding: 5px;
+		background-color: rgb(247, 244, 244);
 	}
 </style>

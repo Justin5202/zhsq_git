@@ -12,7 +12,10 @@
       <div class="layer-tool-arrow"></div>
       <div class="check">
         <el-checkbox-group v-model="checkedItem" @change="handleCheckedItemsChange">
-          <div class="check-box" v-for="item in activeAreaInfoList" v-if="item.isActive">
+          <div class="check-box"
+            v-for="item in areaInfoList"
+            v-if="item.children.length ===0 && item.isActive"
+          >
             <div class="check-item">
               <el-checkbox :label="item.name" :key="item.name"></el-checkbox>
               <div class="cross-box">
@@ -21,6 +24,25 @@
             </div>
             <div class="slider-box" v-if="checkedTransparency">
               <el-slider v-model="value1"></el-slider>
+            </div>
+          </div>
+          <div
+            v-for="item in areaInfoList"
+            v-if="item.children.length > 0"
+          >
+            <div class="check-box"
+              v-for="v in item.children"
+              v-if="v.isActive"
+            >
+              <div class="check-item">
+                <el-checkbox :label="v.name" :key="v.name"></el-checkbox>
+                <div class="cross-box">
+                  <i class="cross-icon" @click="removeItem(v.name)"></i>
+                </div>
+              </div>
+              <div class="slider-box" v-if="checkedTransparency">
+                <el-slider v-model="value1"></el-slider>
+              </div>
             </div>
           </div>
         </el-checkbox-group>
@@ -44,7 +66,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'activeAreaInfoList'
+      'activeAreaInfoList',
+      'areaInfoList'
     ]),
     falseLength() {
       let len = 0

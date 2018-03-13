@@ -319,6 +319,9 @@ const actions = {
     let tempArray = []
     for(let val of state.areaInfoList) {
       val.isActive = false
+    }
+    for(let val of state.activeAreaInfoList) {
+      val.isActive = false
       tempArray.push(val)
     }
     commit(TYPE.SET_ACTIVE_AREA_LIST, tempArray)

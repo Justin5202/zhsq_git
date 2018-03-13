@@ -42,7 +42,10 @@
             v-for="(childItem, index) in areaInfoList"
             v-if="childItem.children.length > 0"
         >
-          <div class="sec-child-title" :class="{active: childItem.isActive}">
+          <div
+            class="sec-child-title"
+            :class="{active: childItem.isActive && childFalseLenArray[index] !== childItem.children.length}"
+          >
             <div class="third-blank"></div>
             <div class="arrow" @click="thirdChildSlide(index)">
               <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
@@ -120,10 +123,29 @@
             }
           })
           return len
+        },
+        childFalseLenArray() {
+          let lenArray = []
+          this.areaInfoList.map(v => {
+            if(v.children.length > 0) {
+              let len = 0
+              v.children.map(i => {
+                if(!i.isActive) {
+                  len += 1
+                }
+              })
+              lenArray.push(len)
+            } else {
+              lenArray.push(-1)
+            }
+          })
+          console.log(lenArray)
+          return lenArray
         }
       },
       methods: {
         closeLiBox() {
+          console.log(this.childFalseLenArray)
           this.isClose = !this.isClose
         },
         thirdChildSlide(index) {

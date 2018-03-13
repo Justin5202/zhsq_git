@@ -107,7 +107,7 @@
 					areacode: areacode,
 			    areaname: areaname
 				}
-				this.setAreaInfo(areaInfo)
+				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
 				if(index === 2) {
 					getSelect(areacode).then(res => {
 						this.areaData1 = res.data.slice(0, 8)
@@ -124,9 +124,7 @@
 					areacode: id,
 			    areaname: name
 				}
-				this.setAreaInfo(areaInfo)
-				this.setSelectedAreaList({'areainfo': areaInfo, 'isRemoveAll': false})
-				this.getNextAreaInfo()
+				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
 				getSelect(id).then(res => {
 					this.subAreaData1 = res.data.slice(0, 8)
 					this.subAreaData2 = res.data.slice(8)
@@ -141,17 +139,13 @@
 					areacode: id,
 			    areaname: name
 				}
-				this.setAreaInfo(areaInfo)
-				this.setSelectedAreaList({'areainfo': areaInfo, 'isRemoveAll': false})
-				this.getNextAreaInfo()
-				// this.showSubmenu = false
-				// this.showThreeLevelMenu = false
+				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
 			},
 			showSubMore() { // 显示二级菜单，隐藏三级菜单
 				this.showSubmenuMore = true
 				this.showThreeLevelMenu = false
 			},
-			showThreeLevelMore() { 
+			showThreeLevelMore() {
 				this.showThreeLevelMenuMore = true
 			}
 		},

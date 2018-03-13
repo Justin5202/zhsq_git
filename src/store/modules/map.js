@@ -53,6 +53,7 @@ const state = {
     areacode: 500000,
     areaname: '重庆'
   },
+  secAreaList: [],
   areaList: [],
   searchParams: {},
   searchList: [],
@@ -63,6 +64,7 @@ const state = {
 
 const getters = {
   areaInfo: state => state.areaInfo,
+  secAreaList: state => state.secAreaList,
   areaList: state => state.areaList,
   searchPaneShow: state => state.searchPaneShow,
   searchParams: state => state.searchParams,
@@ -150,6 +152,9 @@ const mutations = {
   [TYPE.SET_ACTIVE_AREA_LIST] (state, activeAreaInfoList) {
     state.activeAreaInfoList = activeAreaInfoList
   },
+  [TYPE.SET_SEC_AREA_LIST] (state, secAreaList) {
+    state.secAreaList = secAreaList
+  },
   [TYPE.SET_AREA_INFO] (state, areaInfo) {
     state.areaInfo = areaInfo
   },
@@ -163,9 +168,18 @@ const mutations = {
         }
       }
       if(bol) {
-        temp.splice(temp.findIndex(v => v.areacode === areainfo.areacode), 1)
+        let index = temp.findIndex(v => v.areacode === areainfo.areacode)
+        temp.splice(index, 1)
+        /*删除行政区划线*/
+        let areaIndex = state.secAreaList.findIndex(v => v.areacode === areainfo.areacode)
+        mapHelper.removeLayerById(areaIndex)
       } else {
         temp.push(areainfo)
+        /*画行政区划线*/
+        /*选中区域所在详细信息列表的位置,图层id为当前区域所在列表的下标*/
+        let area = state.secAreaList.filter(v => v.areacode === areainfo.areacode)
+        let index = state.secAreaList.findIndex(v => v.areacode === areainfo.areacode)
+        mapHelper.addLayerByIdAndGeojson(index, area.geojson)
       }
     } else {
       state.areaList = []
@@ -266,11 +280,13 @@ const actions = {
       commit(TYPE.TABLE_PANE_SHOW, false)
     })
   },
-  setAreaInfo({commit, state}, areaInfo) {
-    commit(TYPE.SET_AREA_INFO, areaInfo)
-  },
-  setSelectedAreaList({commit, state}, {areainfo, isRemoveAll}) {
-    commit(TYPE.SET_SELECTED_AREA_LIST, {areainfo, isRemoveAll})
+  setAreaInfo({commit, state}, {areainfo, isRemoveAll}) {
+    console.log({areainfo, isRemoveAll})
+    getNextAreaInfo(areainfo.areacode).then(res => {
+      commit(TYPE.SET_SEC_AREA_LIST, res.data)
+      commit(TYPE.SET_AREA_INFO, areainfo)
+      commit(TYPE.SET_SELECTED_AREA_LIST, {areainfo, isRemoveAll})
+    })
   },
   getSearchResult({commit, state}) {
     getSearch(state.searchParams).then(res => {
@@ -287,8 +303,14 @@ const actions = {
           for(let value of val.children) {
             if(!bol) {
               value.isActive = false
+              /*删除对应id图层*/
+              mapHelper.removeLayerByCode(id)
             } else if(bol) {
               value.isActive = true
+              /*增加对应图层*/
+              getJson(value.datapath).then(res => {
+                mapHelper.addLayerByCodeAndJson(id, res)
+              })
             }
             tempArray.push(value)
           }
@@ -296,8 +318,14 @@ const actions = {
           for(let value of val.children) {
             if(value.id === id && !bol) {
               value.isActive = false
+              /*删除对应id图层*/
+              mapHelper.removeLayerByCode(id)
             } else if(value.id === id && bol) {
               value.isActive = true
+              /*增加对应图层*/
+              getJson(value.datapath).then(res => {
+                mapHelper.addLayerByCodeAndJson(id, res)
+              })
             }
             tempArray.push(value)
           }
@@ -305,14 +333,18 @@ const actions = {
       } else {
         if(val.id === id && !bol) {
           val.isActive = false
+          /*删除对应id图层*/
+          mapHelper.removeLayerByCode(id)
         } else if(val.id === id && bol) {
           val.isActive = true
+          /*增加对应图层*/
+          getJson(val.datapath).then(res => {
+            mapHelper.addLayerByCodeAndJson(val.id, res)
+          })
         }
         tempArray.push(val)
       }
     }
-    /*删除对应id图层*/
-    mapHelper.removeLayerByCode(id)
     commit(TYPE.SET_LEFT_ACTIVE_AREA_LIST, {bol, id})
     commit(TYPE.SET_ACTIVE_AREA_LIST, tempArray)
   },
@@ -320,6 +352,7 @@ const actions = {
   getNextAreaInfo({commit, state}) {
     getNextAreaInfo(state.areaInfo.areacode).then(res => {
       console.log(JSON.parse(res.data))
+      commit(TYPE.SET_SEC_AREA_LIST, JSON.parse(res.data))
     })
   },
   removeAllAreaList({commit, state}) {

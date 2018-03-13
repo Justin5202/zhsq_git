@@ -20,7 +20,9 @@
 				<div class="three-level-menu" v-if="showThreeLevelMenu">
 					<p>镇乡街</p>
 					<ul class="areas">
-						<li v-for="item in subAreaData" @click="handleSubArea(item.areacode, item.areaname)">{{item.areaname}}</li>
+						<li v-for="item in subAreaData1" @click="handleSubArea(item.areacode, item.areaname)">{{item.areaname}}</li>
+						<li v-if="!showThreeLevelMenuMore" @click="showThreeLevelMore()">更多...</li>
+						<li v-else v-for="item in subAreaData2" @click="handleSubArea(item.areacode, item.areaname)">{{item.areaname}}</li>
 					</ul>
 				</div>
 			</div>
@@ -46,12 +48,14 @@
 				activeIndex: 0,
 				activeName: '重庆市',
 				showSelectBox: false,
-				showSubmenu: false,
-				showSubmenuMore: false,
+				showSubmenu: false, // 是否显示二级菜单
+				showSubmenuMore: false, // 是否显示二级菜单“更多...”
 				areaData1: [],
 				areaData2: [],
-				subAreaData: [],
-				showThreeLevelMenu: false
+				subAreaData1: [],
+				subAreaData2: [],
+				showThreeLevelMenu: false, // 是否显示三级菜单
+				showThreeLevelMenuMore: false // 是否显示三级菜单“更多...”
 			}
 		},
 		methods: {
@@ -103,7 +107,7 @@
 					areacode: areacode,
 			    areaname: areaname
 				}
-				this.setAreaInfo(areaInfo)
+				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
 				if(index === 2) {
 					getSelect(areacode).then(res => {
 						this.areaData1 = res.data.slice(0, 8)
@@ -120,15 +124,14 @@
 					areacode: id,
 			    areaname: name
 				}
-				this.setAreaInfo(areaInfo)
-				// this.setSelectedAreaList(areaInfo)
-				this.setSelectedAreaList({'areainfo': areaInfo, 'isRemoveAll': false})
-				this.getNextAreaInfo()
+				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
 				getSelect(id).then(res => {
-					this.subAreaData = res.data
+					this.subAreaData1 = res.data.slice(0, 8)
+					this.subAreaData2 = res.data.slice(8)
 				})
 				this.showThreeLevelMenu = true
 				this.showSubmenuMore = false
+				this.showThreeLevelMenuMore = false
 			},
 			handleSubArea(id, name) { // 三级菜单点击时触发的事件
 				this.activeName = this.selectStart = name
@@ -136,14 +139,14 @@
 					areacode: id,
 			    areaname: name
 				}
-				this.setAreaInfo(areaInfo)
-				this.setSelectedAreaList({'areainfo': areaInfo, 'isRemoveAll': false})
-				this.getNextAreaInfo()
-				// this.showSubmenu = false
+				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
 			},
 			showSubMore() { // 显示二级菜单，隐藏三级菜单
 				this.showSubmenuMore = true
 				this.showThreeLevelMenu = false
+			},
+			showThreeLevelMore() {
+				this.showThreeLevelMenuMore = true
 			}
 		},
 	}
@@ -158,7 +161,6 @@
 	.search {
 		position: relative;
 		border-radius: 4px;
-		/* background-color: #fff; */
 		-webkit-box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
 	    box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
 	}
@@ -170,8 +172,6 @@
 		top: 50px;
 		width: 100%;
 		background-color: #fff;
-		/* border-top-left-radius: 4px;
-		border-top-right-radius: 4px; */
 		border-radius: 4px;
 		border: 1px solid rgba(0, 0, 0, 0.2);
 		box-sizing: border-box;

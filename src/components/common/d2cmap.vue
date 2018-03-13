@@ -38,7 +38,7 @@ export default {
     initMap (option) {
       option.container += new Date().getTime()
       this.$refs.map.id = option.container
-      this.map = new window.d2c.map(option)
+      this.map = this.$mapHelper.initMap(option);
       window.d2cMap = this.map
       this.map.option = option
       this.map.on('load',function(){
@@ -61,7 +61,8 @@ export default {
           glyphs: data.glyphs,
           sprite: data.sprite,
           sources: data.sources,
-          layers: data.layers
+          layers: data.layers,
+          metadata:data.metadata
         }
       }
     }

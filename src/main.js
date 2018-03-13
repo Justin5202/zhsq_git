@@ -9,12 +9,19 @@ import http from './util/http'
 import store from './store/index'
 import * as TYPES from './store/type'
 
+import mapHelper from './util/mapHelper'
+
 Vue.config.productionTip = false
 
 Vue.use(elementUI)
 
 Vue.prototype.http = http
 Vue.prototype.$types = TYPES
+
+Vue.prototype.$mapHelper = mapHelper
+
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -75,3 +75,8 @@ export function getMsMacroData(areaCode, id) {
         return Promise.resolve(res.data)
     })
 }
+export function getJson(name) {
+    return axios.get(`http://zhsq.digitalcq.com/D2CJsonV3${name}`).then(res => {
+        return Promise.resolve(res.data)
+    })
+}

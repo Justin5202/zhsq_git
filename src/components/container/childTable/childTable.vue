@@ -25,7 +25,7 @@
             :class="{active: childItem.isActive}"
         >
           <div class="sec-blank"></div>
-          <div class="text" @click="isActiveItem(childItem.isActive, childItem.name)">
+          <div class="text" @click="isActiveItem(childItem.isActive, childItem.id)">
             <h2>{{childItem.name}}</h2>
             <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
             <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
@@ -42,12 +42,15 @@
             v-for="(childItem, index) in areaInfoList"
             v-if="childItem.children.length > 0"
         >
-          <div class="sec-child-title" :class="{active: childItem.isActive}">
+          <div
+            class="sec-child-title"
+            :class="{active: childItem.isActive && childFalseLenArray[index] !== childItem.children.length}"
+          >
             <div class="third-blank"></div>
             <div class="arrow" @click="thirdChildSlide(index)">
               <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
             </div>
-            <div class="text" @click="isActiveItem(childItem.isActive, childItem.name)">
+            <div class="text" @click="isActiveItem(childItem.isActive, childItem.id)">
               <h2>{{childItem.name}}</h2>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
@@ -64,7 +67,7 @@
             <li class="child-table-content-li"
                 v-for="thirdChild in childItem.children"
                 :class="{active: thirdChild.isActive}"
-                @click="isActiveItem(thirdChild.isActive, thirdChild.name)"
+                @click="isActiveItem(thirdChild.isActive, thirdChild.id)"
             >
               <div class="fourth-blank"></div>
               <div class="text">
@@ -120,6 +123,23 @@
             }
           })
           return len
+        },
+        childFalseLenArray() {
+          let lenArray = []
+          this.areaInfoList.map(v => {
+            if(v.children.length > 0) {
+              let len = 0
+              v.children.map(i => {
+                if(!i.isActive) {
+                  len += 1
+                }
+              })
+              lenArray.push(len)
+            } else {
+              lenArray.push(-1)
+            }
+          })
+          return lenArray
         }
       },
       methods: {
@@ -130,8 +150,8 @@
           this.thirdChildIsShow = !this.thirdChildIsShow
           this.nowIndex = index
         },
-        isActiveItem(bol, name) {
-          this.setAreaList({'bol': !bol, 'name': name})
+        isActiveItem(bol, id) {
+          this.setAreaList({'bol': !bol, 'id': id})
         },
         ...mapActions([
           'setAreaList'

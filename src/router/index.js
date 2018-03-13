@@ -18,14 +18,14 @@ export default new Router({
         {
           path: '',
           name: 'index',
-          redirect: 'map_test'
+          redirect: 'zhsq_d2c'
         }, {
           path: '/test_page',
           name: 'testPage',
           component: testPage
         }, {
-          path: '/map_test',
-          name: 'mapTest',
+          path: '/zhsq_d2c',
+          name: 'zhsq_d2c',
           meta: {keepAlive: true},
           component: mapTest,
           children: [

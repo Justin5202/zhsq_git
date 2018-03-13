@@ -54,6 +54,7 @@ const state = {
     areaname: '重庆'
   },
   secAreaList: [],
+  areaDetailInfo: '',
   areaList: [],
   searchParams: {},
   searchList: [],
@@ -154,6 +155,9 @@ const mutations = {
   },
   [TYPE.SET_SEC_AREA_LIST] (state, secAreaList) {
     state.secAreaList = secAreaList
+  },
+  [TYPE.SET_AREA_DETAIL_INFO] (state, areaDetailInfo) {
+    state.areaDetailInfo = areaDetailInfo
   },
   [TYPE.SET_AREA_INFO] (state, areaInfo) {
     state.areaInfo = areaInfo
@@ -283,7 +287,12 @@ const actions = {
   setAreaInfo({commit, state}, {areainfo, isRemoveAll}) {
     console.log({areainfo, isRemoveAll})
     getNextAreaInfo(areainfo.areacode).then(res => {
-      commit(TYPE.SET_SEC_AREA_LIST, res.data)
+      if(res.code === 1 && res.data.length > 0) {
+        console.log(res.data)
+        commit(TYPE.SET_SEC_AREA_LIST, res.data)
+      } else if(res.code === 1 && res.data){
+        commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
+      }
       commit(TYPE.SET_AREA_INFO, areainfo)
       commit(TYPE.SET_SELECTED_AREA_LIST, {areainfo, isRemoveAll})
     })

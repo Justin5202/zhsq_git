@@ -79,11 +79,11 @@ export default {
   computed: {
     ...mapGetters([
       'areaList',
-      'areaInfoList'
+      'activeAreaInfoList'
     ]),
     areaLayerLength() {
       let len = 0
-      this.areaInfoList.map(v => {
+      this.activeAreaInfoList.map(v => {
         if(v.isActive) {
           len += 1
         }
@@ -93,7 +93,7 @@ export default {
   },
   methods:{
     //2D 3D切换
-    changeMapStatus:function(){
+    changeMapStatus() {
         this.is2Dmap = !this.is2Dmap;
         if(this.is2Dmap){
             d2cMap.easeTo({pitch: 0});
@@ -102,7 +102,7 @@ export default {
         }
     },
     //打开图层切换
-    openLayerTool:function(){
+    openLayerTool() {
         this.layerToolVisible = !this.layerToolVisible;
     },
     showAreaBox() {

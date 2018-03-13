@@ -56,7 +56,8 @@ const state = {
   searchParams: {},
   searchList: [],
   areaInfoData: [],
-  areaInfoList: []
+  areaInfoList: [],
+  activeAreaInfoList: []
 }
 
 const getters = {
@@ -67,6 +68,7 @@ const getters = {
   searchList: state => state.searchList,
   areaInfoData: state => state.areaInfoData,
   areaInfoList: state => state.areaInfoList,
+  activeAreaInfoList: state => state.activeAreaInfoList,
   tableMenuPaneShow: state => state.tableMenuPaneShow
 }
 
@@ -117,24 +119,77 @@ const mutations = {
     state.areaInfoData = areaInfoData
   },
   [TYPE.SET_AREA_LIST] (state, areaInfoList) {
+    let hasThirdLevel = false
+    let temp = []
+    for(let value of areaInfoList) {
+      if(value.children.length > 0) {
+        hasThirdLevel = true
+        for(let val of value.children) {
+          val.isActive = false
+          temp.push(val)
+        }
+      } else {
+        temp.push(value)
+      }
+    }
+    if(!hasThirdLevel) {
+      areaInfoList.filter(v => v.isActive = true)
+    } else {
+      areaInfoList.filter(v => v.isActive = false)
+    }
     state.areaInfoList = areaInfoList
+    /*所有子集push到一个数组里面*/
+    state.activeAreaInfoList = temp
+  },
+  [TYPE.SET_ACTIVE_AREA_LIST] (state, activeAreaInfoList) {
+    state.activeAreaInfoList = activeAreaInfoList
   },
   [TYPE.SET_AREA_INFO] (state, areaInfo) {
     state.areaInfo = areaInfo
   },
-  [TYPE.SET_SELECTED_AREA_LIST] (state, areainfo) {
-    let temp = state.areaList
-    let bol = false
-    for(let val of temp) {
-      if(val.areacode === areainfo.areacode) {
-        bol = true
+  [TYPE.SET_SELECTED_AREA_LIST] (state, {areainfo, isRemoveAll}) {
+    if(!isRemoveAll) {
+      let temp = state.areaList
+      let bol = false
+      for(let val of temp) {
+        if(val.areacode === areainfo.areacode) {
+          bol = true
+        }
       }
-    }
-    if(bol) {
-      console.log(123)
-      temp.splice(temp.findIndex(v => v.areacode === areainfo.areacode), 1)
+      if(bol) {
+        temp.splice(temp.findIndex(v => v.areacode === areainfo.areacode), 1)
+      } else {
+        temp.push(areainfo)
+      }
     } else {
-      temp.push(areainfo)
+      state.areaList = []
+    }
+  },
+  [TYPE.SET_LEFT_ACTIVE_AREA_LIST] (state, {bol, name}) {
+    if(state.areaInfoList.findIndex(v => v.name === name) < 0) {
+      state.areaInfoList.filter(v => {
+        if(v.children.length > 0) {
+          let index = v.children.findIndex(i => i.name === name)
+          if(index >= 0) {
+            let temp = v.children[index]
+            if(!bol) {
+              temp.isActive = false
+            } else if(bol) {
+              temp.isActive = true
+            }
+            v.children.splice(index, 1, temp)
+          }
+        }
+      })
+    } else {
+      let index = state.areaInfoList.findIndex(v => v.name === name)
+      let temp = state.areaInfoList[index]
+      if(!bol) {
+        temp.isActive = false
+      } else if(bol) {
+        temp.isActive = true
+      }
+      state.areaInfoList.splice(index, 1, temp)
     }
   }
 }
@@ -190,7 +245,7 @@ const actions = {
   getAreaDetail({dispatch, commit, state}, params) {
     getDetailInfo(Object.assign({}, params)).then(res => {
       commit(TYPE.GET_AREA_DATA, res.data)
-      commit(TYPE.SET_AREA_LIST, res.data[0].children.filter(v => v.isActive = true))
+      commit(TYPE.SET_AREA_LIST, res.data[0].children)
       // 隐藏目录列表、搜索列表
       commit(TYPE.SEARCH_PANE_IS_SHOW, false)
       commit(TYPE.TABLE_PANE_SHOW, false)
@@ -199,8 +254,8 @@ const actions = {
   setAreaInfo({commit, state}, areaInfo) {
     commit(TYPE.SET_AREA_INFO, areaInfo)
   },
-  setSelectedAreaList({commit, state}, areainfo) {
-    commit(TYPE.SET_SELECTED_AREA_LIST, areainfo)
+  setSelectedAreaList({commit, state}, {areainfo, isRemoveAll}) {
+    commit(TYPE.SET_SELECTED_AREA_LIST, {areainfo, isRemoveAll})
   },
   getSearchResult({commit, state}) {
     getSearch(state.searchParams).then(res => {
@@ -211,14 +266,26 @@ const actions = {
     let tempArray = []
     // 判断剔除的数据图层，设置active为false
     for(let val of state.areaInfoList) {
-      if(val.name === name && !bol) {
-        val.isActive = false
-      } else if(val.name === name && bol) {
-        val.isActive = true
+      if(val.children.length > 0) {
+        for(let value of val.children) {
+          if(value.name === name && !bol) {
+            value.isActive = false
+          } else if(value.name === name && bol) {
+            value.isActive = true
+          }
+          tempArray.push(value)
+        }
+      } else {
+        if(val.name === name && !bol) {
+          val.isActive = false
+        } else if(val.name === name && bol) {
+          val.isActive = true
+        }
+        tempArray.push(val)
       }
-      tempArray.push(val)
     }
-    commit(TYPE.SET_AREA_LIST, tempArray)
+    commit(TYPE.SET_LEFT_ACTIVE_AREA_LIST, {bol, name})
+    commit(TYPE.SET_ACTIVE_AREA_LIST, tempArray)
   },
   // 区县区域下一级详细信息
   getNextAreaInfo({commit, state}) {
@@ -233,7 +300,7 @@ const actions = {
       val.isActive = false
       tempArray.push(val)
     }
-    commit(TYPE.SET_AREA_LIST, tempArray)
+    commit(TYPE.SET_ACTIVE_AREA_LIST, tempArray)
   }
 }
 

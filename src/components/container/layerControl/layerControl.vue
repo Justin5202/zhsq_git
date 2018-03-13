@@ -1,6 +1,6 @@
 <template>
   <div class="layer-table">
-    <div class="layer-box" v-show="areaInfoList.length !== falseLength">
+    <div class="layer-box" v-show="activeAreaInfoList.length !== falseLength">
       <div class="layer-title-box">
         <h2>图层</h2>
         <span class="trash-icon" @click="removeAll()"></span>
@@ -12,7 +12,7 @@
       <div class="layer-tool-arrow"></div>
       <div class="check">
         <el-checkbox-group v-model="checkedItem" @change="handleCheckedItemsChange">
-          <div class="check-box" v-for="item in areaInfoList" v-if="item.isActive">
+          <div class="check-box" v-for="item in activeAreaInfoList" v-if="item.isActive">
             <div class="check-item">
               <el-checkbox :label="item.name" :key="item.name"></el-checkbox>
               <div class="cross-box">
@@ -44,11 +44,11 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'areaInfoList'
+      'activeAreaInfoList'
     ]),
     falseLength() {
       let len = 0
-      this.areaInfoList.map(v => {
+      this.activeAreaInfoList.map(v => {
         if(!v.isActive) {
           len += 1
         }
@@ -74,7 +74,7 @@ export default {
       this.setAreaList({'bol': false, 'name': name})
     },
     getCheckedItem() {
-      this.checkedItem = this.areaInfoList.map(item => item.name)
+      this.checkedItem = this.activeAreaInfoList.map(item => item.name)
     },
     ...mapActions([
       'setAreaList',

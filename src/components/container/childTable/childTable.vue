@@ -1,7 +1,7 @@
 <template>
   <div class="child-table-content">
     <ul v-if="areaInfoData.length!==0">
-      <li class="child-table-content-li" :class="{active: areaInfoList.length !== falseLength}" @click="closeLiBox()">
+      <li class="child-table-content-li" :class="{active: activeAreaInfoList.length == falseLength}" @click="closeLiBox()">
         <div class="arrow">
           <i class="arrow-icon" :class="{down: isClose}"></i>
         </div>
@@ -21,11 +21,11 @@
       <ul v-show="isClose">
         <li class="child-table-content-li"
             v-for="childItem in areaInfoList"
+            v-if="childItem.children.length === 0"
             :class="{active: childItem.isActive}"
-            @click="isActiveItem(childItem.isActive, childItem.name)"
         >
-          <div class="blank"></div>
-          <div class="text">
+          <div class="sec-blank"></div>
+          <div class="text" @click="isActiveItem(childItem.isActive, childItem.name)">
             <h2>{{childItem.name}}</h2>
             <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
             <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
@@ -38,6 +38,51 @@
             <i class="collection-icon"></i>
           </div>
         </li>
+        <li class="child-table-content-li sec-child-li"
+            v-for="(childItem, index) in areaInfoList"
+            v-if="childItem.children.length > 0"
+            :class="{active: childItem.isActive}"
+        >
+          <div class="sec-child-title">
+            <div class="third-blank"></div>
+            <div class="arrow" @click="thirdChildSlide(index)">
+              <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
+            </div>
+            <div class="text">
+              <h2>{{childItem.name}}</h2>
+              <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
+              <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
+            </div>
+            <div class="detail" v-if="childItem.target.length!==0">
+              <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
+              <span :class="{activeColor: !childItem.isActive}">详情</span>
+            </div>
+            <div class="collection">
+              <i class="collection-icon"></i>
+            </div>
+          </div>
+          <ul v-show="thirdChildIsShow && nowIndex === index">
+            <li class="child-table-content-li"
+                v-for="thirdChild in childItem.children"
+                :class="{active: thirdChild.isActive}"
+                @click="isActiveItem(thirdChild.isActive, thirdChild.name)"
+            >
+              <div class="fourth-blank"></div>
+              <div class="text">
+                <h2>{{thirdChild.name}}</h2>
+                <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].areaname}} {{thirdChild.target[0].year}}</p>
+                <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].cityTarget}}</p>
+              </div>
+              <div class="detail" v-if="thirdChild.target.length!==0">
+                <i class="detail-icon" :class="{avtiveDetailIcon: !thirdChild.isActive}"></i>
+                <span :class="{activeColor: !thirdChild.isActive}">详情</span>
+              </div>
+              <div class="collection">
+                <i class="collection-icon"></i>
+              </div>
+            </li>
+          </ul>
+        </li>
       </ul>
     </ul>
   </div>
@@ -49,27 +94,43 @@
   export default {
       data() {
         return {
-          isClose: true
+          isClose: true,
+          thirdChildIsShow: false,
+          nowIndex: ''
         }
       },
       computed: {
         ...mapGetters([
           'areaInfoData',
-          'areaInfoList'
+          'areaInfoList',
+          'activeAreaInfoList'
         ]),
         falseLength() {
           let len = 0
           this.areaInfoList.map(v => {
-            if(!v.isActive) {
-              len += 1
+            if(v.children.length > 0) {
+              v.children.map(i => {
+                if(!i.isActive) {
+                  len += 1
+                }
+              })
+            } else {
+              if(!v.isActive) {
+                len += 1
+              }
             }
           })
+          console.log(len)
           return len
         }
       },
       methods: {
         closeLiBox() {
           this.isClose = !this.isClose
+        },
+        thirdChildSlide(index) {
+          this.thirdChildIsShow = !this.thirdChildIsShow
+          this.nowIndex = index
         },
         isActiveItem(bol, name) {
           this.setAreaList({'bol': !bol, 'name': name})
@@ -91,8 +152,19 @@
       display: flex;
       padding: 10px 0 5px 0;
       border-bottom: 1px solid rgba(0, 0, 0, .1);
-      .blank {
-        flex: 1;
+      .sec-child-title {
+        display: flex;
+        padding-bottom: 5px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+      }
+      .sec-blank {
+        width: 50px;
+      }
+      .third-blank {
+        width: 25px;
+      }
+      .fourth-blank {
+        width: 80px;
       }
       .arrow {
         .arrow-icon {
@@ -163,6 +235,10 @@
     }
     .active {
       background-color: #dcdfe6;
+    }
+    .sec-child-li {
+      flex-direction: column;
+      border-bottom: 0;
     }
   }
 </style>

@@ -374,7 +374,8 @@ const actions = {
                     /*地点数据标点*/
                 res.data.map((v, index) => {
                     if (v.element) {
-                        mapHelper.setMarkToMap((state.searchParams.start + index).toString(), v.element.geopoint, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+                      mapHelper.removeLayerById((state.searchParams.start + index - 10).toString())
+                      mapHelper.setMarkToMap((state.searchParams.start + index).toString(), v.element.geopoint, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
                     }
                 })
             }

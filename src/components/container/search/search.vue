@@ -72,7 +72,8 @@
 					name: this.searchContent,
 					start: 0,
 					rows: 10,
-					type: 1
+					type: 1,
+					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
 				}
 				this._getSearchParams(params)
 			},

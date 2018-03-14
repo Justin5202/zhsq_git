@@ -16,7 +16,7 @@
 				<div class="search-type-button">
 					<button
 						class="type-button"
-						v-for="(item, index) in ['全部', '数据', '类型']"
+						v-for="(item, index) in ['全部', '数据', '地名点']"
 						:key="index"
 						@click="getType(index+1)"
 						:class="{clicked: nowIndex === index}"

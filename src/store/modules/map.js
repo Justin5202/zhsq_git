@@ -9,71 +9,79 @@
 import axios from '@/util/http'
 
 import URL from '@/settings/sourceControl'
-import {parallel} from '@/util/async'
-import {getSelect, getSearch, getDetailInfo, getNextAreaInfo, getJson} from '@/api/dataSheets'
+import { parallel } from '@/util/async'
+import { getSelect, getSearch, getDetailInfo, getNextAreaInfo, getJson, getMsMacroData } from '@/api/dataSheets'
 import mapHelper from '@/util/mapHelper'
 import * as TYPE from '../type'
 
 const timeout = 15000
 
 /* 请求配置 */
-const http = axios.create({timeout: timeout})
+const http = axios.create({ timeout: timeout })
 
 /* 加载样式 */
-function loadStyle (styles, afterLoad) {
-  const tasks = []
-  for (let j = 0; j < styles.length; j++) {
-    const data = styles[j].data
-    for (let i = 0; i < data.length; i++) {
-      tasks.push(() => {
-        const url = data[i].url
-        return http
-          .get(url)
-          .then(res => afterLoad({[url]: res.data}))
-          .catch(error => {
-            console.error(`${url} load false \n${error}`)
-          })
-      })
+function loadStyle(styles, afterLoad) {
+    const tasks = []
+    for (let j = 0; j < styles.length; j++) {
+        const data = styles[j].data
+        for (let i = 0; i < data.length; i++) {
+            tasks.push(() => {
+                const url = data[i].url
+                return http
+                    .get(url)
+                    .then(res => afterLoad({
+                        [url]: res.data
+                    }))
+                    .catch(error => {
+                        console.error(`${url} load false \n${error}`)
+                    })
+            })
+        }
     }
-  }
-  return parallel(tasks)
+    return parallel(tasks)
 }
 
 const state = {
-  sourceLoading: false,
-  styleLoading: false,
-  mapSource: null,
-  checkedRows: [],
-  activeSource: [],
-  mapStyles: {},
-  mainMap: null,
-  searchPaneShow: false,
-  tableMenuPaneShow: true,
-  areaInfo: {
-    areacode: 500000,
-    areaname: '重庆'
-  },
-  secAreaList: [],
-  areaDetailInfo: '',
-  areaList: [],
-  searchParams: {},
-  searchList: [],
-  areaInfoData: [],
-  areaInfoList: [],
-  activeAreaInfoList: []
+    sourceLoading: false,
+    styleLoading: false,
+    mapSource: null,
+    checkedRows: [],
+    activeSource: [],
+    mapStyles: {},
+    mainMap: null,
+    searchPaneShow: false,
+    tableMenuPaneShow: true,
+    areaInfo: {
+        areacode: 500000,
+        areaname: '重庆'
+    },
+    secAreaList: [],
+    areaDetailInfo: '',
+    areaList: [],
+    searchParams: {},
+    searchList: [],
+    areaInfoData: [],
+    areaInfoList: [],
+    activeAreaInfoList: [],
+    reportFormShow: false,
+    reportFormData: [],
+    areaCodeAndDataId: []
 }
 
 const getters = {
-  areaInfo: state => state.areaInfo,
-  secAreaList: state => state.secAreaList,
-  areaList: state => state.areaList,
-  searchPaneShow: state => state.searchPaneShow,
-  searchParams: state => state.searchParams,
-  searchList: state => state.searchList,
-  areaInfoData: state => state.areaInfoData,
-  areaInfoList: state => state.areaInfoList,
-  activeAreaInfoList: state => state.activeAreaInfoList,
-  tableMenuPaneShow: state => state.tableMenuPaneShow
+    areaInfo: state => state.areaInfo,
+    secAreaList: state => state.secAreaList,
+    areaList: state => state.areaList,
+    searchPaneShow: state => state.searchPaneShow,
+    searchParams: state => state.searchParams,
+    searchList: state => state.searchList,
+    areaInfoData: state => state.areaInfoData,
+    areaInfoList: state => state.areaInfoList,
+    activeAreaInfoList: state => state.activeAreaInfoList,
+    tableMenuPaneShow: state => state.tableMenuPaneShow,
+    reportFormShow: state => state.reportFormShow,
+    reportFormData: state => state.reportFormData,
+    areaCodeAndDataId: state => state.areaCodeAndDataId
 }
 
 const mutations = {
@@ -307,38 +315,6 @@ const mutations = {
 }
 
 const actions = {
-  LOAD_SOURCE ({
-    commit,
-    state
-  }, url) {
-    if (typeof URL.MAP_SOURCE !== 'string') {
-      commit(TYPE.LOAD_SOURCE, URL.MAP_SOURCE)
-    } else {
-      commit(TYPE.REQUEST_SOURCE_START)
-      try {
-        http
-        .get(URL.MAP_SOURCE)
-        .then(res => {
-          commit(TYPE.REQUEST_SOURCE_END)
-          if (res.data.meta.success) {
-            commit(TYPE.LOAD_SOURCE, res.data.data)
-          }
-        })
-      } catch (error) {
-        console.error(`> ${TYPE.LOAD_SOURCE}`, error)
-      }
-    }
-  },
-  async LOAD_STYLE ({
-    commit,
-    state
-  }, source) {
-    commit(TYPE.REQUEST_STYLE_START)
-    await loadStyle(source, (styles) => {
-      commit(TYPE.LOAD_STYLE, styles)
-    })
-    commit(TYPE.REQUEST_STYLE_END)
-  },
   searchPaneShow({commit, state}, isShow) {
     commit(TYPE.SEARCH_PANE_IS_SHOW, isShow)
   },
@@ -397,8 +373,8 @@ const actions = {
 }
 
 export default {
-  state,
-  getters,
-  mutations,
-  actions
+    state,
+    getters,
+    mutations,
+    actions
 }

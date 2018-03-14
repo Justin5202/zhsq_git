@@ -35,7 +35,7 @@
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
             </div>
-            <div class="detail" v-if="childItem.target.length!==0">
+            <div class="detail" v-if="childItem.target.length!==0"  @click="getDetails(childItem.isActive, childItem.id)">
               <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
               <span :class="{activeColor: !childItem.isActive}">详情</span>
             </div>
@@ -111,7 +111,10 @@
         ...mapGetters([
           'areaInfoData',
           'areaInfoList',
-          'activeAreaInfoList'
+          'activeAreaInfoList',
+          'areaCodeAndDataId',
+          'reportFormData',
+          'areaList'
         ]),
         falseLength() {
           let len = 0
@@ -159,8 +162,18 @@
         isActiveItem(bol, id) {
           this.setAreaList({'bol': !bol, 'id': id})
         },
+        //点击详情按钮
+        getDetails(bol, id) {
+          this.setAreaList({'bol': !bol, 'id': id})
+          this.getAreaCodeAndDataId({"areaCode":this.areaList,"dataId":this.areaInfoData})
+          this.getReportData({'areaCode':this.areaCodeAndDataId[0],'dataId':this.areaCodeAndDataId[1]})
+          this.setReportFormShow(true)
+        },
         ...mapActions([
-          'setAreaList'
+          'setAreaList',
+          'setReportFormShow',
+          'getReportData',
+          'getAreaCodeAndDataId'
         ])
       }
   }

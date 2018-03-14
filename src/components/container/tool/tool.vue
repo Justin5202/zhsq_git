@@ -13,14 +13,17 @@
         			</span>
               <span class="circle" v-if="areaList.length > 0">{{areaList.length}}</span>
             </div>
-			<span class="tool-item ">
-				<img src="../../../assets/images/map/报表.png" alt="">
-			</span>
+            <div class="tool-box">
+                <span class="tool-item ">
+                    <report-Form/>
+                </span>
+                <span class="circle" v-if="reportFormLength > 0">{{reportFormLength}}</span>
+            </div>
             <span class="tool-item ">
 				<img src="../../../assets/images/map/量算.png" alt="">
 			</span>
             <span class="tool-item ">
-				<img src="../../../assets/images/map/统计.png" alt="">
+                <v-statistics/>
 			</span>
             <span class="tool-item ">
 				<img src="../../../assets/images/map/用户.png" alt="">
@@ -58,6 +61,8 @@
     </div>
 </template>
 <script>
+import vStatistics from '../statistics/statistics.vue'
+import reportForm from '../reportForm/reportForm.vue'
 import LayerControl from '@/components/container/layerControl/layerControl'
 import AreaControl from '@/components/container/areaControl/areaControl'
 
@@ -65,6 +70,8 @@ import {mapGetters} from 'vuex'
 
 export default {
   components: {
+    vStatistics,
+    reportForm,
     LayerControl,
     AreaControl
   },
@@ -79,7 +86,8 @@ export default {
   computed: {
     ...mapGetters([
       'areaList',
-      'activeAreaInfoList'
+      'activeAreaInfoList',
+      'areaInfoData'
     ]),
     areaLayerLength() {
       let len = 0
@@ -89,6 +97,29 @@ export default {
         }
       })
       return len
+    },
+    reportFormLength(){
+       let len = 0
+       for(var i in this.areaInfoData){
+           if(this.areaInfoData[i].target.length>0 && this.areaInfoData[i].isActive){
+            len ++
+           }
+           if(this.areaInfoData[i].children.length){
+               for(var j in this.areaInfoData[i].children){
+                   if(this.areaInfoData[i].children[j].target.length>0 && this.areaInfoData[i].children[j].isActive){
+                        len ++
+                    }
+                    if(this.areaInfoData[i].children[j].children.length>0){
+                        for(var k in this.areaInfoData[i].children[j].children){
+                            if(this.areaInfoData[i].children[j].children[k].target.length>0 && this.areaInfoData[i].children[j].children[k].isActive){
+                                len ++
+                            }
+                        }
+                    }
+               }
+           }
+       }
+       return len
     }
   },
   methods:{
@@ -105,6 +136,16 @@ export default {
     openLayerTool() {
         this.layerToolVisible = !this.layerToolVisible;
     },
+    // getReportFormLength(data){
+    //     for(let i in data){
+    //       this.reportFormLength ++
+    //       if(data[i].children.length > 0){
+    //         this.getReportFormLength(data[i].children)
+    //       }else{
+    //         continue
+    //       }
+    //     }
+    // },
     showAreaBox() {
       this.layerToolVisible = false
       this.areaBoxIsShow = !this.areaBoxIsShow

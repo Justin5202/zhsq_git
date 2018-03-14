@@ -488,7 +488,7 @@ export default {
     setVisibilityByCode,
     setOpacityByCode,
 
-    setFilterByCodeAndAreacode,
+    setFilterByCodeAndAreacodeArray,
 
     setMarkToMap,
     flyByPointAndZoom,
@@ -499,7 +499,7 @@ export default {
     setCenter,
 
     getZoom,
-    getCenter,    
+    getCenter,
     getBounds,
 
     onClickCallback

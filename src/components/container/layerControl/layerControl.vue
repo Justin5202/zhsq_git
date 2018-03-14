@@ -1,6 +1,6 @@
 <template>
   <div class="layer-table">
-    <div class="layer-box" v-show="activeAreaInfoList.length !== falseLength">
+    <div class="layer-box" v-show="(activeAreaInfoList.length + searchItemMacroList.length) !== 0">
       <div class="layer-title-box">
         <h2>图层</h2>
         <span class="trash-icon" @click="removeAll()"></span>
@@ -45,6 +45,20 @@
               </div>
             </div>
           </div>
+          <div class="check-box"
+            v-for="item in searchItemMacroList"
+            v-if="item.isActive"
+          >
+            <div class="check-item">
+              <el-checkbox :label="item.macro.data.name" :key="item.macro.data.name"></el-checkbox>
+              <div class="cross-box">
+                <i class="cross-icon" @click="removeSearchItem(item)"></i>
+              </div>
+            </div>
+            <div class="slider-box" v-if="checkedTransparency">
+              <el-slider v-model="value1"></el-slider>
+            </div>
+          </div>
         </el-checkbox-group>
       </div>
       </div>
@@ -67,7 +81,8 @@ export default {
   computed: {
     ...mapGetters([
       'activeAreaInfoList',
-      'areaInfoList'
+      'areaInfoList',
+      'searchItemMacroList'
     ]),
     falseLength() {
       let len = 0
@@ -96,12 +111,16 @@ export default {
     removeItem(id) {
       this.setAreaList({'bol': false, 'id': id})
     },
+    removeSearchItem(item) {
+      this.removeSearchItem(item)
+    },
     getCheckedItem() {
       this.checkedItem = this.activeAreaInfoList.map(item => item.name)
     },
     ...mapActions([
       'setAreaList',
-      'removeAllAreaList'
+      'removeAllAreaList',
+      'removeSearchItem'
     ])
   }
 }

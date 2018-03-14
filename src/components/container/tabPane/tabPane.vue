@@ -55,7 +55,7 @@
 							<div class="area-icon-box">
 								<i class="data-icon"></i>
 							</div>
-							<div class="area-content" @click="isActiveItem(item.macro.data.datapath, item.macro.data.id, item.macro.data.type)">
+							<div class="area-content" @click="isActiveItem(item)">
 								<h2>{{item.macro.name}}</h2>
 								<p>{{item.macro.address}}</p>
 								<p>{{item.macro.year}}</p>
@@ -167,12 +167,19 @@
 				}
 				this.getAreaDetail(params)
 			},
-			isActiveItem(datapath, id, type) {
+			isActiveItem(item) {
+				let type = item.macro.data.type
 				let i = Number(type.substring(0, 1))
+				console.log(i)
+				const params = {
+					id: item.macro.data.id
+				}
 				if(i === 1) {
-
-				} else {
-
+					/*存在第二级目录*/
+					this.getAreaDetail(params)
+				} else if(i === 2){
+					/*加载空间数据，加入数据table*/
+					this.loadSearchItemMacro(item)
 				}
 			},
 			toggleSlide() {
@@ -181,7 +188,8 @@
 			...mapActions([
 				'getSearchParams',
 				'getAreaDetail',
-				'tablePaneShow'
+				'tablePaneShow',
+				'loadSearchItemMacro'
 			])
 		}
 	}

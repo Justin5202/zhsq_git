@@ -87,11 +87,17 @@ export default {
     ...mapGetters([
       'areaList',
       'activeAreaInfoList',
-      'areaInfoData'
+      'areaInfoData',
+      'searchItemMacroList'
     ]),
     areaLayerLength() {
       let len = 0
       this.activeAreaInfoList.map(v => {
+        if(v.isActive) {
+          len += 1
+        }
+      })
+      this.searchItemMacroList.map(v => {
         if(v.isActive) {
           len += 1
         }

@@ -65,7 +65,8 @@ const state = {
     activeAreaInfoList: [],
     reportFormShow: false,
     reportFormData: [],
-    areaCodeAndDataId: []
+    areaCodeAndDataId: [],
+    searchItemMacroList: [] /*搜索结果空间数据列表*/
 }
 
 const getters = {
@@ -81,7 +82,8 @@ const getters = {
     tableMenuPaneShow: state => state.tableMenuPaneShow,
     reportFormShow: state => state.reportFormShow,
     reportFormData: state => state.reportFormData,
-    areaCodeAndDataId: state => state.areaCodeAndDataId
+    areaCodeAndDataId: state => state.areaCodeAndDataId,
+    searchItemMacroList: state => state.searchItemMacroList
 }
 
 const mutations = {
@@ -125,7 +127,28 @@ const mutations = {
         state.searchParams = searchParams
     },
     [TYPE.GET_SEARCH_RESULT](state, searchList) {
-        state.searchList = searchList
+      for(let val of searchList) {
+        if(val) {
+          val.isActive = false
+        }
+      }
+      state.searchList = searchList
+    },
+    [TYPE.SET_SEARCH_MACRO_LIST](state, item) {
+      item.isActive = !item.isActive
+      let index = state.searchItemMacroList.findIndex(v => v.macro.data.id === item.macro.data.id)
+      if(item.isActive) {
+        getJson(item.macro.data.datapath).then(res => {
+            mapHelper.addLayerByCodeAndJson(item.macro.data.id, res)
+        })
+      } else {
+        mapHelper.removeLayerByCode(item.macro.data.id)
+      }
+      if(index < 0) {
+        state.searchItemMacroList.push(item)
+      } else {
+        state.searchItemMacroList.splice(index, 1, item)
+      }
     },
     [TYPE.GET_AREA_DATA](state, areaInfoData) {
         /*判断第一级是否存在json数据*/
@@ -397,6 +420,14 @@ const actions = {
     },
     removeAllAreaList({ commit, state }) {
         commit(TYPE.SET_ACTIVE_AREA_LIST, { list: [], isRemoveAll: true })
+    },
+    // 加载搜索结果的空间数据，并push到areainfodata
+    loadSearchItemMacro({commit, state}, item) {
+      commit(TYPE.SET_SEARCH_MACRO_LIST, item)
+    },
+    /*移除空间数据渲染列表*/
+    removeSearchItem({commit, state}, item) {
+      commit(TYPE.SET_SEARCH_MACRO_LIST, item)
     },
     //报表显示隐藏
     setReportFormShow({ commit, state }, isShow) {

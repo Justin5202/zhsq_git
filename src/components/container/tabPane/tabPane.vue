@@ -31,7 +31,7 @@
 							<div class="area-icon-box">
 								<i class="poi-icon"></i>
 							</div>
-							<div class="area-content" >
+							<div class="area-content">
 								<h2>{{(page-1)*10+index+1}}.{{item.poi.name}}</h2>
 								<p>{{item.poi.address}}</p>
 							</div>
@@ -55,7 +55,7 @@
 							<div class="area-icon-box">
 								<i class="data-icon"></i>
 							</div>
-							<div class="area-content" >
+							<div class="area-content" @click="isActiveItem(item.macro.data.datapath, item.macro.data.id)">
 								<h2>{{item.macro.name}}</h2>
 								<p>{{item.macro.address}}</p>
 								<p>{{item.macro.year}}</p>
@@ -252,11 +252,11 @@
 				overflow-y: scroll;
 				.search-pane-li {
 					list-style: none;
-					padding: 5px 0 15px 10px;
 					border-bottom: 1px solid #dcdfe6;
 					.search-pane-box {
 						display: flex;
 						justify-content: space-around;
+						padding: 5px 0 10px 10px;
 					}
 					.area-icon-box {
 						-webkit-box-flex: 0;

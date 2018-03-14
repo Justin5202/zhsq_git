@@ -134,6 +134,15 @@ const onDbClick = function (e) {
 };
 
 /**
+* @function 设置isMeasure
+* @param （true:现在是量测，false：现在不是量测）
+* @returns null
+*/
+const setIsMeasure = function(value){
+    isMeasure = value;
+};
+
+/**
 * @function 设置点击获取mapguid回调函数
 * @param callback
 * @returns null
@@ -162,12 +171,12 @@ const onDbClickCallback = function (_callback) {
 
 /**
 * @function 绑定影像和晕染服务
-* @param imgOption , demOption
+* @param 影像的图层和源 , 濡染的图层和源
 * @returns null
 */
-const initImageAndDemMap = function(option){
+const initImageAndDemMap = function(img,dem){
     // 设置 隐藏
-
+    
     // 影像 layer 和 source 导入 map 
 
     // 记录 id 
@@ -578,6 +587,7 @@ const getBounds = function () {
 
 export default {
     initMap,
+    initImageAndDemMap,
     addLayerByIdAndGeojson,
     addLayerByCodeAndJson,
     removeLayerById,
@@ -602,7 +612,7 @@ export default {
     getCenter,
     getBounds,
 
-    isMeasure,
+    setIsMeasure,
     getGuidOnClickCallback,
     measureOnClickCallback,
     onDbClickCallback

@@ -75,7 +75,7 @@ const initMap = function (option) {
 };
 
 /**
-* @function 拖动时的回调函数(私有)
+* @function 拖动时的回调函数 倾斜时2d3d切换(私有)
 * @param event
 * @returns null
 */
@@ -328,23 +328,26 @@ const setVisibilityByCode = function (code, visibility) {
 };
 
 /**
-* @function 通过areacode设置要素过滤
-* @param 目录编码，行政区编码
+* @function 通过areacode数组设置要素过滤
+* @param 目录编码，行政区编码数组
 * @returns null
 */
-const setFilterByCodeAndAreacode = function (code, areacode) {
+const setFilterByCodeAndAreacodeArray = function (code, areacodeArray) {
     if (layersId[code]) {
+        let filter = ["all"];
+
+        areacodeArray.forEach(element => {
+            filter.push([
+                ">=", "xzq_bm", element
+            ]);
+            filter.push([
+                "<=", "xzq_bm", element + "z"
+            ]);
+        });
+
         // 如果有图层一定是数组
         layersId[code].forEach(element => {
-            map.setFilter(element, [
-                "all",
-                [
-                    ">=", "xzq_bm", areacode
-                ],
-                [
-                    "<=", "xzq_bm", areacode + "z"
-                ]
-            ]);
+            map.setFilter(element, filter);
         });
     }
 };

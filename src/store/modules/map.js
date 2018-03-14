@@ -132,8 +132,8 @@ const mutations = {
         if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
             areaInfoData[0].isActive = true
             getJson(areaInfoData[0].datapath).then(res => {
-                    mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
-                })
+                mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+            })
                 /*存在json就push进图层列表*/
             if (state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
                 state.activeAreaInfoList.push(areaInfoData[0])
@@ -143,6 +143,7 @@ const mutations = {
             let hasThirdLevel = false
             let temp = []
             let areaInfoList = areaInfoData[0].children
+            areaInfoData[0].isActive = false
             for (let value of areaInfoList) {
                 if (value.children.length > 0) {
                     hasThirdLevel = true

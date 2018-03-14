@@ -176,16 +176,21 @@ const mutations = {
         temp.splice(index, 1)
         /*删除行政区划线*/
         let areaIndex = state.secAreaList.findIndex(v => v.areacode === areainfo.areacode)
-        mapHelper.removeLayerById(areaIndex)
+        mapHelper.removeLayerById(areaIndex.toString())
       } else {
         temp.push(areainfo)
         /*画行政区划线*/
         /*选中区域所在详细信息列表的位置,图层id为当前区域所在列表的下标*/
-        let area = state.secAreaList.filter(v => v.areacode === areainfo.areacode)
         let index = state.secAreaList.findIndex(v => v.areacode === areainfo.areacode)
-        mapHelper.addLayerByIdAndGeojson(index, area.geojson)
+        if(state.areaDetailInfo) {
+          mapHelper.addLayerByIdAndGeojson(index.toString(), state.areaDetailInfo.geojson)
+        }
       }
     } else {
+      state.areaList.map(v => {
+        let index = state.secAreaList.findIndex(i => i.areacode === v.areacode)
+        mapHelper.removeLayerById(index.toString())
+      })
       state.areaList = []
     }
   },
@@ -285,22 +290,22 @@ const actions = {
     })
   },
   setAreaInfo({commit, state}, {areainfo, isRemoveAll}) {
-    console.log({areainfo, isRemoveAll})
     getNextAreaInfo(areainfo.areacode).then(res => {
-      if(res.code === 1 && res.data.length > 0) {
-        console.log(res.data)
-        commit(TYPE.SET_SEC_AREA_LIST, res.data)
-      } else if(res.code === 1 && res.data){
-        commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
-      }
+      commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
       commit(TYPE.SET_AREA_INFO, areainfo)
       commit(TYPE.SET_SELECTED_AREA_LIST, {areainfo, isRemoveAll})
     })
+  },
+  deleteAreaInfo({commit, state}, {areainfo, isRemoveAll}) {
+    commit(TYPE.SET_SELECTED_AREA_LIST, {areainfo, isRemoveAll})
   },
   getSearchResult({commit, state}) {
     getSearch(state.searchParams).then(res => {
       commit(TYPE.GET_SEARCH_RESULT, res.data)
     })
+  },
+  setSecAreaList({commit, state}, list) {
+    commit(TYPE.SET_SEC_AREA_LIST, list)
   },
   setAreaList({commit, state}, {bol, id}) {
     console.log({bol, id})

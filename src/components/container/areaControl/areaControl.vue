@@ -29,13 +29,13 @@
     },
     methods: {
       remove(areainfo) {
-        this.setSelectedAreaList({'areainfo': areainfo, 'isRemoveAll': false})
+        this.deleteAreaInfo({'areainfo': areainfo, 'isRemoveAll': false})
       },
       removeAll() {
-        this.setSelectedAreaList({'areainfo': '', 'isRemoveAll': true})
+        this.deleteAreaInfo({'areainfo': '', 'isRemoveAll': true})
       },
       ...mapActions([
-        'setSelectedAreaList',
+        'deleteAreaInfo',
         'removeAllAreaList'
       ])
     }

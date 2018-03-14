@@ -237,14 +237,12 @@ const mutations = {
                 temp.children.map(v => {
                   v.isActive = true
                   getJson(v.datapath).then(res => {
-                    console.log(123)
                     mapHelper.addLayerByCodeAndJson(v.id, res)
                   })
                 })
               } else {
                 /*增加对应图层*/
                 getJson(temp.datapath).then(res => {
-                  console.log(1234)
                   mapHelper.addLayerByCodeAndJson(id, res)
                 })
               }

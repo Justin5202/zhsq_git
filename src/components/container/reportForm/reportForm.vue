@@ -3,9 +3,9 @@
       <img src="../../../assets/images/map/报表.png"  width="60" height="60" alt="" @click="openReportForm">
       <el-dialog
         title="数据详情"
-        :visible.sync="reportFormVisible"
+        :visible.sync="reportFormShow"
         width="60%"
-        center>
+        center @close="colseDialog()">
         <span>
           <div class="table-box">
             <table class="table-form">
@@ -21,7 +21,7 @@
                 </tr>
               </thead>
               <tbody>
-              <tr v-for="(item,index) in dataList" :key="item.id" class="table-form-content">
+              <tr v-for="(item,index) in reportFormData" :key="item.id" class="table-form-content">
                 <td style="width:100%" colspan="10">
                   <table class="table-form-table">
                     <tr class="table-title">
@@ -58,7 +58,6 @@ import {mapGetters,mapActions} from 'Vuex'
 export default {
   data(){
       return{
-        reportFormVisible:false,
         dataId:'',
         areaCode:'',
         dataList:[]
@@ -67,52 +66,27 @@ export default {
   computed:{
     ...mapGetters([
       'areaInfoData',
-      'areaList'
+      'areaList',
+      'areaCodeAndDataId',
+      'reportFormShow',
+      'reportFormData'
     ])
   },
   methods:{
       //打开报告模态框
       openReportForm:function(){
-        this.reportFormVisible = true
-        this.dataId = ""
-        this.getDataId(this.areaInfoData)
-        this.getAreaCode(this.areaList)
-        this.areaCode = this.areaCode.substring(1)
-        this.dataId = this.dataId.substring(1)
-        var typeNum = 0;//用于保存数据类型数量
-        var areaNum = 0;//用于保存不同的地区数量
-        var arrayList = []
-        //获取详情
-        getMsMacroData(this.areaCode,this.dataId).then(res =>{
-          for(let i in res.data){
-            typeNum++
-            areaNum = 0 //只取一次循环的数量
-            for(let j in res.data[i]){
-              areaNum ++ 
-              var dataByYear = [];//用于保存每条数据
-              for(let k = 0;k<res.data[i][j]['year'].length;k++){
-                var yearList = res.data[i][j]['year'][k]
-                var filedsData = res.data[i][j][yearList][0].filedsData.split('|ZX|')
-                for(var p=0;p< filedsData.length;p++){
-                  if(dataByYear.length < filedsData.length){
-                    dataByYear.push({"type":filedsData[p].split(':')[0],"areaName":res.data[i][j][yearList][0].areaName,"areaCode":j})
-                  }
-                  dataByYear[p][yearList] = filedsData[p].split(':')[1]||"--"
-                }
-                if(k == res.data[i][j]['year'].length-1){
-                  arrayList.push({"name":res.data[i][j][yearList][0].name,"id":res.data[i][j][yearList][0].dataId,"dataByYear":dataByYear})
-                }
-              }
-            }
-          }
-          //将type相同的数组进行合并
-          this.connectArray(arrayList,typeNum,areaNum)
-        })
+        this.setReportFormShow(true)
+        this.getAreaCodeAndDataId({"areaCode":this.areaList,"dataId":this.areaInfoData})
+        this.getReportData({'areaCode':this.areaCodeAndDataId[0],'dataId':this.areaCodeAndDataId[1]})
+      },
+      //关闭模态框
+      colseDialog:function(){
+        this.setReportFormShow(false)
       },
       //将areaInfoData中dataId拼凑返回
       getDataId:function(data){
         for(let i in data){
-          if(data[i].target.length>0){
+          if(data[i].target.length>0&&data[i].isActive){
             this.dataId += ','+ data[i].id
           }
           if(data[i].children.length > 0){
@@ -132,45 +106,25 @@ export default {
           this.areaCode = ',500000'
         }
       },
-      //数组合并i
-      connectArray:function(array,typeNum,areaNum){
-        var result =[]
-         this.dataList = []
-        for (var i= 0;  i< Math.ceil(array.length / areaNum); i++) {
-            var start = i * areaNum;
-            var end = start + areaNum;
-            result.push(array.slice(start, end));
-        }
-        for(var m = 0;m<result.length;m++){
-          for(var n = 0;n<result[m].length;n += areaNum){
-            var temporary = [];
-            for(var k = 0;k<result[m][n].dataByYear.length;k++){
-              for(var j = 0;j<areaNum;j++){
-                if( (n+j)>0){
-                  result[m][n+j].dataByYear[k].type = ""
-                }
-                temporary.push(result[m][n+j].dataByYear[k])
-              }
-            }
-            result[m][0].dataByYear = temporary
-          }
-          this.dataList.push(result[m][0])
-        }
-      },
+      
       //清空按钮点击
       clearForm:function(key){
-        console.log(this.dataList)
-        if(key!=""||key!=undefined||key!=null){
-          this.dataList.splice(key,1)
-          this.setAreaList({'bol': false, 'id': this.dataList[key].id})
+        if(key!==""&&key!==undefined&&key!==null){
+          this.setAreaList({'bol': false, 'id': this.reportFormData[key].id})
+          this.clearReport({"key":key,"data":this.reportFormData})
         }else{
-           for(var i in this.dataList){
-             this.setAreaList({'bol': false, 'id': this.dataList[i].id})
+           for(var i in this.reportFormData){
+             this.setAreaList({'bol': false, 'id': this.reportFormData[i].id})
            }
+          this.clearReport({"key":"","data":this.reportFormData})
         }
       },
       ...mapActions([
-        'setAreaList'
+        'setAreaList',
+        'setReportFormShow',
+        'getReportData',
+        'clearReport',
+        'getAreaCodeAndDataId'
       ])
   }
 }

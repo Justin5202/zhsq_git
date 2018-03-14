@@ -51,7 +51,11 @@
 								<span>详情</span>
 							</div>
 						</div>
-						<div class="search-pane-box" v-else-if="item.searchType === 4">
+						<div
+							class="search-pane-box"
+							:class="{active: item.isActive}"
+							v-else-if="item.searchType === 4"
+						>
 							<div class="area-icon-box">
 								<i class="data-icon"></i>
 							</div>
@@ -263,7 +267,6 @@
 			}
 			ul {
 				margin: 0;
-				padding: 0 0 0 10px;
 				max-height: 526px;
 				overflow-y: scroll;
 				.search-pane-li {
@@ -272,7 +275,10 @@
 					.search-pane-box {
 						display: flex;
 						justify-content: space-around;
-						padding: 5px 0 10px 10px;
+						padding: 10px;
+					}
+					.active {
+						background-color: #dcdfe6;
 					}
 					.area-icon-box {
 						-webkit-box-flex: 0;

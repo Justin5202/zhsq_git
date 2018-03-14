@@ -136,6 +136,9 @@ const mutations = {
     },
     [TYPE.SET_SEARCH_MACRO_LIST](state, item) {
       item.isActive = !item.isActive
+      /*设置搜索列表的加载状态*/
+      let i = state.searchList.findIndex(v => v.macro.data.id === item.macro.data.id)
+      state.searchList[i].isActive = item.isActive
       let index = state.searchItemMacroList.findIndex(v => v.macro.data.id === item.macro.data.id)
       if(item.isActive) {
         getJson(item.macro.data.datapath).then(res => {
@@ -144,6 +147,7 @@ const mutations = {
       } else {
         mapHelper.removeLayerByCode(item.macro.data.id)
       }
+      /*不存在push，存在替换*/
       if(index < 0) {
         state.searchItemMacroList.push(item)
       } else {

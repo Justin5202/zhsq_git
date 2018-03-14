@@ -13,7 +13,7 @@
       <div class="check">
         <el-checkbox-group v-model="checkedItem" @change="handleCheckedItemsChange">
           <div class="check-box"
-            v-for="item in areaInfoList"
+            v-for="item in activeAreaInfoList"
             v-if="item.children.length ===0 && item.isActive"
           >
             <div class="check-item">
@@ -27,7 +27,7 @@
             </div>
           </div>
           <div
-            v-for="item in areaInfoList"
+            v-for="item in activeAreaInfoList"
             v-if="item.children.length > 0"
           >
             <div class="check-box"

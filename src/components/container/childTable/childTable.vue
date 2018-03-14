@@ -1,55 +1,35 @@
 <template>
   <div class="child-table-content">
     <ul v-if="areaInfoData.length!==0">
-      <li class="child-table-content-li" :class="{active: activeAreaInfoList.length !== falseLength}" @click="closeLiBox()">
-        <div class="arrow">
-          <i class="arrow-icon" :class="{down: isClose}"></i>
-        </div>
-        <div class="text">
-          <h2>{{areaInfoData[0].name}}</h2>
-          <p v-if="areaInfoData[0].target.length!==0">{{areaInfoData[0].target[0].areaname}} {{areaInfoData[0].target[0].year}}</p>
-          <p v-if="areaInfoData[0].target.length!==0">{{areaInfoData[0].target[0].cityTarget}}</p>
-        </div>
-        <div class="detail" v-if="areaInfoData[0].target.length!==0">
-          <i class="detail-icon" :class="{avtiveDetailIcon: areaInfoList.length === falseLength}"></i>
-          <span :class="{activeColor: areaInfoList.length === falseLength}">详情</span>
-        </div>
-        <div class="collection">
-          <i class="collection-icon"></i>
-        </div>
-      </li>
-      <ul v-show="isClose">
-        <li class="child-table-content-li"
-            v-for="childItem in areaInfoList"
-            v-if="childItem.children.length === 0"
-            :class="{active: childItem.isActive}"
-        >
-          <div class="sec-blank"></div>
-          <div class="text" @click="isActiveItem(childItem.isActive, childItem.id)">
-            <h2>{{childItem.name}}</h2>
-            <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
-            <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
+      <li
+        class="child-table-content-li child-li"
+        v-for="item in areaInfoList"
+      >
+        <div class="child-title" :class="{active: activeAreaInfoList.length !== falseLength}">
+          <div class="arrow" v-if="item.children.length > 0">
+            <i class="arrow-icon" :class="{down: isClose}" @click="closeLiBox()"></i>
           </div>
-          <div class="detail" v-if="childItem.target.length!==0">
-            <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
-            <span :class="{activeColor: !childItem.isActive}">详情</span>
+          <div class="blank" v-else></div>
+          <div class="text">
+            <h2>{{item.name}}</h2>
+            <p v-if="item.target.length!==0">{{item.target[0].areaname}} {{item.target[0].year}}</p>
+            <p v-if="item.target.length!==0">{{item.target[0].cityTarget}}</p>
+          </div>
+          <div class="detail" v-if="item.target.length!==0">
+            <i class="detail-icon" :class="{avtiveDetailIcon: areaInfoList.length === falseLength}"></i>
+            <span :class="{activeColor: areaInfoList.length === falseLength}">详情</span>
           </div>
           <div class="collection">
             <i class="collection-icon"></i>
           </div>
-        </li>
-        <li class="child-table-content-li sec-child-li"
-            v-for="(childItem, index) in areaInfoList"
-            v-if="childItem.children.length > 0"
-        >
-          <div
-            class="sec-child-title"
-            :class="{active: childItem.isActive && childFalseLenArray[index] !== childItem.children.length}"
+        </div>
+        <ul v-show="isClose">
+          <li class="child-table-content-li"
+              v-for="childItem in item.children"
+              v-if="childItem.children.length === 0"
+              :class="{active: childItem.isActive}"
           >
-            <div class="third-blank"></div>
-            <div class="arrow" @click="thirdChildSlide(index)">
-              <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
-            </div>
+            <div class="sec-blank"></div>
             <div class="text" @click="isActiveItem(childItem.isActive, childItem.id)">
               <h2>{{childItem.name}}</h2>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
@@ -62,30 +42,56 @@
             <div class="collection">
               <i class="collection-icon"></i>
             </div>
-          </div>
-          <ul v-show="thirdChildIsShow && nowIndex === index">
-            <li class="child-table-content-li"
-                v-for="thirdChild in childItem.children"
-                :class="{active: thirdChild.isActive}"
-                @click="isActiveItem(thirdChild.isActive, thirdChild.id)"
+          </li>
+          <li class="child-table-content-li child-li"
+              v-for="(childItem, index) in item.children"
+              v-if="childItem.children.length > 0"
+          >
+            <div
+              class="child-title"
+              :class="{active: childItem.isActive && childFalseLenArray[index] !== childItem.children.length}"
             >
-              <div class="fourth-blank"></div>
-              <div class="text">
-                <h2>{{thirdChild.name}}</h2>
-                <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].areaname}} {{thirdChild.target[0].year}}</p>
-                <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].cityTarget}}</p>
+              <div class="third-blank"></div>
+              <div class="arrow" @click="thirdChildSlide(index)">
+                <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
               </div>
-              <div class="detail" v-if="thirdChild.target.length!==0">
-                <i class="detail-icon" :class="{avtiveDetailIcon: !thirdChild.isActive}"></i>
-                <span :class="{activeColor: !thirdChild.isActive}">详情</span>
+              <div class="text" @click="isActiveItem(childItem.isActive, childItem.id)">
+                <h2>{{childItem.name}}</h2>
+                <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
+                <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
+              </div>
+              <div class="detail" v-if="childItem.target.length!==0">
+                <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
+                <span :class="{activeColor: !childItem.isActive}">详情</span>
               </div>
               <div class="collection">
                 <i class="collection-icon"></i>
               </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
+            </div>
+            <ul v-show="thirdChildIsShow && nowIndex === index">
+              <li class="child-table-content-li"
+                  v-for="thirdChild in childItem.children"
+                  :class="{active: thirdChild.isActive}"
+                  @click="isActiveItem(thirdChild.isActive, thirdChild.id)"
+              >
+                <div class="fourth-blank"></div>
+                <div class="text">
+                  <h2>{{thirdChild.name}}</h2>
+                  <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].areaname}} {{thirdChild.target[0].year}}</p>
+                  <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].cityTarget}}</p>
+                </div>
+                <div class="detail" v-if="thirdChild.target.length!==0">
+                  <i class="detail-icon" :class="{avtiveDetailIcon: !thirdChild.isActive}"></i>
+                  <span :class="{activeColor: !thirdChild.isActive}">详情</span>
+                </div>
+                <div class="collection">
+                  <i class="collection-icon"></i>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
     </ul>
   </div>
 </template>
@@ -170,7 +176,10 @@
       display: flex;
       padding: 10px 0 5px 0;
       border-bottom: 1px solid rgba(0, 0, 0, .1);
-      .sec-child-title {
+      .blank {
+        flex: 1;
+      }
+      .child-title {
         display: flex;
         padding-top: 10px;
         padding-bottom: 5px;
@@ -255,7 +264,7 @@
     .active {
       background-color: #dcdfe6;
     }
-    .sec-child-li {
+    .child-li {
       padding: 0;
       flex-direction: column;
       border-bottom: 0;

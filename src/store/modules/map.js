@@ -120,38 +120,60 @@ const mutations = {
     state.searchList = searchList
   },
   [TYPE.GET_AREA_DATA] (state, areaInfoData) {
-    state.areaInfoData = areaInfoData
-  },
-  [TYPE.SET_AREA_LIST] (state, areaInfoList) {
-    let hasThirdLevel = false
-    let temp = []
-    for(let value of areaInfoList) {
-      if(value.children.length > 0) {
-        hasThirdLevel = true
-        for(let val of value.children) {
-          val.isActive = false
-          temp.push(val)
+    /*判断第一级是否存在json数据*/
+    if(areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
+      areaInfoData[0].isActive = true
+      getJson(areaInfoData[0].datapath).then(res => {
+        mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+      })
+      /*存在json就push进图层列表*/
+      if(state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
+        state.activeAreaInfoList.push(areaInfoData[0])
+      }
+      state.areaInfoList = areaInfoData
+    } else {
+      let hasThirdLevel = false
+      let temp = []
+      let areaInfoList = areaInfoData[0].children
+      for(let value of areaInfoList) {
+        if(value.children.length > 0) {
+          hasThirdLevel = true
+          for(let val of value.children) {
+            val.isActive = false
+            temp.push(val)
+          }
+        } else {
+          temp.push(value)
         }
+      }
+      if(!hasThirdLevel) {
+        areaInfoList.filter(v => v.isActive = true)
       } else {
-        temp.push(value)
+        areaInfoList.filter(v => v.isActive = false)
+      }
+      state.areaInfoList = areaInfoData
+      /*所有子集push到一个数组里面*/
+      state.activeAreaInfoList = temp
+      /*如果存在第三级目录，不初始叠加图层*/
+      if(!hasThirdLevel) {
+        temp.map(v => {
+          getJson(v.datapath).then(res => {
+            mapHelper.addLayerByCodeAndJson(v.id, res)
+          })
+        })
       }
     }
-    if(!hasThirdLevel) {
-      areaInfoList.filter(v => v.isActive = true)
-    } else {
-      areaInfoList.filter(v => v.isActive = false)
-    }
-    state.areaInfoList = areaInfoList
-    /*所有子集push到一个数组里面*/
-    state.activeAreaInfoList = temp
-    temp.map(v => {
-      getJson(v.datapath).then(res => {
-        mapHelper.addLayerByCodeAndJson(v.id, res)
-      })
-    })
+    state.areaInfoData = areaInfoData
   },
-  [TYPE.SET_ACTIVE_AREA_LIST] (state, activeAreaInfoList) {
-    state.activeAreaInfoList = activeAreaInfoList
+  [TYPE.SET_ACTIVE_AREA_LIST] (state, {activeAreaInfoList, isRemoveAll}) {
+    console.log(isRemoveAll)
+    if(isRemoveAll) {
+      state.activeAreaInfoList.map(v => {
+        v.isActive = false
+        /*清空所有图层*/
+        mapHelper.removeLayerByCode(v.id)
+      })
+    }
   },
   [TYPE.SET_SEC_AREA_LIST] (state, secAreaList) {
     state.secAreaList = secAreaList
@@ -187,6 +209,7 @@ const mutations = {
         }
       }
     } else {
+      /*删除全部行政区划线*/
       state.areaList.map(v => {
         let index = state.secAreaList.findIndex(i => i.areacode === v.areacode)
         mapHelper.removeLayerById(index.toString())
@@ -203,10 +226,51 @@ const mutations = {
             let temp = v.children[index]
             if(!bol) {
               temp.isActive = false
+              if(temp.children.length > 0) {
+                temp.children.map(v => v.isActive = false)
+              }
+              /*删除对应id图层*/
+              mapHelper.removeLayerByCode(id)
             } else if(bol) {
               temp.isActive = true
+              if(temp.children.length > 0) {
+                temp.children.map(v => {
+                  v.isActive = true
+                  getJson(v.datapath).then(res => {
+                    console.log(123)
+                    mapHelper.addLayerByCodeAndJson(v.id, res)
+                  })
+                })
+              } else {
+                /*增加对应图层*/
+                getJson(temp.datapath).then(res => {
+                  console.log(1234)
+                  mapHelper.addLayerByCodeAndJson(id, res)
+                })
+              }
             }
             v.children.splice(index, 1, temp)
+          } else {
+            v.children.map(i => {
+              if(i.children.length > 0) {
+                let index = i.children.findIndex(i => i.id === id)
+                if(index >= 0) {
+                  let temp = i.children[index]
+                  if(!bol) {
+                    temp.isActive = false
+                    /*删除对应id图层*/
+                    mapHelper.removeLayerByCode(id)
+                  } else if(bol) {
+                    temp.isActive = true
+                    /*增加对应图层*/
+                    getJson(temp.datapath).then(res => {
+                      mapHelper.addLayerByCodeAndJson(id, res)
+                    })
+                  }
+                  i.children.splice(index, 1, temp)
+                }
+              }
+            })
           }
         }
       })
@@ -217,15 +281,27 @@ const mutations = {
         temp.children.filter(v => {
           if(!bol) {
             v.isActive = false
+            /*删除对应id图层*/
+            mapHelper.removeLayerByCode(id)
           } else if(bol) {
             v.isActive = true
+            /*增加对应图层*/
+            getJson(temp.datapath).then(res => {
+              mapHelper.addLayerByCodeAndJson(id, res)
+            })
           }
         })
       }
       if(!bol) {
         temp.isActive = false
+        /*删除对应id图层*/
+        mapHelper.removeLayerByCode(id)
       } else if(bol) {
         temp.isActive = true
+        /*增加对应图层*/
+        getJson(temp.datapath).then(res => {
+          mapHelper.addLayerByCodeAndJson(id, res)
+        })
       }
       state.areaInfoList.splice(index, 1, temp)
     }
@@ -283,7 +359,6 @@ const actions = {
   getAreaDetail({dispatch, commit, state}, params) {
     getDetailInfo(Object.assign({}, params)).then(res => {
       commit(TYPE.GET_AREA_DATA, res.data)
-      commit(TYPE.SET_AREA_LIST, res.data[0].children)
       // 隐藏目录列表、搜索列表
       commit(TYPE.SEARCH_PANE_IS_SHOW, false)
       commit(TYPE.TABLE_PANE_SHOW, false)
@@ -309,58 +384,7 @@ const actions = {
   },
   setAreaList({commit, state}, {bol, id}) {
     console.log({bol, id})
-    let tempArray = []
-    // 判断剔除的数据图层，设置active为false
-    for(let val of state.areaInfoList) {
-      if(val.children.length > 0) {
-        if(val.id === id) {
-          for(let value of val.children) {
-            if(!bol) {
-              value.isActive = false
-              /*删除对应id图层*/
-              mapHelper.removeLayerByCode(id)
-            } else if(bol) {
-              value.isActive = true
-              /*增加对应图层*/
-              getJson(value.datapath).then(res => {
-                mapHelper.addLayerByCodeAndJson(id, res)
-              })
-            }
-            tempArray.push(value)
-          }
-        } else {
-          for(let value of val.children) {
-            if(value.id === id && !bol) {
-              value.isActive = false
-              /*删除对应id图层*/
-              mapHelper.removeLayerByCode(id)
-            } else if(value.id === id && bol) {
-              value.isActive = true
-              /*增加对应图层*/
-              getJson(value.datapath).then(res => {
-                mapHelper.addLayerByCodeAndJson(id, res)
-              })
-            }
-            tempArray.push(value)
-          }
-        }
-      } else {
-        if(val.id === id && !bol) {
-          val.isActive = false
-          /*删除对应id图层*/
-          mapHelper.removeLayerByCode(id)
-        } else if(val.id === id && bol) {
-          val.isActive = true
-          /*增加对应图层*/
-          getJson(val.datapath).then(res => {
-            mapHelper.addLayerByCodeAndJson(val.id, res)
-          })
-        }
-        tempArray.push(val)
-      }
-    }
     commit(TYPE.SET_LEFT_ACTIVE_AREA_LIST, {bol, id})
-    commit(TYPE.SET_ACTIVE_AREA_LIST, tempArray)
   },
   // 区县区域下一级详细信息
   getNextAreaInfo({commit, state}) {
@@ -370,18 +394,7 @@ const actions = {
     })
   },
   removeAllAreaList({commit, state}) {
-    // 设置areainfolist每个isactive为false
-    let tempArray = []
-    for(let val of state.areaInfoList) {
-      val.isActive = false
-    }
-    for(let val of state.activeAreaInfoList) {
-      val.isActive = false
-      tempArray.push(val)
-    }
-    /*清空所有图层*/
-    tempArray.map(v => mapHelper.removeLayerByCode(v.id))
-    commit(TYPE.SET_ACTIVE_AREA_LIST, tempArray)
+    commit(TYPE.SET_ACTIVE_AREA_LIST, {list: [], isRemoveAll: true})
   }
 }
 

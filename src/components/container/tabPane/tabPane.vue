@@ -55,7 +55,7 @@
 							<div class="area-icon-box">
 								<i class="data-icon"></i>
 							</div>
-							<div class="area-content" @click="isActiveItem(item.macro.data.datapath, item.macro.data.id)">
+							<div class="area-content" @click="isActiveItem(item.macro.data.datapath, item.macro.data.id, item.macro.data.type)">
 								<h2>{{item.macro.name}}</h2>
 								<p>{{item.macro.address}}</p>
 								<p>{{item.macro.year}}</p>
@@ -166,6 +166,14 @@
 					id: code
 				}
 				this.getAreaDetail(params)
+			},
+			isActiveItem(datapath, id, type) {
+				let i = Number(type.substring(0, 1))
+				if(i === 1) {
+
+				} else {
+
+				}
 			},
 			toggleSlide() {
 				this.upOrDown = !this.upOrDown

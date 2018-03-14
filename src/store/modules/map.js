@@ -214,6 +214,7 @@ const mutations = {
                 let index = state.secAreaList.findIndex(v => v.areacode === areainfo.areacode)
                 if (state.areaDetailInfo) {
                     mapHelper.addLayerByIdAndGeojson(index.toString(), state.areaDetailInfo.geojson)
+                    mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
                 }
             }
         } else {
@@ -320,6 +321,14 @@ const mutations = {
     },
     [TYPE.SET_AREACODE_AND_DATAID](state, areaCodeAndDataId) {
         state.areaCodeAndDataId = areaCodeAndDataId
+    },
+    [TYPE.CLEAR_REPORT_FORM](state, { key, data }) {
+        if (key !== "" && key !== undefined && key !== null) {
+            data.splice(key, 1)
+        } else {
+            data = []
+        }
+        state.reportFormData = data
     }
 }
 
@@ -359,7 +368,15 @@ const actions = {
     },
     getSearchResult({ commit, state }) {
         getSearch(state.searchParams).then(res => {
-            commit(TYPE.GET_SEARCH_RESULT, res.data)
+            if (res.code == '1') {
+                commit(TYPE.GET_SEARCH_RESULT, res.data)
+                    /*地点数据标点*/
+                res.data.map((v, index) => {
+                    if (v.element) {
+                        mapHelper.setMarkToMap((state.searchParams.start + index).toString(), v.element.geopoint, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+                    }
+                })
+            }
         })
     },
     setSecAreaList({ commit, state }, list) {
@@ -474,12 +491,7 @@ const actions = {
     },
     //清空报表
     clearReport({ commit, state }, { key, data }) {
-        if (key !== "" && key !== undefined && key !== null) {
-            data.splice(key, 1)
-        } else {
-            data = []
-        }
-        commit(TYPE.SET_REPORT_FORM_DATA, data)
+        commit(TYPE.CLEAR_REPORT_FORM, { key, data })
     }
 }
 

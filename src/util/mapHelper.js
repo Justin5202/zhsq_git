@@ -22,8 +22,17 @@ var layersId = {};
 // code 与 source 的对应关系
 var sourcesName = {};
 
-// 中转callback onClickCallback 用
-var callback = null;
+// 中转详情用 callback 详情 用
+var mapguidCallback = null;
+
+// 中转详情用 callback 量算用
+var measureCallback = null;
+
+// 中转详情用 callback onDbClickCallback 用
+var dbClickCallback = null;
+
+// 量算标志位
+var isMeasure = false;
 
 //
 
@@ -71,8 +80,13 @@ const initMap = function (option) {
     // 绑定点击事件返回 mapguid
     map.on('click', onClick);
 
+    // 绑定双击事件
+    map.on("dblclick",onDbClick);
+
     return map;
 };
+
+
 
 /**
 * @function 拖动时的回调函数 倾斜时2d3d切换(私有)
@@ -95,21 +109,107 @@ const onPitch = function (e) {
 * @returns null
 */
 const onClick = function (e) {
-    var features = map.queryRenderedFeatures([e.lngLat.lng, e.lngLat.lat]);
-    // 要素的mapguid
-    if (features.length > 0) {
-        // onClickCallback传入
-        callback(features[0].properties.mapguid);
+
+    if (isMeasure) {
+        measureCallback(e);
+    }else{
+        let features = map.queryRenderedFeatures([e.lngLat.lng, e.lngLat.lat]);
+        // 要素的mapguid
+        if (features.length > 0) {
+            // onClickCallback传入
+            mapguidCallback(features[0].properties.mapguid);
+        }
     }
+    
 };
 
 /**
-* @function 设置点击地图回调函数
+* @function 双击地图时的回调函数(私有)
+* @param event
+* @returns null
+*/
+const onDbClick = function (e) {
+    dbClickCallback(e);
+   
+};
+
+/**
+* @function 设置点击获取mapguid回调函数
 * @param callback
 * @returns null
 */
-const onClickCallback = function (_callback) {
-    callback = _callback;
+const getGuidOnClickCallback = function (_callback) {
+    mapguidCallback = _callback;
+};
+
+/**
+* @function 设置点击量算回调函数
+* @param callback
+* @returns null
+*/
+const measureOnClickCallback = function (_callback) {
+    measureCallback = _callback;
+};
+
+/**
+* @function 设置双击事件回调函数
+* @param callback
+* @returns null
+*/
+const onDbClickCallback = function (_callback) {
+    dbClickCallback = _callback;
+};
+
+/**
+* @function 绑定影像和晕染服务
+* @param imgOption , demOption
+* @returns null
+*/
+const initImageAndDemMap = function(option){
+    // 设置 隐藏
+
+    // 影像 layer 和 source 导入 map 
+
+    // 记录 id 
+
+    // 地图绑定 某层级 关闭天地图 layer    
+
+};
+
+/**
+* @function 设置全部影像服务可见性
+* @param （true：可见，false：不可见）
+* @returns null
+*/
+const setAllImageMapVisibility = function(value){
+    // 判断层级是否显示 天地图影像
+};
+
+/**
+* @function 设置天地图影像服务可见性（私有）
+* @param （true：可见，false：不可见）
+* @returns null
+*/
+const setTdtImageMapVisibility = function(value){
+
+};
+
+/**
+* @function 设置全部晕染服务可见性
+* @param （true：可见，false：不可见）
+* @returns null
+*/
+const setAllDemMapVisibility = function(value){
+    // 判断层级是否显示 天地图晕染
+};
+
+/**
+* @function 设置天地图晕染服务可见性（私有）
+* @param （true：可见，false：不可见）
+* @returns null
+*/
+const setTdtDemMapVisibility = function(value){
+
 };
 
 /**
@@ -502,6 +602,11 @@ export default {
     getCenter,
     getBounds,
 
-    onClickCallback
+    isMeasure,
+    getGuidOnClickCallback,
+    measureOnClickCallback,
+    onDbClickCallback
+
+
 
 }

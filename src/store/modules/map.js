@@ -214,6 +214,7 @@ const mutations = {
         let index = state.secAreaList.findIndex(v => v.areacode === areainfo.areacode)
         if(state.areaDetailInfo) {
           mapHelper.addLayerByIdAndGeojson(index.toString(), state.areaDetailInfo.geojson)
+          mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
         }
       }
     } else {
@@ -350,7 +351,15 @@ const actions = {
   },
   getSearchResult({commit, state}) {
     getSearch(state.searchParams).then(res => {
-      commit(TYPE.GET_SEARCH_RESULT, res.data)
+      if(res.code == '1') {
+        commit(TYPE.GET_SEARCH_RESULT, res.data)
+        /*地点数据标点*/
+        res.data.map((v, index) => {
+          if(v.element) {
+            mapHelper.setMarkToMap((state.searchParams.start + index).toString(), v.element.geopoint, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+          }
+        })
+      }
     })
   },
   setSecAreaList({commit, state}, list) {

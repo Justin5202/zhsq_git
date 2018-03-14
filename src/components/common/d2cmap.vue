@@ -3,6 +3,10 @@
 	</div>
 </template>
 <script>
+import dt from './config/dt'
+import dem from './config/dem'
+import img from './config/img'
+
 export default {
 	name: 'd2cmap',
 	props: [
@@ -20,9 +24,14 @@ export default {
 		}
 	},
 	mounted() {
-		this.initOption(this.initMap);
-		console.log(this.imgOption);
-		console.log(this.demOption);
+		// this.initOption(this.initMap);
+
+		// 后加的
+		this.map = this.$mapHelper.initMap(this.getConfig(dt));
+		this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(img),this.getLayerAndSourceFromOption(dem));
+		window.d2cMap = this.map;
+		window.addEventListener('resize', this.resize);
+
 	},
 	beforeDestroy() {
 		this.map.remove()
@@ -53,6 +62,7 @@ export default {
 		resize() {
 			this.map.resize()
 		},
+		// 规范底图style数据格式
 		getConfig(data) {
 			return {
 				container: data.container || 'map',
@@ -70,6 +80,13 @@ export default {
 					metadata: data.metadata
 				}
 			}
+		},
+		// 获取影像option中的 layer 和 source
+		getLayerAndSourceFromOption(option){
+			let res = {};
+			res["layers"] = option.layers;
+			res["sources"] = option.sources;
+			return res;
 		}
 	}
 }

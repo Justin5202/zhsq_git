@@ -10,6 +10,15 @@
 // 私有map
 var map = null;
 
+// 底图图层id
+var layersId_dt = [];
+
+// 影像图层id
+var layersId_img = [];
+
+// 晕染图层id
+var layersId_dem = [];
+
 // 2d建筑物图层id initmap时赋值
 var layersId_2d = [];
 
@@ -59,6 +68,7 @@ const initMap = function (option) {
         .style
         .layers
         .forEach(element => {
+            layersId_dt.push(element.id);
             if (element.metadata) {
                 if (element.metadata["mapbox:group"] == groupUUID_2d) {
                     layersId_2d.push(element.id);
@@ -81,12 +91,10 @@ const initMap = function (option) {
     map.on('click', onClick);
 
     // 绑定双击事件
-    map.on("dblclick",onDbClick);
+    map.on("dblclick", onDbClick);
 
     return map;
 };
-
-
 
 /**
 * @function 拖动时的回调函数 倾斜时2d3d切换(私有)
@@ -112,7 +120,7 @@ const onClick = function (e) {
 
     if (isMeasure) {
         measureCallback(e);
-    }else{
+    } else {
         let features = map.queryRenderedFeatures([e.lngLat.lng, e.lngLat.lat]);
         // 要素的mapguid
         if (features.length > 0) {
@@ -120,7 +128,7 @@ const onClick = function (e) {
             mapguidCallback(features[0].properties.mapguid);
         }
     }
-    
+
 };
 
 /**
@@ -130,7 +138,7 @@ const onClick = function (e) {
 */
 const onDbClick = function (e) {
     dbClickCallback(e);
-   
+
 };
 
 /**
@@ -138,7 +146,7 @@ const onDbClick = function (e) {
 * @param （true:现在是量测，false：现在不是量测）
 * @returns null
 */
-const setIsMeasure = function(value){
+const setIsMeasure = function (value) {
     isMeasure = value;
 };
 
@@ -174,14 +182,47 @@ const onDbClickCallback = function (_callback) {
 * @param 影像的图层和源 , 濡染的图层和源
 * @returns null
 */
-const initImageAndDemMap = function(img,dem){
+const initImageAndDemMap = function (img, dem) {
+    layersId_img = [];
+    layersId_dem = [];
     // 设置 隐藏
-    
-    // 影像 layer 和 source 导入 map 
+    for (let index = 0; index < img.layers.length; index++) {
+        layersId_img.push(img.layers[index]["id"]);
+        img.layers[index]["layout"]["visibility"] = "none";
+    }
 
-    // 记录 id 
+    for (let index = 0; index < dem.layers.length; index++) {
+        layersId_dem.push(dem.layers[index]["id"]);
+        dem.layers[index]["layout"]["visibility"] = "none";
+    }
+    map
+        .on('load', function () {
 
-    // 地图绑定 某层级 关闭天地图 layer    
+            // 地图加 source
+            for (let k in img.sources) {
+                try {
+                    map.addSource(k, img.sources[k]);
+                } catch (error) {
+                    console.log("影像出现重复的source");
+                }
+            }
+
+            for (let k in dem.sources) {
+                try {
+                    map.addSource(k, dem.sources[k]);
+                } catch (error) {
+                    console.log("晕染出现重复的source");
+                }
+            }
+
+            // 加layers 
+            img.layers.forEach(element=>{
+                map.addLayer(element);
+            })
+            dem.layers.forEach(element=>{
+                map.addLayer(element);
+            })
+        })
 
 };
 
@@ -190,8 +231,29 @@ const initImageAndDemMap = function(img,dem){
 * @param （true：可见，false：不可见）
 * @returns null
 */
-const setAllImageMapVisibility = function(value){
+const setAllImageMapVisibility = function (visibility) {
     // 判断层级是否显示 天地图影像
+    if (layersId_img.length > 0) {
+
+        if (visibility) {
+            layersId_img.forEach(element => {
+                map.setLayoutProperty(element, 'visibility', 'visible');
+            });
+            layersId_dt.forEach(element => {
+                map.setLayoutProperty(element, 'visibility', 'none');
+            });
+        } else {
+            layersId_img.forEach(element => {
+                map.setLayoutProperty(element, 'visibility', 'none');
+            });
+            layersId_dt.forEach(element => {
+                map.setLayoutProperty(element, 'visibility', 'visible');
+            });
+        }
+
+    } else {
+        console.log("获取影像图层id失败")
+    }
 };
 
 /**
@@ -199,7 +261,7 @@ const setAllImageMapVisibility = function(value){
 * @param （true：可见，false：不可见）
 * @returns null
 */
-const setTdtImageMapVisibility = function(value){
+const setTdtImageMapVisibility = function (value) {
 
 };
 
@@ -208,8 +270,29 @@ const setTdtImageMapVisibility = function(value){
 * @param （true：可见，false：不可见）
 * @returns null
 */
-const setAllDemMapVisibility = function(value){
+const setAllDemMapVisibility = function (visibility) {
     // 判断层级是否显示 天地图晕染
+    if (layersId_dem.length > 0) {
+
+        if (visibility) {
+            layersId_dem.forEach(element => {
+                map.setLayoutProperty(element, 'visibility', 'visible');
+            });
+            layersId_dt.forEach(element => {
+                map.setLayoutProperty(element, 'visibility', 'none');
+            });
+        } else {
+            layersId_dem.forEach(element => {
+                map.setLayoutProperty(element, 'visibility', 'none');
+            });
+            layersId_dt.forEach(element => {
+                map.setLayoutProperty(element, 'visibility', 'visible');
+            });
+        }
+
+    } else {
+        console.log("获取晕染图层id失败")
+    }
 };
 
 /**
@@ -217,9 +300,7 @@ const setAllDemMapVisibility = function(value){
 * @param （true：可见，false：不可见）
 * @returns null
 */
-const setTdtDemMapVisibility = function(value){
-
-};
+const setTdtDemMapVisibility = function (value) {};
 
 /**
 * @function 添加geojson到地图(画行政区划线)
@@ -446,9 +527,7 @@ const setFilterByCodeAndAreacodeArray = function (code, areacodeArray) {
         let filter = ["all"];
 
         areacodeArray.forEach(element => {
-            filter.push([
-                ">=", "xzq_bm", element
-            ]);
+            filter.push([">=", "xzq_bm", element]);
             filter.push([
                 "<=", "xzq_bm", element + "z"
             ]);
@@ -595,6 +674,9 @@ export default {
 
     set2dLayersVisibility,
     set3dLayersVisibility,
+    setAllDemMapVisibility,
+    setAllImageMapVisibility,
+
     setVisibilityByCode,
     setOpacityByCode,
 
@@ -616,7 +698,5 @@ export default {
     getGuidOnClickCallback,
     measureOnClickCallback,
     onDbClickCallback
-
-
 
 }

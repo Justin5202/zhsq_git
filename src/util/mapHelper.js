@@ -53,6 +53,12 @@ var infoPopup = null;
 // 缓存详情窗的 vue实体
 var infoPopup_vm = null;
 
+// 传入的 目前叠加了哪些目录编码的数组
+var codeArray = [];
+
+// 传入的 目前叠加了哪些areacode的数组
+var areacodeArray = [];
+
 /**
 * @function 初始化地图
 * @param option
@@ -100,6 +106,24 @@ const initMap = function (option) {
 
     // 绑定双击事件
     map.on("dblclick", onDbClick);
+
+    // 样式 文件有变动时 进行 过滤
+    map.on('styledata',function(){
+        codeArray.forEach(element => {
+            if (layersId[element]) {
+                let filter = ["any"];
+    
+                areacodeArray.forEach(element => {
+                    filter.push(["all",[">=", "xzq_bm", element],["<=", "xzq_bm", element + "z"]]);
+                });
+    
+                // 如果有图层一定是数组
+                layersId[element].forEach(element => {
+                    map.setFilter(element, filter);
+                });
+            }
+        })
+    });
 
     return map;
 };
@@ -538,26 +562,10 @@ const setVisibilityByCode = function (code, visibility) {
 * @param 目录编码数组，行政区编码数组
 * @returns null
 */
-const setFilterByCodeArrayAndAreacodeArray = function (codeArray, areacodeArray) {
-  console.log(codeArray, areacodeArray)
-    codeArray.forEach(element => {
-        if (layersId[element]) {
-            let filter = ["all"];
-
-            areacodeArray.forEach(element => {
-                filter.push([">=", "xzq_bm", element]);
-                filter.push([
-                    "<=", "xzq_bm", element + "z"
-                ]);
-            });
-
-            // 如果有图层一定是数组
-            layersId[element].forEach(element => {
-                map.setFilter(element, filter);
-            });
-        }
-    })
-
+const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArray) {
+    // 记录 目录和区域 在styledata 事件触发时 过滤
+    codeArray = _codeArray;
+    areacodeArray = _areacodeArray;
 };
 
 /**

@@ -7,6 +7,10 @@
  * code 指的都是目录中的编码（id）指的areaInfoData对象中的id形如：B01010000
  */
 
+ import Vue from 'vue'
+ import infoPopupVm from '../components/common/infoPopup' 
+
+
 // 私有map
 var map = null;
 
@@ -43,7 +47,11 @@ var dbClickCallback = null;
 // 量算标志位
 var isMeasure = false;
 
-//
+// 详情popup
+var infoPopup = null;
+
+// 缓存详情窗的 vue实体
+var infoPopup_vm = null;
 
 /**
 * @function 初始化地图
@@ -92,13 +100,6 @@ const initMap = function (option) {
 
     // 绑定双击事件
     map.on("dblclick", onDbClick);
-
-    new window
-        .d2c
-        .Popup({closeButton: false})
-        .setLngLat([106, 29])
-        .setHTML('<router-view/>')
-        .addTo(map);
 
     return map;
 };
@@ -620,6 +621,41 @@ const setMarkToMap = function (layerId, geoPoint, text, textSize, icon, iconSize
 };
 
 /**
+* @function 设置弹窗popup
+* @param 坐标 （数组）， dom
+* @returns null
+*/
+const setPopupToMap = function(geoPoint){
+    closePopup();
+    infoPopup = new window
+    .d2c
+    .Popup({closeButton: false})
+    .setLngLat(geoPoint)
+    .setHTML("<div id = 'infoPopup'></div>")
+    .addTo(map);
+    infoPopup_vm = new Vue({
+        el: '#infoPopup',
+        template: '<v-infoPopup/>',
+        components: {'v-infoPopup':infoPopupVm}
+      })
+};
+
+/**
+* @function 关闭弹窗popup
+* @param 
+* @returns null
+*/
+const closePopup = function(){
+    if (infoPopup) {
+        infoPopup.remove();
+        infoPopup = null;
+    }
+    if (infoPopup_vm) {
+        infoPopup_vm.$destroy();
+    }
+};
+
+/**
 * @function 设置倾角
 * @param 倾角值
 * @returns null
@@ -701,6 +737,8 @@ export default {
     setFilterByCodeArrayAndAreacodeArray,
 
     setMarkToMap,
+    setPopupToMap,
+    closePopup,
     flyByPointAndZoom,
     flyByBounds,
 

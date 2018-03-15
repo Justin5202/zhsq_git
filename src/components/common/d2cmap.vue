@@ -6,6 +6,8 @@
 import dt from './config/dt'
 import dem from './config/dem'
 import img from './config/img'
+import infoTemp from '../page/testPage'
+import Vue from 'vue'
 
 export default {
 	name: 'd2cmap',
@@ -25,10 +27,15 @@ export default {
 	},
 	mounted() {
 		// this.initOption(this.initMap);
-
 		// 后加的
 		this.map = this.$mapHelper.initMap(this.getConfig(dt));
 		this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(img),this.getLayerAndSourceFromOption(dem));
+		let vm = this;
+		this.$mapHelper.setIsMeasure(true);
+		this.$mapHelper.measureOnClickCallback(function(e){
+			vm.$mapHelper.setPopupToMap([e.lngLat.lng,e.lngLat.lat]);
+			
+		});
 		window.d2cMap = this.map;
 		window.addEventListener('resize', this.resize);
 

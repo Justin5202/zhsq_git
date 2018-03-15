@@ -34,9 +34,6 @@ var layersId = {};
 // code 与 source 的对应关系
 var sourcesName = {};
 
-// 中转详情用 callback 详情 用
-var mapguidCallback = null;
-
 // 中转详情用 callback 量算用
 var measureCallback = null;
 
@@ -192,7 +189,7 @@ const onClick = function (e) {
         // 要素的mapguid
         if (features.length > 0 && mapguidCallback) {
 
-            mapguidCallback(features[0].properties.mapguid);
+            setPopupToMap([e.LngLat.lng,e.LngLat.lat],features[0].properties.mapguid);
 
         }
     }
@@ -218,15 +215,6 @@ const onDbClick = function (e) {
 */
 const setIsMeasure = function (value) {
     isMeasure = value;
-};
-
-/**
-* @function 设置点击获取mapguid回调函数
-* @param callback
-* @returns null
-*/
-const getGuidOnClickCallback = function (_callback) {
-    mapguidCallback = _callback;
 };
 
 /**
@@ -675,7 +663,7 @@ const setMarkToMap = function (layerId, geoPoint, text, textSize, icon, iconSize
 * @param 坐标 （数组）， dom
 * @returns null
 */
-const setPopupToMap = function (geoPoint) {
+const setPopupToMap = function (geoPoint,mapguid) {
     closePopup();
     infoPopup = new window
         .d2c
@@ -685,7 +673,7 @@ const setPopupToMap = function (geoPoint) {
         .addTo(map);
     infoPopup_vm = new Vue({
         el: '#infoPopup',
-        template: '<v-infoPopup/>',
+        template: '<v-infoPopup :mapguid='+mapguid+'/>',
         components: {
             'v-infoPopup': infoPopupVm
         }
@@ -803,7 +791,6 @@ export default {
     getBounds,
 
     setIsMeasure,
-    getGuidOnClickCallback,
     measureOnClickCallback,
     onDbClickCallback,
     onRotateCallback

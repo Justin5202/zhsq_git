@@ -93,6 +93,13 @@ const initMap = function (option) {
     // 绑定双击事件
     map.on("dblclick", onDbClick);
 
+    new window
+        .d2c
+        .Popup({closeButton: false})
+        .setLngLat([106, 29])
+        .setHTML('<router-view/>')
+        .addTo(map);
+
     return map;
 };
 
@@ -119,13 +126,17 @@ const onPitch = function (e) {
 const onClick = function (e) {
 
     if (isMeasure) {
-        measureCallback(e);
+        if (measureCallback) {
+            measureCallback(e);
+        }
+
     } else {
         let features = map.queryRenderedFeatures([e.lngLat.lng, e.lngLat.lat]);
         // 要素的mapguid
-        if (features.length > 0) {
-            // onClickCallback传入
+        if (features.length > 0 && mapguidCallback) {
+
             mapguidCallback(features[0].properties.mapguid);
+
         }
     }
 
@@ -137,7 +148,9 @@ const onClick = function (e) {
 * @returns null
 */
 const onDbClick = function (e) {
-    dbClickCallback(e);
+    if (dbClickCallback) {
+        dbClickCallback(e);
+    }
 
 };
 
@@ -215,13 +228,17 @@ const initImageAndDemMap = function (img, dem) {
                 }
             }
 
-            // 加layers 
-            img.layers.forEach(element=>{
-                map.addLayer(element);
-            })
-            dem.layers.forEach(element=>{
-                map.addLayer(element);
-            })
+            // 加layers
+            img
+                .layers
+                .forEach(element => {
+                    map.addLayer(element);
+                })
+            dem
+                .layers
+                .forEach(element => {
+                    map.addLayer(element);
+                })
         })
 
 };
@@ -261,9 +278,7 @@ const setAllImageMapVisibility = function (visibility) {
 * @param （true：可见，false：不可见）
 * @returns null
 */
-const setTdtImageMapVisibility = function (value) {
-
-};
+const setTdtImageMapVisibility = function (value) {};
 
 /**
 * @function 设置全部晕染服务可见性
@@ -519,25 +534,28 @@ const setVisibilityByCode = function (code, visibility) {
 
 /**
 * @function 通过areacode数组设置要素过滤
-* @param 目录编码，行政区编码数组
+* @param 目录编码数组，行政区编码数组
 * @returns null
 */
-const setFilterByCodeAndAreacodeArray = function (code, areacodeArray) {
-    if (layersId[code]) {
-        let filter = ["all"];
+const setFilterByCodeArrayAndAreacodeArray = function (codeArray, areacodeArray) {
+    codeArray.forEach(element => {
+        if (layersId[element]) {
+            let filter = ["all"];
 
-        areacodeArray.forEach(element => {
-            filter.push([">=", "xzq_bm", element]);
-            filter.push([
-                "<=", "xzq_bm", element + "z"
-            ]);
-        });
+            areacodeArray.forEach(element => {
+                filter.push([">=", "xzq_bm", element]);
+                filter.push([
+                    "<=", "xzq_bm", element + "z"
+                ]);
+            });
 
-        // 如果有图层一定是数组
-        layersId[code].forEach(element => {
-            map.setFilter(element, filter);
-        });
-    }
+            // 如果有图层一定是数组
+            layersId[element].forEach(element => {
+                map.setFilter(element, filter);
+            });
+        }
+    })
+
 };
 
 /**
@@ -680,7 +698,7 @@ export default {
     setVisibilityByCode,
     setOpacityByCode,
 
-    setFilterByCodeAndAreacodeArray,
+    setFilterByCodeArrayAndAreacodeArray,
 
     setMarkToMap,
     flyByPointAndZoom,

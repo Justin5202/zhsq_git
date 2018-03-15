@@ -16,7 +16,7 @@
 				<div class="search-type-button">
 					<button
 						class="type-button"
-						v-for="(item, index) in ['全部', '数据', '类型']"
+						v-for="(item, index) in ['全部', '数据', '地名点']"
 						:key="index"
 						@click="getType(index+1)"
 						:class="{clicked: nowIndex === index}"
@@ -31,7 +31,7 @@
 							<div class="area-icon-box">
 								<i class="poi-icon"></i>
 							</div>
-							<div class="area-content" >
+							<div class="area-content">
 								<h2>{{(page-1)*10+index+1}}.{{item.poi.name}}</h2>
 								<p>{{item.poi.address}}</p>
 							</div>
@@ -51,11 +51,15 @@
 								<span>详情</span>
 							</div>
 						</div>
-						<div class="search-pane-box" v-else-if="item.searchType === 4">
+						<div
+							class="search-pane-box"
+							:class="{active: item.isActive}"
+							v-else-if="item.searchType === 4"
+						>
 							<div class="area-icon-box">
 								<i class="data-icon"></i>
 							</div>
-							<div class="area-content" >
+							<div class="area-content" @click="isActiveItem(item)">
 								<h2>{{item.macro.name}}</h2>
 								<p>{{item.macro.address}}</p>
 								<p>{{item.macro.year}}</p>
@@ -167,13 +171,29 @@
 				}
 				this.getAreaDetail(params)
 			},
+			isActiveItem(item) {
+				let type = item.macro.data.type
+				let i = Number(type.substring(0, 1))
+				console.log(i)
+				const params = {
+					id: item.macro.data.id
+				}
+				if(i === 1) {
+					/*存在第二级目录*/
+					this.getAreaDetail(params)
+				} else if(i === 2){
+					/*加载空间数据，加入数据table*/
+					this.loadSearchItemMacro(item)
+				}
+			},
 			toggleSlide() {
 				this.upOrDown = !this.upOrDown
 			},
 			...mapActions([
 				'getSearchParams',
 				'getAreaDetail',
-				'tablePaneShow'
+				'tablePaneShow',
+				'loadSearchItemMacro'
 			])
 		}
 	}
@@ -247,16 +267,18 @@
 			}
 			ul {
 				margin: 0;
-				padding: 0 0 0 10px;
 				max-height: 526px;
 				overflow-y: scroll;
 				.search-pane-li {
 					list-style: none;
-					padding: 5px 0 15px 10px;
 					border-bottom: 1px solid #dcdfe6;
 					.search-pane-box {
 						display: flex;
 						justify-content: space-around;
+						padding: 10px;
+					}
+					.active {
+						background-color: #dcdfe6;
 					}
 					.area-icon-box {
 						-webkit-box-flex: 0;

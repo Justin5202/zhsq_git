@@ -234,6 +234,8 @@ const mutations = {
         /*清空所有图层*/
         mapHelper.removeLayerByCode(v.id)
       })
+      /*图层过滤*/
+      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList=[], state.areaCodeList)
     }
   },
   [TYPE.SET_SEC_AREA_LIST](state, secAreaList) {
@@ -289,6 +291,8 @@ const mutations = {
         let index = state.secAreaList.findIndex(i => i.areacode === v.areacode)
         mapHelper.removeLayerById(index.toString())
       })
+      /*图层过滤*/
+      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList=[])
       state.areaList = []
     }
   },

@@ -80,7 +80,7 @@ const state = {
   searchItemMacroList: [], /*搜索结果空间数据列表*/
   idList: [], /*图层id列表*/
   areaCodeList: [], /*区域code列表*/
-  uuidInfo: '' /*点击地图uuid的详细信息*/
+  uuidClickedInfo: {} /*点击地图uuid的详细信息*/
 }
 
 const getters = {
@@ -98,7 +98,7 @@ const getters = {
   reportFormData: state => state.reportFormData,
   areaCodeAndDataId: state => state.areaCodeAndDataId,
   searchItemMacroList: state => state.searchItemMacroList,
-  uuidInfo: state => state.uuidInfo
+  uuidClickedInfo: state => state.uuidClickedInfo
 }
 
 const mutations = {
@@ -392,8 +392,8 @@ const mutations = {
       state.areaInfoList.splice(index, 1, temp)
     }
   },
-  [TYPE.SET_UUID_INFO](state, uuidInfo) {
-    state.uuidInfo = uuidInfo
+  [TYPE.SET_UUID_INFO](state, uuidClickedInfo) {
+    state.uuidClickedInfo = uuidClickedInfo
   },
   [TYPE.REPORT_FORM_SHOW](state, reportFormShow) {
     state.reportFormShow = reportFormShow

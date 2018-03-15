@@ -36,10 +36,9 @@ export default {
 			getQueryOnlineByUuid(id).then(res => {
 				if(res.data) {
 					vm.setUuidInfo(JSON.parse(res.data.data))
+					vm.$mapHelper.setPopupToMap(JSON.parse(res.data.data)._source.geopoint)
 				}
 			})
-			// vm.$mapHelper.setPopupToMap([e.lngLat.lng,e.lngLat.lat]);
-
 		})
 		window.d2cMap = this.map;
 		window.addEventListener('resize', this.resize);

@@ -1,7 +1,7 @@
 <template>
   <div class="pop">
     <div class="pop-title">
-      <h3 class="title">{{uuidInfo._source.address}}</h3>
+      <h3 class="title">{{uuidClickedInfo._source.address}}</h3>
       <i class="cross-icon"></i>
     </div>
     <ul>
@@ -26,13 +26,9 @@
 <script>
 import {mapGetters} from 'vuex'
 export default {
-    data(){
-        return {
-        }
-    },
     computed: {
       ...mapGetters([
-        'uuidInfo'
+        'uuidClickedInfo'
       ])
     }
 }

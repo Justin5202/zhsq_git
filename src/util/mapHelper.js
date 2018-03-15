@@ -607,7 +607,6 @@ const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArra
     // 记录 目录和区域 在styledata 事件触发时 过滤
     codeArray = _codeArray;
     areacodeArray = _areacodeArray;
-    console.log(_codeArray, _areacodeArray)
 };
 
 /**

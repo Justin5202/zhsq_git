@@ -130,10 +130,13 @@ const initMap = function (option) {
                     ]);
                 });
 
-                // 如果有图层一定是数组
-                layersId[element].forEach(element => {
-                    map.setFilter(element, filter);
-                });
+                if (filter.length > 1) {
+                    // 如果有图层一定是数组
+                    layersId[element].forEach(element => {
+                        map.setFilter(element, filter);
+                    });
+                }
+
             }
         })
     });

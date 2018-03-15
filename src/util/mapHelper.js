@@ -136,10 +136,8 @@ const initMap = function (option) {
                         map.setFilter(element, filter);
                     });
                 } else {
-                    filter = [];
-                    // 如果有图层一定是数组
                     layersId[element].forEach(element => {
-                        map.setFilter(element, filter);
+                        map.setFilter(element, null );
                     });
 
                 }

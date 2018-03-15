@@ -8,7 +8,7 @@
  */
 
  import Vue from 'vue'
- import infoPopupVm from '../components/common/infoPopup' 
+ import infoPopupVm from '../components/common/infoPopup'
 
 
 // 私有map
@@ -539,6 +539,7 @@ const setVisibilityByCode = function (code, visibility) {
 * @returns null
 */
 const setFilterByCodeArrayAndAreacodeArray = function (codeArray, areacodeArray) {
+  console.log(codeArray, areacodeArray)
     codeArray.forEach(element => {
         if (layersId[element]) {
             let filter = ["all"];
@@ -642,7 +643,7 @@ const setPopupToMap = function(geoPoint){
 
 /**
 * @function 关闭弹窗popup
-* @param 
+* @param
 * @returns null
 */
 const closePopup = function(){

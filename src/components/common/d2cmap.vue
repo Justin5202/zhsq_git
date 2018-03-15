@@ -31,11 +31,11 @@ export default {
 		this.map = this.$mapHelper.initMap(this.getConfig(dt));
 		this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(img),this.getLayerAndSourceFromOption(dem));
 		let vm = this;
-		this.$mapHelper.setIsMeasure(true);
-		this.$mapHelper.measureOnClickCallback(function(e){
-			vm.$mapHelper.setPopupToMap([e.lngLat.lng,e.lngLat.lat]);
-			
-		});
+		this.$mapHelper.getGuidOnClickCallback(function(id){
+			console.log(id)
+			// vm.$mapHelper.setPopupToMap([e.lngLat.lng,e.lngLat.lat]);
+
+		})
 		window.d2cMap = this.map;
 		window.addEventListener('resize', this.resize);
 

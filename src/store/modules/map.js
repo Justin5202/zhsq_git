@@ -173,6 +173,9 @@ const mutations = {
       areaInfoData[0].isActive = true
       getJson(areaInfoData[0].datapath).then(res => {
         mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+        state.idList.push(areaInfoData[0].id)
+        /*图层过滤*/
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
       })
       /*存在json就push进图层列表*/
       if (state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
@@ -190,9 +193,11 @@ const mutations = {
           for (let val of value.children) {
             val.isActive = false
             temp.push(val)
+            state.idList.push(val.id)
           }
         } else {
           temp.push(value)
+          state.idList.push(value.id)
         }
       }
       if (!hasThirdLevel) {
@@ -210,6 +215,8 @@ const mutations = {
             mapHelper.addLayerByCodeAndJson(v.id, res)
           })
         })
+        /*图层过滤*/
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
       }
     }
     state.areaInfoData = areaInfoData
@@ -261,7 +268,7 @@ const mutations = {
       } else {
         temp.push(areainfo)
         /*更新选中区域areacode列表*/
-        if(areainfo.areacode !== 501002) {
+        if(areainfo.areacode !== '501002') {
           state.areaCodeList.push(areainfo.areacode)
         }
         /*画行政区划线*/
@@ -271,7 +278,7 @@ const mutations = {
           mapHelper.addLayerByIdAndGeojson(index.toString(), state.areaDetailInfo.geojson)
           mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
           /*图层过滤*/
-          mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.codeList)
+          mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
         }
       }
     } else {
@@ -287,8 +294,6 @@ const mutations = {
     bol,
     id
   }) {
-    /*更新图层id*/
-    state.idList.push(id)
     if (state.areaInfoList.findIndex(v => v.id === id) < 0) {
       state.areaInfoList.filter(v => {
         if (v.children.length > 0) {
@@ -310,12 +315,16 @@ const mutations = {
                   getJson(v.datapath).then(res => {
                     mapHelper.addLayerByCodeAndJson(v.id, res)
                   })
+                  /*图层过滤*/
+                  mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
                 })
               } else {
                 /*增加对应图层*/
                 getJson(temp.datapath).then(res => {
                   mapHelper.addLayerByCodeAndJson(id, res)
                 })
+                /*图层过滤*/
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
               }
             }
             v.children.splice(index, 1, temp)
@@ -335,6 +344,8 @@ const mutations = {
                     getJson(temp.datapath).then(res => {
                       mapHelper.addLayerByCodeAndJson(id, res)
                     })
+                    /*图层过滤*/
+                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
                   }
                   i.children.splice(index, 1, temp)
                 }
@@ -358,6 +369,8 @@ const mutations = {
             getJson(temp.datapath).then(res => {
               mapHelper.addLayerByCodeAndJson(id, res)
             })
+            /*图层过滤*/
+            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
           }
         })
       }
@@ -371,6 +384,8 @@ const mutations = {
         getJson(temp.datapath).then(res => {
           mapHelper.addLayerByCodeAndJson(id, res)
         })
+        /*图层过滤*/
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
       }
       state.areaInfoList.splice(index, 1, temp)
     }

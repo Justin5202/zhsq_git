@@ -34,8 +34,8 @@
 				<img src="../../../assets/images/map/局部图层.png" alt="">
 			</span>
 			<span class="tool-item " @click="changeMapStatus()">
-				<img src="../../../assets/images/map/2D@2x.png" alt="" v-show="is2Dmap">
-                <img src="../../../assets/images/map/3D@2x.png" alt="" v-show="!is2Dmap">
+				<img src="../../../assets/images/map/2D@2x.png" alt="" v-show="!is2Dmap">
+                <img src="../../../assets/images/map/3D@2x.png" alt="" v-show="is2Dmap">
 			</span>
 			<span class="tool-item ">
 				<img src="../../../assets/images/map/定位.png" alt="">

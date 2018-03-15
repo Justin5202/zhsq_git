@@ -86,17 +86,17 @@ export default {
         Measure.measurePlane.removeMarker()
         var area =turf.area(turf.polygon(Measure.measurePlane.polygon.geometry.coordinates))
         if(area > 1000000){
-            area = (area /1000).toFixed(1) +'平方公里'
+            area = (area /1000000).toFixed(1) +'平方公里'
         }else{
             area = area.toFixed(0) +'平方米'
         }
-        console.log(area)
         this.setMeasurNum(area)
     },
     quitMeasure(){
         this.clearMeasureResult()
         this.$mapHelper.setIsMeasure(false)
         this.measureBoxShow = false
+        d2cMap.getCanvas().style.cursor = "";
     },
     ...mapActions([
         'setMeasurNum'

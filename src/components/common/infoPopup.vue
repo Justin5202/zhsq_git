@@ -1,13 +1,13 @@
 <template>
-  <div class="pop">
+  <div class="pop" v-if="isShow">
     <div class="pop-title">
       <h3 class="title">{{uuidClickedInfo._source.address}}</h3>
-      <i class="cross-icon"></i>
+      <i class="cross-icon" @click="isShowPop()"></i>
     </div>
     <ul>
-      <li class="pop-li">
-        <p>大类名称</p>
-        <span>城市建设用地</span>
+      <li class="pop-li" v-for="item in showArray">
+        <p>{{item._source.name_a}}</p>
+        <span>{{uuidClickedInfo._source[item._source.name]}}</span>
       </li>
     </ul>
     <div class="button-box">
@@ -24,26 +24,48 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {getQueryOnlineByUuid, getThematicMap} from '@/api/dataSheets'
 export default {
-    computed: {
-      ...mapGetters([
-        'uuidClickedInfo'
-      ])
+  data() {
+    return {
+      uuidClickedInfo: '',
+      showArray: [],
+      isShow: false
     }
+  },
+  props: {
+    mapguid: {
+      type: String,
+      default: ''
+    }
+  },
+  beforeMount() {
+    this._getQueryOnlineByUuid(this.mapguid)
+  },
+  methods: {
+    isShowPop() {
+      this.isShow = !this.isShow
+    },
+    _getQueryOnlineByUuid(id) {
+      getQueryOnlineByUuid(id).then(res => {
+        if(res.data) {
+    			let data = JSON.parse(res.data.data)
+          this.uuidClickedInfo = data
+          getThematicMap(data._type).then(res => {
+            this.showArray = JSON.parse(res.data)
+            this.isShow = true
+            console.log(JSON.parse(res.data))
+          })
+    		}
+      })
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
   .pop {
-    width: 200px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    border-radius: 4px;
-		background-color: #fff;
-		-webkit-box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
-    box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
+    width: 250px;
     .pop-title {
       display: flex;
       justify-content: space-between;
@@ -80,10 +102,9 @@ export default {
     }
     .button-box {
       display: flex;
+      margin-top: 30px;
       padding: 5px 0;
       background-color: rgba(0, 0, 0, .4);
-      border-bottom-left-radius: 4px;
-      border-bottom-right-radius: 4px;
       .button-item {
         display: flex;
         flex: 1;

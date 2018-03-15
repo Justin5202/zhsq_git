@@ -91,10 +91,23 @@ export function getSelectTargetType() {
     })
 }
 
+//获取点击地图点的详细信息
 export function getQueryOnlineByUuid(id) {
     const data = Object.assign({}, commonParams, {
         method: 'queryOnlineByUuid',
         uuid: id
+    })
+
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+}
+
+// 获取中文对照表
+export function getThematicMap(source) {
+    const data = Object.assign({}, commonParams, {
+        method: 'getThematicMap',
+        sourcelayer: source
     })
 
     return axios.post(url, qs.stringify(data)).then(res => {

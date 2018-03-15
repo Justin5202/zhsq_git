@@ -6,7 +6,6 @@ import dt from './config/dt'
 import dem from './config/dem'
 import img from './config/img'
 import infoTemp from '../page/testPage'
-import {getQueryOnlineByUuid} from '@/api/dataSheets'
 import Vue from 'vue'
 import {mapActions} from 'vuex'
 
@@ -31,15 +30,6 @@ export default {
 		// 后加的
 		this.map = this.$mapHelper.initMap(this.getConfig(dt));
 		this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(img),this.getLayerAndSourceFromOption(dem));
-		let vm = this;
-		this.$mapHelper.getGuidOnClickCallback(function(id){
-			getQueryOnlineByUuid(id).then(res => {
-				if(res.data) {
-					vm.setUuidInfo(JSON.parse(res.data.data))
-					vm.$mapHelper.setPopupToMap(JSON.parse(res.data.data)._source.geopoint)
-				}
-			})
-		})
 		window.d2cMap = this.map;
 		window.addEventListener('resize', this.resize);
 

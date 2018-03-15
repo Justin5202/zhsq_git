@@ -112,11 +112,11 @@ const initMap = function (option) {
         codeArray.forEach(element => {
             if (layersId[element]) {
                 let filter = ["any"];
-    
+
                 areacodeArray.forEach(element => {
                     filter.push(["all",[">=", "xzq_bm", element],["<=", "xzq_bm", element + "z"]]);
                 });
-    
+
                 // 如果有图层一定是数组
                 layersId[element].forEach(element => {
                     map.setFilter(element, filter);

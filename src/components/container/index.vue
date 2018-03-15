@@ -7,6 +7,7 @@
               <div class="side-top-box" :class="!isShow?'slideOutLeft':'slideInLeft'">
                 <v-search/>
                 <v-tab/>
+                <info-popup></info-popup>
                 <i class="switch-icon" :class="{'show-icon': isShow}" @click="toggle()"></i>
               </div>
           </el-col>
@@ -35,13 +36,15 @@
   import vTab from './tab/tab'
   import vTopic from './topic/topic'
   import vTool from './tool/tool'
+  import InfoPopup from '@/components/common/infoPopup'
   export default {
     name: 'container',
     components: {
       vSearch,
       vTab,
       vTopic,
-      vTool
+      vTool,
+      InfoPopup
     },
     data() {
       return {

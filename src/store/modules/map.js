@@ -79,7 +79,8 @@ const state = {
   areaCodeAndDataId: [],
   searchItemMacroList: [], /*搜索结果空间数据列表*/
   idList: [], /*图层id列表*/
-  areaCodeList: [] /*区域code列表*/
+  areaCodeList: [], /*区域code列表*/
+  uuidInfo: '' /*点击地图uuid的详细信息*/
 }
 
 const getters = {
@@ -96,7 +97,8 @@ const getters = {
   reportFormShow: state => state.reportFormShow,
   reportFormData: state => state.reportFormData,
   areaCodeAndDataId: state => state.areaCodeAndDataId,
-  searchItemMacroList: state => state.searchItemMacroList
+  searchItemMacroList: state => state.searchItemMacroList,
+  uuidInfo: state => state.uuidInfo
 }
 
 const mutations = {
@@ -390,6 +392,9 @@ const mutations = {
       state.areaInfoList.splice(index, 1, temp)
     }
   },
+  [TYPE.SET_UUID_INFO](state, uuidInfo) {
+    state.uuidInfo = uuidInfo
+  },
   [TYPE.REPORT_FORM_SHOW](state, reportFormShow) {
     state.reportFormShow = reportFormShow
   },
@@ -568,12 +573,16 @@ const actions = {
   }, item) {
     commit(TYPE.SET_SEARCH_MACRO_LIST, item)
   },
-  /*移除空间数据渲染列表*/
+  /*移除搜索结果空间数据渲染列表*/
   removeSearchItem({
     commit,
     state
   }, item) {
     commit(TYPE.SET_SEARCH_MACRO_LIST, item)
+  },
+  /*设置uuidinfo*/
+  setUuidInfo({commit, state}, uuidinfo) {
+    commit(TYPE.SET_UUID_INFO, uuidinfo)
   },
   //报表显示隐藏
   setReportFormShow({

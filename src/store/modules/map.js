@@ -331,6 +331,7 @@ const mutations = {
                 getJson(temp.datapath).then(res => {
                   mapHelper.addLayerByCodeAndJson(id, res)
                 })
+                console.log(state.idList, state.areaCodeList)
                 /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
               }

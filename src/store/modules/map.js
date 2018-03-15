@@ -65,7 +65,8 @@ const state = {
     activeAreaInfoList: [],
     reportFormShow: false,
     reportFormData: [],
-    areaCodeAndDataId: []
+    areaCodeAndDataId: [],
+    measureNum: ''
 }
 
 const getters = {
@@ -81,7 +82,8 @@ const getters = {
     tableMenuPaneShow: state => state.tableMenuPaneShow,
     reportFormShow: state => state.reportFormShow,
     reportFormData: state => state.reportFormData,
-    areaCodeAndDataId: state => state.areaCodeAndDataId
+    areaCodeAndDataId: state => state.areaCodeAndDataId,
+    measureNum: state => state.measureNum
 }
 
 const mutations = {
@@ -132,8 +134,8 @@ const mutations = {
         if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
             areaInfoData[0].isActive = true
             getJson(areaInfoData[0].datapath).then(res => {
-                mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
-            })
+                    mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+                })
                 /*存在json就push进图层列表*/
             if (state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
                 state.activeAreaInfoList.push(areaInfoData[0])
@@ -330,6 +332,9 @@ const mutations = {
             data = []
         }
         state.reportFormData = data
+    },
+    [TYPE.SET_MEASURE_NUM](state, measureNum) {
+        state.measureNum = measureNum
     }
 }
 
@@ -493,6 +498,10 @@ const actions = {
     //清空报表
     clearReport({ commit, state }, { key, data }) {
         commit(TYPE.CLEAR_REPORT_FORM, { key, data })
+    },
+    //获取测量数据
+    setMeasurNum({ commit, state }, data) {
+        commit(TYPE.SET_MEASURE_NUM, data)
     }
 }
 

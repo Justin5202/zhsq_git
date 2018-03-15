@@ -16,7 +16,10 @@
             <p v-if="item.target.length!==0">{{item.target[0].cityTarget}}</p>
           </div>
           <div class="detail" v-if="item.target.length!==0">
-            <i class="detail-icon" :class="{avtiveDetailIcon: areaInfoList.length === falseLength}"></i>
+            <i
+              class="detail-icon"
+              :class="{avtiveDetailIcon: areaInfoList.length === falseLength}"
+            ></i>
             <span :class="{activeColor: areaInfoList.length === falseLength}">详情</span>
           </div>
           <div class="collection">
@@ -35,7 +38,7 @@
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
             </div>
-            <div class="detail" v-if="childItem.target.length!==0"  @click="getDetails(childItem.isActive, childItem.id)">
+            <div class="detail" v-if="childItem.target.length!==0"  @click.stop="getDetails(childItem.isActive, childItem.id)">
               <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
               <span :class="{activeColor: !childItem.isActive}">详情</span>
             </div>
@@ -164,7 +167,7 @@
         },
         //点击详情按钮
         getDetails(bol, id) {
-          this.setAreaList({'bol': !bol, 'id': id})
+          this.setAreaList({'bol': true, 'id': id})
           this.getAreaCodeAndDataId({"areaCode":this.areaList,"dataId":this.areaInfoData})
           this.getReportData({'areaCode':this.areaCodeAndDataId[0],'dataId':this.areaCodeAndDataId[1]})
           this.setReportFormShow(true)

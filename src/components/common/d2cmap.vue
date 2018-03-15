@@ -1,13 +1,14 @@
 <template>
-	<div id="map" ref="map" :style="style" class="wh100">
-	</div>
+	<div id="map" ref="map" :style="style" class="wh100"></div>
 </template>
 <script>
 import dt from './config/dt'
 import dem from './config/dem'
 import img from './config/img'
 import infoTemp from '../page/testPage'
+import {getQueryOnlineByUuid} from '@/api/dataSheets'
 import Vue from 'vue'
+import {mapActions} from 'vuex'
 
 export default {
 	name: 'd2cmap',
@@ -31,11 +32,14 @@ export default {
 		this.map = this.$mapHelper.initMap(this.getConfig(dt));
 		this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(img),this.getLayerAndSourceFromOption(dem));
 		let vm = this;
-		this.$mapHelper.setIsMeasure(true);
-		this.$mapHelper.measureOnClickCallback(function(e){
-			vm.$mapHelper.setPopupToMap([e.lngLat.lng,e.lngLat.lat]);
-			
-		});
+		this.$mapHelper.getGuidOnClickCallback(function(id){
+			getQueryOnlineByUuid(id).then(res => {
+				if(res.data) {
+					vm.setUuidInfo(JSON.parse(res.data.data))
+					vm.$mapHelper.setPopupToMap(JSON.parse(res.data.data)._source.geopoint)
+				}
+			})
+		})
 		window.d2cMap = this.map;
 		window.addEventListener('resize', this.resize);
 
@@ -94,7 +98,10 @@ export default {
 			res["layers"] = option.layers;
 			res["sources"] = option.sources;
 			return res;
-		}
+		},
+		...mapActions([
+			'setUuidInfo'
+		])
 	}
 }
 </script>

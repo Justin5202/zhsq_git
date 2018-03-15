@@ -7,9 +7,8 @@
  * code 指的都是目录中的编码（id）指的areaInfoData对象中的id形如：B01010000
  */
 
- import Vue from 'vue'
- import infoPopupVm from '../components/common/infoPopup' 
-
+import Vue from 'vue'
+import infoPopupVm from '../components/common/infoPopup'
 
 // 私有map
 var map = null;
@@ -41,6 +40,9 @@ var mapguidCallback = null;
 // 中转详情用 callback 量算用
 var measureCallback = null;
 
+// 中转详情用 callback 指北针用
+var rotateCallback = null;
+
 // 中转详情用 callback onDbClickCallback 用
 var dbClickCallback = null;
 
@@ -52,6 +54,12 @@ var infoPopup = null;
 
 // 缓存详情窗的 vue实体
 var infoPopup_vm = null;
+
+// 传入的 目前叠加了哪些目录编码的数组
+var codeArray = [];
+
+// 传入的 目前叠加了哪些areacode的数组
+var areacodeArray = [];
 
 /**
 * @function 初始化地图
@@ -95,11 +103,48 @@ const initMap = function (option) {
     //绑定右键拖动事件 2D 3D 图层显示用
     map.on('pitch', onPitch);
 
+    //绑定右键拖动事件 是否显示 指北针
+    map.on('rotate', onRotate);
+
     // 绑定点击事件返回 mapguid
     map.on('click', onClick);
 
     // 绑定双击事件
     map.on("dblclick", onDbClick);
+
+    // 样式 文件有变动时 进行 过滤
+    map.on('styledata', function () {
+        codeArray.forEach(element => {
+            if (layersId[element]) {
+                let filter = ["any"];
+
+                areacodeArray.forEach(element => {
+                    filter.push([
+                        "all",
+                        [
+                            ">=", "xzq_bm", element
+                        ],
+                        [
+                            "<=", "xzq_bm", element + "z"
+                        ]
+                    ]);
+                });
+
+                if (filter.length > 1) {
+                    // 如果有图层一定是数组
+                    layersId[element].forEach(element => {
+                        map.setFilter(element, filter);
+                    });
+                } else {
+                    layersId[element].forEach(element => {
+                        map.setFilter(element, null );
+                    });
+
+                }
+
+            }
+        })
+    });
 
     return map;
 };
@@ -116,6 +161,17 @@ const onPitch = function (e) {
     } else {
         set2dLayersVisibility(true);
         set3dLayersVisibility(false);
+    }
+};
+
+/**
+* @function 拖动时的回调函数 偏转时是否显示指南针(私有)
+* @param event
+* @returns null
+*/
+const onRotate = function (e) {
+    if (rotateCallback) {
+        rotateCallback(map.getBearing());
     }
 };
 
@@ -189,6 +245,15 @@ const measureOnClickCallback = function (_callback) {
 */
 const onDbClickCallback = function (_callback) {
     dbClickCallback = _callback;
+};
+
+/**
+* @function 设置转角事件回调函数
+* @param callback
+* @returns null
+*/
+const onRotateCallback = function (_callback) {
+    rotateCallback = _callback;
 };
 
 /**
@@ -538,25 +603,10 @@ const setVisibilityByCode = function (code, visibility) {
 * @param 目录编码数组，行政区编码数组
 * @returns null
 */
-const setFilterByCodeArrayAndAreacodeArray = function (codeArray, areacodeArray) {
-    codeArray.forEach(element => {
-        if (layersId[element]) {
-            let filter = ["all"];
-
-            areacodeArray.forEach(element => {
-                filter.push([">=", "xzq_bm", element]);
-                filter.push([
-                    "<=", "xzq_bm", element + "z"
-                ]);
-            });
-
-            // 如果有图层一定是数组
-            layersId[element].forEach(element => {
-                map.setFilter(element, filter);
-            });
-        }
-    })
-
+const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArray) {
+    // 记录 目录和区域 在styledata 事件触发时 过滤
+    codeArray = _codeArray;
+    areacodeArray = _areacodeArray;
 };
 
 /**
@@ -625,27 +675,29 @@ const setMarkToMap = function (layerId, geoPoint, text, textSize, icon, iconSize
 * @param 坐标 （数组）， dom
 * @returns null
 */
-const setPopupToMap = function(geoPoint){
+const setPopupToMap = function (geoPoint) {
     closePopup();
     infoPopup = new window
-    .d2c
-    .Popup({closeButton: false})
-    .setLngLat(geoPoint)
-    .setHTML("<div id = 'infoPopup'></div>")
-    .addTo(map);
+        .d2c
+        .Popup({closeButton: false})
+        .setLngLat(geoPoint)
+        .setHTML("<div id = 'infoPopup'></div>")
+        .addTo(map);
     infoPopup_vm = new Vue({
         el: '#infoPopup',
         template: '<v-infoPopup/>',
-        components: {'v-infoPopup':infoPopupVm}
-      })
+        components: {
+            'v-infoPopup': infoPopupVm
+        }
+    })
 };
 
 /**
 * @function 关闭弹窗popup
-* @param 
+* @param
 * @returns null
 */
-const closePopup = function(){
+const closePopup = function () {
     if (infoPopup) {
         infoPopup.remove();
         infoPopup = null;
@@ -753,6 +805,7 @@ export default {
     setIsMeasure,
     getGuidOnClickCallback,
     measureOnClickCallback,
-    onDbClickCallback
+    onDbClickCallback,
+    onRotateCallback
 
 }

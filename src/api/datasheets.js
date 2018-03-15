@@ -90,3 +90,14 @@ export function getSelectTargetType() {
         return Promise.resolve(res.data)
     })
 }
+
+export function getQueryOnlineByUuid(id) {
+    const data = Object.assign({}, commonParams, {
+        method: 'queryOnlineByUuid',
+        uuid: id
+    })
+
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+}

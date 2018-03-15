@@ -8,21 +8,47 @@
 				<span class="triangle"></span>
 				<ul class="tabs clearfix">
 					<li v-for="(item, index) in area" :class="{active: index===activeIndex}" @click="handleClick(index, item.name, item.code)">{{ item.name }}</li>
-					<li class="icon"><i class="el-icon-delete"></i></li>
+					<li class="icon"><i class="el-icon-delete" @click="removeSelectedArea()"></i></li>
 				</ul>
 				<div class="subMenu" v-if="showSubmenu">
 					<ul class="areas">
-						<li v-for="item in areaData1" @click="handleArea(item.areacode, item.areaname)">{{item.areaname}}</li>
+						<li
+							v-for="(item, index) in areaData1"
+							@click="handleArea(item.areacode, item.areaname)"
+							:class="{active: areaList.findIndex(v => v.areacode === item.areacode) >= 0}"
+						>
+							<span class="area-item">{{item.areaname}}</span>
+						</li>
 						<li v-if="!showSubmenuMore" @click="showSubMore()">更多...</li>
-						<li v-else v-for="item in areaData2" @click="handleArea(item.areacode, item.areaname)">{{item.areaname}}</li>
+						<li
+							v-else
+							v-for="item in areaData2"
+							@click="handleArea(item.areacode, item.areaname)"
+							:class="{active: areaList.findIndex(v => v.areacode === item.areacode) >= 0}"
+						>
+							<span class="area-item">{{item.areaname}}</span>
+						</li>
 					</ul>
 				</div>
 				<div class="three-level-menu" v-if="showThreeLevelMenu">
 					<p>镇乡街</p>
 					<ul class="areas">
-						<li v-for="item in subAreaData1" @click="handleSubArea(item.areacode, item.areaname)">{{item.areaname}}</li>
+						<li
+							v-for="item in subAreaData1"
+							@click="handleSubArea(item.areacode, item.areaname)"
+							:class="{active: areaList.findIndex(v => v.areacode === item.areacode) >= 0}"
+						>
+							<span class="area-item">{{item.areaname}}</span>
+						</li>
 						<li v-if="!showThreeLevelMenuMore" @click="showThreeLevelMore()">更多...</li>
-						<li v-else v-for="item in subAreaData2" @click="handleSubArea(item.areacode, item.areaname)">{{item.areaname}}</li>
+						<li
+							v-else
+							v-for="item in subAreaData2"
+							@click="handleSubArea(item.areacode, item.areaname)"
+							:class="{active: areaList.findIndex(v => v.areacode === item.areacode) >= 0}"
+						>
+							<span class="area-item">{{item.areaname}}</span>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -57,6 +83,11 @@
 				showThreeLevelMenu: false, // 是否显示三级菜单
 				showThreeLevelMenuMore: false // 是否显示三级菜单“更多...”
 			}
+		},
+		computed: {
+			...mapGetters([
+				'areaList'
+			])
 		},
 		methods: {
 			select() {
@@ -100,6 +131,11 @@
 			},
 			showBox() {
 				this.showSelectBox = this.showSelectBox === true ? false : true;
+			},
+			removeSelectedArea() {
+				this.setAreaInfo({'areainfo': '', 'isRemoveAll': true})
+				this.activeIndex = 0
+				this.showSubmenu = this.showThreeLevelMenu = false
 			},
 			handleClick(index, areaname, areacode) { // 一级菜单点击时触发的事件
 				this.setActive(index)
@@ -155,7 +191,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss" scoped>
 	.clearfix:after {
 		content: '';
 		clear: both;
@@ -233,16 +269,24 @@
 	.areas li {
 		font-size: 14px;
 		width: 33%;
-		margin: 10px 0;
+		padding: 10px 0;
 		cursor: pointer;
 		color:#888;
+		.area-item {
+			display: block;
+		}
+	}
+	.areas li.active {
+		background-color: lightgrey;
 	}
 	.areas li:hover {
 		color: #2c3e50;
 		text-decoration: underline;
 	}
 	.areas li:nth-of-type(3n-2), .areas li:nth-of-type(3n-1) {
-		border-right: 1px solid lightgrey;
+		.area-item {
+			border-right: 1px solid lightgrey;
+		}
 	}
 	.three-level-menu p {
 		color:#888;

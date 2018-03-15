@@ -385,11 +385,15 @@ const actions = {
         })
     },
     setAreaInfo({ commit, state }, { areainfo, isRemoveAll }) {
-        getNextAreaInfo(areainfo.areacode).then(res => {
-            commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
-            commit(TYPE.SET_AREA_INFO, areainfo)
-            commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })
-        })
+        if(!isRemoveAll) {
+          getNextAreaInfo(areainfo.areacode).then(res => {
+              commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
+              commit(TYPE.SET_AREA_INFO, areainfo)
+              commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })
+          })
+        } else {
+          commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })
+        }
     },
     deleteAreaInfo({ commit, state }, { areainfo, isRemoveAll }) {
         commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })

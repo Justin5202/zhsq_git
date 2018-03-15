@@ -1,5 +1,5 @@
 <template>
-  <div class="pop" v-if="isShow">
+  <div class="pop" v-if="uuidClickedInfo && showArray.length > 0">
     <div class="pop-title">
       <h3 class="title">{{uuidClickedInfo._source.address}}</h3>
       <i class="cross-icon" @click="isShowPop()"></i>
@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     isShowPop() {
-      this.isShow = !this.isShow
+      this.$mapHelper.closePopup()
     },
     _getQueryOnlineByUuid(id) {
       getQueryOnlineByUuid(id).then(res => {
@@ -53,8 +53,6 @@ export default {
           this.uuidClickedInfo = data
           getThematicMap(data._type).then(res => {
             this.showArray = JSON.parse(res.data)
-            this.isShow = true
-            console.log(JSON.parse(res.data))
           })
     		}
       })

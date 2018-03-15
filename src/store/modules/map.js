@@ -398,7 +398,7 @@ const actions = {
     deleteAreaInfo({ commit, state }, { areainfo, isRemoveAll }) {
         commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })
     },
-    getSearchResult({ commit, state }) {
+    getSearchResult({dispatch, commit, state }) {
         getSearch(state.searchParams).then(res => {
             if (res.code == '1') {
                 commit(TYPE.GET_SEARCH_RESULT, res.data)
@@ -407,6 +407,14 @@ const actions = {
                     if (v.element) {
                       mapHelper.removeLayerById((state.searchParams.start + index - 10).toString())
                       mapHelper.setMarkToMap((state.searchParams.start + index).toString(), v.element.geopoint, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+                    }
+                    /*如果存在行政区域，画线*/
+                    if(v.area) {
+                      let areainfo = {
+                        areacode: v.area.areacode,
+                        areaname: v.area.areaname
+                      }
+                      dispatch('setAreaInfo', {'areainfo': areainfo, 'isRemoveAll': false})
                     }
                 })
             }

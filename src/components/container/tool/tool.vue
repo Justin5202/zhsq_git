@@ -20,7 +20,7 @@
                 <span class="circle" v-if="reportFormLength > 0">{{reportFormLength}}</span>
             </div>
             <span class="tool-item ">
-				<img src="../../../assets/images/map/量算.png" alt="">
+				<v-measure/>
 			</span>
             <span class="tool-item ">
                 <v-statistics/>
@@ -34,8 +34,8 @@
 				<img src="../../../assets/images/map/局部图层.png" alt="">
 			</span>
 			<span class="tool-item " @click="changeMapStatus()">
-				<img src="../../../assets/images/map/2D@2x.png" alt="" v-show="is2Dmap">
-                <img src="../../../assets/images/map/3D@2x.png" alt="" v-show="!is2Dmap">
+				<img src="../../../assets/images/map/2D@2x.png" alt="" v-show="!is2Dmap">
+                <img src="../../../assets/images/map/3D@2x.png" alt="" v-show="is2Dmap">
 			</span>
 			<span class="tool-item ">
 				<img src="../../../assets/images/map/定位.png" alt="">
@@ -65,7 +65,7 @@ import vStatistics from '../statistics/statistics.vue'
 import reportForm from '../reportForm/reportForm.vue'
 import LayerControl from '@/components/container/layerControl/layerControl'
 import AreaControl from '@/components/container/areaControl/areaControl'
-
+import vMeasure from '@/components/container/measure/measure'
 import {mapGetters} from 'vuex'
 
 export default {
@@ -73,7 +73,8 @@ export default {
     vStatistics,
     reportForm,
     LayerControl,
-    AreaControl
+    AreaControl,
+    vMeasure
   },
   data(){
       return{

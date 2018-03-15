@@ -1,8 +1,8 @@
 //通用参数
 export const commonParams = {
-  code: 'cd038a8554ba7c6e7058a7c073c0806e',
-  e: 'a3a49c0858c8915274ea372e7be3401d',
-  os: 'ios_ipad'
+    code: '0ea0fffce6d83c7946fb626f6e3cce2b',
+    e: '624cb7000edfc4c53aaf616a7b1f6844',
+    os: 'ios_ipad'
 }
 
 // 域名

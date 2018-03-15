@@ -45,6 +45,9 @@
 							<div class="area-content" >
 								<h2>{{item.area.areaname}}</h2>
 								<p>{{item.area.address}}</p>
+								<p v-for="v in item.area.areaTarget[0].cityTarget.split('|ZX|')">
+									{{v}}
+								</p>
 							</div>
 							<div class="detail">
 								<i class="detail-icon"></i>
@@ -291,7 +294,7 @@
 							height: 20px;
 						}
 						.area-icon {
-							background: url('../../../assets/images/catalog/社会经济@2x.png') no-repeat;
+							background: url('../../../assets/images/catalog/行政区划@2x.png') no-repeat;
 							background-size: 100%;
 						}
 						.poi-icon {

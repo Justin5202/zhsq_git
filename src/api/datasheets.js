@@ -80,3 +80,24 @@ export function getJson(name) {
         return Promise.resolve(res.data)
     })
 }
+// 获取统计模块的资源列表
+export function getSelectTargetType() {
+    const data = Object.assign({}, commonParams, {
+        method: 'selectTargetType',
+        dataId: ''
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+}
+
+export function getQueryOnlineByUuid(id) {
+    const data = Object.assign({}, commonParams, {
+        method: 'queryOnlineByUuid',
+        uuid: id
+    })
+
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+}

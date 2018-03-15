@@ -119,14 +119,6 @@ const initMap = function (option) {
                 let filter = ["any"];
 
                 areacodeArray.forEach(element => {
-<<<<<<< HEAD
-                    filter.push(["all",[">=", "xzq_bm", element],["<=", "xzq_bm", element + "z"]]);
-                });
-
-                // 如果有图层一定是数组
-                layersId[element].forEach(element => {
-                    map.setFilter(element, filter);
-=======
                     filter.push([
                         "all",
                         [
@@ -136,7 +128,6 @@ const initMap = function (option) {
                             "<=", "xzq_bm", element + "z"
                         ]
                     ]);
->>>>>>> a7a51af6694f445eeb632d0ad1cf8b107a6bf8d7
                 });
 
                 if (filter.length > 1) {
@@ -611,7 +602,7 @@ const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArra
     // 记录 目录和区域 在styledata 事件触发时 过滤
     codeArray = _codeArray;
     areacodeArray = _areacodeArray;
-
+    console.log(_codeArray, _areacodeArray)
 };
 
 /**

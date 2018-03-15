@@ -260,7 +260,7 @@ const mutations = {
       if (bol) {
         let index = temp.findIndex(v => v.areacode === areainfo.areacode)
         temp.splice(index, 1)
-        let codeIndex = state.areaCodeList.findIndex(v => v.areacode === areainfo.areacode)
+        let codeIndex = state.areaCodeList.findIndex(v => v === areainfo.areacode)
         state.areaCodeList.splice(codeIndex, 1)
         /*删除行政区划线*/
         let areaIndex = state.secAreaList.findIndex(v => v.areacode === areainfo.areacode)

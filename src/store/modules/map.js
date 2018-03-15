@@ -409,7 +409,7 @@ const actions = {
                       mapHelper.setMarkToMap((state.searchParams.start + index).toString(), v.element.geopoint, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
                     }
                     /*如果存在行政区域，画线*/
-                    if(v.area) {
+                    if(v.searchType === 2) {
                       let areainfo = {
                         areacode: v.area.areacode,
                         areaname: v.area.areaname

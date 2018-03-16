@@ -1,26 +1,30 @@
 <template>
-  <div class="pop" v-if="uuidClickedInfo && showArray.length > 0">
-    <div class="pop-title">
-      <h3 class="title">{{uuidClickedInfo._source.address}}</h3>
-      <i class="cross-icon" @click="isShowPop()"></i>
-    </div>
-    <ul>
-      <li class="pop-li" v-for="item in showArray">
-        <p>{{item._source.name_a}}</p>
-        <span>{{uuidClickedInfo._source[item._source.name]}}</span>
-      </li>
-    </ul>
-    <div class="button-box">
-      <div class="button-item left-button-item">
-        <i class="icon-searcharound"></i>
-        <span class="search-around">搜周边</span>
+  <div>
+    <i class="el-icon-loading" v-if="!uuidClickedInfo && !showArray.length > 0"></i>
+    <div class="pop" v-if="uuidClickedInfo && showArray.length > 0">
+      <div class="pop-title">
+        <h3 class="title">{{uuidClickedInfo._source.address}}</h3>
+        <i class="cross-icon" @click="isShowPop()"></i>
       </div>
-      <div class="button-item">
-        <i class="icon-checkdetail"></i>
-        <span>查详情</span>
+      <ul>
+        <li class="pop-li" v-for="item in showArray">
+          <p>{{item._source.name_a}}</p>
+          <span>{{uuidClickedInfo._source[item._source.name]}}</span>
+        </li>
+      </ul>
+      <div class="button-box">
+        <div class="button-item left-button-item">
+          <i class="icon-searcharound"></i>
+          <span class="search-around">搜周边</span>
+        </div>
+        <div class="button-item">
+          <i class="icon-checkdetail"></i>
+          <span>查详情</span>
+        </div>
       </div>
     </div>
   </div>
+
 </template>
 
 <script>

@@ -13,17 +13,17 @@
       <div class="check">
         <el-checkbox-group v-model="checkedItem" @change="handleCheckedItemsChange">
           <div class="check-box"
-            v-for="item in activeAreaInfoList"
+            v-for="(item, index) in activeAreaInfoList"
             v-if="item.children.length ===0 && item.isActive"
           >
             <div class="check-item">
-              <el-checkbox :label="item.name" :key="item.name"></el-checkbox>
+              <el-checkbox :label="item.id" :key="item.id">{{item.name}}</el-checkbox>
               <div class="cross-box">
                 <i class="cross-icon" @click="removeItem(item.id)"></i>
               </div>
             </div>
             <div class="slider-box" v-if="checkedTransparency">
-              <el-slider v-model="value1"></el-slider>
+              <el-slider v-model="transparencyArray[index]" @change="setLayerOpacity(index)"></el-slider>
             </div>
           </div>
           <div
@@ -72,10 +72,22 @@ export default {
   data() {
     return {
       checked: true,
-      checkedItem: [],
+      checkedItem: this.checkedList,
       checkedTransparency: false,
       isIndeterminate: false,
-      value1: ''
+      value1: '',
+      transparencyArray: []
+    }
+  },
+  watch: {
+    checkedItem(newV, oldV) {
+      // 获取newV少出的部分
+      let lessArray = this.checkedList.filter(item => !newV.includes(item))
+      if(lessArray.length > 0) {
+        lessArray.map(v => this.$mapHelper.setVisibilityByCode(v, false))
+      } else {
+        this.checkedList.map(v => this.$mapHelper.setVisibilityByCode(v, true))
+      }
     }
   },
   computed: {
@@ -84,6 +96,12 @@ export default {
       'areaInfoList',
       'searchItemMacroList'
     ]),
+    checkedList() {
+      let temp = []
+      let list = this.activeAreaInfoList
+      list.map(v => temp.push(v.id))
+      return temp
+    },
     falseLength() {
       let len = 0
       this.activeAreaInfoList.map(v => {
@@ -95,15 +113,17 @@ export default {
     }
   },
   methods: {
+    setLayerOpacity(index) {
+      this.$mapHelper.setOpacityByCode(this.checkedList[index], this.transparencyArray[index]/100)
+    },
     handleCheckAllChange(val) {
-      this.getCheckedItem()
-      this.checkedItem = val ? this.checkedItem : []
+      this.checkedItem = val ? this.checkedList : []
       this.isIndeterminate = false
     },
     handleCheckedItemsChange(value) {
       let checkedCount = value.length
       this.checked = checkedCount === this.checkedItem.length
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedItem.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedList.length
     },
     removeAll() {
       this.removeAllAreaList()
@@ -113,9 +133,6 @@ export default {
     },
     removeSearchItem(item) {
       this.removeSearchItem(item)
-    },
-    getCheckedItem() {
-      this.checkedItem = this.activeAreaInfoList.map(item => item.name)
     },
     ...mapActions([
       'setAreaList',
@@ -158,7 +175,6 @@ export default {
       position: relative;
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;
-        .el-checkbox-group {
           .check-box {
             display: flex;
             flex-direction: column;
@@ -169,9 +185,11 @@ export default {
             justify-content: space-between;
             align-items: center;
             padding-left: 10px;
-            .el-checkbox+.el-checkbox {
-              margin-left: 0;
-              margin-top: 23px;
+            .layer-check {
+              label {
+                margin-left: 5px;
+                font-size: 13px;
+              }
             }
             .cross-box {
               .cross-icon {
@@ -196,7 +214,6 @@ export default {
               padding-bottom: 5px;
             }
           }
-        }
     }
   }
 }

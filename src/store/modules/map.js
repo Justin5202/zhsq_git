@@ -172,6 +172,7 @@ const mutations = {
     }
   },
   [TYPE.GET_AREA_DATA](state, areaInfoData) {
+    console.log(mapHelper.getBounds())
     /*判断第一级是否存在json数据*/
     if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
       areaInfoData[0].isActive = true
@@ -331,6 +332,7 @@ const mutations = {
                 getJson(temp.datapath).then(res => {
                   mapHelper.addLayerByCodeAndJson(id, res)
                 })
+                console.log(state.idList, state.areaCodeList)
                 /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
               }

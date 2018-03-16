@@ -134,7 +134,7 @@ const initMap = function (option) {
                     });
                 } else {
                     layersId[element].forEach(element => {
-                        map.setFilter(element, null );
+                        map.setFilter(element, null);
                     });
 
                 }
@@ -185,11 +185,14 @@ const onClick = function (e) {
         }
 
     } else {
-        let features = map.queryRenderedFeatures([e.lngLat.lng, e.lngLat.lat]);
+        let features = map.queryRenderedFeatures(e.point);
+        console.log(features);
         // 要素的mapguid
         if (features.length > 0) {
 
-            setPopupToMap([e.lngLat.lng,e.lngLat.lat],features[0].properties.mapguid);
+            setPopupToMap([
+                e.lngLat.lng, e.lngLat.lat
+            ], features[0].properties.mapguid);
 
         }
     }
@@ -663,7 +666,7 @@ const setMarkToMap = function (layerId, geoPoint, text, textSize, icon, iconSize
 * @param 坐标 （数组）， dom
 * @returns null
 */
-const setPopupToMap = function (geoPoint,_mapguid) {
+const setPopupToMap = function (geoPoint, _mapguid) {
     closePopup();
     infoPopup = new window
         .d2c
@@ -674,10 +677,8 @@ const setPopupToMap = function (geoPoint,_mapguid) {
     infoPopup_vm = new Vue({
         el: '#infoPopup',
         template: '<v-infoPopup :mapguid="mapguid"/>',
-        data:function(){
-          return {
-            mapguid:_mapguid
-          }
+        data: function () {
+            return {mapguid: _mapguid}
         },
         components: {
             'v-infoPopup': infoPopupVm

@@ -5,7 +5,10 @@
         class="child-table-content-li child-li"
         v-for="item in areaInfoList"
       >
-        <div class="child-title" :class="{active: activeAreaInfoList.length !== falseLength}">
+        <div
+          class="child-title"
+          :class="{active: activeAreaInfoList.length !== falseLength}"
+        >
           <div class="arrow" v-if="item.children.length > 0">
             <i class="arrow-icon" :class="{down: isClose}" @click="closeLiBox()"></i>
           </div>

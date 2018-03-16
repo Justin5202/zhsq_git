@@ -6,13 +6,10 @@ import MD5 from 'crypto-js/md5'
 export function login(username, password, code) {
 
   let data = Object.assign({}, commonParams, {
-    mathod: 'login',
+    method: 'login',
     name: username,
-    password: MD5(password).toString(),
-    code: code || 'first',
-    os: 'ios_iphone'
+    password: MD5(password).toString()
   })
-  console.log(data)
   return axios.post(url, qs.stringify(data)).then(res => {
     return Promise.resolve(res.data)
   })
@@ -24,6 +21,7 @@ export function feedback(text) {
     suggest: text,
     type: '0'
   })
+  console.log(data)
   return axios.post(url, qs.stringify(data)).then(res => {
     return Promise.resolve(res.data)
   })

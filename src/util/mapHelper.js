@@ -35,6 +35,9 @@ var layersId = {};
 // code 与 source 的对应关系
 var sourcesName = {};
 
+// filter 与 layer 的对应关系
+var filterMap = {};
+
 // 中转详情用 callback 量算用
 var measureCallback = null;
 
@@ -96,6 +99,7 @@ const initMap = function (option) {
         .style
         .layers
         .forEach(element => {
+            // 底图中的id
             layersId_dt.push(element.id);
             if (element.metadata) {
                 if (element.metadata["mapbox:group"] == groupUUID_2d) {
@@ -128,6 +132,7 @@ const initMap = function (option) {
     map.on('styledata', function () {
         codeArray.forEach(element => {
             if (layersId[element]) {
+
                 let filter = ["any"];
 
                 areacodeArray.forEach(element => {
@@ -142,14 +147,23 @@ const initMap = function (option) {
                     ]);
                 });
 
+                // 有区域编码时
                 if (filter.length > 1) {
                     // 如果有图层一定是数组
                     layersId[element].forEach(element => {
-                        map.setFilter(element, filter);
+                        if (!filterMap[element]) {
+                            map.setFilter(element, filter);
+                        }else{
+                            map.setFilter(element, ["all",filterMap[element],filter]);
+                        }
                     });
                 } else {
                     layersId[element].forEach(element => {
-                        map.setFilter(element, null);
+                        if (!filterMap[element]) {
+                            map.setFilter(element, null);
+                        }else{
+                            map.setFilter(element, filterMap[element]);
+                        }
                     });
 
                 }
@@ -468,6 +482,9 @@ const addLayerByCodeAndJson = function (code, json) {
         json
             .layers
             .forEach(element => {
+                // 记录 添加图层 的 fitler
+                filterMap[element.id] = element.filter;
+
                 map.addLayer(element);
                 // 记录 id 与 code 对应关系
                 layersId[code].push(element.id);
@@ -574,23 +591,24 @@ const setOpacityByCode = function (code, value) {
     if (layersId[code]) {
         // 如果有图层一定是数组
         layersId[code].forEach(element => {
+            
             // 判断点线面symbol
-            switch (element.type) {
+            switch (map.getLayer(element).type) {
                 case "circle":
-                    map.setPaintProperty(element.id, 'circle-opacity', value);
+                    map.setPaintProperty(element, 'circle-opacity', value);
                     break;
                 case "line":
-                    map.setPaintProperty(element.id, 'line-opacity', value);
+                    map.setPaintProperty(element, 'line-opacity', value);
                     break;
                 case "fill":
-                    map.setPaintProperty(element.id, 'fill-opacity', value);
+                    map.setPaintProperty(element, 'fill-opacity', value);
                     break;
                 case "symbol":
-                    map.setPaintProperty(element.id, 'icon-opacity', value);
-                    map.setPaintProperty(element.id, 'text-opacity', value);
+                    map.setPaintProperty(element, 'icon-opacity', value);
+                    map.setPaintProperty(element, 'text-opacity', value);
                     break;
                 case "fill-extrusion":
-                    map.setPaintProperty(element.id, 'fill-extrusion-opacity', value);
+                    map.setPaintProperty(element, 'fill-extrusion-opacity', value);
                     break;
                 default:
                     console.log("非点、线、面、symbol、3d类型");

@@ -9,7 +9,7 @@
     <div class="container">
       <el-form>
         <el-form-item :model="form">
-          <el-input v-model="form.text" rows=25  type="textarea" placeholder="请输入您宝贵的意见"></el-input>
+          <el-input v-model="form.text" :rows="25"  type="textarea" placeholder="请输入您宝贵的意见"></el-input>
         </el-form-item>
         <el-button @click="_feedback(form.text)">提交</el-button>
       </el-form>
@@ -45,7 +45,13 @@
           return
         }
         feedback(text).then(res => {
-          console.log(res.data)
+          if (res.message === 'success') {
+            this.$alert('感谢您的反馈！', '意见反馈', {confirmButtonText: '确定'})
+            let that = this
+            setTimeout(function() {
+              that.form.text = ''
+            }, 1000)
+          }
         })
       }
     }
@@ -69,6 +75,7 @@
         line-height: 50px;
         color: #000;
         font-size: 18px;
+        cursor: pointer;
       }
       .active {
         color: #fff;

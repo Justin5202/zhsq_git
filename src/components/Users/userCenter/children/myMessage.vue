@@ -1,8 +1,8 @@
 <template>
   <div class="my-message">
     <ul class="list">
-      <li class="list-item" v-for="item in data" :key="item.time">
-        <p class="time">{{item.time}}</p>
+      <li class="list-item" v-for="(item, index) in data" :key="index">
+        <p class="time">{{item.time | formatDate}}</p>
         <p class="text">{{item.text}}</p>
       </li>
     </ul>
@@ -12,10 +12,29 @@
   export default {
     name: 'my-message',
     props: {
-      data: {
-        type: Array,
-        default: []
-      }
+     data: {
+       type: Array,
+       default: []
+     }
+    },
+    filters: {
+      formatDate(date) {
+				if (!date) {
+					return;
+				}
+				date = date.length === 10 ? date + '000' : date;
+				function add0(m) {
+					return m < 10 ? '0' + m : m;
+				}
+				let time = new Date(parseInt(date) * 1000);
+				let y = time.getFullYear();
+				let m = time.getMonth() + 1;
+				let d = time.getDate();
+				let h = time.getHours();
+				let mu = time.getMinutes();
+				let s = time.getSeconds();
+				return y + '年' + add0(m) + '月' + add0(d) + '日' + ' ' + add0(h) + ':' + add0(mu) + ':' + add0(s); 
+			}
     }
   }
 </script>

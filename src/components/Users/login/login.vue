@@ -39,6 +39,9 @@ export default {
       }
     }
   },
+  mounted() {
+    localStorage.removeItem('userinfo')
+  },
   methods: {
     _login(username, password) {
       if (username === '') {
@@ -56,7 +59,8 @@ export default {
         return
       }
       login(username, password).then(res => {
-        console.log(res.data)
+        localStorage.setItem('userinfo', JSON.stringify(res.data))
+        this.$router.push('/')
       })
     }
   }
@@ -67,7 +71,8 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: rgb(38, 117, 207);
+    background: url('../../../assets/images/Login/logbg@2x.png') no-repeat;
+    background-size: 100% 100%;
     color: #fff;
     .wrap {
       position: absolute;
@@ -94,26 +99,23 @@ export default {
             height: 40px;
           }
           .icon-user {
-            background: url('../../../assets/images/userIcons/account.png') no-repeat;
-            background-size: 25px 25px;
-            background-position: left;
+            background: url('../../../assets/images/Login/login_name@2x.png') no-repeat;
+            background-size: 30px 30px;
+            background-position: right;
           }
           .icon-password {
-            background: url('../../../assets/images/userIcons/password.png') no-repeat;
-            background-size: 25px 25px;
-            background-position: left;
+            background: url('../../../assets/images/Login/login_passsword@2x.png') no-repeat;
+            background-size: 30px 30px;
+            background-position: right;
           }
           .el-input {
             height: 40px;
             width: 90%;
             outline: none;
-            border: 1px solid #dcdfe6;
+            border: none;
             border-radius: 4px;
-            padding: 0 15px;
+            padding: 0 5px;
             box-sizing: border-box;
-          }
-          .el-input:focus {
-            border: 1px solid #409EFF;
           }
         }
         .btn-box {

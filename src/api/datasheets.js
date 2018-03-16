@@ -114,3 +114,19 @@ export function getThematicMap(source) {
         return Promise.resolve(res.data)
     })
 }
+
+// 获取当前地图范围内是否存在数据
+export function getQueryElementByPoint(source, filter, top, bottom, point) {
+  const data = Object.assign({}, commonParams, {
+      method: 'queryElementByPoint',
+      sourcelayer: source,
+      filter: filter,
+      top: top,
+      bottom: bottom,
+      point: point
+  })
+
+  return axios.post(url, qs.stringify(data)).then(res => {
+      return Promise.resolve(res.data)
+  })
+}

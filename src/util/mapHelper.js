@@ -2,6 +2,7 @@
  * @author wangsy
  * @description map操作
  * 特别说明：
+ * 依赖 config文件中的 vecterClickExceptLayer和imageClickExceptLayer
  * id 都是map的图层id
  * source 都是map的source
  * code 指的都是目录中的编码（id）指的areaInfoData对象中的id形如：B01010000
@@ -58,12 +59,26 @@ var codeArray = [];
 // 传入的 目前叠加了哪些areacode的数组
 var areacodeArray = [];
 
+// 点击查询时 矢量地图不参与查询的 图层数组 地图初始化时赋值
+var vecterClickExceptLayerArray = null;
+
+// 点击查询时 影像地图不参与查询的 图层数组 地图初始化时赋值
+var imageClickExceptLayerArray = null;
+
 /**
 * @function 初始化地图
 * @param option
 * @returns map
 */
 const initMap = function (option) {
+    // 不参与点击查询的layerid
+    if (window.vecterClickExceptLayer) {
+        vecterClickExceptLayerArray = window.vecterClickExceptLayer.split(",");
+    }
+    if (window.imageClickExceptLayer) {
+        imageClickExceptLayerArray = window.imageClickExceptLayer.split(",");
+    }
+
     // 获取 2D 3D图层 group id
     let groupUUID_2d = "";
     let groupUUID_3d = "";
@@ -134,7 +149,7 @@ const initMap = function (option) {
                     });
                 } else {
                     layersId[element].forEach(element => {
-                        map.setFilter(element, null );
+                        map.setFilter(element, null);
                     });
 
                 }
@@ -185,11 +200,32 @@ const onClick = function (e) {
         }
 
     } else {
-        let features = map.queryRenderedFeatures([e.lngLat.lng, e.lngLat.lat]);
+        let features = map.queryRenderedFeatures(e.point);
+        console.log(features[0].layer["id"]);
         // 要素的mapguid
         if (features.length > 0) {
+            // 是否存在 排除的 图层 id
+            let exceptFlag = false;
 
-            setPopupToMap([e.lngLat.lng,e.lngLat.lat],features[0].properties.mapguid);
+            for (let index = 0; index < vecterClickExceptLayerArray.length; index++) {
+                if (vecterClickExceptLayerArray[index] == features[0].layer["id"]) {
+                    exceptFlag = true;
+                    break;
+                }
+            }
+
+            for (let index = 0; index < imageClickExceptLayerArray.length; index++) {
+                if (imageClickExceptLayerArray[index] == features[0].layer["id"]) {
+                    exceptFlag = true;
+                    break;
+                }
+            }
+
+            if (!exceptFlag) {
+                setPopupToMap([
+                    e.lngLat.lng, e.lngLat.lat
+                ], features[0].properties.mapguid);
+            }
 
         }
     }
@@ -663,7 +699,7 @@ const setMarkToMap = function (layerId, geoPoint, text, textSize, icon, iconSize
 * @param 坐标 （数组）， dom
 * @returns null
 */
-const setPopupToMap = function (geoPoint,_mapguid) {
+const setPopupToMap = function (geoPoint, _mapguid) {
     closePopup();
     infoPopup = new window
         .d2c
@@ -674,10 +710,8 @@ const setPopupToMap = function (geoPoint,_mapguid) {
     infoPopup_vm = new Vue({
         el: '#infoPopup',
         template: '<v-infoPopup :mapguid="mapguid"/>',
-        data:function(){
-          return {
-            mapguid:_mapguid
-          }
+        data: function () {
+            return {mapguid: _mapguid}
         },
         components: {
             'v-infoPopup': infoPopupVm

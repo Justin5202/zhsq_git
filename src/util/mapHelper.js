@@ -2,6 +2,7 @@
  * @author wangsy
  * @description map操作
  * 特别说明：
+ * 依赖 config文件中的 vecterClickExceptLayer和imageClickExceptLayer
  * id 都是map的图层id
  * source 都是map的source
  * code 指的都是目录中的编码（id）指的areaInfoData对象中的id形如：B01010000
@@ -34,8 +35,8 @@ var layersId = {};
 // code 与 source 的对应关系
 var sourcesName = {};
 
-// 中转详情用 callback 详情 用
-var mapguidCallback = null;
+// filter 与 layer 的对应关系
+var filterMap = {};
 
 // 中转详情用 callback 量算用
 var measureCallback = null;
@@ -61,12 +62,26 @@ var codeArray = [];
 // 传入的 目前叠加了哪些areacode的数组
 var areacodeArray = [];
 
+// 点击查询时 矢量地图不参与查询的 图层数组 地图初始化时赋值
+var vecterClickExceptLayerArray = null;
+
+// 点击查询时 影像地图不参与查询的 图层数组 地图初始化时赋值
+var imageClickExceptLayerArray = null;
+
 /**
 * @function 初始化地图
 * @param option
 * @returns map
 */
 const initMap = function (option) {
+    // 不参与点击查询的layerid
+    if (window.vecterClickExceptLayer) {
+        vecterClickExceptLayerArray = window.vecterClickExceptLayer.split(",");
+    }
+    if (window.imageClickExceptLayer) {
+        imageClickExceptLayerArray = window.imageClickExceptLayer.split(",");
+    }
+
     // 获取 2D 3D图层 group id
     let groupUUID_2d = "";
     let groupUUID_3d = "";
@@ -84,6 +99,7 @@ const initMap = function (option) {
         .style
         .layers
         .forEach(element => {
+            // 底图中的id
             layersId_dt.push(element.id);
             if (element.metadata) {
                 if (element.metadata["mapbox:group"] == groupUUID_2d) {
@@ -116,6 +132,7 @@ const initMap = function (option) {
     map.on('styledata', function () {
         codeArray.forEach(element => {
             if (layersId[element]) {
+
                 let filter = ["any"];
 
                 areacodeArray.forEach(element => {
@@ -130,14 +147,23 @@ const initMap = function (option) {
                     ]);
                 });
 
+                // 有区域编码时
                 if (filter.length > 1) {
                     // 如果有图层一定是数组
                     layersId[element].forEach(element => {
-                        map.setFilter(element, filter);
+                        if (!filterMap[element]) {
+                            map.setFilter(element, filter);
+                        }else{
+                            map.setFilter(element, ["all",filterMap[element],filter]);
+                        }
                     });
                 } else {
                     layersId[element].forEach(element => {
-                        map.setFilter(element, null );
+                        if (!filterMap[element]) {
+                            map.setFilter(element, null);
+                        }else{
+                            map.setFilter(element, filterMap[element]);
+                        }
                     });
 
                 }
@@ -188,11 +214,32 @@ const onClick = function (e) {
         }
 
     } else {
-        let features = map.queryRenderedFeatures([e.lngLat.lng, e.lngLat.lat]);
+        let features = map.queryRenderedFeatures(e.point);
+        console.log(features[0].layer["id"]);
         // 要素的mapguid
-        if (features.length > 0 && mapguidCallback) {
+        if (features.length > 0) {
+            // 是否存在 排除的 图层 id
+            let exceptFlag = false;
 
-            mapguidCallback(features[0].properties.mapguid);
+            for (let index = 0; index < vecterClickExceptLayerArray.length; index++) {
+                if (vecterClickExceptLayerArray[index] == features[0].layer["id"]) {
+                    exceptFlag = true;
+                    break;
+                }
+            }
+
+            for (let index = 0; index < imageClickExceptLayerArray.length; index++) {
+                if (imageClickExceptLayerArray[index] == features[0].layer["id"]) {
+                    exceptFlag = true;
+                    break;
+                }
+            }
+
+            if (!exceptFlag) {
+                setPopupToMap([
+                    e.lngLat.lng, e.lngLat.lat
+                ], features[0].properties.mapguid);
+            }
 
         }
     }
@@ -218,15 +265,6 @@ const onDbClick = function (e) {
 */
 const setIsMeasure = function (value) {
     isMeasure = value;
-};
-
-/**
-* @function 设置点击获取mapguid回调函数
-* @param callback
-* @returns null
-*/
-const getGuidOnClickCallback = function (_callback) {
-    mapguidCallback = _callback;
 };
 
 /**
@@ -444,6 +482,9 @@ const addLayerByCodeAndJson = function (code, json) {
         json
             .layers
             .forEach(element => {
+                // 记录 添加图层 的 fitler
+                filterMap[element.id] = element.filter;
+
                 map.addLayer(element);
                 // 记录 id 与 code 对应关系
                 layersId[code].push(element.id);
@@ -550,23 +591,24 @@ const setOpacityByCode = function (code, value) {
     if (layersId[code]) {
         // 如果有图层一定是数组
         layersId[code].forEach(element => {
+            
             // 判断点线面symbol
-            switch (element.type) {
+            switch (map.getLayer(element).type) {
                 case "circle":
-                    map.setPaintProperty(element.id, 'circle-opacity', value);
+                    map.setPaintProperty(element, 'circle-opacity', value);
                     break;
                 case "line":
-                    map.setPaintProperty(element.id, 'line-opacity', value);
+                    map.setPaintProperty(element, 'line-opacity', value);
                     break;
                 case "fill":
-                    map.setPaintProperty(element.id, 'fill-opacity', value);
+                    map.setPaintProperty(element, 'fill-opacity', value);
                     break;
                 case "symbol":
-                    map.setPaintProperty(element.id, 'icon-opacity', value);
-                    map.setPaintProperty(element.id, 'text-opacity', value);
+                    map.setPaintProperty(element, 'icon-opacity', value);
+                    map.setPaintProperty(element, 'text-opacity', value);
                     break;
                 case "fill-extrusion":
-                    map.setPaintProperty(element.id, 'fill-extrusion-opacity', value);
+                    map.setPaintProperty(element, 'fill-extrusion-opacity', value);
                     break;
                 default:
                     console.log("非点、线、面、symbol、3d类型");
@@ -675,7 +717,7 @@ const setMarkToMap = function (layerId, geoPoint, text, textSize, icon, iconSize
 * @param 坐标 （数组）， dom
 * @returns null
 */
-const setPopupToMap = function (geoPoint) {
+const setPopupToMap = function (geoPoint, _mapguid) {
     closePopup();
     infoPopup = new window
         .d2c
@@ -685,7 +727,10 @@ const setPopupToMap = function (geoPoint) {
         .addTo(map);
     infoPopup_vm = new Vue({
         el: '#infoPopup',
-        template: '<v-infoPopup/>',
+        template: '<v-infoPopup :mapguid="mapguid"/>',
+        data: function () {
+            return {mapguid: _mapguid}
+        },
         components: {
             'v-infoPopup': infoPopupVm
         }
@@ -803,7 +848,6 @@ export default {
     getBounds,
 
     setIsMeasure,
-    getGuidOnClickCallback,
     measureOnClickCallback,
     onDbClickCallback,
     onRotateCallback

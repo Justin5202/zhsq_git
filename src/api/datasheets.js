@@ -91,6 +91,7 @@ export function getSelectTargetType() {
     })
 }
 
+//获取点击地图点的详细信息
 export function getQueryOnlineByUuid(id) {
     const data = Object.assign({}, commonParams, {
         method: 'queryOnlineByUuid',
@@ -101,8 +102,33 @@ export function getQueryOnlineByUuid(id) {
         return Promise.resolve(res.data)
     })
 }
+export function getThematicMap(source) {
+    const data = Object.assign({}, commonParams, {
+        method: 'getThematicMap',
+        sourcelayer: source
+    })
 
-//根据绘制区域和id获取统计详情
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+}
+
+// 获取当前地图范围内是否存在数据
+export function getQueryElementByPoint(source, filter, top, bottom, point) {
+    const data = Object.assign({}, commonParams, {
+        method: 'queryElementByPoint',
+        sourcelayer: source,
+        filter: filter,
+        top: top,
+        bottom: bottom,
+        point: point
+    })
+
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+}
+// 根据绘制区域和id获取统计详情
 export function getStatisticsDetails(shape, dataId) {
     const data = Object.assign({}, commonParams, {
         method: 'getStatisticalInfo',

@@ -101,3 +101,15 @@ export function getQueryOnlineByUuid(id) {
         return Promise.resolve(res.data)
     })
 }
+
+//根据绘制区域和id获取统计详情
+export function getStatisticsDetails(shape, dataId) {
+    const data = Object.assign({}, commonParams, {
+        method: 'getStatisticalInfo',
+        dataId: dataId,
+        shape: shape
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+}

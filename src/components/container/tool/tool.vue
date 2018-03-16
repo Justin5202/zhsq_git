@@ -29,6 +29,7 @@
 				<img src="../../../assets/images/map/用户.png" alt="">
 			</span>
         </div>
+        <div class="tool-compass"></div>
         <div class="tool-bottom">
             <span class="tool-item" >
 				<img src="../../../assets/images/map/局部图层.png" alt="">
@@ -195,6 +196,15 @@ export default {
       				width: 60px;
       				height: 60px;
       			}
+        }
+        .tool-compass{
+            width: 100px;
+            height: 100px;
+            background: url(../../../assets/images/map/Compass@2x.png) no-repeat center;
+            background-size: 100%;
+            position: absolute;
+            top:10px;
+            right: 60px;
         }
         .tool-bottom{
             position:absolute;

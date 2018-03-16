@@ -26,51 +26,141 @@
               退出
           </div>
       </div>
+      <div class="statistics-dailog" :style="dailogStyle" v-show="displayStatistics">
+          <div class="statistics-dailog-title">
+              <div class="title-context">统计结果</div>
+              <div class="dailog-close" @click="dailogClose()"></div>
+          </div>
+          <div class="statistics-dailog-context">
+              <ul v-for="item in statisticsList" v-if="item.titleNum > 0">
+                  <li class="context-title">{{item.title}}</li>
+                  <li v-if="item.contextNum">
+                      <ul>
+                          <li class="context-text">{{item.context}}</li>
+                      </ul>
+                  </li>
+              </ul>
+          </div>    
+      </div>
+      <div class="statistics-mask" :style="maskStyle" v-show="displayStatistics"></div>
   </div>
 </template>
 <script>
-import {getSelectTargetType} from '@/api/datasheets.js'
+import {getSelectTargetType,getStatisticsDetails} from '@/api/datasheets.js'
 export default {
   data(){
       return{
          conditionList:[],
          statisticsConditionShow:false,
-         statisticsToolShow:false
+         statisticsToolShow:false,
+         displayStatistics:false,
+         shape:"" ,
+         dataId:"",
+         draw:{},
+         maskStyle:{
+             width:window.innerWidth +'px',
+             height:window.innerHeight + 'px'
+         },
+         dailogStyle:{
+             top: window.innerHeight/2 - 250 +'px',
+             right:window.innerWidth/2 - 190 +'px'
+         },
+         statisticsList:[]
       }
   },
   methods:{
       openStatisticsCondition(){
-          getSelectTargetType().then(res =>{
-              this.conditionList = res.data
-              for(var i in this.conditionList){
-                  this.conditionList[i].isActive = false
-              }
+          if(this.conditionList.length == 0){
+            getSelectTargetType().then(res =>{
+                this.conditionList = res.data
+                for(var i in this.conditionList){
+                    this.conditionList[i].isActive = false
+                }
+                this.statisticsConditionShow = true
+            })
+          }else{
               this.statisticsConditionShow = true
-          })
+          } 
       },
       chageImageStatus(index){
           this.conditionList[index].isActive = !this.conditionList[index].isActive
           this.conditionList.splice(index, 1, this.conditionList[index])
       },
       startDrawArea(){
-          var sum = 0;
-          for(var i in this.conditionList){
-              if(this.conditionList[i].isActive){
+        var sum = 0;
+        this.dataId = '';
+        d2cMap.getCanvas().style.cursor = 'crosshair';
+        for(var i= 0; i < this.conditionList.length;i++){
+            if(this.conditionList[i].isActive){
                 sum ++
+                this.dataId += this.conditionList[i].targetId + ','
+            }
+        }
+        if(sum > 0){
+            this.dataId = this.dataId.substring(0,this.dataId.length - 1)
+            this.statisticsToolShow = true
+            this.statisticsConditionShow = false
+        }
+        this.$mapHelper.setIsMeasure(true)
+        if(this.draw.drawPlane){
+            
+        }else{
+            this.draw.drawPlane = new d2c.areaLayer(d2cMap)
+            this.$mapHelper.measureOnClickCallback(this.getAreaPoint)
+        }
+      },
+      getAreaPoint(e){
+          this.draw.drawPlane.addPolygon(e)
+          this.draw.drawPlane.removeMarker()
+          var coordinates =  this.draw.drawPlane.polygon.geometry.coordinates
+          var params = '[['
+          for(var i = 0; i < coordinates['0'].length;i++){
+              if(i == coordinates[0].length -1){
+                params += '[\"' + coordinates['0'][i][0] + '\"' + ',' + '\"' + coordinates['0'][i][1] + '\"]'
+              }else{
+                params += '[\"' + coordinates['0'][i][0] + '\"' + ',' + '\"' + coordinates['0'][i][1] + '\"]' + ','
               }
           }
-          if(sum > 0){
-               this.statisticsToolShow = true
-               this.statisticsConditionShow = false
+          params += ']]'
+          this.shape = params
+      },
+      //获取统计数据
+      statisticInfo(){
+          getStatisticsDetails(this.shape,this.dataId).then(res =>{
+              this.statisticsList = [];
+              console.log(res.data)
+              for(var m in res.data){
+                for(var n = 0 ;n < res.data[m]['listorder'].length;n++){
+                   var title = res.data[m]['listorder'][n]+ '（' + '个数' + ':'+  res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'] +'）'
+                   var type = res.data[m][res.data[m]['listorder'][n]]['fields']
+                   var context = res.data[m][res.data[m]['listorder'][n]]['fieldsName'] + ':' + ' ' + res.data[m][res.data[m]['listorder'][n]]['data'][type]
+                   var contextNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data'][type])
+                   var titleNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'])
+                   this.statisticsList.push({'title':title,'context':context,'contextNum':contextNum,'titleNum':titleNum}) 
+                }
+              }
+              this.displayStatistics = true;
+          })
+      },
+      //清除画板
+      clearDrawResult(){
+          if(this.draw.drawPlane){
+            this.draw.drawPlane.remove()
+            this.draw = {}
+            this.draw.drawPlane = new d2c.distanceLayer(d2cMap)
           }
-          var draw = new d2c.draw({displayControlsDefault: false})
-          d2cMap.addControl(draw)
-          draw.changeMode('draw_polygon');
-          d2cMap.on('draw.create', function (e) {
-            console.log(e.features);
-            // draw.trash();
-            // draw.changeMode('simple_select');
-          });
+      },
+      //退出测量
+      quitDraw(){
+        this.clearDrawResult()
+        this.dataId = ""
+        statisticsConditionShow:false
+        statisticsToolShow:false
+        d2cMap.getCanvas().style.cursor = '';
+      },
+      //关闭统计面板
+      dailogClose(){
+          this.displayStatistics = false
       }
   }
 }
@@ -82,7 +172,7 @@ export default {
     background-color: #ffffff;
     border: 1px solid #eee;
     position:absolute;
-    top:10px;
+    top:70px;
     right: 80px;
     border-radius: 15px 0 15px 15px;
     .statistics-arrow{
@@ -90,7 +180,7 @@ export default {
         height: 0;
         position: absolute;
         right: -20px;
-        top:135px;
+        top:75px;
         border-top: 10px solid transparent;
         border-left: 20px solid #fff;
         border-bottom: 10px solid transparent;
@@ -192,5 +282,70 @@ export default {
         line-height: 50px;
         font-size: 17px;
     }
+}
+.statistics-dailog{
+    width: 390px;
+    height: 500px;
+    position: absolute;
+    top: 100px;
+    right: 60px;
+    background-color: #fff;
+    z-index: 1001;
+    .statistics-dailog-title{
+        width: 390px;
+        height: 50px;
+        display: flex;
+        background-color: #535353;
+        .title-context{
+            width: 340px;
+            height: 50px;
+            line-height: 50px;
+            color: #fff;
+            text-align: left;
+            padding-left:15px; 
+        }
+        .dailog-close{
+            width: 50px;
+            height: 50px;
+            background:url(../../../assets/images/catalog/close.png) no-repeat center;
+            background-size: 60%;
+        }
+    }
+}
+.statistics-dailog-context{
+    width: 390px;
+    height: 450px;
+    overflow-y: auto;
+    ul{
+        list-style: none;
+        font-family: '微软雅黑'
+    }
+    .context-title{
+        width: 370px;
+        display: inline-block;
+        height: 40px;
+        line-height: 40px;
+        background-color:#eee;
+        font-weight: bold;
+        font-size: 16px;
+        text-align: left;
+        padding-left: 20px; 
+    }
+    .context-text{
+        width: 360px;
+        display: inline-block;
+        height: 35px;
+        line-height: 35px;
+        font-size: 14px;
+        text-align: left;
+        padding-left: 30px; 
+    }
+}
+.statistics-mask{
+    position: fixed;
+    top: 0;
+    left:0;
+    z-index: 1000;
+    background-color:rgba(0,0,0,0.5);
 }
 </style>

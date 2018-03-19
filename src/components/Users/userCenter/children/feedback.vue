@@ -1,8 +1,8 @@
 <template>
   <div class="feedback">
     <ul class="nav">
-      <li class="item" 
-      :class="{active: index===currentIndex}" 
+      <li class="item"
+      :class="{active: index===currentIndex}"
       v-for="(item, index) in tabs"
       @click="setActive(index)">{{item.name}}</li>
     </ul>
@@ -37,7 +37,7 @@
   </div>
 </template>
 <script>
-  import {feedback, getSuggestList} from '../../../../api/users/data'
+  import {feedback, getSuggestList} from '../../../../api/user'
   export default {
     name: 'feedback',
     data() {
@@ -194,4 +194,3 @@
     }
   }
 </style>
-

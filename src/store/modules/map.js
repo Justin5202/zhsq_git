@@ -17,9 +17,10 @@ import {
   getSearch,
   getDetailInfo,
   getNextAreaInfo,
-  getJson,
-  getMsMacroData
+  getMsMacroData,
+  getQueryElementByPoint
 } from '@/api/dataSheets'
+import {getJson} from '@/api/getJson'
 import mapHelper from '@/util/mapHelper'
 import * as TYPE from '../type'
 
@@ -194,6 +195,9 @@ const mutations = {
         getJson(areaInfoData[0].datapath).then(res => {
           const a = mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
           console.log(a)
+          getQueryElementByPoint(a).then(res => {
+            console.log(res)
+          })
           state.idList.push(areaInfoData[0].id)
           /*图层过滤*/
           mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)

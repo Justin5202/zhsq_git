@@ -21,11 +21,13 @@ export default new Router({
       path: '/',
       component: container,
       beforeEnter(to, from, next) {
-        const userinfo = localStorage.getItem('userinfo')
-        if (userinfo) {
-          next()
-        } else {
-          next('/login')
+        var arr, reg = new RegExp("(^| )" + 'loginSession' + "=([^;]*)(;|$)")
+        if (arr = document.cookie.match(reg)) {
+          if (arr[2]) {
+            next()
+          } else {
+            next('/login')
+          }
         }
       },
       children: [
@@ -50,11 +52,13 @@ export default new Router({
           name:'userCenter',
           component: userCenter,
           beforeEnter(to, from, next) {
-            const userinfo = localStorage.getItem('userinfo')
-            if (userinfo) {
-              next()
-            } else {
-              next('/login')
+            var arr, reg = new RegExp("(^| )" + 'loginSession' + "=([^;]*)(;|$)")
+            if (arr = document.cookie.match(reg)) {
+              if (arr[2]) {
+                next()
+              } else {
+                next('/login')
+              }
             }
           }
         }

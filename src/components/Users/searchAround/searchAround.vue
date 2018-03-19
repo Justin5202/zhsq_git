@@ -40,8 +40,8 @@
   </div>
 </template>
 <script>
-  import Mock from 'mockjs'
-  const Random = Mock.Random
+  // import Mock from 'mockjs'
+  // const Random = Mock.Random
   export default {
     name: 'search-around',
     data() {
@@ -54,7 +54,7 @@
         this.$router.go(-1)
       },
       Color() {
-        return Random.rgb()
+        // return Random.rgb()
       }
     }
   }
@@ -121,7 +121,7 @@
                 background: inherit;
                 outline: none;
                 border: none;
-                padding: 0 10px; 
+                padding: 0 10px;
               }
             }
             .count {
@@ -210,4 +210,3 @@
     }
   }
 </style>
-

@@ -124,13 +124,21 @@
         ]),
         falseLength() {
           let len = 0
-          this.areaInfoList.map(v => {
+          this.areaInfoData.map(v => {
             if(v.children.length > 0) {
-              v.children.map(i => {
-                if(!i.isActive) {
-                  len += 1
-                }
-              })
+              if(v.children.children && v.children.children.length > 0) {
+                v.children.children.map(i => {
+                  if(!i.isActive) {
+                    len += 1
+                  }
+                })
+              } else {
+                v.children.map(i => {
+                  if(!i.isActive) {
+                    len += 1
+                  }
+                })
+              }
             } else {
               if(!v.isActive) {
                 len += 1
@@ -141,14 +149,22 @@
         },
         childFalseLenArray() {
           let lenArray = []
-          this.areaInfoList.map(v => {
+          this.areaInfoData.map(v => {
             if(v.children.length > 0) {
               let len = 0
-              v.children.map(i => {
-                if(!i.isActive) {
-                  len += 1
-                }
-              })
+              if(v.children.children && v.children.children.length > 0) {
+                v.children.children.map(i => {
+                  if(!i.isActive) {
+                    len += 1
+                  }
+                })
+              } else {
+                v.children.map(i => {
+                  if(!i.isActive) {
+                    len += 1
+                  }
+                })
+              }
               lenArray.push(len)
             } else {
               lenArray.push(-1)

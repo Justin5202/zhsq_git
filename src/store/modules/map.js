@@ -253,7 +253,6 @@ const mutations = {
     activeAreaInfoList,
     isRemoveAll
   }) {
-    console.log(isRemoveAll)
     if (isRemoveAll) {
       state.activeAreaInfoList.map(v => {
         v.isActive = false
@@ -327,102 +326,111 @@ const mutations = {
     bol,
     id
   }) {
-    if (state.areaInfoList.findIndex(v => v.id === id) < 0) {
-      state.areaInfoList.filter(v => {
-        if (v.children.length > 0) {
-          let index = v.children.findIndex(i => i.id === id)
-          if (index >= 0) {
-            let temp = v.children[index]
+    state.activeAreaInfoList.map(v => {
+      if(v.id === id) {
+        if(!bol) {
+          v.isActive = false
+        } else {
+          v.isActive = true
+        }
+      }
+    })
+    state.areaInfoData.map(v => {
+      if(v.id !== id) {
+          if (v.children.length > 0) {
+            let index = v.children.findIndex(i => i.id === id)
+            if (index >= 0) {
+              let temp = v.children[index]
+              if (!bol) {
+                temp.isActive = false
+                if (temp.children.length > 0) {
+                  temp.children.map(v => v.isActive = false)
+                }
+                /*删除对应id图层*/
+                mapHelper.removeLayerByCode(id)
+              } else if (bol) {
+                temp.isActive = true
+                if (temp.children.length > 0) {
+                  temp.children.map(v => {
+                    v.isActive = true
+                    getJson(v.datapath).then(res => {
+                      mapHelper.addLayerByCodeAndJson(v.id, res)
+                    })
+                    /*图层过滤*/
+                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+                  })
+                } else {
+                  /*增加对应图层*/
+                  getJson(temp.datapath).then(res => {
+                    mapHelper.addLayerByCodeAndJson(id, res)
+                  })
+                  console.log(state.idList, state.areaCodeList)
+                  /*图层过滤*/
+                  mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+                }
+              }
+              v.children.splice(index, 1, temp)
+            } else {
+              v.children.map(i => {
+                if (i.children.length > 0) {
+                  let index = i.children.findIndex(i => i.id === id)
+                  if (index >= 0) {
+                    let temp = i.children[index]
+                    if (!bol) {
+                      temp.isActive = false
+                      /*删除对应id图层*/
+                      mapHelper.removeLayerByCode(id)
+                    } else if (bol) {
+                      temp.isActive = true
+                      /*增加对应图层*/
+                      getJson(temp.datapath).then(res => {
+                        mapHelper.addLayerByCodeAndJson(id, res)
+                      })
+                      /*图层过滤*/
+                      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+                    }
+                    i.children.splice(index, 1, temp)
+                  }
+                }
+              })
+            }
+          } else {
+            let index = v.findIndex(v => v.id === id)
+            let temp = state.areaInfoList[index]
+            if (temp.children.length > 0) {
+              temp.children.filter(v => {
+                if (!bol) {
+                  v.isActive = false
+                  /*删除对应id图层*/
+                  mapHelper.removeLayerByCode(id)
+                } else if (bol) {
+                  v.isActive = true
+                  /*增加对应图层*/
+                  getJson(temp.datapath).then(res => {
+                    mapHelper.addLayerByCodeAndJson(id, res)
+                  })
+                  /*图层过滤*/
+                  mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+                }
+              })
+            }
             if (!bol) {
               temp.isActive = false
-              if (temp.children.length > 0) {
-                temp.children.map(v => v.isActive = false)
-              }
               /*删除对应id图层*/
               mapHelper.removeLayerByCode(id)
             } else if (bol) {
               temp.isActive = true
-              if (temp.children.length > 0) {
-                temp.children.map(v => {
-                  v.isActive = true
-                  getJson(v.datapath).then(res => {
-                    mapHelper.addLayerByCodeAndJson(v.id, res)
-                  })
-                  /*图层过滤*/
-                  mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
-                })
-              } else {
-                /*增加对应图层*/
-                getJson(temp.datapath).then(res => {
-                  mapHelper.addLayerByCodeAndJson(id, res)
-                })
-                console.log(state.idList, state.areaCodeList)
-                /*图层过滤*/
-                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
-              }
+              /*增加对应图层*/
+              getJson(temp.datapath).then(res => {
+                mapHelper.addLayerByCodeAndJson(id, res)
+              })
+              /*图层过滤*/
+              mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
             }
-            v.children.splice(index, 1, temp)
-          } else {
-            v.children.map(i => {
-              if (i.children.length > 0) {
-                let index = i.children.findIndex(i => i.id === id)
-                if (index >= 0) {
-                  let temp = i.children[index]
-                  if (!bol) {
-                    temp.isActive = false
-                    /*删除对应id图层*/
-                    mapHelper.removeLayerByCode(id)
-                  } else if (bol) {
-                    temp.isActive = true
-                    /*增加对应图层*/
-                    getJson(temp.datapath).then(res => {
-                      mapHelper.addLayerByCodeAndJson(id, res)
-                    })
-                    /*图层过滤*/
-                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
-                  }
-                  i.children.splice(index, 1, temp)
-                }
-              }
-            })
+            state.areaInfoData.splice(index, 1, temp)
           }
-        }
-      })
-    } else {
-      let index = state.areaInfoList.findIndex(v => v.id === id)
-      let temp = state.areaInfoList[index]
-      if (temp.children.length > 0) {
-        temp.children.filter(v => {
-          if (!bol) {
-            v.isActive = false
-            /*删除对应id图层*/
-            mapHelper.removeLayerByCode(id)
-          } else if (bol) {
-            v.isActive = true
-            /*增加对应图层*/
-            getJson(temp.datapath).then(res => {
-              mapHelper.addLayerByCodeAndJson(id, res)
-            })
-            /*图层过滤*/
-            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
-          }
-        })
       }
-      if (!bol) {
-        temp.isActive = false
-        /*删除对应id图层*/
-        mapHelper.removeLayerByCode(id)
-      } else if (bol) {
-        temp.isActive = true
-        /*增加对应图层*/
-        getJson(temp.datapath).then(res => {
-          mapHelper.addLayerByCodeAndJson(id, res)
-        })
-        /*图层过滤*/
-        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
-      }
-      state.areaInfoList.splice(index, 1, temp)
-    }
+    })
   },
   [TYPE.SET_UUID_INFO](state, uuidClickedInfo) {
     state.uuidClickedInfo = uuidClickedInfo

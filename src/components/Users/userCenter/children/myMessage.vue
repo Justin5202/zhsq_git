@@ -42,7 +42,7 @@
   .my-message {
     width: 100%;
     height: 100%;
-    background-color: #fff;
+    background-color: rgb(248, 247, 247);
     .list {
       .list-item {
         padding: 20px 10px;

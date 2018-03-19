@@ -3,7 +3,7 @@
     <el-container>
       <el-aside width="400px">
         <el-header>
-          <h2 class="title">个人中心<span>(dgc1)</span></h2>
+          <h2 class="title">个人中心<span>({{username}})</span></h2>
           <el-menu 
           mode="verticle" 
           text-color="#000"
@@ -50,8 +50,12 @@ export default {
       currentTab: '',
       currentIndex: '',
       showPanel: false,
-      datalist: []
+      datalist: [],
+      username: ''
     }
+  },
+  mounted() {
+    this.getUsername()
   },
   components: {
     vMyMessage,
@@ -89,6 +93,9 @@ export default {
     logout() {
       localStorage.removeItem('userinfo')
       this.$router.push('/login')
+    },
+    getUsername() {
+      this.username = JSON.parse(localStorage.getItem('userinfo')).truename
     }
   }
 }
@@ -107,15 +114,14 @@ export default {
       .el-aside {
         position: relative;
         height: 100%;
-        background-color: #fff;
+        background-color: rgb(248, 247, 247);
         border-right: 1px solid rgb(48, 46, 46);
         box-sizing: border-box;
         .el-header {
-          height: 6% !important;
           padding: 0;
           .title {
             height: 100%;
-            line-height: 56.4px;
+            line-height: 60px;
             color: white;
             font-weight: 500;
             font-size: 20px;
@@ -123,6 +129,7 @@ export default {
           }
         }
         .el-menu {
+          background-color: rgb(248, 247, 247);
           .el-menu-item {
             font-size: 16px;
             border-bottom: 1px solid lightgrey;
@@ -147,13 +154,13 @@ export default {
       }
       .el-main {
         height: 100%;
+        margin-bottom: -60px;
         padding: 0;
         .el-header {
           padding: 0;
-          height: 6% !important;
           .currentTab {
-            height: 100%;
-            line-height: 56.4px;
+            height: 60px;
+            line-height: 60px;
             color: white;
             font-weight: 500;
             font-size: 20px;
@@ -169,7 +176,7 @@ export default {
           }
         }
         .el-main {
-          height: 94%;
+          height: 100%;
           background-color: #fff;
         }
       }

@@ -7,7 +7,7 @@
         </el-form-item>
         <el-form-item>
           <el-input placeholder="请输入验证码" >
-            <el-button slot="append">获取验证码</el-button>
+            <el-button @click="getCode()" slot="append">{{codeTime}}</el-button>
           </el-input>
         </el-form-item>
         <el-form-item>
@@ -17,15 +17,15 @@
           <el-input placeholder="请输入真实姓名"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-select placeholder="请选择部门">
-            <el-option label="部门1" value=""></el-option>
-            <el-option label="部门2" value=""></el-option>
+          <el-select placeholder="请选择部门" v-model="form.department">
+            <el-option label="部门1" :value="0"></el-option>
+            <el-option label="部门2" :value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select placeholder="请选择区县">
-            <el-option label="区县1" value="0"></el-option>
-            <el-option label="区县2" value="1"></el-option>
+          <el-select placeholder="请选择区县" v-model="form.area">
+            <el-option label="区县1" :value="0"></el-option>
+            <el-option label="区县2" :value="1"></el-option>
           </el-select>
         </el-form-item>
         <div class="btn-box">
@@ -43,8 +43,31 @@
     name: 'register',
     data() {
       return {
+        codeTime: '获取验证码',
+        count: '',
+        timer: null,
         form: {
-          
+          department: '',
+          area: ''
+        }
+      }
+    },
+    methods: {
+      getCode() {
+        const TIME_COUNT = 60;
+        if (!this.timer) {
+          this.count = TIME_COUNT
+          this.codeTime = this.count + 's'
+          this.timer = setInterval(() => {
+            if (this.count > 0 && this.count <= TIME_COUNT) {
+              this.count--;
+              this.codeTime = this.count + 's'
+            } else {
+              this.codeTime = '获取验证码'
+              clearInterval(this.timer)
+              this.timer = null
+            }
+          }, 1000)
         }
       }
     }

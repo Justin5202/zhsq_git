@@ -160,6 +160,7 @@
         .list {
           height: 100%;
           overflow: auto;
+          list-style: none;
           .list-item {
             padding: 10px 10px;
             border-bottom:1px solid lightgrey;

@@ -142,6 +142,7 @@ export default {
           position: absolute;
           bottom: 0;
           span {
+            display: inline-block;
             width: 100%;
             border: none;
             outline: none;
@@ -156,6 +157,7 @@ export default {
         height: 100%;
         margin-bottom: -60px;
         padding: 0;
+        box-sizing: border-box;
         .el-header {
           padding: 0;
           .currentTab {

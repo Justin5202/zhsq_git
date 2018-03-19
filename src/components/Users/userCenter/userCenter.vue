@@ -16,7 +16,7 @@
           </el-menu>
         </el-header>
         <div class="footer">
-          <span type="button">退出登录</span>
+          <span type="button" @click="logout()">退出登录</span>
         </div>
       </el-aside>
       <el-main v-show="showPanel">
@@ -75,16 +75,20 @@ export default {
       this.showPanel = false
     },
     _fetchData() {
-      let time = (new Date()).valueOf().toString()
-      console.log(time)
+      let time = Math.round(new Date() / 1000)
       fetchData(time).then(res => {
-        this.datalist = res.data
+        console.log(res.message)
+        this.datalist.push({text: res.message, time: time})
       })
     },
     clearCache() {
       this.$alert('缓存清除成功', '清除缓存', {
-          confirmButtonText: '确定'}
-          )
+        confirmButtonText: '确定'}
+      )
+    },
+    logout() {
+      localStorage.removeItem('userinfo')
+      this.$router.push('/login')
     }
   }
 }
@@ -93,7 +97,7 @@ export default {
   .user-center {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
+    background-color: rgba(0, 0, 0, 0.6); 
     position: fixed;
     top: 0;
     left: 0;
@@ -107,11 +111,11 @@ export default {
         border-right: 1px solid rgb(48, 46, 46);
         box-sizing: border-box;
         .el-header {
-          height: 60px;
+          height: 6% !important;
           padding: 0;
           .title {
             height: 100%;
-            line-height: 60px;
+            line-height: 56.4px;
             color: white;
             font-weight: 500;
             font-size: 20px;
@@ -146,10 +150,10 @@ export default {
         padding: 0;
         .el-header {
           padding: 0;
-          height:60px;
+          height: 6% !important;
           .currentTab {
             height: 100%;
-            line-height: 60px;
+            line-height: 56.4px;
             color: white;
             font-weight: 500;
             font-size: 20px;
@@ -165,7 +169,7 @@ export default {
           }
         }
         .el-main {
-          height: 93.5%;
+          height: 94%;
           background-color: #fff;
         }
       }

@@ -55,7 +55,8 @@
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: rgb(38, 117, 207);
+    background: url('../../../assets/images/Login/logbg@2x.png') no-repeat;
+    background-size: 100% 100%;
     color: #fff;
     .wrap {
       position: absolute;

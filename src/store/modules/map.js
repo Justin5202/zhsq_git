@@ -77,10 +77,14 @@ const state = {
   reportFormShow: false,
   reportFormData: [],
   areaCodeAndDataId: [],
-  searchItemMacroList: [], /*搜索结果空间数据列表*/
-  idList: [], /*图层id列表*/
-  areaCodeList: [], /*区域code列表*/
-  uuidClickedInfo: {}, /*点击地图uuid的详细信息*/
+  searchItemMacroList: [],
+  /*搜索结果空间数据列表*/
+  idList: [],
+  /*图层id列表*/
+  areaCodeList: [],
+  /*区域code列表*/
+  uuidClickedInfo: {},
+  /*点击地图uuid的详细信息*/
   measureNum: ''
 }
 
@@ -172,9 +176,10 @@ const mutations = {
     }
   },
   [TYPE.GET_AREA_DATA](state, areaInfoData) {
-    console.log(mapHelper.getBounds())
     /*判断第一级是否存在json数据*/
-    if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
+    let type = parseInt(Number(areaInfoData[0].type) / 10)
+    let yu = Number(areaInfoData[0].type) % 10
+    if (type === 2 && yu === 1) {
       areaInfoData[0].isActive = true
       getJson(areaInfoData[0].datapath).then(res => {
         mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
@@ -182,63 +187,84 @@ const mutations = {
         /*图层过滤*/
         mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
       })
-      /*存在json就push进图层列表*/
-      if (state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
-        state.activeAreaInfoList.push(areaInfoData[0])
-      }
-      state.areaInfoList = areaInfoData
+      state.activeAreaInfoList = areaInfoData
     } else {
-      let hasThirdLevel = false
-      let temp = []
-      let areaInfoList = areaInfoData[0].children
-      areaInfoData[0].isActive = false
-      for (let value of areaInfoList) {
-        if (value.children.length > 0) {
-          hasThirdLevel = true
-          for (let val of value.children) {
-            val.isActive = false
-            temp.push(val)
-            state.idList.push(val.id)
+      if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
+        areaInfoData[0].isActive = true
+        getJson(areaInfoData[0].datapath).then(res => {
+          mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+          state.idList.push(areaInfoData[0].id)
+          /*图层过滤*/
+          mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+        })
+        /*存在json就push进图层列表*/
+        if (state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
+          state.activeAreaInfoList.push(areaInfoData[0])
+        }
+        state.areaInfoList = areaInfoData
+      } else {
+        let hasThirdLevel = false
+        let temp = []
+        let areaInfoList = areaInfoData[0].children
+        areaInfoData[0].isActive = false
+        for (let value of areaInfoList) {
+          if (value.children.length > 0) {
+            hasThirdLevel = true
+            for (let val of value.children) {
+              val.isActive = false
+              temp.push(val)
+              state.idList.push(val.id)
+            }
+          } else {
+            temp.push(value)
+            state.idList.push(value.id)
           }
+        }
+        areaInfoData[0].isActive = true
+        if (!hasThirdLevel) {
+          areaInfoList.filter(v => v.isActive = true)
         } else {
-          temp.push(value)
-          state.idList.push(value.id)
+          areaInfoList.filter(v => v.isActive = false)
+        }
+        state.areaInfoList = areaInfoData
+        /*所有子集push到一个数组里面*/
+        temp.map(v => {
+          let index = state.activeAreaInfoList.findIndex(i => v.id === i.id)
+          if (index < 0) {
+            state.activeAreaInfoList.push(v)
+          }
+        })
+        /*如果存在第三级目录，不初始叠加图层*/
+        if (!hasThirdLevel) {
+          temp.map(v => {
+            getJson(v.datapath).then(res => {
+              mapHelper.addLayerByCodeAndJson(v.id, res)
+            })
+          })
+          /*图层过滤*/
+          mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
         }
       }
-      if (!hasThirdLevel) {
-        areaInfoList.filter(v => v.isActive = true)
-      } else {
-        areaInfoList.filter(v => v.isActive = false)
-      }
-      state.areaInfoList = areaInfoData
-      /*所有子集push到一个数组里面*/
-      state.activeAreaInfoList = temp
-      /*如果存在第三级目录，不初始叠加图层*/
-      if (!hasThirdLevel) {
-        temp.map(v => {
-          getJson(v.datapath).then(res => {
-            mapHelper.addLayerByCodeAndJson(v.id, res)
-          })
-        })
-        /*图层过滤*/
-        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
-      }
     }
-    state.areaInfoData = areaInfoData
+    if (state.areaInfoData.findIndex(v => v.id === areaInfoData[0].id) < 0) {
+      state.areaInfoData = state.areaInfoData.concat(areaInfoData)
+    }
   },
   [TYPE.SET_ACTIVE_AREA_LIST](state, {
     activeAreaInfoList,
     isRemoveAll
   }) {
-    console.log(isRemoveAll)
     if (isRemoveAll) {
       state.activeAreaInfoList.map(v => {
         v.isActive = false
         /*清空所有图层*/
         mapHelper.removeLayerByCode(v.id)
       })
+      state.activeAreaInfoList = []
+      state.areaInfoData = []
+      state.areaInfoList.map(v => v.isActive = false)
       /*图层过滤*/
-      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList=[], state.areaCodeList)
+      mapHelper.setFilterByCodeArrayAndAreacodeArray([], state.areaCodeList)
     }
   },
   [TYPE.SET_SEC_AREA_LIST](state, secAreaList) {
@@ -275,7 +301,7 @@ const mutations = {
       } else {
         temp.push(areainfo)
         /*更新选中区域areacode列表*/
-        if(areainfo.areacode !== '501002') {
+        if (areainfo.areacode !== '501002') {
           state.areaCodeList.push(areainfo.areacode)
         }
         /*画行政区划线*/
@@ -295,7 +321,7 @@ const mutations = {
         mapHelper.removeLayerById(index.toString())
       })
       /*图层过滤*/
-      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList=[])
+      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList = [])
       state.areaList = []
     }
   },
@@ -303,8 +329,17 @@ const mutations = {
     bol,
     id
   }) {
-    if (state.areaInfoList.findIndex(v => v.id === id) < 0) {
-      state.areaInfoList.filter(v => {
+    state.activeAreaInfoList.map(v => {
+      if (v.id === id) {
+        if (!bol) {
+          v.isActive = false
+        } else {
+          v.isActive = true
+        }
+      }
+    })
+    state.areaInfoData.map((v, idx) => {
+      if (v.id !== id) {
         if (v.children.length > 0) {
           let index = v.children.findIndex(i => i.id === id)
           if (index >= 0) {
@@ -362,43 +397,46 @@ const mutations = {
               }
             })
           }
-        }
-      })
-    } else {
-      let index = state.areaInfoList.findIndex(v => v.id === id)
-      let temp = state.areaInfoList[index]
-      if (temp.children.length > 0) {
-        temp.children.filter(v => {
+        } else {}
+      } else {
+        if (v.id === id) {
+          let temp = v
+          if (temp.children.length > 0) {
+            temp.children.map(v => {
+              if (!bol) {
+                v.isActive = false
+                /*删除对应id图层*/
+                mapHelper.removeLayerByCode(v.id)
+              } else if (bol) {
+                v.isActive = true
+                /*增加对应图层*/
+                getJson(v.datapath).then(res => {
+                  mapHelper.addLayerByCodeAndJson(v.id, res)
+                })
+                /*图层过滤*/
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+              }
+            })
+          }
           if (!bol) {
-            v.isActive = false
+            temp.isActive = false
             /*删除对应id图层*/
             mapHelper.removeLayerByCode(id)
           } else if (bol) {
-            v.isActive = true
-            /*增加对应图层*/
-            getJson(temp.datapath).then(res => {
-              mapHelper.addLayerByCodeAndJson(id, res)
-            })
-            /*图层过滤*/
-            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+            temp.isActive = true
+            /*增加对应图层,首先判断第一层是否存在json数据*/
+            if(temp.datapath) {
+              getJson(temp.datapath).then(res => {
+                mapHelper.addLayerByCodeAndJson(id, res)
+              })
+              /*图层过滤*/
+              mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+            }
           }
-        })
+          state.areaInfoData.splice(idx, 1, temp)
+        }
       }
-      if (!bol) {
-        temp.isActive = false
-        /*删除对应id图层*/
-        mapHelper.removeLayerByCode(id)
-      } else if (bol) {
-        temp.isActive = true
-        /*增加对应图层*/
-        getJson(temp.datapath).then(res => {
-          mapHelper.addLayerByCodeAndJson(id, res)
-        })
-        /*图层过滤*/
-        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
-      }
-      state.areaInfoList.splice(index, 1, temp)
-    }
+    })
   },
   [TYPE.SET_UUID_INFO](state, uuidClickedInfo) {
     state.uuidClickedInfo = uuidClickedInfo
@@ -424,7 +462,7 @@ const mutations = {
     state.reportFormData = data
   },
   [TYPE.SET_MEASURE_NUM](state, measureNum) {
-      state.measureNum = measureNum
+    state.measureNum = measureNum
   }
 }
 
@@ -592,7 +630,10 @@ const actions = {
     commit(TYPE.SET_SEARCH_MACRO_LIST, item)
   },
   /*设置uuidinfo*/
-  setUuidInfo({commit, state}, uuidinfo) {
+  setUuidInfo({
+    commit,
+    state
+  }, uuidinfo) {
     commit(TYPE.SET_UUID_INFO, uuidinfo)
   },
   //报表显示隐藏
@@ -728,9 +769,12 @@ const actions = {
     })
   },
   //获取测量数据
-    setMeasurNum({ commit, state }, data) {
-        commit(TYPE.SET_MEASURE_NUM, data)
-    }
+  setMeasurNum({
+    commit,
+    state
+  }, data) {
+    commit(TYPE.SET_MEASURE_NUM, data)
+  }
 }
 
 export default {

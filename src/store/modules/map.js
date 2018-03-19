@@ -260,7 +260,9 @@ const mutations = {
         /*清空所有图层*/
         mapHelper.removeLayerByCode(v.id)
       })
-      // state.activeAreaInfoList = []
+      state.activeAreaInfoList = []
+      state.areaInfoData = []
+      state.areaInfoList.map(v => v.isActive = false)
       /*图层过滤*/
       mapHelper.setFilterByCodeArrayAndAreacodeArray([], state.areaCodeList)
     }
@@ -400,16 +402,16 @@ const mutations = {
         if (v.id === id) {
           let temp = v
           if (temp.children.length > 0) {
-            temp.children.filter(v => {
+            temp.children.map(v => {
               if (!bol) {
                 v.isActive = false
                 /*删除对应id图层*/
-                mapHelper.removeLayerByCode(id)
+                mapHelper.removeLayerByCode(v.id)
               } else if (bol) {
                 v.isActive = true
                 /*增加对应图层*/
-                getJson(temp.datapath).then(res => {
-                  mapHelper.addLayerByCodeAndJson(id, res)
+                getJson(v.datapath).then(res => {
+                  mapHelper.addLayerByCodeAndJson(v.id, res)
                 })
                 /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
@@ -422,12 +424,14 @@ const mutations = {
             mapHelper.removeLayerByCode(id)
           } else if (bol) {
             temp.isActive = true
-            /*增加对应图层*/
-            getJson(temp.datapath).then(res => {
-              mapHelper.addLayerByCodeAndJson(id, res)
-            })
-            /*图层过滤*/
-            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+            /*增加对应图层,首先判断第一层是否存在json数据*/
+            if(temp.datapath) {
+              getJson(temp.datapath).then(res => {
+                mapHelper.addLayerByCodeAndJson(id, res)
+              })
+              /*图层过滤*/
+              mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+            }
           }
           state.areaInfoData.splice(idx, 1, temp)
         }

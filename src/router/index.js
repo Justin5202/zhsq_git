@@ -63,11 +63,27 @@ export default new Router({
     {
       path: '/login',
       name: 'login',
-      component: login
+      component: login,
+      beforeEnter(to, from, next) {
+        const userinfo = localStorage.getItem('userinfo')
+        if (userinfo) {
+          next(from.path)
+        } else {
+          next()
+        }
+      }
     }, {
       path: '/register',
       name: 'register',
-      component: register
+      component: register,
+      beforeEnter(to, from, next) {
+        const userinfo = localStorage.getItem('userinfo')
+        if (userinfo) {
+          next(from.path)
+        } else {
+          next()
+        }
+      }
     }, {
       path:'/searchAround',
       name: 'searchAround',

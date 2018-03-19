@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <div class="wrap">
-          <p class="back"><i class="el-icon-arrow-left"></i><span>周边搜索</span></p>
+          <p class="back" @click="goback"><i class="el-icon-arrow-left"></i><span>周边搜索</span></p>
           <div class="search">
             <div class="el-input">
               <span class="icon"></span><input type="text" v-model="searchContent" placeholder="搜地点、查数据"/>
@@ -19,21 +19,8 @@
           </p>
           <div class="list-box">
             <ul class="list">
-              <li class="list-item">
-                <p>公共设施</p>
-                <ul class="sublist">
-                  <li>学校</li>
-                  <li>火车站</li>
-                  <li>长途汽车站</li>
-                  <li>加油(气)站</li>
-                  <li>地铁站</li>
-                  <li>停车场</li>
-                  <li>公交站</li>
-                  <li>桥梁</li>
-                </ul>
-              </li>
               <li class="list-item" v-for="n in 6">
-                <p>交通设施</p>
+                <p class="list-item-title" :style="{color: Color()}">交通设施</p>
                 <ul class="sublist">
                   <li>机场</li>
                   <li>医院</li>
@@ -53,11 +40,21 @@
   </div>
 </template>
 <script>
+  import Mock from 'mockjs'
+  const Random = Mock.Random
   export default {
     name: 'search-around',
     data() {
       return {
         searchContent: ''
+      }
+    },
+    methods: {
+      goback() {
+        this.$router.go(-1)
+      },
+      Color() {
+        return Random.rgb()
       }
     }
   }
@@ -91,6 +88,7 @@
             color: white;
             font-size: 24px;
             padding: 20px 30px;
+            cursor: pointer;
             span {
               display: inline-block;
               padding-left: 15px;
@@ -139,7 +137,9 @@
         height:85%;
         background-color: rgb(233, 229, 229);
         .wrap {
-          margin: 20px;
+          margin: 0 auto;
+          margin-top: 22px;
+          width: 1866px;
           height: 95%;
           box-sizing: border-box;
           background: #fff;
@@ -182,7 +182,7 @@
               width: 100%;
               justify-content: space-between;
               .list-item {
-                width: 40%;
+                width: 50%;
                 margin-bottom: 40px;
                 display: flex;
                 p {
@@ -193,11 +193,15 @@
                   flex-wrap: wrap;
                   justify-content: space-between;
                   li {
+                    cursor: pointer;
                     width: 20%;
                     text-align: left;
                     margin: 0 10px 30px 0;
                   }
                 }
+              }
+              .list-item:nth-of-type(even) {
+                justify-content: flex-end;
               }
             }
           }

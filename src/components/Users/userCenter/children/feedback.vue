@@ -17,9 +17,9 @@
     <div class="history-container" v-show="currentIndex === 1">
       <div class="history-box">
         <ul class="list">
-          <li v-for="n in 10" class="list-item" :class="{active:n===selectedIndex}" @click="handleSelect(n)">
-            <p class="text">分离萨菲罗斯接待来访</p>
-            <p class="time">2018年03月16日 09:39</p>
+          <li v-for="(item, index) in suggestList" class="list-item" :class="{active:index===selectedIndex}" @click="handleSelect(index)">
+            <p class="text">{{item.text}}</p>
+            <p class="time">{{item.time}}</p>
           </li>
           <li class="btn-box">
             <el-button @click="pre()">上一页</el-button>
@@ -53,7 +53,7 @@
         selectedIndex: '',
         messageTime: '',
         messageContent: '',
-        suggestList: '',
+        suggestList: [],
         page: 1
       }
     },
@@ -138,9 +138,6 @@
       .el-form {
         .el-textarea {
           font-size: 16px;
-          textarea {
-            background-color: rgb(248, 247, 247) !important;
-          }
         }
         .el-button {
           background-color: rgb(39, 68, 112);

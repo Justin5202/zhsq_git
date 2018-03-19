@@ -19,7 +19,7 @@
   .contact {
     width: 100%;
     height: 100%;
-    background-color: #fff;
+    background-color: rgb(248, 247, 247);
     .list {
       .list-item {
         text-align: left;

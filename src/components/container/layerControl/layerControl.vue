@@ -93,7 +93,6 @@ export default {
   computed: {
     ...mapGetters([
       'activeAreaInfoList',
-      'areaInfoList',
       'searchItemMacroList'
     ]),
     checkedList() {

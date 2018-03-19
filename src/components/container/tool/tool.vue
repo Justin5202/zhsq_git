@@ -117,7 +117,7 @@ export default {
            if(this.areaInfoData[i].target.length>0 && this.areaInfoData[i].isActive){
             len ++
            }
-           if(this.areaInfoData[i].children.length){
+           if(this.areaInfoData[i].children.length>0){
                for(var j in this.areaInfoData[i].children){
                    if(this.areaInfoData[i].children[j].target.length>0 && this.areaInfoData[i].children[j].isActive){
                         len ++

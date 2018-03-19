@@ -117,16 +117,17 @@ export function getThematicMap(source) {
 
 // 获取当前地图范围内是否存在数据
 export function getQueryElementByPoint(source, filter, top, bottom, point) {
-  const data = Object.assign({}, commonParams, {
+  const data = Object.assign({}, {
       method: 'queryElementByPoint',
       sourcelayer: source,
       filter: filter,
       top: top,
       bottom: bottom,
-      point: point
+      point: point,
+      os: 'pc'
   })
 
-  return axios.post(url, qs.stringify(data)).then(res => {
+  return axios.post('172.16.3.231:8080/cqzhsqd2c_v2_test/api_v7.do', qs.stringify(data)).then(res => {
       return Promise.resolve(res.data)
   })
 }

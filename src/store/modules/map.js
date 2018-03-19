@@ -192,7 +192,8 @@ const mutations = {
       if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
         areaInfoData[0].isActive = true
         getJson(areaInfoData[0].datapath).then(res => {
-          mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+          const a = mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+          console.log(a)
           state.idList.push(areaInfoData[0].id)
           /*图层过滤*/
           mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)

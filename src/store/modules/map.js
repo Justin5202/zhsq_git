@@ -172,9 +172,10 @@ const mutations = {
     }
   },
   [TYPE.GET_AREA_DATA](state, areaInfoData) {
-    console.log(mapHelper.getBounds())
     /*判断第一级是否存在json数据*/
-    if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
+    let type = parseInt(Number(areaInfoData[0].type) / 10)
+    let yu = Number(areaInfoData[0].type) % 10
+    if(type === 2 && yu === 1) {
       areaInfoData[0].isActive = true
       getJson(areaInfoData[0].datapath).then(res => {
         mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
@@ -182,49 +183,71 @@ const mutations = {
         /*图层过滤*/
         mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
       })
-      /*存在json就push进图层列表*/
-      if (state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
-        state.activeAreaInfoList.push(areaInfoData[0])
-      }
-      state.areaInfoList = areaInfoData
+      state.activeAreaInfoList = areaInfoData
     } else {
-      let hasThirdLevel = false
-      let temp = []
-      let areaInfoList = areaInfoData[0].children
-      areaInfoData[0].isActive = false
-      for (let value of areaInfoList) {
-        if (value.children.length > 0) {
-          hasThirdLevel = true
-          for (let val of value.children) {
-            val.isActive = false
-            temp.push(val)
-            state.idList.push(val.id)
+      if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
+        areaInfoData[0].isActive = true
+        getJson(areaInfoData[0].datapath).then(res => {
+          mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+          state.idList.push(areaInfoData[0].id)
+          /*图层过滤*/
+          mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+        })
+        /*存在json就push进图层列表*/
+        if (state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
+          state.activeAreaInfoList.push(areaInfoData[0])
+        }
+        state.areaInfoList = areaInfoData
+      } else {
+        let hasThirdLevel = false
+        let temp = []
+        let areaInfoList = areaInfoData[0].children
+        areaInfoData[0].isActive = false
+        for (let value of areaInfoList) {
+          if (value.children.length > 0) {
+            hasThirdLevel = true
+            for (let val of value.children) {
+              val.isActive = false
+              temp.push(val)
+              state.idList.push(val.id)
+            }
+          } else {
+            temp.push(value)
+            state.idList.push(value.id)
+          }
+        }
+        if(true) {
+          if (!hasThirdLevel) {
+            areaInfoList.filter(v => v.isActive = true)
+          } else {
+            areaInfoList.filter(v => v.isActive = false)
           }
         } else {
-          temp.push(value)
-          state.idList.push(value.id)
+          areaInfoData[0].isActive = true
+        }
+        state.areaInfoList = areaInfoData
+        /*所有子集push到一个数组里面*/
+        temp.map(v => {
+          let index = state.activeAreaInfoList.findIndex(i => v.id === i.id)
+          if(index < 0) {
+            state.activeAreaInfoList.push(v)
+          }
+        })
+        /*如果存在第三级目录，不初始叠加图层*/
+        if (!hasThirdLevel) {
+          temp.map(v => {
+            getJson(v.datapath).then(res => {
+              mapHelper.addLayerByCodeAndJson(v.id, res)
+            })
+          })
+          /*图层过滤*/
+          mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
         }
       }
-      if (!hasThirdLevel) {
-        areaInfoList.filter(v => v.isActive = true)
-      } else {
-        areaInfoList.filter(v => v.isActive = false)
-      }
-      state.areaInfoList = areaInfoData
-      /*所有子集push到一个数组里面*/
-      state.activeAreaInfoList = temp
-      /*如果存在第三级目录，不初始叠加图层*/
-      if (!hasThirdLevel) {
-        temp.map(v => {
-          getJson(v.datapath).then(res => {
-            mapHelper.addLayerByCodeAndJson(v.id, res)
-          })
-        })
-        /*图层过滤*/
-        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
-      }
     }
-    state.areaInfoData = areaInfoData
+    if(state.areaInfoData.findIndex(v => v.id === areaInfoData[0].id) < 0) {
+      state.areaInfoData = state.areaInfoData.concat(areaInfoData)
+    }
   },
   [TYPE.SET_ACTIVE_AREA_LIST](state, {
     activeAreaInfoList,
@@ -237,6 +260,7 @@ const mutations = {
         /*清空所有图层*/
         mapHelper.removeLayerByCode(v.id)
       })
+      state.activeAreaInfoList = []
       /*图层过滤*/
       mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList=[], state.areaCodeList)
     }

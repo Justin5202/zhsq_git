@@ -221,9 +221,9 @@ export default {
                             color: #409eff;
                         }
                         .title-item {
+                            display: flex;
+                            align-items: center;
                             width: 210px;
-                            height: 60px;
-                            line-height: 60px;
                             text-align: left;
                             padding-left: 15px;
                         }

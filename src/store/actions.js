@@ -111,6 +111,7 @@ export const getSearchResult = function({
             'areainfo': areainfo,
             'isRemoveAll': false
           })
+          mapHelper.setPopupToMap(v.area.geopoint)
         }
       })
     }

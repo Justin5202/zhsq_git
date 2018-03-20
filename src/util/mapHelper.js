@@ -696,10 +696,10 @@ const flyByPointAndZoom = function(center, zoom) {
 
 /**
  * @function 设置小标注点(单点)
- * @param layerId,geoPoint,text,textSize,icon,iconSize,minzoom,maxzoom
+ * @param layerId,geoPoint,_mapguid,text,textSize,icon,iconSize,minzoom,maxzoom
  * @returns null
  */
-const setMarkToMap = function(layerId, geoPoint, text, textSize, icon, iconSize, minzoom, maxzoom,_mapguid) {
+const setMarkToMap = function(layerId, geoPoint,_mapguid, text, textSize, icon, iconSize, minzoom, maxzoom) {
     let option = {
         id: layerId,
         type: "symbol",

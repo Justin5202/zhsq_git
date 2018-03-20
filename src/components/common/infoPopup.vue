@@ -17,9 +17,28 @@
         <i class="icon-searcharound"></i>
         <span class="search-around">搜周边</span>
       </div>
+<<<<<<< HEAD
       <div class="button-item">
         <i class="icon-checkdetail"></i>
         <span>查详情</span>
+=======
+      <ul>
+        <li class="pop-li" v-for="item in showArray">
+          <p>{{item._source.name_a}}</p>
+          <span>{{uuidClickedInfo._source[item._source.name]}}</span>
+        </li>
+      </ul>
+      <div class="button-box">
+        <div class="button-item left-button-item">
+          <i class="icon-searcharound"></i>
+          <span class="search-around" @click="toSearch">搜周边</span>
+          <!-- <router-link to="{path: '/searchAround'}" tag="span" class="search-around">搜周边</router-link> -->
+        </div>
+        <div class="button-item">
+          <i class="icon-checkdetail"></i>
+          <span>查详情</span>
+        </div>
+>>>>>>> e6a780d817e15f6a9b9b659afefbac92c1deba40
       </div>
     </div>
   </div>
@@ -65,6 +84,9 @@ export default {
           this.$mapHelper.closePopup()
         }
       })
+    },
+    toSearch() {
+      window.location.hash = '/searchAround'
     }
   }
 }

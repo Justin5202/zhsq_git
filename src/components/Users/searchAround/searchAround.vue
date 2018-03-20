@@ -20,7 +20,7 @@
           <div class="list-box">
             <ul class="list">
               <li class="list-item" v-for="n in 6">
-                <p class="list-item-title" :style="{color: Color()}">交通设施</p>
+                <p class="list-item-title" >交通设施</p>
                 <ul class="sublist">
                   <li>机场</li>
                   <li>医院</li>
@@ -40,8 +40,6 @@
   </div>
 </template>
 <script>
-  // import Mock from 'mockjs'
-  // const Random = Mock.Random
   export default {
     name: 'search-around',
     data() {
@@ -51,10 +49,8 @@
     },
     methods: {
       goback() {
+        console.log(this)
         this.$router.go(-1)
-      },
-      Color() {
-        // return Random.rgb()
       }
     }
   }

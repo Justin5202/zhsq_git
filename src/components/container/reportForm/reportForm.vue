@@ -166,6 +166,7 @@ export default {
                 text-align: center;
                 border: 1px solid #fff;
                 background-color: #eee;
+                cursor: pointer;
             }
         }
     }
@@ -212,6 +213,9 @@ export default {
                             padding: 10px 0;
                             height: 40px;
                             line-height: 40px;
+                            img {
+                              cursor: pointer;
+                            }
                         }
                         .num-color {
                             color: #409eff;

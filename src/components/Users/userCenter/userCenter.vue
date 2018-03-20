@@ -4,13 +4,13 @@
       <el-aside width="400px">
         <el-header>
           <h2 class="title">个人中心<span>({{username}})</span></h2>
-          <el-menu 
-          mode="verticle" 
+          <el-menu
+          mode="verticle"
           text-color="#000"
           active-text-color="#606266">
-            <el-menu-item 
-            v-for="(item, index) in tabs" 
-            index="index" 
+            <el-menu-item
+            v-for="(item, index) in tabs"
+            index="index"
             :key="index"
             @click="setCurrent(item.name, index)">{{item.name}}</el-menu-item>
           </el-menu>
@@ -36,7 +36,7 @@
 import vMyMessage from '@/components/users/userCenter/children/myMessage'
 import vFeedback from '@/components/users/userCenter/children/feedback'
 import vContact from '@/components/users/userCenter/children/contact'
-import {fetchData} from '../../../api/users/data'
+import {fetchData} from '../../../api/user'
 export default {
   name: 'user-center',
   data() {
@@ -104,7 +104,7 @@ export default {
   .user-center {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); 
+    background-color: rgba(0, 0, 0, 0.6);
     position: fixed;
     top: 0;
     left: 0;
@@ -185,5 +185,3 @@ export default {
     }
   }
 </style>
-
-

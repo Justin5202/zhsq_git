@@ -17,9 +17,12 @@ import {
   getSearch,
   getDetailInfo,
   getNextAreaInfo,
-  getJson,
-  getMsMacroData
+  getMsMacroData,
+  getQueryElementByPoint
 } from '@/api/dataSheets'
+import {
+  getJson
+} from '@/api/getJson'
 import mapHelper from '@/util/mapHelper'
 import * as TYPE from '../type'
 
@@ -50,6 +53,33 @@ function loadStyle(styles, afterLoad) {
     }
   }
   return parallel(tasks)
+}
+
+// 数组处理
+function handleArray(array) {
+  let temp = []
+  array.map(v => {
+    temp.push(v.split(','))
+  })
+  temp.push([mapHelper.getCenter().lng, mapHelper.getCenter().lat])
+  temp.map(v => {
+    v.map(v => v = Number(v))
+  })
+  return JSON.stringify(temp)
+}
+
+// 图层加载
+function addLayer(datapath, id) {
+  getJson(datapath).then(res => {
+    const result = mapHelper.addLayerByCodeAndJson(id, res)
+    getQueryElementByPoint(result).then(res => {
+      state.idList.push(id)
+      // 地图飞点
+      mapHelper.flyByBounds(handleArray(res.data.points))
+      /*图层过滤*/
+      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+    })
+  })
 }
 
 const state = {
@@ -85,7 +115,8 @@ const state = {
   /*区域code列表*/
   uuidClickedInfo: {},
   /*点击地图uuid的详细信息*/
-  measureNum: ''
+  measureNum: '',
+  areaReportFormShow: false
 }
 
 const getters = {
@@ -104,7 +135,8 @@ const getters = {
   areaCodeAndDataId: state => state.areaCodeAndDataId,
   searchItemMacroList: state => state.searchItemMacroList,
   uuidClickedInfo: state => state.uuidClickedInfo,
-  measureNum: state => state.measureNum
+  measureNum: state => state.measureNum,
+  areaReportFormShow: state => state.areaReportFormShow
 }
 
 const mutations = {
@@ -154,6 +186,75 @@ const mutations = {
       }
     }
     state.searchList = searchList
+  },
+  [TYPE.SET_SEARCH_MACRO_LIST](state, item) {
+    item.isActive = !item.isActive
+    /*设置搜索列表的加载状态*/
+    let i = state.searchList.findIndex(v => v.macro.data.id === item.macro.data.id)
+    state.searchList[i].isActive = item.isActive
+    let index = state.searchItemMacroList.findIndex(v => v.macro.data.id === item.macro.data.id)
+    if (item.isActive) {
+      addLayer(item.macro.data.datapath, item.macro.data.id)
+    } else {
+      mapHelper.removeLayerByCode(item.macro.data.id)
+    }
+    /*不存在push，存在替换*/
+    if (index < 0) {
+      state.searchItemMacroList.push(item)
+    } else {
+      state.searchItemMacroList.splice(index, 1, item)
+    }
+  },
+  [TYPE.GET_AREA_DATA](state, areaInfoData) {
+    /*判断第一级是否存在json数据*/
+    let type = parseInt(Number(areaInfoData[0].type) / 10)
+    let yu = Number(areaInfoData[0].type) % 10
+    if (type === 2 && yu === 1) {
+      areaInfoData[0].isActive = true
+      addLayer(areaInfoData[0].datapath, areaInfoData[0].id)
+      getJson(areaInfoData[0].datapath).then(res => {
+        mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+        state.idList.push(areaInfoData[0].id)
+        /*图层过滤*/
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+      })
+      state.activeAreaInfoList = areaInfoData
+    } else {
+      if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
+        areaInfoData[0].isActive = true
+        addLayer(areaInfoData[0].datapath, areaInfoData[0].id)
+        // getJson(areaInfoData[0].datapath).then(res => {
+        //   const a = mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+        //   getQueryElementByPoint(a).then(res => {
+        //     mapHelper.flyByBounds(handleArray(res.data.points))
+        //   })
+        //   state.idList.push(areaInfoData[0].id)
+        //   /*图层过滤*/
+        //   mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+        // })
+        /*存在json就push进图层列表*/
+        if (state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
+          state.activeAreaInfoList.push(areaInfoData[0])
+        }
+        state.areaInfoList = areaInfoData
+      } else {
+        let hasThirdLevel = false
+        let temp = []
+        let areaInfoList = areaInfoData[0].children
+        areaInfoData[0].isActive = false
+        for (let value of areaInfoList) {
+          if (value.children.length > 0) {
+            hasThirdLevel = true
+            for (let val of value.children) {
+              val.isActive = false
+              temp.push(val)
+              state.idList.push(val.id)
+            }
+          }
+          state.searchList = searchList
+        }
+      }
+    }
   },
   [TYPE.SET_SEARCH_MACRO_LIST](state, item) {
     item.isActive = !item.isActive
@@ -425,7 +526,7 @@ const mutations = {
           } else if (bol) {
             temp.isActive = true
             /*增加对应图层,首先判断第一层是否存在json数据*/
-            if(temp.datapath) {
+            if (temp.datapath) {
               getJson(temp.datapath).then(res => {
                 mapHelper.addLayerByCodeAndJson(id, res)
               })
@@ -441,7 +542,7 @@ const mutations = {
   [TYPE.SET_UUID_INFO](state, uuidClickedInfo) {
     state.uuidClickedInfo = uuidClickedInfo
   },
-  [TYPE.REPORT_FORM_SHOW](state, reportFormShow) {
+  [TYPE.SET_REPORT_FORM_SHOW](state, reportFormShow) {
     state.reportFormShow = reportFormShow
   },
   [TYPE.SET_REPORT_FORM_DATA](state, reportFormData) {
@@ -459,10 +560,13 @@ const mutations = {
     } else {
       data = []
     }
-    state.reportFormData = data
+    state.reportFormData.data = data
   },
   [TYPE.SET_MEASURE_NUM](state, measureNum) {
     state.measureNum = measureNum
+  },
+  [TYPE.SET_AREA_REPORT_FORM_SHOW](state, areaReportFormShow) {
+    state.areaReportFormShow = areaReportFormShow
   }
 }
 
@@ -641,7 +745,7 @@ const actions = {
     commit,
     state
   }, isShow) {
-    commit(TYPE.REPORT_FORM_SHOW, isShow)
+    commit(TYPE.SET_REPORT_FORM_SHOW, isShow)
   },
   //获取areaCode 和 dataId
   getAreaCodeAndDataId({
@@ -651,29 +755,34 @@ const actions = {
     areaCode,
     dataId
   }) {
+    console.log(dataId)
     var AreaCodeAndDataId = []
     var idList = ""
     var codeList = ""
-    for (let i in dataId) {
-      if (dataId[i].target.length > 0 && dataId[i].isActive) {
-        idList += ',' + dataId[i].id
+    for (let i in dataId[0]) {
+      if (dataId[0][i].target.length > 0 && dataId[0][i].isActive) {
+        idList += ',' + dataId[0][i].id
       }
-      if (dataId[i].children.length > 0) {
-        for (let j in dataId[i].children) {
-          if (dataId[i].children[j].target.length > 0 && dataId[i].children[j].isActive) {
-            idList += ',' + dataId[i].children[j].id
+      if (dataId[0][i].children.length > 0) {
+        for (let j in dataId[0][i].children) {
+          if (dataId[0][i].children[j].target.length > 0 && dataId[0][i].children[j].isActive) {
+            idList += ',' + dataId[0][i].children[j].id
           }
-          if (dataId[i].children[j].children.length > 0) {
-            for (let k in dataId[i].children[j].children) {
-              if (dataId[i].children[j].children[k].target.length > 0 && dataId[i].children[j].children[k].isActive) {
-                idList += ',' + dataId[i].children[j].children[k].id
+          if (dataId[0][i].children[j].children.length > 0) {
+            for (let k in dataId[0][i].children[j].children) {
+              if (dataId[0][i].children[j].children[k].target.length > 0 && dataId[0][i].children[j].children[k].isActive) {
+                idList += ',' + dataId[0][i].children[j].children[k].id
               }
             }
           }
         }
       }
     }
-    console.log(areaCode)
+    for (let i in dataId[1]) {
+      if (dataId[1][i].macro.filedsData && dataId[1][i].isActive) {
+        idList += ',' + dataId[1][i].macro.dataId
+      }
+    }
     if (areaCode.length > 0) {
       for (let i in areaCode) {
         codeList += ',' + areaCode[i].areacode
@@ -700,6 +809,8 @@ const actions = {
     var typeNum = 0; //用于保存数据类型数量
     var areaNum = 0; //用于保存不同的地区数量
     var arrayList = []
+    var yearListMax = [] //用于保存最大的年份数组长度
+    var dataArray = {}
     getMsMacroData(areaCode, dataId).then(res => {
       for (let i in res.data) {
         typeNum++
@@ -709,6 +820,9 @@ const actions = {
           var dataByYear = []; //用于保存每条数据
           for (let k = 0; k < res.data[i][j]['year'].length; k++) {
             var yearList = res.data[i][j]['year'][k]
+            if (yearListMax.length < res.data[i][j]['year'].length) {
+              yearListMax = res.data[i][j]['year']
+            }
             var filedsData = res.data[i][j][yearList][0].filedsData.split('|ZX|')
             for (var p = 0; p < filedsData.length; p++) {
               if (dataByYear.length < filedsData.length) {
@@ -730,6 +844,7 @@ const actions = {
           }
         }
       }
+      //将返回数据拆分拼接
       var result = []
       var dataList = []
       for (var i = 0; i < Math.ceil(arrayList.length / areaNum); i++) {
@@ -752,7 +867,9 @@ const actions = {
         }
         dataList.push(result[m][0])
       }
-      commit(TYPE.SET_REPORT_FORM_DATA, dataList)
+      dataArray.data = dataList
+      dataArray.year = yearListMax.reverse()
+      commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
     })
   },
   //清空报表
@@ -774,6 +891,13 @@ const actions = {
     state
   }, data) {
     commit(TYPE.SET_MEASURE_NUM, data)
+  },
+  //行政区划详情显示隐藏
+  setAreaReportFormShow({
+    commit,
+    state
+  }, data) {
+    commit(TYPE.SET_AREA_REPORT_FORM_SHOW, data)
   }
 }
 

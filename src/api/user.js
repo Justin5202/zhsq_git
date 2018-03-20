@@ -1,7 +1,9 @@
-import axios from 'axios'
+import axios from '@/util/http'
 import qs from 'qs'
 import { commonParams, url } from './config'
 import MD5 from 'crypto-js/md5'
+
+axios.defaults.withCredentials = true
 
 export function login(username, password, code) { // 登录
 

@@ -29,6 +29,7 @@
 				<img src="../../../assets/images/map/用户.png" alt="">
 			</span>
         </div>
+        <div class="tool-compass" @click="resetNorth" v-show="toolCompassVisible"></div>
         <div class="tool-bottom">
             <span class="tool-item" >
 				<img src="../../../assets/images/map/局部图层.png" alt="">
@@ -81,8 +82,13 @@ export default {
           toolHeight:window.innerHeight *0.8,
           is2Dmap:true,
           layerToolVisible:false,
-          areaBoxIsShow: false
+          areaBoxIsShow: false,
+          angle:"",
+          toolCompassVisible:false
       }
+  },
+  created:function(){
+      this.listenMapRotate()
   },
   computed: {
     ...mapGetters([
@@ -111,7 +117,7 @@ export default {
            if(this.areaInfoData[i].target.length>0 && this.areaInfoData[i].isActive){
             len ++
            }
-           if(this.areaInfoData[i].children.length){
+           if(this.areaInfoData[i].children.length>0){
                for(var j in this.areaInfoData[i].children){
                    if(this.areaInfoData[i].children[j].target.length>0 && this.areaInfoData[i].children[j].isActive){
                         len ++
@@ -126,22 +132,27 @@ export default {
                }
            }
        }
+       this.searchItemMacroList.map(v => {
+        if(v.isActive && v.macro.filedsData) {
+          len += 1
+        }
+      })
        return len
     }
   },
   methods:{
     //2D 3D切换
     changeMapStatus() {
-        this.is2Dmap = !this.is2Dmap;
+        this.is2Dmap = !this.is2Dmap
         if(this.is2Dmap){
-            d2cMap.easeTo({pitch: 0});
+            d2cMap.easeTo({pitch: 0})
         }else{
-            d2cMap.easeTo({pitch: 60});
+            d2cMap.easeTo({pitch: 60})
         }
     },
     //打开图层切换
     openLayerTool() {
-        this.layerToolVisible = !this.layerToolVisible;
+        this.layerToolVisible = !this.layerToolVisible
     },
     // getReportFormLength(data){
     //     for(let i in data){
@@ -156,6 +167,21 @@ export default {
     showAreaBox() {
       this.layerToolVisible = false
       this.areaBoxIsShow = !this.areaBoxIsShow
+    },
+    listenMapRotate(){
+        this.$mapHelper.onRotateCallback(this.changeAngle)
+    },
+    //获取旋转角度值
+    changeAngle(angle){
+        document.getElementsByClassName("tool-compass")[0].style.transform = "rotate(" + angle + "deg)"
+        if(angle != 0){
+            this.toolCompassVisible = true
+        }else if(angle == 0){
+            this.toolCompassVisible = false
+        }
+    },
+    resetNorth(){
+        d2cMap.resetNorth()
     }
   }
 }
@@ -195,6 +221,15 @@ export default {
       				width: 60px;
       				height: 60px;
       			}
+        }
+        .tool-compass{
+            width: 100px;
+            height: 100px;
+            background: url(../../../assets/images/map/Compass@2x.png) no-repeat center;
+            background-size: 100%;
+            position: absolute;
+            top:10px;
+            right: 60px;
         }
         .tool-bottom{
             position:absolute;

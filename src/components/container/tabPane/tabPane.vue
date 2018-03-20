@@ -49,7 +49,7 @@
 									{{v}}
 								</p>
 							</div>
-							<div class="detail">
+							<div class="detail"  @click.stop="getDetails(item)">
 								<i class="detail-icon"></i>
 								<span>详情</span>
 							</div>
@@ -67,7 +67,7 @@
 								<p>{{item.macro.address}}</p>
 								<p>{{item.macro.year}}</p>
 							</div>
-							<div class="detail" v-if="item.macro.filedsData">
+							<div class="detail" v-if="item.macro.filedsData"  @click.stop="getDetails(item)">
 								<i class="detail-icon"></i>
 								<span>详情</span>
 							</div>
@@ -91,7 +91,7 @@
 								<h2>{{item.area.areaname}}</h2>
 								<p>{{item.area.address}}</p>
 							</div>
-							<div class="detail">
+							<div class="detail"  @click.stop="getDetails(item)">
 								<i class="detail-icon"></i>
 								<span>详情</span>
 							</div>
@@ -141,7 +141,14 @@
 			...mapGetters([
 				'searchPaneShow',
 				'tableMenuPaneShow',
-				'searchList'
+				'searchList',
+				'areaInfoData',
+				'areaInfoList',
+				'activeAreaInfoList',
+				'areaCodeAndDataId',
+				'reportFormData',
+				'areaList',
+				'searchItemMacroList'
 			])
 		},
 		methods: {
@@ -192,11 +199,29 @@
 			toggleSlide() {
 				this.upOrDown = !this.upOrDown
 			},
+			//点击详情按钮
+			getDetails(item) {
+				console.log(item)
+				this.isActiveItem(item)
+				this.getAreaCodeAndDataId({
+					"areaCode": this.areaList,
+					"dataId": [this.areaInfoData, this.searchItemMacroList]
+				})
+				this.getReportData({
+					'areaCode': this.areaCodeAndDataId[0],
+					'dataId': this.areaCodeAndDataId[1]
+				})
+				this.setReportFormShow(true)
+			},
 			...mapActions([
+				'setAreaList',
 				'getSearchParams',
 				'getAreaDetail',
 				'tablePaneShow',
-				'loadSearchItemMacro'
+				'loadSearchItemMacro',
+				'setReportFormShow',
+				'getReportData',
+				'getAreaCodeAndDataId'
 			])
 		}
 	}

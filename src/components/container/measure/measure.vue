@@ -21,7 +21,8 @@ export default {
   data(){
       return{
           measureBoxShow:false,
-          measureType:""
+          measureType:"",
+          Measure:{}
       }
   },
   computed:{
@@ -34,45 +35,44 @@ export default {
         this.measureBoxShow = true
         this.$mapHelper.setIsMeasure(true)
         d2cMap.getCanvas().style.cursor = 'crosshair';
-        window.Measure = {}
         this.changeMeasureType('line')
     },
     changeMeasureType(type){
         this.measureType = type
-        if(Measure.measureLine){
-            Measure.measureLine.remove()
-            window.Measure = {}
-        }else if(Measure.measurePlane){
-            Measure.measurePlane.remove()
-            window.Measure = {}
+        if(this.Measure.measureLine){
+            this.Measure.measureLine.remove()
+            this.Measure = {}
+        }else if(this.Measure.measurePlane){
+            this.Measure.measurePlane.remove()
+            this.Measure = {}
         }
         if(type == 'line'){
             this.setMeasurNum("0米") 
-            Measure.measureLine = new d2c.distanceLayer(d2cMap)
+            this.Measure.measureLine = new d2c.distanceLayer(d2cMap)
             this.$mapHelper.measureOnClickCallback(this.drawLine)
         }else if(type == 'plane'){
             this.setMeasurNum("0平方米") 
-            Measure.measurePlane = new d2c.areaLayer(d2cMap)
+            this.Measure.measurePlane = new d2c.areaLayer(d2cMap)
             this.$mapHelper.measureOnClickCallback(this.drawPlane)
         }
     },
     clearMeasureResult(){
-        if(Measure.measureLine){
+        if(this.Measure.measureLine){
             this.setMeasurNum("0米") 
-            Measure.measureLine.remove()
-            Measure = {}
-            Measure.measureLine = new d2c.distanceLayer(d2cMap)
-        }else if(Measure.measurePlane){
+            this.Measure.measureLine.remove()
+            this.Measure = {}
+            this.Measure.measureLine = new d2c.distanceLayer(d2cMap)
+        }else if(this.Measure.measurePlane){
             this.setMeasurNum("0平方米") 
-            Measure.measurePlane.remove()
-            Measure = {}
-            Measure.measurePlane = new d2c.areaLayer(d2cMap)
+            this.Measure.measurePlane.remove()
+            this.Measure = {}
+            this.Measure.measurePlane = new d2c.areaLayer(d2cMap)
         }
     },
     drawLine(e){
-        Measure.measureLine.addLine(e) 
-        Measure.measureLine.removeMarker()
-        var distanceArray = Measure.measureLine.linestring.geometry.coordinates
+        this.Measure.measureLine.addLine(e) 
+        this.Measure.measureLine.removeMarker()
+        var distanceArray = this.Measure.measureLine.linestring.geometry.coordinates
         var distance = turf.lineDistance(turf.lineString(distanceArray))
         if(distance > 1){
             distance = distance.toFixed(1) +'公里'
@@ -82,9 +82,9 @@ export default {
         this.setMeasurNum(distance)
     },
     drawPlane(e){
-        Measure.measurePlane.addPolygon(e)
-        Measure.measurePlane.removeMarker()
-        var area =turf.area(turf.polygon(Measure.measurePlane.polygon.geometry.coordinates))
+        this.Measure.measurePlane.addPolygon(e)
+        this.Measure.measurePlane.removeMarker()
+        var area =turf.area(turf.polygon(this.Measure.measurePlane.polygon.geometry.coordinates))
         if(area > 1000000){
             area = (area /1000000).toFixed(1) +'平方公里'
         }else{

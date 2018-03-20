@@ -30,7 +30,7 @@ function addLayer(datapath, id) {
       if(res.data.flag !== 3) {
         // 地图飞点
         mapHelper.flyByBounds(handleArray(res.data.points))
-        mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length-1), 'TS_定位1', 0.8, result.minzoom)
+        mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length-1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
         /*图层过滤*/
         mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
       }
@@ -382,6 +382,9 @@ const mutations = {
   },
   [TYPE.SET_AREA_REPORT_FORM_SHOW](state, areaReportFormShow) {
     state.areaReportFormShow = areaReportFormShow
+  },
+  [TYPE.SET_SEARCH_AROUND_SHOW](state, flag) {
+    state.searchAroundShow = flag
   }
 }
 

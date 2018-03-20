@@ -346,3 +346,11 @@ export const setAreaReportFormShow = function({
 }, data) {
   commit(TYPE.SET_AREA_REPORT_FORM_SHOW, data)
 }
+
+// 搜周边显示隐藏
+export const setAroundSearchShow = function({
+  commit,
+  state
+}, data) {
+  commit(TYPE.SET_SEARCH_AROUND_SHOW, data)
+}

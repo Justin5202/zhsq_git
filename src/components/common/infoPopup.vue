@@ -12,33 +12,15 @@
         <span>{{uuidClickedInfo._source[item._source.name]}}</span>
       </li>
     </ul>
-    <div class="button-box">
-      <div class="button-item left-button-item">
-        <i class="icon-searcharound"></i>
-        <span class="search-around">搜周边</span>
-      </div>
-<<<<<<< HEAD
-      <div class="button-item">
-        <i class="icon-checkdetail"></i>
-        <span>查详情</span>
-=======
-      <ul>
-        <li class="pop-li" v-for="item in showArray">
-          <p>{{item._source.name_a}}</p>
-          <span>{{uuidClickedInfo._source[item._source.name]}}</span>
-        </li>
-      </ul>
       <div class="button-box">
-        <div class="button-item left-button-item">
+        <div class="button-item left-button-item" @click="searchAroundShow()">
           <i class="icon-searcharound"></i>
-          <span class="search-around" @click="toSearch">搜周边</span>
-          <!-- <router-link to="{path: '/searchAround'}" tag="span" class="search-around">搜周边</router-link> -->
+          <span class="search-around">搜周边</span>
         </div>
         <div class="button-item">
           <i class="icon-checkdetail"></i>
           <span>查详情</span>
         </div>
->>>>>>> e6a780d817e15f6a9b9b659afefbac92c1deba40
       </div>
     </div>
   </div>
@@ -47,6 +29,8 @@
 
 <script>
 import {getQueryOnlineByUuid, getThematicMap} from '@/api/dataSheets'
+import {mapActions} from 'vuex'
+
 export default {
   data() {
     return {
@@ -68,6 +52,9 @@ export default {
     isShowPop() {
       this.$mapHelper.closePopup()
     },
+    searchAroundShow() {
+      this.setAroundSearchShow(true)
+    },
     _getQueryOnlineByUuid(id) {
       getQueryOnlineByUuid(id).then(res => {
         if (res.code == "1") {
@@ -85,9 +72,9 @@ export default {
         }
       })
     },
-    toSearch() {
-      window.location.hash = '/searchAround'
-    }
+    ...mapActions([
+      'setAroundSearchShow'
+    ])
   }
 }
 </script>

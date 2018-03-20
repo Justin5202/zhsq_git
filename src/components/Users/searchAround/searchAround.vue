@@ -20,7 +20,7 @@
           <div class="list-box">
             <ul class="list">
               <li class="list-item" v-for="n in 6">
-                <p class="list-item-title" >交通设施</p>
+                <p class="list-item-title">交通设施</p>
                 <ul class="sublist">
                   <li>机场</li>
                   <li>医院</li>
@@ -49,7 +49,6 @@
     },
     methods: {
       goback() {
-        console.log(this)
         this.$router.go(-1)
       }
     }
@@ -77,6 +76,7 @@
         height: 15% !important;
         padding: 0;
         .wrap {
+          width: 1024px;
           height: 100%;
           background: url('../../../assets/images/catalog/综合市情系统.jpg') no-repeat;
           background-size: 100% 100%;
@@ -133,9 +133,7 @@
         height:85%;
         background-color: rgb(233, 229, 229);
         .wrap {
-          margin: 0 auto;
-          margin-top: 22px;
-          width: 1866px;
+          width: 1024px;
           height: 95%;
           box-sizing: border-box;
           background: #fff;
@@ -165,7 +163,7 @@
             }
           }
           .list-box {
-            width: 90%;
+            width: 94%;
             margin: 0 auto;
             margin-top: 20px;
             ul {
@@ -182,6 +180,7 @@
                 margin-bottom: 40px;
                 display: flex;
                 p {
+                  width: 66px;
                   margin-right: 40px;
                 }
                 .sublist {
@@ -192,7 +191,7 @@
                     cursor: pointer;
                     width: 20%;
                     text-align: left;
-                    margin: 0 10px 30px 0;
+                    margin: 0 5px 30px 0;
                   }
                 }
               }

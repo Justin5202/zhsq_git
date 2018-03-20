@@ -26,7 +26,7 @@
                 <v-statistics/>
 			</span>
     <span class="tool-item ">
-				<img src="../../../assets/images/map/用户.png" alt="">
+				<img src="../../../assets/images/map/用户.png" alt="" @click="toUserCenter">
 			</span>
   </div>
   <div class="tool-compass" @click="resetNorth" v-show="toolCompassVisible"></div>
@@ -184,7 +184,10 @@ export default {
     ...mapActions([
       'setReportFormShow',
       'setAreaReportFormShow',
-    ])
+    ]),
+    toUserCenter() {
+      this.$router.push('/userCenter')
+    }
   }
 }
 </script>

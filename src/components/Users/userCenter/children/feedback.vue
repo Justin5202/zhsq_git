@@ -17,9 +17,9 @@
     <div class="history-container" v-show="currentIndex === 1">
       <div class="history-box">
         <ul class="list">
-          <li v-for="(item, index) in suggestList" class="list-item" :class="{active:index===selectedIndex}" @click="handleSelect(index)">
-            <p class="text">{{item.text}}</p>
-            <p class="time">{{item.time}}</p>
+          <li v-for="(item, index) in suggestList" class="list-item" :class="{active:index===selectedIndex}" @click="handleSelect(index, item)">
+            <p class="text">{{item.suggest}}</p>
+            <p class="time">{{item.addtime | formatDate}}</p>
           </li>
           <li class="btn-box">
             <el-button @click="pre()">上一页</el-button>
@@ -28,7 +28,7 @@
         </ul>
       </div>
       <div class="message-box">
-        <p class="message-time">{{messageTime}}</p>
+        <p class="message-time">{{messageTime | formatDate}}</p>
         <div class="message">
           <span class="message-content">{{messageContent}}</span>
         </div>
@@ -57,6 +57,25 @@
         page: 1
       }
     },
+    filters: {
+      formatDate(date) {
+				if (!date) {
+					return
+				}
+				date = date.length === 10 ? date + '000' : date
+				function add0(m) {
+					return m < 10 ? '0' + m : m
+				}
+				let time = new Date(parseInt(date) * 1000)
+				let y = time.getFullYear()
+				let m = time.getMonth() + 1
+				let d = time.getDate()
+				let h = time.getHours()
+				let mu = time.getMinutes()
+				// let s = time.getSeconds();
+				return y + '年' + add0(m) + '月' + add0(d) + '日' + ' ' + add0(h) + ':' + add0(mu);
+			}
+    },
     methods: {
       setActive(index) {
         this.currentIndex = index
@@ -84,11 +103,13 @@
       },
       handleSelect(index, item) {
         this.selectedIndex = index
+        this.messageTime = item.addtime
+        this.messageContent = item.suggest
       },
       _getSuggestList() {
         let start = (this.page - 1) * 10
         getSuggestList(start).then(res => {
-          console.log(res)
+          this.suggestList = res.data.data.data
         })
       },
       pre() {

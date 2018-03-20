@@ -12,12 +12,16 @@
 		<div class="table-box" v-show="nowIndex === 4">
 			<v-table :tableData="allData" @handleClick="handleClick"></v-table>
 		</div>
+		<div class="report-box">
+			<report-form></report-form>
+		</div>
 	</div>
 </template>
 
 <script>
 	import TabPane from '../tabPane/tabPane'
 	import vTable from '../table/table'
+	import ReportForm from '../reportForm/reportForm'
 	import {getDataSheets} from '@/api/datasheets.js'
 	import {mapGetters, mapActions} from 'vuex'
 
@@ -25,7 +29,8 @@
 		name: 'tab3132432',
 		components: {
 			TabPane,
-			vTable
+			vTable,
+			ReportForm
 		},
 		data() {
 			return {
@@ -127,7 +132,7 @@
 			background-color: #e4e7ed;
 		}
 	}
-	.table-box {
+	.table-box, .report-box {
 		position: absolute;
 		top: 0;
 		left: 400px;

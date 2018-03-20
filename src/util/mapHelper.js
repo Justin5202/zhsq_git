@@ -696,10 +696,10 @@ const flyByPointAndZoom = function(center, zoom) {
 
 /**
  * @function 设置小标注点(单点)
- * @param layerId,geoPoint,text,textSize,icon,iconSize,minzoom,maxzoom
+ * @param layerId,geoPoint,_mapguid,text,textSize,icon,iconSize,minzoom,maxzoom
  * @returns null
  */
-const setMarkToMap = function(layerId, geoPoint, text, textSize, icon, iconSize, minzoom, maxzoom) {
+const setMarkToMap = function(layerId, geoPoint,_mapguid, text, textSize, icon, iconSize, minzoom, maxzoom) {
     let option = {
         id: layerId,
         type: "symbol",
@@ -714,6 +714,9 @@ const setMarkToMap = function(layerId, geoPoint, text, textSize, icon, iconSize,
                     geometry: {
                         type: "Point",
                         coordinates: geoPoint
+                    },
+                    properties: {
+                        mapguid: _mapguid
                     }
                 }]
             }
@@ -746,20 +749,24 @@ const setMarkToMap = function(layerId, geoPoint, text, textSize, icon, iconSize,
 
 /**
  * @function 设置小标注点(多点)
- * @param layerId,geoPointArray,text,textSize,icon,iconSize,minzoom,maxzoom
+ * @param layerId,geoPointArray, _mapguidArray,icon,iconSize,maxzoom
  * @returns null
  */
-const setMarksToMap = function(layerId, geoPointArray, icon, iconSize, maxzoom) {
+const setMarksToMap = function(layerId, geoPointArray, _mapguidArray,icon, iconSize, maxzoom) {
     let _features = [];
-    geoPointArray.forEach((element)=>{
+    for (let index = 0; index < _mapguidArray.length; index++) {
         _features.push({
             type: "Feature",
             geometry: {
                 type: "Point",
-                coordinates: element
+                coordinates: geoPointArray[index]
+            },
+            properties: {
+                mapguid: _mapguidArray[index]
             }
         });
-    });
+    }
+        
 
     let option = {
         id: layerId,

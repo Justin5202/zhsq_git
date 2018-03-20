@@ -53,6 +53,33 @@ function loadStyle(styles, afterLoad) {
   return parallel(tasks)
 }
 
+// 数组处理
+function handleArray(array) {
+  let temp = []
+  array.map(v => {
+    temp.push(v.split(','))
+  })
+  temp.push([mapHelper.getCenter().lng, mapHelper.getCenter().lat])
+  temp.map(v => {
+    v.map(v => v = Number(v))
+  })
+  return JSON.stringify(temp)
+}
+
+// 图层加载
+function addLayer(datapath, id) {
+  getJson(datapath).then(res => {
+    const result = mapHelper.addLayerByCodeAndJson(id, res)
+    getQueryElementByPoint(result).then(res => {
+      state.idList.push(id)
+      // 地图飞点
+      mapHelper.flyByBounds(handleArray(res.data.points))
+      /*图层过滤*/
+      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+    })
+  })
+}
+
 const state = {
   sourceLoading: false,
   styleLoading: false,
@@ -163,9 +190,7 @@ const mutations = {
     state.searchList[i].isActive = item.isActive
     let index = state.searchItemMacroList.findIndex(v => v.macro.data.id === item.macro.data.id)
     if (item.isActive) {
-      getJson(item.macro.data.datapath).then(res => {
-        mapHelper.addLayerByCodeAndJson(item.macro.data.id, res)
-      })
+      addLayer(item.macro.data.datapath, item.macro.data.id)
     } else {
       mapHelper.removeLayerByCode(item.macro.data.id)
     }
@@ -182,6 +207,7 @@ const mutations = {
     let yu = Number(areaInfoData[0].type) % 10
     if (type === 2 && yu === 1) {
       areaInfoData[0].isActive = true
+      addLayer(areaInfoData[0].datapath, areaInfoData[0].id)
       getJson(areaInfoData[0].datapath).then(res => {
         mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
         state.idList.push(areaInfoData[0].id)
@@ -192,16 +218,16 @@ const mutations = {
     } else {
       if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
         areaInfoData[0].isActive = true
-        getJson(areaInfoData[0].datapath).then(res => {
-          const a = mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
-          console.log(a)
-          getQueryElementByPoint(a).then(res => {
-            console.log(res)
-          })
-          state.idList.push(areaInfoData[0].id)
-          /*图层过滤*/
-          mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
-        })
+        addLayer(areaInfoData[0].datapath, areaInfoData[0].id)
+        // getJson(areaInfoData[0].datapath).then(res => {
+        //   const a = mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+        //   getQueryElementByPoint(a).then(res => {
+        //     mapHelper.flyByBounds(handleArray(res.data.points))
+        //   })
+        //   state.idList.push(areaInfoData[0].id)
+        //   /*图层过滤*/
+        //   mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+        // })
         /*存在json就push进图层列表*/
         if (state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
           state.activeAreaInfoList.push(areaInfoData[0])

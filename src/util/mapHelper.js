@@ -466,7 +466,7 @@ const addLayerByCodeAndJson = function (code, json) {
     // 装sourceLayer的数组
     let sourceLayer = [];
 
-    // 装filter的数组 
+    // 装filter的数组
     let filterRes = {
         "layers":[]
     };
@@ -485,7 +485,7 @@ const addLayerByCodeAndJson = function (code, json) {
             sourcesName[code].push(k);
         }
     }
-    // 加layer 按code 删除时 会使layersId[code] = null 
+    // 加layer 按code 删除时 会使layersId[code] = null
     if (!layersId[code]) {
         layersId[code] = [];
         json
@@ -499,7 +499,7 @@ const addLayerByCodeAndJson = function (code, json) {
                 if (element["filter"]) {
                     filterRes["layers"].push({"filter":element["filter"]});
                 }
-                
+
 
                 map.addLayer(element);
                 // 记录 id 与 code 对应关系
@@ -612,7 +612,7 @@ const setOpacityByCode = function (code, value) {
     if (layersId[code]) {
         // 如果有图层一定是数组
         layersId[code].forEach(element => {
-            
+
             // 判断点线面symbol
             switch (map.getLayer(element).type) {
                 case "circle":
@@ -824,6 +824,7 @@ const getCenter = function () {
 * @returns 无
 */
 const flyByBounds = function (lngLatBounds) {
+  console.log(lngLatBounds)
     map.fitBounds(lngLatBounds);
 };
 

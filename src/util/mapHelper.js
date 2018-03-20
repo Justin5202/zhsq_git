@@ -499,14 +499,8 @@ const addLayerByCodeAndJson = function(code, json) {
                 sourceLayer.push(element["source-layer"]);
 
                 if (element["filter"]) {
-<<<<<<< HEAD
                     filterRes["layers"].push({"filter": element["filter"]});
                 }
-=======
-                    filterRes["layers"].push({ "filter": element["filter"] });
-                }
-
->>>>>>> 814f61941ddae562d7c0c394745d6e8cda3cb3d9
 
                 map.addLayer(element);
                 // 记录 id 与 code 对应关系
@@ -540,13 +534,7 @@ const addLayerByCodeAndJson = function(code, json) {
     return {
         "minzoom": minzoom,
         "filter": filterRes,
-<<<<<<< HEAD
-        "sourceLayer": Array
-            .from(new Set(sourceLayer))
-            .join(",")
-=======
         "sourceLayer": Array.from(new Set(sourceLayer)).join(",")
->>>>>>> 814f61941ddae562d7c0c394745d6e8cda3cb3d9
     };
 };
 
@@ -842,7 +830,6 @@ const getCenter = function() {
 };
 
 /**
-<<<<<<< HEAD
 * @function 设置边界坐标来飞
 * @param 点构成的2维数组 [[106.29035996418713,29.46329059299842], [106.29362592578252,29.463419456600406]]
 * @returns 无
@@ -888,15 +875,6 @@ const flyByBounds = function (lngLatBounds) {
     });
 
     map.fitBounds([[xMin,yMin],[xMax,yMax]]);
-=======
- * @function 设置边界坐标来飞
- * @param 点构成的2维数组 [[106.29035996418713,29.46329059299842], [106.29362592578252,29.463419456600406]]
- * @returns 无
- */
-const flyByBounds = function(lngLatBounds) {
-    console.log(lngLatBounds)
-    map.fitBounds(lngLatBounds);
->>>>>>> 814f61941ddae562d7c0c394745d6e8cda3cb3d9
 };
 
 /**

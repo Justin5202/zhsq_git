@@ -76,10 +76,14 @@ var imageClickExceptLayerArray = null;
 const initMap = function (option) {
     // 不参与点击查询的layerid
     if (window.vecterClickExceptLayer) {
-        vecterClickExceptLayerArray = window.vecterClickExceptLayer.split(",");
+        vecterClickExceptLayerArray = window
+            .vecterClickExceptLayer
+            .split(",");
     }
     if (window.imageClickExceptLayer) {
-        imageClickExceptLayerArray = window.imageClickExceptLayer.split(",");
+        imageClickExceptLayerArray = window
+            .imageClickExceptLayer
+            .split(",");
     }
 
     // 获取 2D 3D图层 group id
@@ -153,15 +157,15 @@ const initMap = function (option) {
                     layersId[element].forEach(element => {
                         if (!filterMap[element]) {
                             map.setFilter(element, filter);
-                        }else{
-                            map.setFilter(element, ["all",filterMap[element],filter]);
+                        } else {
+                            map.setFilter(element, ["all", filterMap[element], filter]);
                         }
                     });
                 } else {
                     layersId[element].forEach(element => {
                         if (!filterMap[element]) {
                             map.setFilter(element, null);
-                        }else{
+                        } else {
                             map.setFilter(element, filterMap[element]);
                         }
                     });
@@ -215,7 +219,6 @@ const onClick = function (e) {
 
     } else {
         let features = map.queryRenderedFeatures(e.point);
-        console.log(features[0].layer["id"]);
         // 要素的mapguid
         if (features.length > 0) {
             // 是否存在 排除的 图层 id
@@ -466,9 +469,9 @@ const addLayerByCodeAndJson = function (code, json) {
     // 装sourceLayer的数组
     let sourceLayer = [];
 
-    // 装filter的数组 
+    // 装filter的数组
     let filterRes = {
-        "layers":[]
+        "layers": []
     };
 
     // 加source
@@ -485,7 +488,7 @@ const addLayerByCodeAndJson = function (code, json) {
             sourcesName[code].push(k);
         }
     }
-    // 加layer 按code 删除时 会使layersId[code] = null 
+    // 加layer 按code 删除时 会使layersId[code] = null
     if (!layersId[code]) {
         layersId[code] = [];
         json
@@ -497,9 +500,8 @@ const addLayerByCodeAndJson = function (code, json) {
                 sourceLayer.push(element["source-layer"]);
 
                 if (element["filter"]) {
-                    filterRes["layers"].push({"filter":element["filter"]});
+                    filterRes["layers"].push({"filter": element["filter"]});
                 }
-                
 
                 map.addLayer(element);
                 // 记录 id 与 code 对应关系
@@ -516,12 +518,26 @@ const addLayerByCodeAndJson = function (code, json) {
                 }
             });
 
+        // 闪烁
+        setTimeout(() => {
+            for (let i = 1; i < 5; i++) {
+                setTimeout(function () {
+                    if (i % 2 == 0) {
+                        setVisibilityByCode(code, true);
+                    } else {
+                        setVisibilityByCode(code, false);
+                    }
+                }, i * 800)
+            }
+        }, 2000);
 
     }
     return {
-        "minzoom":minzoom,
-        "filter":filterRes,
-        "sourceLayer":Array.from(new Set(sourceLayer)).join(",")
+        "minzoom": minzoom,
+        "filter": filterRes,
+        "sourceLayer": Array
+            .from(new Set(sourceLayer))
+            .join(",")
     };
 };
 
@@ -612,7 +628,7 @@ const setOpacityByCode = function (code, value) {
     if (layersId[code]) {
         // 如果有图层一定是数组
         layersId[code].forEach(element => {
-            
+
             // 判断点线面symbol
             switch (map.getLayer(element).type) {
                 case "circle":
@@ -824,7 +840,46 @@ const getCenter = function () {
 * @returns 无
 */
 const flyByBounds = function (lngLatBounds) {
-    map.fitBounds(lngLatBounds);
+    // 冒泡找到最大最小
+    let xMax,
+        xMin,
+        yMax,
+        yMin = null;
+
+    lngLatBounds.forEach((element) => {
+        // 0是x,1是y
+        if (!xMax) {
+            xMax = element[0];
+        } else {
+            if (xMax < element[0]) {
+                xMax = element[0];
+            }
+        }
+        if (!xMin) {
+            xMin = element[0];
+        } else {
+            if (xMin > element[0]) {
+                xMin = element[0];
+            }
+        }
+        if (!yMax) {
+            yMax = element[1];
+        } else {
+            if (yMax < element[1]) {
+                yMax = element[1];
+            }
+        }
+        if (!yMin) {
+            yMin = element[1];
+        } else {
+            if (yMin > element[1]) {
+                yMin = element[1];
+            }
+        }
+
+    });
+
+    map.fitBounds([[xMin,yMin],[xMax,yMax]]);
 };
 
 /**

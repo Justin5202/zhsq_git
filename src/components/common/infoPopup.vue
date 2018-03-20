@@ -15,7 +15,8 @@
       <div class="button-box">
         <div class="button-item left-button-item">
           <i class="icon-searcharound"></i>
-          <span class="search-around">搜周边</span>
+          <span class="search-around" @click="toSearch">搜周边</span>
+          <!-- <router-link to="{path: '/searchAround'}" tag="span" class="search-around">搜周边</router-link> -->
         </div>
         <div class="button-item">
           <i class="icon-checkdetail"></i>
@@ -66,6 +67,9 @@ export default {
           this.$mapHelper.closePopup()
         }
       })
+    },
+    toSearch() {
+      window.location.hash = '/searchAround'
     }
   }
 }

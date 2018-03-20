@@ -237,8 +237,9 @@ const onClick = function(e) {
                     break;
                 }
             }
-
+            // 不在排除的图层中
             if (!exceptFlag) {
+                // 判断是否属于 旅游 和 扶贫 弹照片窗 还是 信息窗
                 setPopupToMap([
                     e.lngLat.lng, e.lngLat.lat
                 ], features[0].properties.mapguid);
@@ -832,6 +833,7 @@ const closePopup = function() {
     }
     if (infoPopup_vm) {
         infoPopup_vm.$destroy();
+        infoPopup_vm = null;
     }
 };
 

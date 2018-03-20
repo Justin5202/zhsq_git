@@ -13,19 +13,6 @@ import {
 } from '@/api/getJson'
 import mapHelper from '@/util/mapHelper'
 
-// 数组处理
-function handleArray(array) {
-  let temp = []
-  array.map(v => {
-    temp.push(v.split(','))
-  })
-  temp.push([mapHelper.getCenter().lng, mapHelper.getCenter().lat])
-  temp.map(v => {
-    v.map(v => v = Number(v))
-  })
-  return JSON.stringify(temp)
-}
-
 export const searchPaneShow = function({
   commit,
   state
@@ -46,10 +33,6 @@ export const getSearchParams = function({
   typeParams,
   params
 }) {
-  console.log({
-    typeParams,
-    params
-  })
   commit(TYPE.SEARCH_PARAMS, Object.assign({}, state.searchParams, params, typeParams, state.areaInfo))
   // 首先选择type时不做请求
   if (params == {}) {
@@ -202,14 +185,16 @@ export const setReportFormShow = function({
   state
 }, isShow) {
   commit(TYPE.SET_REPORT_FORM_SHOW, isShow)
-  dispatch('getAreaCodeAndDataId', {
-    'areaCode': state.areaList,
-    'dataId': [state.areaInfoData, state.searchItemMacroList]
-  })
-  dispatch('getReportData', {
-    'areaCode': state.areaCodeAndDataId[0],
-    'dataId': state.areaCodeAndDataId[1]
-  })
+  if(isShow) {
+    dispatch('getAreaCodeAndDataId', {
+      'areaCode': state.areaList,
+      'dataId': [state.areaInfoData, state.searchItemMacroList]
+    })
+    dispatch('getReportData', {
+      'areaCode': state.areaCodeAndDataId[0],
+      'dataId': state.areaCodeAndDataId[1]
+    })
+  }
 }
 //获取areaCode 和 dataId
 export const getAreaCodeAndDataId = function({

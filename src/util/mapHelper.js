@@ -76,10 +76,14 @@ var imageClickExceptLayerArray = null;
 const initMap = function(option) {
     // 不参与点击查询的layerid
     if (window.vecterClickExceptLayer) {
-        vecterClickExceptLayerArray = window.vecterClickExceptLayer.split(",");
+        vecterClickExceptLayerArray = window
+            .vecterClickExceptLayer
+            .split(",");
     }
     if (window.imageClickExceptLayer) {
-        imageClickExceptLayerArray = window.imageClickExceptLayer.split(",");
+        imageClickExceptLayerArray = window
+            .imageClickExceptLayer
+            .split(",");
     }
 
     // 获取 2D 3D图层 group id
@@ -214,7 +218,6 @@ const onClick = function(e) {
 
     } else {
         let features = map.queryRenderedFeatures(e.point);
-        console.log(features[0].layer["id"]);
         // 要素的mapguid
         if (features.length > 0) {
             // 是否存在 排除的 图层 id
@@ -496,9 +499,8 @@ const addLayerByCodeAndJson = function(code, json) {
                 sourceLayer.push(element["source-layer"]);
 
                 if (element["filter"]) {
-                    filterRes["layers"].push({ "filter": element["filter"] });
+                    filterRes["layers"].push({"filter": element["filter"]});
                 }
-
 
                 map.addLayer(element);
                 // 记录 id 与 code 对应关系
@@ -515,6 +517,18 @@ const addLayerByCodeAndJson = function(code, json) {
                 }
             });
 
+        // 闪烁
+        setTimeout(() => {
+            for (let i = 1; i < 5; i++) {
+                setTimeout(function () {
+                    if (i % 2 == 0) {
+                        setVisibilityByCode(code, true);
+                    } else {
+                        setVisibilityByCode(code, false);
+                    }
+                }, i * 800)
+            }
+        }, 2000);
 
     }
     return {
@@ -681,7 +695,7 @@ const flyByPointAndZoom = function(center, zoom) {
 }
 
 /**
- * @function 设置小标注点
+ * @function 设置小标注点(单点)
  * @param layerId,geoPoint,text,textSize,icon,iconSize,minzoom,maxzoom
  * @returns null
  */
@@ -725,6 +739,48 @@ const setMarkToMap = function(layerId, geoPoint, text, textSize, icon, iconSize,
 
     if (minzoom) {
         option["minzoom"] = minzoom;
+    }
+
+    map.addLayer(option);
+};
+
+/**
+ * @function 设置小标注点(多点)
+ * @param layerId,geoPointArray,text,textSize,icon,iconSize,minzoom,maxzoom
+ * @returns null
+ */
+const setMarksToMap = function(layerId, geoPointArray, icon, iconSize, maxzoom) {
+    let _features = [];
+    geoPointArray.forEach((element)=>{
+        _features.push({
+            type: "Feature",
+            geometry: {
+                type: "Point",
+                coordinates: element
+            }
+        });
+    });
+
+    let option = {
+        id: layerId,
+        type: "symbol",
+        layout: {},
+        paint: {},
+        source: {
+            type: "geojson",
+            data: {
+                type: "FeatureCollection",
+                features:_features
+            }
+        }
+    }
+    if (icon) {
+        option.layout["icon-image"] = icon;
+        option.layout["icon-size"] = iconSize;
+    }
+
+    if (maxzoom) {
+        option["maxzoom"] = maxzoom;
     }
 
     map.addLayer(option);
@@ -816,13 +872,51 @@ const getCenter = function() {
 };
 
 /**
- * @function 设置边界坐标来飞
- * @param 点构成的2维数组 [[106.29035996418713,29.46329059299842], [106.29362592578252,29.463419456600406]]
- * @returns 无
- */
-const flyByBounds = function(lngLatBounds) {
-    console.log(lngLatBounds)
-    map.fitBounds(lngLatBounds);
+* @function 设置边界坐标来飞
+* @param 点构成的2维数组 [[106.29035996418713,29.46329059299842], [106.29362592578252,29.463419456600406]]
+* @returns 无
+*/
+const flyByBounds = function (lngLatBounds) {
+    // 冒泡找到最大最小
+    let xMax,
+        xMin,
+        yMax,
+        yMin = null;
+
+    lngLatBounds.forEach((element) => {
+        // 0是x,1是y
+        if (!xMax) {
+            xMax = element[0];
+        } else {
+            if (xMax < element[0]) {
+                xMax = element[0];
+            }
+        }
+        if (!xMin) {
+            xMin = element[0];
+        } else {
+            if (xMin > element[0]) {
+                xMin = element[0];
+            }
+        }
+        if (!yMax) {
+            yMax = element[1];
+        } else {
+            if (yMax < element[1]) {
+                yMax = element[1];
+            }
+        }
+        if (!yMin) {
+            yMin = element[1];
+        } else {
+            if (yMin > element[1]) {
+                yMin = element[1];
+            }
+        }
+
+    });
+
+    map.fitBounds([[xMin,yMin],[xMax,yMax]]);
 };
 
 /**
@@ -853,6 +947,7 @@ export default {
     setFilterByCodeArrayAndAreacodeArray,
 
     setMarkToMap,
+    setMarksToMap,
     setPopupToMap,
     closePopup,
     flyByPointAndZoom,

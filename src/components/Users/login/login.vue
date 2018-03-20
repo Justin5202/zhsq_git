@@ -28,7 +28,7 @@
   </div>
 </template>
 <script>
-import {login} from '../../../api/users/data'
+import {login} from '../../../api/user'
 export default {
   name: 'login',
   data() {
@@ -38,9 +38,6 @@ export default {
         password: ''
       }
     }
-  },
-  mounted() {
-    localStorage.removeItem('userinfo')
   },
   methods: {
     _login(username, password) {
@@ -59,8 +56,11 @@ export default {
         return
       }
       login(username, password).then(res => {
-        localStorage.setItem('userinfo', JSON.stringify(res.data))
-        this.$router.push('/')
+        // -3已登录， -2超时
+        if(res.code === '1') {
+          document.cookie = 'loginSession' + "=" + escape(res.data.sessionId)
+          this.$router.push('/')
+        }
       })
     }
   }
@@ -148,4 +148,3 @@ export default {
     }
   }
 </style>
-

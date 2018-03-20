@@ -42,20 +42,21 @@
   .my-message {
     width: 100%;
     height: 100%;
-    background-color: #fff;
+    background-color: rgb(248, 247, 247);
     .list {
       .list-item {
-        padding: 20px 10px;
+        padding: 15px 10px;
         border-bottom:1px solid lightgrey;
         p {
           text-align: left;
         }
         .time {
           font-size: 16px;
-          margin-bottom: 5px;
+          margin-bottom: 10px;
         }
         .text {
           font-size: 18px;
+          font-weight: 500;
           color: #000;
         }
       }

@@ -1,6 +1,9 @@
-import axios from 'axios'
+import axios from '@/util/http'
 import qs from 'qs'
 import { commonParams, url } from './config'
+import mapHelper from '@/util/mapHelper'
+
+axios.defaults.withCredentials = true
 
 // 目录列表
 export function getDataSheets() {
@@ -75,11 +78,6 @@ export function getMsMacroData(areaCode, id) {
         return Promise.resolve(res.data)
     })
 }
-export function getJson(name) {
-    return axios.get(`http://zhsq.digitalcq.com/D2CJsonV3${name}`).then(res => {
-        return Promise.resolve(res.data)
-    })
-}
 // 获取统计模块的资源列表
 export function getSelectTargetType() {
     const data = Object.assign({}, commonParams, {
@@ -114,17 +112,18 @@ export function getThematicMap(source) {
 }
 
 // 获取当前地图范围内是否存在数据
-export function getQueryElementByPoint(source, filter, top, bottom, point) {
-    const data = Object.assign({}, commonParams, {
+export function getQueryElementByPoint(params) {
+    const data = Object.assign({}, {
         method: 'queryElementByPoint',
-        sourcelayer: source,
-        filter: filter,
-        top: top,
-        bottom: bottom,
-        point: point
+        sourcelayer: params.sourceLayer,
+        filter: JSON.stringify(params.filter),
+        top: `${mapHelper.getBounds()._sw.lng},${mapHelper.getBounds()._ne.lat}`,
+        bottom: `${mapHelper.getBounds()._ne.lng},${mapHelper.getBounds()._sw.lat}`,
+        point: `${mapHelper.getCenter().lng},${mapHelper.getCenter().lat}`,
+        os: 'pc'
     })
 
-    return axios.post(url, qs.stringify(data)).then(res => {
+    return axios.post(url, qs.stringify(data, { arrayFormat: 'brackets' })).then(res => {
         return Promise.resolve(res.data)
     })
 }

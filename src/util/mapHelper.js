@@ -455,11 +455,20 @@ const addLayerByIdAndGeojson = function(id, geojson) {
 /**
  * @function 添加json到地图
  * @param 目录中的编码,样式json
- * @returns minzoom(当前json中所有layer的最小出现层级)
+ * @returns minzoom(当前json中所有layer的最小出现层级),
+ *          去重的source-layer逗号隔开的字符串,filter由|ZX|隔开的字符串
  */
 const addLayerByCodeAndJson = function(code, json) {
     // 当前json的最小层级
     let minzoom = 22;
+
+    // 装sourceLayer的数组
+    let sourceLayer = [];
+
+    // 装filter的数组
+    let filterRes = {
+        "layers": []
+    };
 
     // 加source
     if (!sourcesName[code]) {
@@ -475,7 +484,7 @@ const addLayerByCodeAndJson = function(code, json) {
             sourcesName[code].push(k);
         }
     }
-    // 加layer
+    // 加layer 按code 删除时 会使layersId[code] = null
     if (!layersId[code]) {
         layersId[code] = [];
         json
@@ -483,6 +492,13 @@ const addLayerByCodeAndJson = function(code, json) {
             .forEach(element => {
                 // 记录 添加图层 的 fitler
                 filterMap[element.id] = element.filter;
+
+                sourceLayer.push(element["source-layer"]);
+
+                if (element["filter"]) {
+                    filterRes["layers"].push({ "filter": element["filter"] });
+                }
+
 
                 map.addLayer(element);
                 // 记录 id 与 code 对应关系
@@ -498,9 +514,14 @@ const addLayerByCodeAndJson = function(code, json) {
                     }
                 }
             });
-    }
 
-    return minzoom;
+
+    }
+    return {
+        "minzoom": minzoom,
+        "filter": filterRes,
+        "sourceLayer": Array.from(new Set(sourceLayer)).join(",")
+    };
 };
 
 /**
@@ -800,6 +821,7 @@ const getCenter = function() {
  * @returns 无
  */
 const flyByBounds = function(lngLatBounds) {
+    console.log(lngLatBounds)
     map.fitBounds(lngLatBounds);
 };
 

@@ -3,14 +3,14 @@
     <el-container>
       <el-aside width="400px">
         <el-header>
-          <h2 class="title">个人中心<span>(dgc1)</span></h2>
-          <el-menu 
-          mode="verticle" 
+          <h2 class="title">个人中心<span>({{username}})</span></h2>
+          <el-menu
+          mode="verticle"
           text-color="#000"
           active-text-color="#606266">
-            <el-menu-item 
-            v-for="(item, index) in tabs" 
-            index="index" 
+            <el-menu-item
+            v-for="(item, index) in tabs"
+            index="index"
             :key="index"
             @click="setCurrent(item.name, index)">{{item.name}}</el-menu-item>
           </el-menu>
@@ -36,7 +36,7 @@
 import vMyMessage from '@/components/users/userCenter/children/myMessage'
 import vFeedback from '@/components/users/userCenter/children/feedback'
 import vContact from '@/components/users/userCenter/children/contact'
-import {fetchData} from '../../../api/users/data'
+import {fetchData} from '../../../api/user'
 export default {
   name: 'user-center',
   data() {
@@ -50,8 +50,12 @@ export default {
       currentTab: '',
       currentIndex: '',
       showPanel: false,
-      datalist: []
+      datalist: [],
+      username: ''
     }
+  },
+  mounted() {
+    this.getUsername()
   },
   components: {
     vMyMessage,
@@ -89,6 +93,9 @@ export default {
     logout() {
       localStorage.removeItem('userinfo')
       this.$router.push('/login')
+    },
+    getUsername() {
+      this.username = JSON.parse(localStorage.getItem('userinfo')).truename
     }
   }
 }
@@ -97,7 +104,7 @@ export default {
   .user-center {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); 
+    background-color: rgba(0, 0, 0, 0.6);
     position: fixed;
     top: 0;
     left: 0;
@@ -107,15 +114,14 @@ export default {
       .el-aside {
         position: relative;
         height: 100%;
-        background-color: #fff;
+        background-color: rgb(248, 247, 247);
         border-right: 1px solid rgb(48, 46, 46);
         box-sizing: border-box;
         .el-header {
-          height: 6% !important;
           padding: 0;
           .title {
             height: 100%;
-            line-height: 56.4px;
+            line-height: 60px;
             color: white;
             font-weight: 500;
             font-size: 20px;
@@ -123,6 +129,7 @@ export default {
           }
         }
         .el-menu {
+          background-color: rgb(248, 247, 247);
           .el-menu-item {
             font-size: 16px;
             border-bottom: 1px solid lightgrey;
@@ -135,6 +142,7 @@ export default {
           position: absolute;
           bottom: 0;
           span {
+            display: inline-block;
             width: 100%;
             border: none;
             outline: none;
@@ -147,13 +155,14 @@ export default {
       }
       .el-main {
         height: 100%;
+        margin-bottom: -60px;
         padding: 0;
+        box-sizing: border-box;
         .el-header {
           padding: 0;
-          height: 6% !important;
           .currentTab {
-            height: 100%;
-            line-height: 56.4px;
+            height: 60px;
+            line-height: 60px;
             color: white;
             font-weight: 500;
             font-size: 20px;
@@ -169,12 +178,10 @@ export default {
           }
         }
         .el-main {
-          height: 94%;
+          height: 100%;
           background-color: #fff;
         }
       }
     }
   }
 </style>
-
-

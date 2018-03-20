@@ -40,7 +40,7 @@ export function getSelect(id) {
 }
 
 // 区县区域详细信息
-export function getNextAreaInfo(areacode) {
+export function getNextAreaDetailInfo(areacode) {
     const data = Object.assign({}, commonParams, { areacode: areacode }, { method: 'queryShapeByAreaCode' })
 
     return axios.post(url, qs.stringify(data)).then(res => {

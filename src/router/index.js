@@ -20,14 +20,6 @@ export default new Router({
     {
       path: '/',
       component: container,
-      beforeEnter(to, from, next) {
-        const userinfo = localStorage.getItem('userinfo')
-        if (userinfo) {
-          next()
-        } else {
-          next('/login')
-        }
-      },
       children: [
         {
           path: '',
@@ -49,14 +41,6 @@ export default new Router({
           path: '/userCenter',
           name:'userCenter',
           component: userCenter,
-          beforeEnter(to, from, next) {
-            const userinfo = localStorage.getItem('userinfo')
-            if (userinfo) {
-              next()
-            } else {
-              next('/login')
-            }
-          }
         }
       ]
     },
@@ -64,26 +48,10 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: login,
-      beforeEnter(to, from, next) {
-        const userinfo = localStorage.getItem('userinfo')
-        if (userinfo) {
-          next(from.path)
-        } else {
-          next()
-        }
-      }
     }, {
       path: '/register',
       name: 'register',
       component: register,
-      beforeEnter(to, from, next) {
-        const userinfo = localStorage.getItem('userinfo')
-        if (userinfo) {
-          next(from.path)
-        } else {
-          next()
-        }
-      }
     }, {
       path:'/searchAround',
       name: 'searchAround',

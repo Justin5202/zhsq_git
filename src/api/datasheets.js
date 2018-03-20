@@ -100,8 +100,6 @@ export function getQueryOnlineByUuid(id) {
         return Promise.resolve(res.data)
     })
 }
-
-// 获取中文对照表
 export function getThematicMap(source) {
     const data = Object.assign({}, commonParams, {
         method: 'getThematicMap',
@@ -115,17 +113,28 @@ export function getThematicMap(source) {
 
 // 获取当前地图范围内是否存在数据
 export function getQueryElementByPoint(params) {
-  const data = Object.assign({}, {
-      method: 'queryElementByPoint',
-      sourcelayer: params.sourceLayer,
-      filter: JSON.stringify(params.filter),
-      top: `${mapHelper.getBounds()._sw.lng},${mapHelper.getBounds()._ne.lat}`,
-      bottom: `${mapHelper.getBounds()._ne.lng},${mapHelper.getBounds()._sw.lat}`,
-      point: `${mapHelper.getCenter().lng},${mapHelper.getCenter().lat}`,
-      os: 'pc'
-  })
+    const data = Object.assign({}, {
+        method: 'queryElementByPoint',
+        sourcelayer: params.sourceLayer,
+        filter: JSON.stringify(params.filter),
+        top: `${mapHelper.getBounds()._sw.lng},${mapHelper.getBounds()._ne.lat}`,
+        bottom: `${mapHelper.getBounds()._ne.lng},${mapHelper.getBounds()._sw.lat}`,
+        point: `${mapHelper.getCenter().lng},${mapHelper.getCenter().lat}`,
+        os: 'pc'
+    })
 
-  return axios.post(url, qs.stringify(data, {arrayFormat: 'brackets'})).then(res => {
-      return Promise.resolve(res.data)
-  })
+    return axios.post(url, qs.stringify(data, { arrayFormat: 'brackets' })).then(res => {
+        return Promise.resolve(res.data)
+    })
+}
+// 根据绘制区域和id获取统计详情
+export function getStatisticsDetails(shape, dataId) {
+    const data = Object.assign({}, commonParams, {
+        method: 'getStatisticalInfo',
+        dataId: dataId,
+        shape: shape
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
 }

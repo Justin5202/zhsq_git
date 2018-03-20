@@ -18,7 +18,7 @@
           <p v-if="item.target.length!==0">{{item.target[0].areaname}} {{item.target[0].year}}</p>
           <p v-if="item.target.length!==0">{{item.target[0].cityTarget}}</p>
         </div>
-        <div class="detail" v-if="item.target.length!==0">
+        <div class="detail" v-if="item.target.length!==0" @click.stop="getDetails(item.isActive, item.id)">
           <i class="detail-icon" :class="{avtiveDetailIcon: !item.isActive}"></i>
           <span :class="{activeColor: !item.isActive}">详情</span>
         </div>
@@ -41,7 +41,7 @@
           <p v-if="item.target.length!==0">{{item.target[0].areaname}} {{item.target[0].year}}</p>
           <p v-if="item.target.length!==0">{{item.target[0].cityTarget}}</p>
         </div>
-        <div class="detail" v-if="item.target.length!==0">
+        <div class="detail" v-if="item.target.length!==0" @click.stop="getDetails(item.isActive, item.id)">
           <i class="detail-icon" :class="{avtiveDetailIcon: areaInfoList.length === falseLength}"></i>
           <span :class="{activeColor: areaInfoList.length === falseLength}">详情</span>
         </div>
@@ -76,7 +76,7 @@
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
             </div>
-            <div class="detail" v-if="childItem.target.length!==0">
+            <div class="detail" v-if="childItem.target.length!==0" @click.stop="getDetails(childItem.isActive, childItem.id)">
               <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
               <span :class="{activeColor: !childItem.isActive}">详情</span>
             </div>
@@ -92,7 +92,7 @@
                 <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].areaname}} {{thirdChild.target[0].year}}</p>
                 <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].cityTarget}}</p>
               </div>
-              <div class="detail" v-if="thirdChild.target.length!==0">
+              <div class="detail" v-if="thirdChild.target.length!==0" @click.stop="getDetails(thirdChild.isActive, thirdChild.id)">
                 <i class="detail-icon" :class="{avtiveDetailIcon: !thirdChild.isActive}"></i>
                 <span :class="{activeColor: !thirdChild.isActive}">详情</span>
               </div>
@@ -129,7 +129,8 @@ export default {
       'activeAreaInfoList',
       'areaCodeAndDataId',
       'reportFormData',
-      'areaList'
+      'areaList',
+      'searchItemMacroList'
     ]),
     falseLength() {
       let len = 0
@@ -204,13 +205,14 @@ export default {
       })
       this.getAreaCodeAndDataId({
         "areaCode": this.areaList,
-        "dataId": this.areaInfoData
+        "dataId": [this.areaInfoData,this.searchItemMacroList]
       })
       this.getReportData({
         'areaCode': this.areaCodeAndDataId[0],
         'dataId': this.areaCodeAndDataId[1]
       })
       this.setReportFormShow(true)
+      console.log(1);
     },
     ...mapActions([
       'setAreaList',

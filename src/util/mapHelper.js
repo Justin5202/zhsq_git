@@ -695,7 +695,7 @@ const flyByPointAndZoom = function(center, zoom) {
 }
 
 /**
- * @function 设置小标注点
+ * @function 设置小标注点(单点)
  * @param layerId,geoPoint,text,textSize,icon,iconSize,minzoom,maxzoom
  * @returns null
  */
@@ -739,6 +739,48 @@ const setMarkToMap = function(layerId, geoPoint, text, textSize, icon, iconSize,
 
     if (minzoom) {
         option["minzoom"] = minzoom;
+    }
+
+    map.addLayer(option);
+};
+
+/**
+ * @function 设置小标注点(多点)
+ * @param layerId,geoPointArray,text,textSize,icon,iconSize,minzoom,maxzoom
+ * @returns null
+ */
+const setMarksToMap = function(layerId, geoPointArray, icon, iconSize, maxzoom) {
+    let _features = [];
+    geoPointArray.forEach((element)=>{
+        _features.push({
+            type: "Feature",
+            geometry: {
+                type: "Point",
+                coordinates: element
+            }
+        });
+    });
+
+    let option = {
+        id: layerId,
+        type: "symbol",
+        layout: {},
+        paint: {},
+        source: {
+            type: "geojson",
+            data: {
+                type: "FeatureCollection",
+                features:_features
+            }
+        }
+    }
+    if (icon) {
+        option.layout["icon-image"] = icon;
+        option.layout["icon-size"] = iconSize;
+    }
+
+    if (maxzoom) {
+        option["maxzoom"] = maxzoom;
     }
 
     map.addLayer(option);
@@ -905,6 +947,7 @@ export default {
     setFilterByCodeArrayAndAreacodeArray,
 
     setMarkToMap,
+    setMarksToMap,
     setPopupToMap,
     closePopup,
     flyByPointAndZoom,

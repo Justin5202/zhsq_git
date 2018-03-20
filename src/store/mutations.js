@@ -1,7 +1,36 @@
 import * as TYPE from './type'
+import state from './state'
 import axios from '@/util/http'
+import {getQueryElementByPoint} from '@/api/dataSheets'
 import {getJson} from '@/api/getJson'
 import mapHelper from '@/util/mapHelper'
+
+// 数组处理
+function handleArray(array) {
+  let temp = []
+  array.map(v => {
+    temp.push(v.split(','))
+  })
+  temp.push([mapHelper.getCenter().lng, mapHelper.getCenter().lat])
+  temp.map(v => {
+    v.map(v => v = Number(v))
+  })
+  return JSON.stringify(temp)
+}
+
+// 图层加载
+function addLayer(datapath, id) {
+  getJson(datapath).then(res => {
+    const result = mapHelper.addLayerByCodeAndJson(id, res)
+    getQueryElementByPoint(result).then(res => {
+      state.idList.push(id)
+      // 地图飞点
+      mapHelper.flyByBounds(handleArray(res.data.points))
+      /*图层过滤*/
+      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+    })
+  })
+}
 
 const mutations = {
   /** SOURCE */

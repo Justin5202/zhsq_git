@@ -9,6 +9,7 @@
  */
 
 import Vue from 'vue'
+import store from '../store/index'
 import infoPopupVm from '../components/common/infoPopup'
 
 // 私有map
@@ -766,7 +767,7 @@ const setMarksToMap = function(layerId, geoPointArray, _mapguidArray,icon, iconS
             }
         });
     }
-        
+
 
     let option = {
         id: layerId,
@@ -808,6 +809,7 @@ const setPopupToMap = function(geoPoint, _mapguid) {
         .addTo(map);
     infoPopup_vm = new Vue({
         el: '#infoPopup',
+        store,
         template: '<v-infoPopup :mapguid="mapguid"/>',
         data: function() {
             return { mapguid: _mapguid }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import router from '../router'
 import {
-  Loading
+  Loading, Message
 } from 'element-ui'
 
 // 拦截请求

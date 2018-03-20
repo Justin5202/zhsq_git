@@ -132,6 +132,11 @@ export default {
                }
            }
        }
+       this.searchItemMacroList.map(v => {
+        if(v.isActive && v.macro.filedsData) {
+          len += 1
+        }
+      })
        return len
     }
   },

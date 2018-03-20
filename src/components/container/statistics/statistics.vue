@@ -165,7 +165,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" <style lang="scss" scoped>
+<style lang="scss" scoped>
 .statistics-condition{
     width: 222px;
     height: 300px;

@@ -91,11 +91,11 @@ export default {
       )
     },
     logout() {
-      localStorage.removeItem('userinfo')
+      // localStorage.removeItem('userinfo')
       this.$router.push('/login')
     },
     getUsername() {
-      this.username = JSON.parse(localStorage.getItem('userinfo')).truename
+      // this.username = JSON.parse(localStorage.getItem('userinfo')).truename
     }
   }
 }

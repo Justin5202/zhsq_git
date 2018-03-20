@@ -39,9 +39,6 @@ export default {
       }
     }
   },
-  mounted() {
-    localStorage.removeItem('userinfo')
-  },
   methods: {
     _login(username, password) {
       if (username === '') {

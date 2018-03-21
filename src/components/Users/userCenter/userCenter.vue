@@ -3,7 +3,7 @@
     <el-container>
       <el-aside width="400px">
         <el-header>
-          <h2 class="title">个人中心<span>({{username}})</span></h2>
+          <h2 class="title">个人中心</h2>
           <el-menu
           mode="verticle"
           text-color="#000"
@@ -54,9 +54,6 @@ export default {
       username: ''
     }
   },
-  mounted() {
-    this.getUsername()
-  },
   components: {
     vMyMessage,
     vFeedback,
@@ -77,6 +74,7 @@ export default {
     },
     closePanel() {
       this.showPanel = false
+      this.$emit('close')
     },
     _fetchData() {
       let time = Math.round(new Date() / 1000)
@@ -91,11 +89,7 @@ export default {
       )
     },
     logout() {
-      // localStorage.removeItem('userinfo')
       this.$router.push('/login')
-    },
-    getUsername() {
-      // this.username = JSON.parse(localStorage.getItem('userinfo')).truename
     }
   }
 }

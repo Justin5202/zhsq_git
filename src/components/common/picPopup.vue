@@ -1,5 +1,7 @@
 <template>
-
+  <div class="">
+    {{mapguid}}
+  </div>
 </template>
 
 <script>

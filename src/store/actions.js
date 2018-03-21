@@ -6,7 +6,9 @@ import {
   getDetailInfo,
   getNextAreaDetailInfo,
   getMsMacroData,
-  getQueryElementByPoint
+  getQueryElementByPoint,
+  getTourismTopic,
+  getProvertyTopic
 } from '@/api/dataSheets'
 import {
   getJson
@@ -353,4 +355,30 @@ export const setAroundSearchShow = function({
   state
 }, data) {
   commit(TYPE.SET_SEARCH_AROUND_SHOW, data)
+}
+
+// 获取旅游专题数据
+export const getTopicData = function({commit, state}, type) {
+  getTourismTopic().then(res => {
+    let data = {
+      type: type,
+      list: res.data
+    }
+    commit(TYPE.SET_TOPIC_LIST, data)
+  })
+}
+
+export const addTourismLayer = function({commit, state}, type) {
+  commit(TYPE.ADD_TOURSIM_LAYER, type)
+}
+
+// 获取扶贫专题数据
+export const getProvertyData = function({commit, state}, type) {
+  getProvertyTopic().then(res => {
+    let data = {
+      type: type,
+      list: res.data.data
+    }
+    commit(TYPE.SET_TOPIC_LIST, data)
+  })
 }

@@ -2,77 +2,102 @@
 	<div class="topic">
 		<div class="topic-box">
 			<span class="topic-item" @click="showItem()">
-				<img src="../../../assets/images/catalog/add (1).png" :class="isShow?'rotate':null" alt="">
-				<span class="item-title">专题</span>
+				<img v-if="!isShow" src="../../../assets/images/catalog/专题.png" alt="">
+				<img v-else src="../../../assets/images/catalog/专题1.png" alt="">
 			</span>
-			<span class="topic-item init-state" :class="isShow?'slideInLeft':null">
-				<img src="../../../assets/images/catalog/ly.png" alt="">
-				<span class="item-title">旅游</span>
+			<span class="topic-item init-state" :class="isShow?'slideInLeft':null" @click="getTourism()">
+				<img v-if="type1" src="../../../assets/images/map/旅游1.png" alt="">
+				<img v-else src="../../../assets/images/map/旅游.png" alt="">
 			</span>
-			<span class="topic-item init-state" :class="isShow?'slideInLeft':null">
-				<img src="../../../assets/images/catalog/fp.png" alt="">
-				<span class="item-title">扶贫</span>
+			<span class="topic-item init-state" :class="isShow?'slideInLeft':null" @click="getProverty()">
+				<img v-if="type2" src="../../../assets/images/map/扶贫1.png" alt="">
+				<img v-else src="../../../assets/images/map/扶贫.png" alt="">
 			</span>
 		</div>
 	</div>
 </template>
 
 <script>
-	
+	import {mapActions, mapMutations} from 'vuex'
+
 	export default {
 		data() {
 			return {
-				isShow: false
+				isShow: false,
+				type1: false,
+				type2: false
 			}
 		},
 		methods: {
 			showItem() {
 				this.isShow = !this.isShow
-			}
+			},
+			getTourism() {
+				if(this.type1) {
+					this.setTopicShow(false)
+					this.searchPaneShow(false)
+					this.tablePaneShow(true)
+					this.type1 = !this.type1
+				} else {
+					let type = 'ly'
+					this.getTopicData(type)
+					this.addTourismLayer(0)
+					this.setTopicShow(true)
+					this.searchPaneShow(false)
+					this.tablePaneShow(false)
+					this.type1 = !this.type1
+				}
+			},
+			getProverty() {
+				if(this.type2) {
+					this.setTopicShow(false)
+					this.searchPaneShow(false)
+					this.tablePaneShow(true)
+					this.type2 = !this.type2
+				} else {
+					let type = 'fp'
+					this.getProvertyData(type)
+					this.addTourismLayer(4)
+					this.setTopicShow(true)
+					this.searchPaneShow(false)
+					this.tablePaneShow(false)
+					this.type2 = !this.type2
+				}
+			},
+			...mapActions([
+				'getTopicData',
+				'getProvertyData',
+				'searchPaneShow',
+				'tablePaneShow',
+				'addTourismLayer'
+			]),
+			...mapMutations({
+				setTopicShow: 'SET_TOPIC_LIST_SHOW'
+			})
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-	
-	@keyframes rotate {
-	  from {
-	    -webkit-transform: rotate(0deg);
-	    transform: rotate(0deg);
-	  }
-
-	  to {
-	    -webkit-transform: rotate(45deg);
-	    transform: rotate(45deg);
-	  }
-	}
 
 	.topic-box {
 		.topic-item {
 			display: inline-block;
 			margin: 0 8px;
-			width: 40px;
-			height: 40px;
-			padding: 7.5px;
-			background-color: rgba(0, 0, 0, .6);
-			border-radius: 100%;
+			width: 60px;
+			height: 60px;
 			cursor: pointer;
 			img {
-				margin: 0 auto;
 				display: block;
-				width: 25px;
-				height: 25px;
+				width: 100%;
+				height: 100%;
 			}
-			.rotate {
-				animation: rotate .3s forwards;
-			}
-		  	.item-title {
-		  		font-size: 8px;
-		  		color: #fff;
-		  	}
+		  .item-title {
+		  	font-size: 8px;
+		  	color: #fff;
+		  }
 		}
 		.init-state {
-			background-color: #2475e0;
 			-webkit-transform: translate3d(-100%, 0, 0);
 		    transform: translate3d(-100%, 0, 0);
 		    visibility: hidden;

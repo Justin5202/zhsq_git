@@ -34,7 +34,13 @@ const state = {
   measureNum: '',
   areaReportFormShow: false,
   /*searchAroundshow*/
-  searchAroundShow: false
+  searchAroundShow: false,
+  /*专题列表*/
+  topicList: {
+    type: '',
+    list: []
+  },
+  topicListShow: false
 }
 
 export default state

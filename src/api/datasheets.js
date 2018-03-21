@@ -138,3 +138,36 @@ export function getStatisticsDetails(shape, dataId) {
         return Promise.resolve(res.data)
     })
 }
+
+// 旅游专题
+export function getTourismTopic() {
+  const data = Object.assign({}, {
+      method: 'getScenicInfo'
+  })
+  return axios.post(url, qs.stringify(data)).then(res => {
+      return Promise.resolve(res.data)
+  })
+}
+
+// 扶贫专题
+export function getProvertyTopic() {
+  const data = Object.assign({}, {
+      method: 'getPovertyAlleviation',
+      start: 0,
+      rows: 10
+  })
+  return axios.post(url, qs.stringify(data)).then(res => {
+      return Promise.resolve(res.data)
+  })
+}
+
+export function getProvertyInfo() {
+  const data = Object.assign({}, {
+      method: 'getPovertyAlleviationInfo',
+      areacode: 0,
+      dataId: 10
+  })
+  return axios.post(url, qs.stringify(data)).then(res => {
+      return Promise.resolve(res.data)
+  })
+}

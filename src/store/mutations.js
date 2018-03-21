@@ -74,6 +74,7 @@ const mutations = {
   },
   [TYPE.TABLE_PANE_SHOW](state, tableMenuPaneShow) {
     state.tableMenuPaneShow = tableMenuPaneShow
+    state.topicList = []
   },
   [TYPE.SEARCH_PARAMS](state, searchParams) {
     state.searchParams = searchParams
@@ -385,6 +386,36 @@ const mutations = {
   },
   [TYPE.SET_SEARCH_AROUND_SHOW](state, flag) {
     state.searchAroundShow = flag
+  },
+  [TYPE.SET_TOPIC_LIST](state, flag) {
+    state.topicList = flag
+  },
+  [TYPE.SET_TOPIC_LIST_SHOW](state, flag) {
+    state.topicListShow = flag
+  },
+  [TYPE.ADD_TOURSIM_LAYER](state, flag) {
+    if(flag == 0) {
+      addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_5A.json', 'Z10000')
+      addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_4A.json', 'Z10001')
+      addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_3A.json', 'Z10002')
+    } else if(flag == 1) {
+      mapHelper.removeLayerByCode('Z10000')
+      mapHelper.removeLayerByCode('Z10001')
+      mapHelper.removeLayerByCode('Z10002')
+      addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_5A.json', 'Z10000')
+    } else if(flag == 2) {
+      mapHelper.removeLayerByCode('Z10000')
+      mapHelper.removeLayerByCode('Z10001')
+      mapHelper.removeLayerByCode('Z10002')
+      addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_4A.json', 'Z10001')
+    } else if(flag == 3) {
+      mapHelper.removeLayerByCode('Z10000')
+      mapHelper.removeLayerByCode('Z10001')
+      mapHelper.removeLayerByCode('Z10002')
+      addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_3A.json', 'Z10002')
+    } else if(flag == 4) {
+      addLayer('/ZT_ZTZT_FPZT/ZT_ZTZT_FPZT.json', 'Z10003')
+    }
   }
 }
 

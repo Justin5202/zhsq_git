@@ -20,7 +20,7 @@
           <div class="list-box">
             <ul class="list">
               <li class="list-item" v-for="n in 6">
-                <p class="list-item-title" >交通设施</p>
+                <p class="list-item-title" :style="{color: colors[n]}">交通设施</p>
                 <ul class="sublist">
                   <li>机场</li>
                   <li>医院</li>
@@ -44,7 +44,8 @@
     name: 'search-around',
     data() {
       return {
-        searchContent: ''
+        searchContent: '',
+        colors: ['#FF9999','#FF6666','#FFCCCC','#99CC00','#0099CC','#996699','#CCCC99']
       }
     },
     methods: {

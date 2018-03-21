@@ -12,6 +12,7 @@ import Vue from 'vue'
 import store from '../store/index'
 import infoPopupVm from '../components/common/infoPopup'
 import picPopupVm from '../components/common/picPopup'
+import cqbounds from '../components/common/config/cqbounds'
 
 // 私有map
 var map = null;
@@ -146,22 +147,22 @@ const initMap = function (option) {
 
     // 缩放结束 判断当前边界是否在 重庆市域内
     map.on('zoomend', (e)=>{
-        _containRelationshipCallback(map.getBounds());
+        _containRelationshipCallback();
     });
 
     // 拖拽结束 判断当前边界是否在 重庆市域内
     map.on('dragend', (e)=>{
-        _containRelationshipCallback(map.getBounds());
+        _containRelationshipCallback();
     });
 
     // 倾斜结束 判断当前边界是否在 重庆市域内
     map.on('pitchend', (e)=>{
-        _containRelationshipCallback(map.getBounds());
+        _containRelationshipCallback();
     });
 
     // 转角结束 判断当前边界是否在 重庆市域内
     map.on('rotateend', (e)=>{
-        _containRelationshipCallback(map.getBounds());
+        _containRelationshipCallback();
     });
 
     // 绑定点击事件返回 mapguid
@@ -293,7 +294,7 @@ const _onClick = function (e) {
                 if (ZTExceptFlag) {
                     setPicPopupToMap([
                         e.lngLat.lng, e.lngLat.lat
-                    ], features[0].properties.mapguid);
+                    ], features[0].properties.mapguid,features[0].properties.mc,features[0].properties.xzq_bm);
                 } else {
                     setPopupToMap([
                         e.lngLat.lng, e.lngLat.lat
@@ -474,7 +475,25 @@ const setAllDemMapVisibility = function (visibility) {
  * @returns boolean
  */
 const _containRelationshipCallback = function(lngLatBounds){
-    // console.log(lngLatBounds);
+    // let xMax, xMin, yMax, yMin  = null;
+    // xMax = lngLatBounds._ne.lng;
+    // yMax = lngLatBounds._ne.lat;
+    // xMin = lngLatBounds._sw.lng;
+    // yMin = lngLatBounds._sw.lat;
+
+    // let thebounds = {
+    //     "type":"Feature",
+    //     "geometry":{
+    //         "type":"MultiPolygon",
+    //         "coordinates":[
+    //             [[[lngLatBounds._ne.lng,lngLatBounds._sw.lat],
+    //             [lngLatBounds._ne.lng,lngLatBounds._ne.lat],
+    //             [lngLatBounds._sw.lng,lngLatBounds._ne.lat],
+    //             [lngLatBounds._sw.lng,lngLatBounds._sw.lat]]]
+    //         ]
+    //     }
+    // }
+    // console.log(_turf.booleanContains(cqbounds,thebounds));
 };
 
 /**
@@ -926,7 +945,7 @@ const closePopup = function () {
  * @param 坐标 （数组）， _mapguid
  * @returns null
  */
-const setPicPopupToMap = function (geoPoint, _mapguid) {
+const setPicPopupToMap = function (geoPoint, _mapguid,_name,_areacode) {
     closePicPopup();
     picPopup = new window
         .d2c
@@ -939,7 +958,11 @@ const setPicPopupToMap = function (geoPoint, _mapguid) {
         store,
         template: '<v-picPopup :mapguid="mapguid"/>',
         data: function () {
-            return {mapguid: _mapguid}
+            return {
+                mapguid: _mapguid,
+                name: _name,
+                areacode: _areacode,
+            }
         },
         components: {
             'v-picPopup': picPopupVm

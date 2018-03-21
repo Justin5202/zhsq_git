@@ -40,7 +40,7 @@
                       </ul>
                   </li>
               </ul>
-          </div>    
+          </div>
       </div>
       <div class="statistics-mask" :style="maskStyle" v-show="displayStatistics"></div>
   </div>
@@ -80,7 +80,7 @@ export default {
             })
           }else{
               this.statisticsConditionShow = true
-          } 
+          }
       },
       chageImageStatus(index){
           this.conditionList[index].isActive = !this.conditionList[index].isActive
@@ -103,7 +103,7 @@ export default {
         }
         this.$mapHelper.setIsMeasure(true)
         if(this.draw.drawPlane){
-            
+
         }else{
             this.draw.drawPlane = new d2c.areaLayer(d2cMap)
             this.$mapHelper.measureOnClickCallback(this.getAreaPoint)
@@ -136,7 +136,7 @@ export default {
                    var context = res.data[m][res.data[m]['listorder'][n]]['fieldsName'] + ':' + ' ' + res.data[m][res.data[m]['listorder'][n]]['data'][type]
                    var contextNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data'][type])
                    var titleNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'])
-                   this.statisticsList.push({'title':title,'context':context,'contextNum':contextNum,'titleNum':titleNum}) 
+                   this.statisticsList.push({'title':title,'context':context,'contextNum':contextNum,'titleNum':titleNum})
                 }
               }
               this.displayStatistics = true;
@@ -168,13 +168,12 @@ export default {
 <style lang="scss" scoped>
 .statistics-condition{
     width: 222px;
-    height: 300px;
     background-color: #ffffff;
     border: 1px solid #eee;
     position:absolute;
     top:70px;
     right: 80px;
-    border-radius: 15px 0 15px 15px;
+    border-radius: 4px;
     .statistics-arrow{
         width: 0;
         height: 0;
@@ -190,12 +189,11 @@ export default {
         width: 222px;
         height: 250px;
         overflow-y: auto;
-        border-radius: 15px 0 0 0;
-        padding-top: 5px;
+        border-radius: 4px 0 0 0;
         .statistics-item{
             width: 210;
             height: 50px;
-            margin-left: 10px; 
+            margin-left: 10px;
             display: flex;
             .statistics-item-name{
              width: 160px;
@@ -235,17 +233,14 @@ export default {
         background: #EDEDED;
     }
     .statistics-operation{
-        height: 50px;
         display: flex;
         background-color:#dcdfe6;
-        border-radius: 0 0 15px 15px;
+        border-radius: 0 0 4px 4px;
         .statistics-operation-item{
             display: inline-block;
             width: 110px;
-            height: 32px;
-            line-height: 32px;
-            font-size: 17px; 
-            margin-top: 8px;
+            line-height: 40px;
+            font-size: 17px;
         }
     }
     .operation-item-border{
@@ -260,7 +255,7 @@ export default {
     position: fixed;
     top: 20px;
     right: 120px;
-    border-radius: 10px;
+    border-radius: 4px;
     background-color: #8B8878;
     .statistics-draw-clear{
         width: 50px;
@@ -302,7 +297,7 @@ export default {
             line-height: 50px;
             color: #fff;
             text-align: left;
-            padding-left:15px; 
+            padding-left:15px;
         }
         .dailog-close{
             width: 50px;
@@ -329,7 +324,7 @@ export default {
         font-weight: bold;
         font-size: 16px;
         text-align: left;
-        padding-left: 20px; 
+        padding-left: 20px;
     }
     .context-text{
         width: 360px;
@@ -338,7 +333,7 @@ export default {
         line-height: 35px;
         font-size: 14px;
         text-align: left;
-        padding-left: 30px; 
+        padding-left: 30px;
     }
 }
 .statistics-mask{

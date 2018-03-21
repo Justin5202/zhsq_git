@@ -103,7 +103,7 @@ export const getSearchResult = function({
             res.data.map((v, index) => {
                 if (v.element) {
                     mapHelper.removeLayerById((state.searchParams.start + index - 10).toString())
-                    mapHelper.setMarkToMap((state.searchParams.start + index).toString(), v.element.geopoint, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+                    mapHelper.setMarkToMap((state.searchParams.start + index).toString(), v.element.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
                 }
                 /*如果存在行政区域，画线*/
                 if (v.searchType === 2) {
@@ -111,10 +111,8 @@ export const getSearchResult = function({
                         areacode: v.area.areacode,
                         areaname: v.area.areaname
                     }
-                    dispatch('setAreaInfo', {
-                        'areainfo': areainfo,
-                        'isRemoveAll': false
-                    })
+                    dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
+                    mapHelper.setPopupToMap(v.area.geopoint)
                 }
             })
         }

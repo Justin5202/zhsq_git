@@ -26,7 +26,7 @@
                 <v-statistics/>
 			</span>
     <span class="tool-item ">
-				<img src="../../../assets/images/map/用户.png" alt="">
+				<img src="../../../assets/images/map/用户.png" alt="" @click="showUserCenter">
 			</span>
   </div>
   <div class="tool-compass" @click="resetNorth" v-show="toolCompassVisible"></div>
@@ -59,6 +59,7 @@
   <div class="area-box" v-show="areaBoxIsShow">
     <area-control></area-control>
   </div>
+  <v-user-center v-show="showCenter" @close="closeUserCenter"></v-user-center>
 </div>
 </template>
 <script>
@@ -66,6 +67,8 @@ import vStatistics from '../statistics/statistics.vue'
 import LayerControl from '@/components/container/layerControl/layerControl'
 import AreaControl from '@/components/container/areaControl/areaControl'
 import vMeasure from '@/components/container/measure/measure'
+
+import vUserCenter from '@/components/Users/userCenter/userCenter'
 import {
   mapGetters, mapActions
 } from 'vuex'
@@ -75,7 +78,8 @@ export default {
     vStatistics,
     LayerControl,
     AreaControl,
-    vMeasure
+    vMeasure,
+    vUserCenter
   },
   data() {
     return {
@@ -84,7 +88,8 @@ export default {
       layerToolVisible: false,
       areaBoxIsShow: false,
       angle: "",
-      toolCompassVisible: false
+      toolCompassVisible: false,
+      showCenter: false
     }
   },
   created: function() {
@@ -202,7 +207,13 @@ export default {
     ...mapActions([
       'setReportFormShow',
       'setAreaReportFormShow',
-    ])
+    ]),
+    showUserCenter() {
+      this.showCenter = true
+    },
+    closeUserCenter() {
+      this.showCenter = false
+    }
   }
 }
 </script>

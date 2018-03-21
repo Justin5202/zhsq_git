@@ -42,12 +42,14 @@
 							<div class="area-icon-box">
 								<i class="area-icon"></i>
 							</div>
-							<div class="area-content" >
+							<div class="area-content">
 								<h2>{{item.area.areaname}}</h2>
 								<p>{{item.area.address}}</p>
-								<p v-for="v in item.area.areaTarget[0].cityTarget.split('|ZX|')">
-									{{v}}
-								</p>
+								<div v-if="item.area.areaTarget.length>0">
+									<p v-for="v in item.area.areaTarget[0].cityTarget.split('|ZX|')">
+										{{v}}
+									</p>
+								</div>
 							</div>
 							<div class="detail"  @click.stop="getDetails(item)">
 								<i class="detail-icon"></i>

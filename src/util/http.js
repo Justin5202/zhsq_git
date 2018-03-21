@@ -1,8 +1,8 @@
 import axios from 'axios'
 import router from '../router'
-import {
-  Loading, Message
-} from 'element-ui'
+import {Loading, Message} from 'element-ui'
+import Vue from 'vue'
+Vue.use(Message)
 
 // 拦截请求
 axios.interceptors.request.use(function(config) {

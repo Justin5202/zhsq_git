@@ -147,8 +147,7 @@
 				'activeAreaInfoList',
 				'areaCodeAndDataId',
 				'reportFormData',
-				'areaList',
-				'searchItemMacroList'
+				'areaList'
 			])
 		},
 		methods: {
@@ -202,16 +201,23 @@
 			//点击详情按钮
 			getDetails(item) {
 				console.log(item)
-				this.isActiveItem(item)
-				this.getAreaCodeAndDataId({
-					"areaCode": this.areaList,
-					"dataId": [this.areaInfoData, this.searchItemMacroList]
-				})
-				this.getReportData({
-					'areaCode': this.areaCodeAndDataId[0],
-					'dataId': this.areaCodeAndDataId[1]
-				})
-				this.setReportFormShow(true)
+				if(item.macro){
+					this.isActiveItem(item)
+					this.getAreaCodeAndDataId({
+						"areaCode": this.areaList,
+						"dataId": [this.areaInfoData, this.searchItemMacroList]
+					})
+					this.getReportData({
+						'areaCode': this.areaCodeAndDataId[0],
+						'dataId': this.areaCodeAndDataId[1]
+					})
+					this.setReportFormShow(true)
+					this.setAreaReportFormShow(false)
+				}else{
+					this.getReportDataByAreaCode([item['area']['areacode'],item['area']['areaname'],item['searchType']])
+					this.setReportFormShow(false)
+					this.setAreaReportFormShow(true)
+				}
 			},
 			...mapActions([
 				'setAreaList',
@@ -220,8 +226,10 @@
 				'tablePaneShow',
 				'loadSearchItemMacro',
 				'setReportFormShow',
+				'setAreaReportFormShow',
 				'getReportData',
-				'getAreaCodeAndDataId'
+				'getAreaCodeAndDataId',
+				'getReportDataByAreaCode'
 			])
 		}
 	}

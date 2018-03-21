@@ -16,9 +16,11 @@
   "dependencies": {
     "animate.css": "^3.6.1",
     "axios": "^0.17.1",
+    "babel-polyfill": "^6.26.0",
     "crypto": "^1.0.1",
     "crypto-js": "^3.1.9-1",
     "element-ui": "^2.0.5",
+    "jszip": "^3.1.5",
     "node-sass": "^4.7.2",
     "normalize.css": "^8.0.0",
     "qs": "^6.5.1",

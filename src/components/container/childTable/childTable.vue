@@ -7,7 +7,7 @@
         class="child-title"
         :class="{active: item.isActive}"
         @click="isActiveItem(item.isActive, item.id)"
-        v-if="item.target.length > 0 || item.datapath"
+        v-if="item.target.length > 0 || item.datapath || parseInt(item.type)%10 == 4"
       >
         <div class="arrow" v-if="item.children.length > 0">
           <i class="arrow-icon" :class="{down: isClose}" @click="closeLiBox()"></i>
@@ -18,7 +18,7 @@
           <p v-if="item.target.length!==0">{{item.target[0].areaname}} {{item.target[0].year}}</p>
           <p v-if="item.target.length!==0">{{item.target[0].cityTarget}}</p>
         </div>
-        <div class="detail" v-if="item.target.length!==0" @click.stop="getDetails(item.isActive, item.id)">
+        <div class="detail" v-if="item.target.length!==0 || parseInt(item.type)%10 == 4" @click.stop="getDetails(item.isActive, item.id,item.type)">
           <i class="detail-icon" :class="{avtiveDetailIcon: !item.isActive}"></i>
           <span :class="{activeColor: !item.isActive}">详情</span>
         </div>
@@ -41,7 +41,7 @@
           <p v-if="item.target.length!==0">{{item.target[0].areaname}} {{item.target[0].year}}</p>
           <p v-if="item.target.length!==0">{{item.target[0].cityTarget}}</p>
         </div>
-        <div class="detail" v-if="item.target.length!==0" @click.stop="getDetails(item.isActive, item.id)">
+        <div class="detail" v-if="item.target.length!==0" @click.stop="getDetails(item.isActive, item.id , item.type)">
           <i class="detail-icon" :class="{avtiveDetailIcon: areaInfoList.length === falseLength}"></i>
           <span :class="{activeColor: areaInfoList.length === falseLength}">详情</span>
         </div>
@@ -57,7 +57,7 @@
             <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
             <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
           </div>
-          <div class="detail" v-if="childItem.target.length!==0" @click.stop="getDetails(childItem.isActive, childItem.id)">
+          <div class="detail" v-if="childItem.target.length!==0" @click.stop="getDetails(childItem.isActive, childItem.id , childItem.type)">
             <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
             <span :class="{activeColor: !childItem.isActive}">详情</span>
           </div>
@@ -76,7 +76,7 @@
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
             </div>
-            <div class="detail" v-if="childItem.target.length!==0" @click.stop="getDetails(childItem.isActive, childItem.id)">
+            <div class="detail" v-if="childItem.target.length!==0" @click.stop="getDetails(childItem.isActive, childItem.id,childItem.type)">
               <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
               <span :class="{activeColor: !childItem.isActive}">详情</span>
             </div>
@@ -92,7 +92,7 @@
                 <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].areaname}} {{thirdChild.target[0].year}}</p>
                 <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].cityTarget}}</p>
               </div>
-              <div class="detail" v-if="thirdChild.target.length!==0" @click.stop="getDetails(thirdChild.isActive, thirdChild.id)">
+              <div class="detail" v-if="thirdChild.target.length!==0" @click.stop="getDetails(thirdChild.isActive, thirdChild.id,thirdChild.type)">
                 <i class="detail-icon" :class="{avtiveDetailIcon: !thirdChild.isActive}"></i>
                 <span :class="{activeColor: !thirdChild.isActive}">详情</span>
               </div>
@@ -198,27 +198,35 @@ export default {
       })
     },
     //点击详情按钮
-    getDetails(bol, id) {
+    getDetails(bol, id , type) {
       this.setAreaList({
         'bol': true,
         'id': id
       })
-      this.getAreaCodeAndDataId({
-        "areaCode": this.areaList,
-        "dataId": [this.areaInfoData,this.searchItemMacroList]
-      })
-      this.getReportData({
-        'areaCode': this.areaCodeAndDataId[0],
-        'dataId': this.areaCodeAndDataId[1]
-      })
-      this.setReportFormShow(true)
-      console.log(1);
+      var dataType = parseInt(type)%10
+      console.log(dataType)
+      if(dataType == 2|| dataType == 3){
+        this.getAreaCodeAndDataId({
+          "areaCode": this.areaList,
+          "dataId": [this.areaInfoData,this.searchItemMacroList]
+        })
+        this.getReportData({
+          'areaCode': this.areaCodeAndDataId[0],
+          'dataId': this.areaCodeAndDataId[1]
+        })
+      }else if(dataType == 4|| dataType == 5){
+        this.getDataFileByCodeAndId({
+          "areaCode":this.areaList,
+          "dataId":id
+        })
+      }
     },
     ...mapActions([
       'setAreaList',
       'setReportFormShow',
       'getReportData',
-      'getAreaCodeAndDataId'
+      'getAreaCodeAndDataId',
+      'getDataFileByCodeAndId'
     ])
   }
 }

@@ -41,7 +41,7 @@ export function getSelect(id) {
 }
 
 // 区县区域详细信息
-export function getNextAreaInfo(areacode) {
+export function getNextAreaDetailInfo(areacode) {
     const data = Object.assign({}, commonParams, { areacode: areacode }, { method: 'queryShapeByAreaCode' })
 
     return axios.post(url, qs.stringify(data)).then(res => {
@@ -140,7 +140,7 @@ export function getStatisticsDetails(shape, dataId) {
     })
 }
 // 根据行政区化code值，获取行政区化的详情
-export function getAreaDetail(areacode) {
+export function getAreaDetailByAreaCode(areacode) {
     const data = Object.assign({}, commonParams, {
         method: 'getAreaDetail',
         areacode: areacode
@@ -149,7 +149,18 @@ export function getAreaDetail(areacode) {
         return Promise.resolve(res.data)
     })
 }
-// 获取规划数据文件
+// 获取社会经济单元详情
+export function getEconomicUnitHtmlByAreaCode(areacode) {
+    const data = Object.assign({}, commonParams, {
+        method: 'getEconomicUnitHtml',
+        areacode: areacode
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+
+}
+// 获取文件数据
 export function getDataFileInfo(areacode, dataId) {
     const data = Object.assign({}, commonParams, {
         method: 'getDataFileInfo',

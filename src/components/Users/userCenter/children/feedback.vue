@@ -27,10 +27,13 @@
           </li>
         </ul>
       </div>
-      <div class="message-box">
+      <div class="message-box" v-show="messageTime !== ''">
         <p class="message-time">{{messageTime | formatDate}}</p>
-        <div class="message">
-          <span class="message-content">{{messageContent}}</span>
+        <div class="message-me">
+          <span class="message-me-content">{{myContent}}</span><i></i>
+        </div>
+        <div class="message-admin" v-show="adminContent">
+          <i></i><span class="message-admin-content">{{adminContent}}</span>
         </div>
       </div>
     </div>
@@ -52,7 +55,8 @@
         currentIndex: 0,
         selectedIndex: '',
         messageTime: '',
-        messageContent: '',
+        myContent: '',
+        adminContent: '',
         suggestList: [],
         page: 1
       }
@@ -72,7 +76,6 @@
 				let d = time.getDate()
 				let h = time.getHours()
 				let mu = time.getMinutes()
-				// let s = time.getSeconds();
 				return y + '年' + add0(m) + '月' + add0(d) + '日' + ' ' + add0(h) + ':' + add0(mu);
 			}
     },
@@ -85,11 +88,7 @@
       },
       _feedback(text) {
         if (text === '') {
-          this.$message({
-            message: '请输入您的反馈',
-            type: 'error'
-          })
-          return
+          return false
         }
         feedback(text).then(res => {
           if (res.message === 'success') {
@@ -104,7 +103,8 @@
       handleSelect(index, item) {
         this.selectedIndex = index
         this.messageTime = item.addtime
-        this.messageContent = item.suggest
+        this.myContent = item.suggest
+        this.adminContent = item.replyDescp
       },
       _getSuggestList() {
         let start = (this.page - 1) * 10
@@ -175,7 +175,7 @@
       display: flex;
       justify-content: flex-start;
       .history-box {
-        width: 400px;
+        width: 30%;
         height: 100%;
         background-color: #fff;
         .list {
@@ -209,6 +209,71 @@
       }
       .message-box {
         height: 100%;
+        width: 70%;
+        position: relative;
+        .message-time {
+          width: 100%;
+          font-size: 17px;
+          padding: 10px 0;
+          text-align: center;
+        }
+        .message-me {
+          height: 50px;
+          width: 50%;
+          position: absolute;
+          right: 40px;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          .message-me-content {
+            display: inline-block;
+            height: 40px;
+            line-height: 40px;
+            background: url('../../../../assets/images/usercenter/me_chat@2x.png') no-repeat;
+            background-position: 100%;
+            background-size: 50px;
+            background-color:#B2E865; 
+            padding: 0 10px;
+            margin-top: 10px;
+          }
+          i {
+            display: inline-block;
+            height: 50px;
+            width: 50px;
+            border-radius:100%;
+            background: url('../../../../assets/images/usercenter/me@2x.png') no-repeat;
+            background-size: 100%;
+          }
+        }
+        .message-admin {
+          width: 50%;
+          height: 50px;
+          position: absolute;
+          left: 40px;
+          top: 100px;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          .message-admin-content {
+            display: inline-block;
+            height: 40px;
+            line-height: 40px;
+            background: url('../../../../assets/images/usercenter/manager_chat@2x.png') no-repeat;
+            background-position: 100%;
+            background-size: 50px;
+            background-color: #E1E1E1;
+            padding: 0 10px;
+            margin-top: 10px;
+          }
+          i {
+            display: inline-block;
+            height: 50px;
+            width: 50px;
+            border-radius:100%;
+            background: url('../../../../assets/images/usercenter/manager@2x.png') no-repeat;
+            background-size: 100%;
+          }
+        }
       }
     }
   }

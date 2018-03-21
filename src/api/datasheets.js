@@ -2,6 +2,7 @@ import axios from '@/util/http'
 import qs from 'qs'
 import { commonParams, url } from './config'
 import mapHelper from '@/util/mapHelper'
+import { Promise } from 'core-js';
 
 axios.defaults.withCredentials = true
 
@@ -170,4 +171,36 @@ export function getProvertyInfo() {
   return axios.post(url, qs.stringify(data)).then(res => {
       return Promise.resolve(res.data)
   })
+}
+// 根据行政区化code值，获取行政区化的详情
+export function getAreaDetailByAreaCode(areacode) {
+    const data = Object.assign({}, commonParams, {
+        method: 'getAreaDetail',
+        areacode: areacode
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+}
+// 获取社会经济单元详情
+export function getEconomicUnitHtmlByAreaCode(areacode) {
+    const data = Object.assign({}, commonParams, {
+        method: 'getEconomicUnitHtml',
+        areacode: areacode
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+
+}
+// 获取文件数据
+export function getDataFileInfo(areacode, dataId) {
+    const data = Object.assign({}, commonParams, {
+        method: 'getDataFileInfo',
+        areacode: areacode,
+        dataId: dataId
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
 }

@@ -26,7 +26,7 @@
                 <v-statistics/>
 			</span>
     <span class="tool-item ">
-				<img src="../../../assets/images/map/用户.png" alt="" @click="toUserCenter">
+				<img src="../../../assets/images/map/用户.png" alt="" @click="showUserCenter">
 			</span>
   </div>
   <div class="tool-compass" @click="resetNorth" v-show="toolCompassVisible"></div>
@@ -45,13 +45,13 @@
   <div class="layer-tool-box" v-show="layerToolVisible">
     <div class="layer-tool-content">
       <div class="layer-tool-item">
-        <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="">
+        <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="" @click="changeBaseMap('sl')">
       </div>
       <div class="layer-tool-item">
-        <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="">
+        <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="" @click="changeBaseMap('xs')">
       </div>
       <div class="layer-tool-item">
-        <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="">
+        <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="" @click="changeBaseMap('yx')">
       </div>
     </div>
     <layer-control></layer-control>
@@ -59,6 +59,7 @@
   <div class="area-box" v-show="areaBoxIsShow">
     <area-control></area-control>
   </div>
+  <v-user-center v-show="showCenter" @close="closeUserCenter"></v-user-center>
 </div>
 </template>
 <script>
@@ -66,6 +67,8 @@ import vStatistics from '../statistics/statistics.vue'
 import LayerControl from '@/components/container/layerControl/layerControl'
 import AreaControl from '@/components/container/areaControl/areaControl'
 import vMeasure from '@/components/container/measure/measure'
+
+import vUserCenter from '@/components/Users/userCenter/userCenter'
 import {
   mapGetters, mapActions
 } from 'vuex'
@@ -75,7 +78,8 @@ export default {
     vStatistics,
     LayerControl,
     AreaControl,
-    vMeasure
+    vMeasure,
+    vUserCenter
   },
   data() {
     return {
@@ -84,7 +88,8 @@ export default {
       layerToolVisible: false,
       areaBoxIsShow: false,
       angle: "",
-      toolCompassVisible: false
+      toolCompassVisible: false,
+      showCenter: false
     }
   },
   created: function() {
@@ -113,18 +118,22 @@ export default {
     },
     reportFormLength() {
       let len = 0
+      let type = 0
       for (var i in this.areaInfoData) {
-        if (this.areaInfoData[i].target.length > 0 && this.areaInfoData[i].isActive) {
+        type = parseInt(this.areaInfoData[i].type)%10
+        if ((type == 2 || type == 3)&& this.areaInfoData[i].isActive) {
           len++
         }
         if (this.areaInfoData[i].children.length > 0) {
           for (var j in this.areaInfoData[i].children) {
-            if (this.areaInfoData[i].children[j].target.length > 0 && this.areaInfoData[i].children[j].isActive) {
+            type = parseInt(this.areaInfoData[i].children[j].type)%10
+            if ((type == 2 || type == 3) && this.areaInfoData[i].children[j].isActive) {
               len++
             }
             if (this.areaInfoData[i].children[j].children.length > 0) {
               for (var k in this.areaInfoData[i].children[j].children) {
-                if (this.areaInfoData[i].children[j].children[k].target.length > 0 && this.areaInfoData[i].children[j].children[k].isActive) {
+                type = parseInt(this.areaInfoData[i].children[j].children[k].type)%10
+                if ((type == 2 || type == 3) && this.areaInfoData[i].children[j].children[k].isActive) {
                   len++
                 }
               }
@@ -133,7 +142,8 @@ export default {
         }
       }
       this.searchItemMacroList.map(v => {
-        if (v.isActive && v.macro.filedsData) {
+        type = parseInt(v.macro.data.type)%10
+        if (v.isActive && (type == 2 || type == 3)) {
           len += 1
         }
       })
@@ -152,6 +162,19 @@ export default {
         d2cMap.easeTo({
           pitch: 60
         })
+      }
+    },
+    //地图切换
+    changeBaseMap(type){
+      if(type == 'sl'){
+        this.$mapHelper.setAllImageMapVisibility(false)
+        this.$mapHelper.setAllDemMapVisibility(false)
+      }else if(type == 'xs'){
+        this.$mapHelper.setAllImageMapVisibility(false)
+        this.$mapHelper.setAllDemMapVisibility(true)
+      }else if(type == 'yx'){
+        this.$mapHelper.setAllImageMapVisibility(true)
+        this.$mapHelper.setAllDemMapVisibility(false)
       }
     },
     //打开图层切换
@@ -185,8 +208,11 @@ export default {
       'setReportFormShow',
       'setAreaReportFormShow',
     ]),
-    toUserCenter() {
-      this.$router.push('/userCenter')
+    showUserCenter() {
+      this.showCenter = true
+    },
+    closeUserCenter() {
+      this.showCenter = false
     }
   }
 }

@@ -44,13 +44,20 @@
   <!-- 行政区划的报表 -->
   <div class="report-form-detail" v-show="areaReportFormShow">
     <div class="report-form-header">
-      <div class="report-form-title">数据详情</div>
+      <div class="report-form-title">{{reportFormData.title}}</div>
       <div class="report-form-close">
         <span @click="colseDialog()">关闭</span>
       </div>
     </div>
     <div class="table-box">
-      123
+      <table style="width:100%;table-layout:fixed">
+          <tr class="table-tab">
+              <td class="table-tab-item" v-for="(item,index) in reportFormData.name" @click="showContent(index)" :class="{active:activeTab == index}">{{item}}</td>
+          </tr>
+      </table>
+      <div class="table-tab-context">
+          <div v-html="tabContext"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -68,43 +75,24 @@ export default {
     return {
       dataId: '',
       areaCode: '',
-      dataList: []
+      dataList: [],
+      tabContext:'',
+      activeTab:0
     }
   },
+
   computed: {
     ...mapGetters([
       'reportFormShow',
       'areaReportFormShow',
       'reportFormData',
-    ])
+    ]),
   },
   methods: {
     //关闭模态框
     colseDialog() {
       this.setReportFormShow(false)
-    },
-    //将areaInfoData中dataId拼凑返回
-    getDataId(data) {
-      for (let i in data) {
-        if (data[i].target.length > 0 && data[i].isActive) {
-          this.dataId += ',' + data[i].id
-        }
-        if (data[i].children.length > 0) {
-          this.getDataId(data[i].children)
-        } else {
-          continue
-        }
-      }
-    },
-    //将areaList中的areaCode拼凑返回
-    getAreaCode(data) {
-      if (data.length > 0) {
-        for (let i in data) {
-          this.areaCode += ',' + data[i].areacode
-        }
-      } else {
-        this.areaCode = ',500000'
-      }
+      this.setAreaReportFormShow(false)
     },
     clearItem(index) {
       this.setAreaList({
@@ -115,6 +103,11 @@ export default {
         "key": index,
         "data": this.reportFormData.data
       })
+    },
+    //tab 点击
+    showContent(index){
+      this.activeTab = index
+      this.tabContext = this.reportFormData.data[index]
     },
     //清空按钮点击
     clearForm() {
@@ -128,7 +121,8 @@ export default {
       'setAreaList',
       'setReportFormShow',
       'clearReport',
-      'removeAllAreaList'
+      'removeAllAreaList',
+      'setAreaReportFormShow'
     ])
   }
 }
@@ -247,6 +241,30 @@ export default {
             th {
                 width: 100%;
             }
+        }
+        //行政区化详情的样式
+        .table-tab{
+          width: 100%;
+          font-family: '微软雅黑';
+          color: #fff;
+          cursor: pointer;
+          background-color:#a8a6a1;
+          .table-tab-item{
+            max-width: 33%;
+            height: 40px;
+            line-height: 40px;
+            font-weight: bold;
+            border: 1px solid #ccc;
+          }
+          .active{
+            background-color: #fff;
+            color: #000;
+          }
+        }
+        .table-tab-context{
+          width: 100%;
+          height: 500px;
+          overflow-y: auto;
         }
     }
 }

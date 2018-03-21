@@ -44,7 +44,8 @@
     name: 'search-around',
     data() {
       return {
-        searchContent: ''
+        searchContent: '',
+        colors: ['#FF9999','#FF6666','#FFCCCC','#99CC00','#0099CC','#996699','#CCCC99']
       }
     },
     methods: {

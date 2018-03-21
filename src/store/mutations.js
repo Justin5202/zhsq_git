@@ -113,8 +113,9 @@ const mutations = {
     state.searchList[i].isActive = item.isActive
     let index = state.searchItemMacroList.findIndex(v => v.macro.data.id === item.macro.data.id)
     if (item.isActive) {
-      addLayer(item.macro.data.datapath, item.macro.data.id)
-      state.idList.push(item.macro.data.id)
+      getJson(item.macro.data.datapath).then(res => {
+        mapHelper.addLayerByCodeAndJson(item.macro.data.id, res)
+      })
     } else {
       mapHelper.removeLayerByCode(item.macro.data.id)
     }
@@ -131,14 +132,23 @@ const mutations = {
     let yu = Number(areaInfoData[0].type) % 10
     if (type === 2 && yu === 1) {
       areaInfoData[0].isActive = true
-      addLayer(areaInfoData[0].datapath, areaInfoData[0].id)
-      state.idList.push(areaInfoData[0].id)
+      getJson(areaInfoData[0].datapath).then(res => {
+        mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+        state.idList.push(areaInfoData[0].id)
+        /*图层过滤*/
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+      })
       state.activeAreaInfoList = areaInfoData
     } else {
       if (areaInfoData[0].datapath && areaInfoData[0].children.length === 0) {
         areaInfoData[0].isActive = true
         addLayer(areaInfoData[0].datapath, areaInfoData[0].id)
-        state.idList.push(areaInfoData[0].id)
+        // getJson(areaInfoData[0].datapath).then(res => {
+        //   mapHelper.addLayerByCodeAndJson(areaInfoData[0].id, res)
+        //   state.idList.push(areaInfoData[0].id)
+        //   /*图层过滤*/
+        //   mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+        // })
         /*存在json就push进图层列表*/
         if (state.activeAreaInfoList.findIndex(v => v.id === areaInfoData[0].id) < 0) {
           state.activeAreaInfoList.push(areaInfoData[0])
@@ -180,7 +190,12 @@ const mutations = {
         if (!hasThirdLevel) {
           temp.map(v => {
             addLayer(v.datapath, v.id)
+            getJson(v.datapath).then(res => {
+              mapHelper.addLayerByCodeAndJson(v.id, res)
+            })
           })
+          /*图层过滤*/
+          mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
         }
       }
     }
@@ -294,11 +309,20 @@ const mutations = {
               if (temp.children.length > 0) {
                 temp.children.map(v => {
                   v.isActive = true
-                  addLayer(v.datapath, v.id)
+                  getJson(v.datapath).then(res => {
+                    mapHelper.addLayerByCodeAndJson(v.id, res)
+                  })
+                  /*图层过滤*/
+                  mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
                 })
               } else {
                 /*增加对应图层*/
-                addLayer(temp.datapath, id)
+                getJson(temp.datapath).then(res => {
+                  mapHelper.addLayerByCodeAndJson(id, res)
+                })
+                console.log(state.idList, state.areaCodeList)
+                /*图层过滤*/
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
               }
             }
             v.children.splice(index, 1, temp)
@@ -315,7 +339,11 @@ const mutations = {
                   } else if (bol) {
                     temp.isActive = true
                     /*增加对应图层*/
-                    addLayer(temp.datapath, id)
+                    getJson(temp.datapath).then(res => {
+                      mapHelper.addLayerByCodeAndJson(id, res)
+                    })
+                    /*图层过滤*/
+                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
                   }
                   i.children.splice(index, 1, temp)
                 }
@@ -335,7 +363,11 @@ const mutations = {
               } else if (bol) {
                 v.isActive = true
                 /*增加对应图层*/
-                addLayer(v.datapath, v.id)
+                getJson(v.datapath).then(res => {
+                  mapHelper.addLayerByCodeAndJson(v.id, res)
+                })
+                /*图层过滤*/
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
               }
             })
           }
@@ -347,7 +379,11 @@ const mutations = {
             temp.isActive = true
             /*增加对应图层,首先判断第一层是否存在json数据*/
             if (temp.datapath) {
-              addLayer(temp.datapath, id)
+              getJson(temp.datapath).then(res => {
+                mapHelper.addLayerByCodeAndJson(id, res)
+              })
+              /*图层过滤*/
+              mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
             }
           }
           state.areaInfoData.splice(idx, 1, temp)

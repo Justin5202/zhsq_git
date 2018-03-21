@@ -2,7 +2,7 @@
  * @author wangsy
  * @description map操作
  * 特别说明：
- * 依赖 config文件中的 vecterClickExceptLayer和imageClickExceptLayer
+ * 依赖 config文件中的 vecterClickExceptLayer、imageClickExceptLayer、ZTExceptLayer
  * id 都是map的图层id
  * source 都是map的source
  * code 指的都是目录中的编码（id）指的areaInfoData对象中的id形如：B01010000
@@ -11,6 +11,7 @@
 import Vue from 'vue'
 import store from '../store/index'
 import infoPopupVm from '../components/common/infoPopup'
+import picPopupVm from '../components/common/picPopup'
 
 // 私有map
 var map = null;
@@ -57,6 +58,12 @@ var infoPopup = null;
 // 缓存详情窗的 vue实体
 var infoPopup_vm = null;
 
+// 图片popup
+var picPopup = null;
+
+// 缓存图片窗的 vue实体
+var picPopup_vm = null;
+
 // 传入的 目前叠加了哪些目录编码的数组
 var codeArray = [];
 
@@ -69,12 +76,15 @@ var vecterClickExceptLayerArray = null;
 // 点击查询时 影像地图不参与查询的 图层数组 地图初始化时赋值
 var imageClickExceptLayerArray = null;
 
+// 点击查询时 专题数据名 判断显示信息窗还是 图片窗用 地图初始化时赋值
+var ZTExceptLayerArray = null;
+
 /**
  * @function 初始化地图
  * @param option
  * @returns map
  */
-const initMap = function(option) {
+const initMap = function (option) {
     // 不参与点击查询的layerid
     if (window.vecterClickExceptLayer) {
         vecterClickExceptLayerArray = window
@@ -84,6 +94,13 @@ const initMap = function(option) {
     if (window.imageClickExceptLayer) {
         imageClickExceptLayerArray = window
             .imageClickExceptLayer
+            .split(",");
+    }
+
+    // 区分专题数据图层（旅游、扶贫）和 目录数据图层 点击地图回调用
+    if (window.ZTExceptLayer) {
+        ZTExceptLayerArray = window
+            .ZTExceptLayer
             .split(",");
     }
 
@@ -134,7 +151,7 @@ const initMap = function(option) {
     map.on("dblclick", onDbClick);
 
     // 样式 文件有变动时 进行 过滤
-    map.on('styledata', function() {
+    map.on('styledata', function () {
         codeArray.forEach(element => {
             if (layersId[element]) {
 
@@ -142,7 +159,8 @@ const initMap = function(option) {
 
                 areacodeArray.forEach(element => {
                     filter.push([
-                        "all", [
+                        "all",
+                        [
                             ">=", "xzq_bm", element
                         ],
                         [
@@ -184,7 +202,7 @@ const initMap = function(option) {
  * @param event
  * @returns null
  */
-const onPitch = function(e) {
+const onPitch = function (e) {
     if (map.getPitch() > 0.00001) {
         set2dLayersVisibility(false);
         set3dLayersVisibility(true);
@@ -199,7 +217,7 @@ const onPitch = function(e) {
  * @param event
  * @returns null
  */
-const onRotate = function(e) {
+const onRotate = function (e) {
     if (rotateCallback) {
         rotateCallback(map.getBearing());
     }
@@ -210,7 +228,7 @@ const onRotate = function(e) {
  * @param event
  * @returns null
  */
-const onClick = function(e) {
+const onClick = function (e) {
 
     if (isMeasure) {
         if (measureCallback) {
@@ -240,9 +258,28 @@ const onClick = function(e) {
             // 不在排除的图层中
             if (!exceptFlag) {
                 // 判断是否属于 旅游 和 扶贫 弹照片窗 还是 信息窗
-                setPopupToMap([
-                    e.lngLat.lng, e.lngLat.lat
-                ], features[0].properties.mapguid);
+                let ZTExceptFlag = false;
+                ZTExceptLayerArray.forEach((element) => {
+                    if (layersId[element] && (!ZTExceptFlag)) {
+                        for (let index = 0; index < layersId[element].length; index++) {
+                            if (layersId[element][index] == features[0].layer["id"]) {
+                                ZTExceptFlag = true;
+                                break;
+                            }
+                        }
+                    }
+                });
+
+                if (ZTExceptFlag) {
+                    setPicPopupToMap([
+                        e.lngLat.lng, e.lngLat.lat
+                    ], features[0].properties.mapguid);
+                } else {
+                    setPopupToMap([
+                        e.lngLat.lng, e.lngLat.lat
+                    ], features[0].properties.mapguid);
+                }
+
             }
 
         }
@@ -255,7 +292,7 @@ const onClick = function(e) {
  * @param event
  * @returns null
  */
-const onDbClick = function(e) {
+const onDbClick = function (e) {
     if (dbClickCallback) {
         dbClickCallback(e);
     }
@@ -267,7 +304,7 @@ const onDbClick = function(e) {
  * @param （true:现在是量测，false：现在不是量测）
  * @returns null
  */
-const setIsMeasure = function(value) {
+const setIsMeasure = function (value) {
     isMeasure = value;
 };
 
@@ -276,7 +313,7 @@ const setIsMeasure = function(value) {
  * @param callback
  * @returns null
  */
-const measureOnClickCallback = function(_callback) {
+const measureOnClickCallback = function (_callback) {
     measureCallback = _callback;
 };
 
@@ -285,7 +322,7 @@ const measureOnClickCallback = function(_callback) {
  * @param callback
  * @returns null
  */
-const onDbClickCallback = function(_callback) {
+const onDbClickCallback = function (_callback) {
     dbClickCallback = _callback;
 };
 
@@ -294,7 +331,7 @@ const onDbClickCallback = function(_callback) {
  * @param callback
  * @returns null
  */
-const onRotateCallback = function(_callback) {
+const onRotateCallback = function (_callback) {
     rotateCallback = _callback;
 };
 
@@ -303,7 +340,7 @@ const onRotateCallback = function(_callback) {
  * @param 影像的图层和源 , 濡染的图层和源
  * @returns null
  */
-const initImageAndDemMap = function(img, dem) {
+const initImageAndDemMap = function (img, dem) {
     layersId_img = [];
     layersId_dem = [];
     // 设置 隐藏
@@ -317,7 +354,7 @@ const initImageAndDemMap = function(img, dem) {
         dem.layers[index]["layout"]["visibility"] = "none";
     }
     map
-        .on('load', function() {
+        .on('load', function () {
 
             // 地图加 source
             for (let k in img.sources) {
@@ -356,7 +393,7 @@ const initImageAndDemMap = function(img, dem) {
  * @param （true：可见，false：不可见）
  * @returns null
  */
-const setAllImageMapVisibility = function(visibility) {
+const setAllImageMapVisibility = function (visibility) {
     // 判断层级是否显示 天地图影像
     if (layersId_img.length > 0) {
 
@@ -386,14 +423,14 @@ const setAllImageMapVisibility = function(visibility) {
  * @param （true：可见，false：不可见）
  * @returns null
  */
-const setTdtImageMapVisibility = function(value) {};
+const setTdtImageMapVisibility = function (value) {};
 
 /**
  * @function 设置全部晕染服务可见性
  * @param （true：可见，false：不可见）
  * @returns null
  */
-const setAllDemMapVisibility = function(visibility) {
+const setAllDemMapVisibility = function (visibility) {
     // 判断层级是否显示 天地图晕染
     if (layersId_dem.length > 0) {
 
@@ -423,14 +460,14 @@ const setAllDemMapVisibility = function(visibility) {
  * @param （true：可见，false：不可见）
  * @returns null
  */
-const setTdtDemMapVisibility = function(value) {};
+const setTdtDemMapVisibility = function (value) {};
 
 /**
  * @function 添加geojson到地图(画行政区划线)
  * @param 图层id, geojson
  * @returns null
  */
-const addLayerByIdAndGeojson = function(id, geojson) {
+const addLayerByIdAndGeojson = function (id, geojson) {
     map.addLayer({
         "id": id,
         "type": "line",
@@ -463,7 +500,7 @@ const addLayerByIdAndGeojson = function(id, geojson) {
  * @returns minzoom(当前json中所有layer的最小出现层级),
  *          去重的source-layer逗号隔开的字符串,filter由|ZX|隔开的字符串
  */
-const addLayerByCodeAndJson = function(code, json) {
+const addLayerByCodeAndJson = function (code, json) {
     // 当前json的最小层级
     let minzoom = 22;
 
@@ -536,7 +573,9 @@ const addLayerByCodeAndJson = function(code, json) {
     return {
         "minzoom": minzoom,
         "filter": filterRes,
-        "sourceLayer": Array.from(new Set(sourceLayer)).join(",")
+        "sourceLayer": Array
+            .from(new Set(sourceLayer))
+            .join(",")
     };
 };
 
@@ -545,7 +584,7 @@ const addLayerByCodeAndJson = function(code, json) {
  * @param 图层id
  * @returns null
  */
-const removeLayerById = function(id) {
+const removeLayerById = function (id) {
     let sourceName = "";
     if (map.getLayer(id)) {
         sourceName = map
@@ -561,7 +600,7 @@ const removeLayerById = function(id) {
  * @param 目录中的编码
  * @returns null
  */
-const removeLayerByCode = function(code) {
+const removeLayerByCode = function (code) {
     // 用code 找到对应的 图层id 逐一删除
     if (layersId[code]) {
         layersId[code].forEach(element => {
@@ -579,7 +618,7 @@ const removeLayerByCode = function(code) {
  * @param （true：可见，false：不可见）
  * @returns null
  */
-const set2dLayersVisibility = function(visibility) {
+const set2dLayersVisibility = function (visibility) {
     if (layersId_2d.length > 0) {
 
         if (visibility) {
@@ -602,7 +641,7 @@ const set2dLayersVisibility = function(visibility) {
  * @param （true：可见，false：不可见）
  * @returns null
  */
-const set3dLayersVisibility = function(visibility) {
+const set3dLayersVisibility = function (visibility) {
     if (layersId_3d.length > 0) {
         if (visibility) {
             layersId_3d.forEach(element => {
@@ -623,7 +662,7 @@ const set3dLayersVisibility = function(visibility) {
  * @param 目录中的编码 ,透明度的值
  * @returns null
  */
-const setOpacityByCode = function(code, value) {
+const setOpacityByCode = function (code, value) {
     if (layersId[code]) {
         // 如果有图层一定是数组
         layersId[code].forEach(element => {
@@ -659,7 +698,7 @@ const setOpacityByCode = function(code, value) {
  * @param 编码 ,可见性 （true：可见 ，false：不可见）
  * @returns null
  */
-const setVisibilityByCode = function(code, visibility) {
+const setVisibilityByCode = function (code, visibility) {
     if (layersId[code]) {
         if (visibility) {
             layersId[code].forEach(element => {
@@ -681,7 +720,7 @@ const setVisibilityByCode = function(code, visibility) {
  * @param 目录编码数组，行政区编码数组
  * @returns null
  */
-const setFilterByCodeArrayAndAreacodeArray = function(_codeArray, _areacodeArray) {
+const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArray) {
     // 记录 目录和区域 在styledata 事件触发时 过滤
     codeArray = _codeArray;
     areacodeArray = _areacodeArray;
@@ -692,8 +731,8 @@ const setFilterByCodeArrayAndAreacodeArray = function(_codeArray, _areacodeArray
  * @param geoPoint (Array),层级
  * @returns null
  */
-const flyByPointAndZoom = function(center, zoom) {
-    map.flyTo({ center: center, zoom: zoom });
+const flyByPointAndZoom = function (center, zoom) {
+    map.flyTo({center: center, zoom: zoom});
 }
 
 /**
@@ -701,7 +740,7 @@ const flyByPointAndZoom = function(center, zoom) {
  * @param layerId,geoPoint,_mapguid,text,textSize,icon,iconSize,minzoom,maxzoom
  * @returns null
  */
-const setMarkToMap = function(layerId, geoPoint,_mapguid, text, textSize, icon, iconSize, minzoom, maxzoom) {
+const setMarkToMap = function (layerId, geoPoint, _mapguid, text, textSize, icon, iconSize, minzoom, maxzoom) {
     let option = {
         id: layerId,
         type: "symbol",
@@ -711,16 +750,18 @@ const setMarkToMap = function(layerId, geoPoint,_mapguid, text, textSize, icon, 
             type: "geojson",
             data: {
                 type: "FeatureCollection",
-                features: [{
-                    type: "Feature",
-                    geometry: {
-                        type: "Point",
-                        coordinates: geoPoint
-                    },
-                    properties: {
-                        mapguid: _mapguid
+                features: [
+                    {
+                        type: "Feature",
+                        geometry: {
+                            type: "Point",
+                            coordinates: geoPoint
+                        },
+                        properties: {
+                            mapguid: _mapguid
+                        }
                     }
-                }]
+                ]
             }
         }
     }
@@ -754,7 +795,7 @@ const setMarkToMap = function(layerId, geoPoint,_mapguid, text, textSize, icon, 
  * @param layerId,geoPointArray, _mapguidArray,icon,iconSize,maxzoom
  * @returns null
  */
-const setMarksToMap = function(layerId, geoPointArray, _mapguidArray,icon, iconSize, maxzoom) {
+const setMarksToMap = function (layerId, geoPointArray, _mapguidArray, icon, iconSize, maxzoom) {
     let _features = [];
     for (let index = 0; index < _mapguidArray.length; index++) {
         _features.push({
@@ -769,7 +810,6 @@ const setMarksToMap = function(layerId, geoPointArray, _mapguidArray,icon, iconS
         });
     }
 
-
     let option = {
         id: layerId,
         type: "symbol",
@@ -779,7 +819,7 @@ const setMarksToMap = function(layerId, geoPointArray, _mapguidArray,icon, iconS
             type: "geojson",
             data: {
                 type: "FeatureCollection",
-                features:_features
+                features: _features
             }
         }
     }
@@ -797,14 +837,14 @@ const setMarksToMap = function(layerId, geoPointArray, _mapguidArray,icon, iconS
 
 /**
  * @function 设置弹窗popup
- * @param 坐标 （数组）， dom
+ * @param 坐标 （数组）， _mapguid
  * @returns null
  */
-const setPopupToMap = function(geoPoint, _mapguid) {
+const setPopupToMap = function (geoPoint, _mapguid) {
     closePopup();
     infoPopup = new window
         .d2c
-        .Popup({ closeButton: false })
+        .Popup({closeButton: false})
         .setLngLat(geoPoint)
         .setHTML("<div id = 'infoPopup'></div>")
         .addTo(map);
@@ -812,8 +852,8 @@ const setPopupToMap = function(geoPoint, _mapguid) {
         el: '#infoPopup',
         store,
         template: '<v-infoPopup :mapguid="mapguid"/>',
-        data: function() {
-            return { mapguid: _mapguid }
+        data: function () {
+            return {mapguid: _mapguid}
         },
         components: {
             'v-infoPopup': infoPopupVm
@@ -822,11 +862,11 @@ const setPopupToMap = function(geoPoint, _mapguid) {
 };
 
 /**
- * @function 关闭弹窗popup
+ * @function 关闭详情弹窗popup
  * @param
  * @returns null
  */
-const closePopup = function() {
+const closePopup = function () {
     if (infoPopup) {
         infoPopup.remove();
         infoPopup = null;
@@ -838,11 +878,53 @@ const closePopup = function() {
 };
 
 /**
+ * @function 设置图片弹窗popup
+ * @param 坐标 （数组）， _mapguid
+ * @returns null  
+ */
+const setPicPopupToMap = function (geoPoint, _mapguid) {
+    closePicPopup();
+    picPopup = new window
+        .d2c
+        .Popup({closeButton: false})
+        .setLngLat(geoPoint)
+        .setHTML("<div id = 'picPopup'></div>")
+        .addTo(map);
+    picPopup_vm = new Vue({
+        el: '#picPopup',
+        store,
+        template: '<v-picPopup :mapguid="mapguid"/>',
+        data: function () {
+            return {mapguid: _mapguid}
+        },
+        components: {
+            'v-picPopup': picPopupVm
+        }
+    })
+};
+
+/**
+ * @function 关闭图片弹窗popup
+ * @param
+ * @returns null
+ */
+const closePicPopup = function () {
+    if (picPopup) {
+        picPopup.remove();
+        picPopup = null;
+    }
+    if (picPopup_vm) {
+        picPopup_vm.$destroy();
+        picPopup_vm = null;
+    }
+};
+
+/**
  * @function 设置倾角
  * @param 倾角值
  * @returns null
  */
-const setBearing = function(value) {
+const setBearing = function (value) {
     map.setBearing(value);
 }
 
@@ -851,7 +933,7 @@ const setBearing = function(value) {
  * @param 偏角值
  * @returns  null
  */
-const setPitch = function(value) {
+const setPitch = function (value) {
     map.setPitch(value);
 }
 
@@ -860,7 +942,7 @@ const setPitch = function(value) {
  * @param 中心点值（array）
  * @returns  null
  */
-const setCenter = function(center) {
+const setCenter = function (center) {
     map.setCenter(center);
 }
 
@@ -869,7 +951,7 @@ const setCenter = function(center) {
  * @param 无
  * @returns zoom
  */
-const getZoom = function() {
+const getZoom = function () {
     return map.getZoom();
 };
 
@@ -878,7 +960,7 @@ const getZoom = function() {
  * @param 无
  * @returns LngLat
  */
-const getCenter = function() {
+const getCenter = function () {
     return map.getCenter();
 };
 
@@ -927,7 +1009,12 @@ const flyByBounds = function (lngLatBounds) {
 
     });
 
-    map.fitBounds([[xMin,yMin],[xMax,yMax]]);
+    map.fitBounds([
+        [
+            xMin, yMin
+        ],
+        [xMax, yMax]
+    ]);
 };
 
 /**
@@ -935,7 +1022,7 @@ const flyByBounds = function (lngLatBounds) {
  * @param 无
  * @returns LngLatBounds
  */
-const getBounds = function() {
+const getBounds = function () {
     return map.getBounds();
 };
 
@@ -961,6 +1048,8 @@ export default {
     setMarksToMap,
     setPopupToMap,
     closePopup,
+    setPicPopupToMap,
+    closePicPopup,
     flyByPointAndZoom,
     flyByBounds,
 

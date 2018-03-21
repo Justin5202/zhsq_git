@@ -37,10 +37,6 @@ export default new Router({
           children: [
             ...toolbar
           ]
-        }, {
-          path: '/userCenter',
-          name:'userCenter',
-          component: userCenter,
         }
       ]
     },

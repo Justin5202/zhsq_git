@@ -139,16 +139,36 @@ const initMap = function (option) {
         .map(option);
 
     //绑定右键拖动事件 2D 3D 图层显示用
-    map.on('pitch', onPitch);
+    map.on('pitch', _onPitch);
 
     //绑定右键拖动事件 是否显示 指北针
-    map.on('rotate', onRotate);
+    map.on('rotate', _onRotate);
+
+    // 缩放结束 判断当前边界是否在 重庆市域内
+    map.on('zoomend', (e)=>{
+        _containRelationshipCallback(map.getBounds());
+    });
+
+    // 拖拽结束 判断当前边界是否在 重庆市域内
+    map.on('dragend', (e)=>{
+        _containRelationshipCallback(map.getBounds());
+    });
+
+    // 倾斜结束 判断当前边界是否在 重庆市域内
+    map.on('pitchend', (e)=>{
+        _containRelationshipCallback(map.getBounds());
+    });
+
+    // 转角结束 判断当前边界是否在 重庆市域内
+    map.on('rotateend', (e)=>{
+        _containRelationshipCallback(map.getBounds());
+    });
 
     // 绑定点击事件返回 mapguid
-    map.on('click', onClick);
+    map.on('click', _onClick);
 
     // 绑定双击事件
-    map.on("dblclick", onDbClick);
+    map.on("dblclick", _onDbClick);
 
     // 样式 文件有变动时 进行 过滤
     map.on('styledata', function () {
@@ -202,7 +222,7 @@ const initMap = function (option) {
  * @param event
  * @returns null
  */
-const onPitch = function (e) {
+const _onPitch = function (e) {
     if (map.getPitch() > 0.00001) {
         set2dLayersVisibility(false);
         set3dLayersVisibility(true);
@@ -217,7 +237,7 @@ const onPitch = function (e) {
  * @param event
  * @returns null
  */
-const onRotate = function (e) {
+const _onRotate = function (e) {
     if (rotateCallback) {
         rotateCallback(map.getBearing());
     }
@@ -228,7 +248,7 @@ const onRotate = function (e) {
  * @param event
  * @returns null
  */
-const onClick = function (e) {
+const _onClick = function (e) {
 
     if (isMeasure) {
         if (measureCallback) {
@@ -292,7 +312,7 @@ const onClick = function (e) {
  * @param event
  * @returns null
  */
-const onDbClick = function (e) {
+const _onDbClick = function (e) {
     if (dbClickCallback) {
         dbClickCallback(e);
     }
@@ -419,13 +439,6 @@ const setAllImageMapVisibility = function (visibility) {
 };
 
 /**
- * @function 设置天地图影像服务可见性（私有）
- * @param （true：可见，false：不可见）
- * @returns null
- */
-const setTdtImageMapVisibility = function (value) {};
-
-/**
  * @function 设置全部晕染服务可见性
  * @param （true：可见，false：不可见）
  * @returns null
@@ -456,11 +469,34 @@ const setAllDemMapVisibility = function (visibility) {
 };
 
 /**
+ * @function 缩放、拖拽、转角、倾斜时，判断是否在重庆市域设置天地图服务可见性(私有)
+ * @param 当前区域边界的四个电脑
+ * @returns boolean
+ */
+const _containRelationshipCallback = function(lngLatBounds){
+    console.log(lngLatBounds);
+};
+
+/**
+ * @function 设置天地图影像服务可见性（私有）
+ * @param （true：可见，false：不可见）
+ * @returns null
+ */
+const _setTdtImageMapVisibility = function (value) {};
+
+/**
  * @function 设置天地图晕染服务可见性（私有）
  * @param （true：可见，false：不可见）
  * @returns null
  */
-const setTdtDemMapVisibility = function (value) {};
+const _setTdtDemMapVisibility = function (value) {};
+
+/**
+ * @function 设置天地图矢量服务可见性（私有）
+ * @param （true：可见，false：不可见）
+ * @returns null
+ */
+const _setVecterDemMapVisibility = function (value) {};
 
 /**
  * @function 添加geojson到地图(画行政区划线)
@@ -519,7 +555,7 @@ const addLayerByCodeAndJson = function (code, json) {
             try {
                 map.addSource(k, json.sources[k]);
             } catch (error) {
-                console.log("出现重复的source");
+                console.log("出现重复source");
             }
 
             // 记录 source 与 code 对应关系
@@ -786,8 +822,12 @@ const setMarkToMap = function (layerId, geoPoint, _mapguid, text, textSize, icon
     if (minzoom) {
         option["minzoom"] = minzoom;
     }
-
-    map.addLayer(option);
+    try {
+        map.addLayer(option);
+    } catch (error) {
+        console.log("添加Mark时,出现重复source");
+    }
+    
 };
 
 /**
@@ -832,7 +872,11 @@ const setMarksToMap = function (layerId, geoPointArray, _mapguidArray, icon, ico
         option["maxzoom"] = maxzoom;
     }
 
-    map.addLayer(option);
+    try {
+        map.addLayer(option);
+    } catch (error) {
+        console.log("添加Mark时,出现重复source");
+    }
 };
 
 /**

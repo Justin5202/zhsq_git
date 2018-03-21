@@ -474,7 +474,7 @@ const setAllDemMapVisibility = function (visibility) {
  * @returns boolean
  */
 const _containRelationshipCallback = function(lngLatBounds){
-    console.log(lngLatBounds);
+    // console.log(lngLatBounds);
 };
 
 /**
@@ -827,7 +827,7 @@ const setMarkToMap = function (layerId, geoPoint, _mapguid, text, textSize, icon
     } catch (error) {
         console.log("添加Mark时,出现重复source");
     }
-    
+
 };
 
 /**
@@ -924,7 +924,7 @@ const closePopup = function () {
 /**
  * @function 设置图片弹窗popup
  * @param 坐标 （数组）， _mapguid
- * @returns null  
+ * @returns null
  */
 const setPicPopupToMap = function (geoPoint, _mapguid) {
     closePicPopup();

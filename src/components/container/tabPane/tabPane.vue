@@ -119,7 +119,13 @@
 					>{{item}}</button>
 				</div>
 				<ul>
-					<li class="search-pane-li" v-for="item in topicList.list" v-if="topicList.type=='ly'&&nowIndex>0&&item.dj == tourismType[nowIndex]">
+					<li
+						class="search-pane-li"
+						v-for="(item, index) in topicList.list"
+						v-if="topicList.type=='ly'&&nowIndex>0&&item.dj == tourismType[nowIndex]"
+						:class="{active: topicIndex == index}"
+						@click="flyToPoint(item, index)"
+					>
 						<div class="search-pane-box">
 							<div class="icon-box">
 								<i class="ly-icon"></i>
@@ -128,13 +134,15 @@
 								<h2>{{item.name}}</h2>
 								<p>{{item.address}}</p>
 							</div>
-							<div class="detail"  @click.stop="getTopicDetails(item)">
-								<i class="detail-icon"></i>
-								<span>详情</span>
-							</div>
 						</div>
 					</li>
-					<li class="search-pane-li" v-for="item in topicList.list" v-if="topicList.type=='ly'&&nowIndex<=0">
+					<li
+						class="search-pane-li"
+						v-for="(item, index) in topicList.list"
+						v-if="topicList.type=='ly'&&nowIndex<=0"
+						:class="{active: topicIndex == index}"
+						@click="flyToPoint(item, index)"
+					>
 						<div class="search-pane-box">
 							<div class="icon-box">
 								<i class="ly-icon"></i>
@@ -142,10 +150,6 @@
 							<div class="area-content">
 								<h2>{{item.name}}</h2>
 								<p>{{item.address}}</p>
-							</div>
-							<div class="detail"  @click.stop="getTopicDetails(item)">
-								<i class="detail-icon"></i>
-								<span>详情</span>
 							</div>
 						</div>
 					</li>
@@ -171,7 +175,7 @@
 				</p>
 			</div>
 			<div class="child-table-content"
-					v-show="upOrDown && !tableMenuPaneShow && !searchPaneShow">
+					v-show="upOrDown && !tableMenuPaneShow && !searchPaneShow && !topicListShow">
 				<child-table></child-table>
 			</div>
 			<div class="up-control">
@@ -204,6 +208,7 @@
 				topicPage: 1,
 				buttonType: '',
 				nowIndex: 0,
+				topicIndex: -1,
 				tourismType: ['全部', '5A', '4A', '3A']
 			}
 		},
@@ -238,6 +243,10 @@
 			getTourismType(index) {
 				this.nowIndex = index
 				this.addTourismLayer(index)
+			},
+			flyToPoint(item, index) {
+				this.topicIndex = index
+				this.$mapHelper.flyByPointAndZoom(JSON.parse(item.point), 8)
 			},
 			next() {
 				this.page += 1
@@ -475,6 +484,9 @@
 							color: #20be8c;
 						}
 					}
+				}
+				.active {
+					background-color: #dcdfe6;
 				}
 			}
 		}

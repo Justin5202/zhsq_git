@@ -18,4 +18,5 @@
   export const searchAroundShow = state => state.searchAroundShow
   export const topicList = state => state.topicList
   export const topicListShow = state => state.topicListShow
+  export const areaDetailInfo = state => state.areaDetailInfo
   export const userinfo = state => state.userinfo 

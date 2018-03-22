@@ -58,27 +58,18 @@ export const getAreaDetail = function({
         commit(TYPE.TABLE_PANE_SHOW, false)
     })
 }
-export const setAreaInfo = function({
-    commit,
-    state
-}, {
-    areainfo,
-    isRemoveAll
-}) {
+export const setAreaInfo = function({commit,state}, {areainfo,isRemoveAll}) {
     if (!isRemoveAll) {
         getNextAreaDetailInfo(areainfo.areacode).then(res => {
-            commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
-            commit(TYPE.SET_AREA_INFO, areainfo)
-            commit(TYPE.SET_SELECTED_AREA_LIST, {
-                areainfo,
-                isRemoveAll
-            })
+            if(res.code == '1') {
+                areainfo.areaname = JSON.parse(res.data).areaname
+                commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
+                commit(TYPE.SET_AREA_INFO, areainfo)
+                commit(TYPE.SET_SELECTED_AREA_LIST, {areainfo,isRemoveAll})
+            }
         })
     } else {
-        commit(TYPE.SET_SELECTED_AREA_LIST, {
-            areainfo,
-            isRemoveAll
-        })
+        commit(TYPE.SET_SELECTED_AREA_LIST, {areainfo,isRemoveAll})
     }
 }
 export const deleteAreaInfo = function({
@@ -126,22 +117,10 @@ export const setSecAreaList = function({
 }, list) {
     commit(TYPE.SET_SEC_AREA_LIST, list)
 }
-export const setAreaList = function({
-        commit,
-        state
-    }, {
-        bol,
-        id
-    }) {
-        console.log({
-            bol,
-            id
-        })
-        commit(TYPE.SET_LEFT_ACTIVE_AREA_LIST, {
-            bol,
-            id
-        })
-    }
+export const setAreaList = function({commit,state}, {bol,id}) {
+    console.log({bol,id})
+    commit(TYPE.SET_LEFT_ACTIVE_AREA_LIST, {bol,id})
+}
     // 区县区域下一级详细信息
 export const getNextAreaInfo = function({
     commit,

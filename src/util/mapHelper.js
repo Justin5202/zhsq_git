@@ -329,6 +329,56 @@ const _onClick = function (e) {
                         break;
                 }
 
+                // 设置高亮
+                removeLayerById("highlightLayer");
+                let highlightOption = {
+                    "id": "highlightLayer",
+                    "source": {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": [{
+                                "type": "Feature",
+                                "geometry": features[0].geometry
+                            }]
+                        }
+                    },
+                    "layout": {                      
+                    }
+                };
+
+                            // 判断点线面symbol
+                switch (features[0].layer.type) {
+                    case "circle":
+                        highlightOption["type"] = features[0].layer.type
+                        highlightOption["paint"]={
+                            "circle-color":"rgba(85,164,241,0.6)"
+                        }
+                        break;
+                    case "line":
+                        highlightOption["type"] = features[0].layer.type
+                        highlightOption["paint"]={
+                            "line-color":"rgba(85,164,241,0.6)"
+                        }
+                        break;
+                    case "fill":
+                        highlightOption["type"] = features[0].layer.type
+                        highlightOption["paint"]={
+                            "fill-color":"rgba(85,164,241,0.6)"
+                        }
+                        break;
+                    case "symbol":
+                        highlightOption["type"] = "circle"
+                        highlightOption["paint"]={
+                            "circle-color":"rgba(85,164,241,0.6)"
+                        }
+                        break;
+
+                    default:
+                        console.log("非点、线、面、symbol、3d类型-点击高亮");
+                        break;
+                }
+                map.addLayer(highlightOption);
                 // 不在排除的图层中-end
             }
 
@@ -1175,6 +1225,7 @@ const closePopup = function () {
         infoPopup_vm.$destroy();
         infoPopup_vm = null;
     }
+    removeLayerById("highlightLayer");
 };
 
 /**
@@ -1218,6 +1269,7 @@ const closePicPopup = function () {
         picPopup_vm.$destroy();
         picPopup_vm = null;
     }
+    removeLayerById("highlightLayer");
 };
 
 /**

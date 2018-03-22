@@ -2,6 +2,7 @@
  * @author wangsy
  * @description map操作
  * 特别说明：
+ * 依赖 turf
  * 依赖 config文件中的 vecterClickExceptLayer、imageClickExceptLayer、ZTExceptLayer
  * id 都是map的图层id
  * source 都是map的source
@@ -16,6 +17,9 @@ import cqbounds from '../components/common/config/cqbounds'
 
 // 私有map
 var map = null;
+
+// 重庆 边界
+const cq = turf.polygon(cqbounds);
 
 // 底图图层id
 var layersId_dt = [];
@@ -146,22 +150,22 @@ const initMap = function (option) {
     map.on('rotate', _onRotate);
 
     // 缩放结束 判断当前边界是否在 重庆市域内
-    map.on('zoomend', (e)=>{
+    map.on('zoomend', (e) => {
         _containRelationshipCallback();
     });
 
     // 拖拽结束 判断当前边界是否在 重庆市域内
-    map.on('dragend', (e)=>{
+    map.on('dragend', (e) => {
         _containRelationshipCallback();
     });
 
     // 倾斜结束 判断当前边界是否在 重庆市域内
-    map.on('pitchend', (e)=>{
+    map.on('pitchend', (e) => {
         _containRelationshipCallback();
     });
 
     // 转角结束 判断当前边界是否在 重庆市域内
-    map.on('rotateend', (e)=>{
+    map.on('rotateend', (e) => {
         _containRelationshipCallback();
     });
 
@@ -294,7 +298,7 @@ const _onClick = function (e) {
                 if (ZTExceptFlag) {
                     setPicPopupToMap([
                         e.lngLat.lng, e.lngLat.lat
-                    ], features[0].properties.mapguid,features[0].properties.mc,features[0].properties.xzq_bm);
+                    ], features[0].properties.wyid, features[0].properties.mc, features[0].properties.xzq_bm);
                 } else {
                     setPopupToMap([
                         e.lngLat.lng, e.lngLat.lat
@@ -474,26 +478,30 @@ const setAllDemMapVisibility = function (visibility) {
  * @param 当前区域边界的四个电脑
  * @returns boolean
  */
-const _containRelationshipCallback = function(lngLatBounds){
-    // let xMax, xMin, yMax, yMin  = null;
-    // xMax = lngLatBounds._ne.lng;
-    // yMax = lngLatBounds._ne.lat;
-    // xMin = lngLatBounds._sw.lng;
-    // yMin = lngLatBounds._sw.lat;
+const _containRelationshipCallback = function () {
+    let lngLatBounds = map.getBounds();
 
-    // let thebounds = {
-    //     "type":"Feature",
-    //     "geometry":{
-    //         "type":"MultiPolygon",
-    //         "coordinates":[
-    //             [[[lngLatBounds._ne.lng,lngLatBounds._sw.lat],
-    //             [lngLatBounds._ne.lng,lngLatBounds._ne.lat],
-    //             [lngLatBounds._sw.lng,lngLatBounds._ne.lat],
-    //             [lngLatBounds._sw.lng,lngLatBounds._sw.lat]]]
-    //         ]
-    //     }
-    // }
-    // console.log(_turf.booleanContains(cqbounds,thebounds));
+    let newBounds = turf.polygon([
+        [
+            [
+                lngLatBounds._ne.lng, lngLatBounds._sw.lat
+            ],
+            [
+                lngLatBounds._ne.lng, lngLatBounds._ne.lat
+            ],
+            [
+                lngLatBounds._sw.lng, lngLatBounds._ne.lat
+            ],
+            [
+                lngLatBounds._sw.lng, lngLatBounds._sw.lat
+            ],
+            [lngLatBounds._ne.lng, lngLatBounds._sw.lat]
+        ]
+    ]);
+
+    console.log(cq);
+
+    console.log(turf.booleanContains(cq,newBounds));
 };
 
 /**
@@ -846,7 +854,7 @@ const setMarkToMap = function (layerId, geoPoint, _mapguid, text, textSize, icon
     } catch (error) {
         console.log("添加Mark时,出现重复source");
     }
-    
+
 };
 
 /**
@@ -943,9 +951,9 @@ const closePopup = function () {
 /**
  * @function 设置图片弹窗popup
  * @param 坐标 （数组）， _mapguid
- * @returns null  
+ * @returns null
  */
-const setPicPopupToMap = function (geoPoint, _mapguid,_name,_areacode) {
+const setPicPopupToMap = function (geoPoint, _mapguid, _name, _areacode) {
     closePicPopup();
     picPopup = new window
         .d2c
@@ -958,11 +966,7 @@ const setPicPopupToMap = function (geoPoint, _mapguid,_name,_areacode) {
         store,
         template: '<v-picPopup :mapguid="mapguid"/>',
         data: function () {
-            return {
-                mapguid: _mapguid,
-                name: _name,
-                areacode: _areacode,
-            }
+            return {mapguid: _mapguid, name: _name, areacode: _areacode}
         },
         components: {
             'v-picPopup': picPopupVm

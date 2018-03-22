@@ -323,7 +323,7 @@ export const getReportDataByAreaCode = function({ commit, state }, data) {
         var title = data[1] + ' ' + '概况'
         if (data[2] == 2) {
             getAreaDetailByAreaCode(data[0]).then(res => {
-                var dataArray = { 'title': title, 'name': [], 'data': [] }
+                var dataArray = { 'title': title, 'name': [], 'data': [], 'type': 'string' }
                 for (var i in res.data) {
                     dataArray.name.push(res.data[i].name)
                     dataArray.data.push(res.data[i].data)
@@ -332,7 +332,7 @@ export const getReportDataByAreaCode = function({ commit, state }, data) {
             })
         } else if (data[2] == 6) {
             getEconomicUnitHtmlByAreaCode(data[0]).then(res => {
-                var dataArray = { 'title': title, 'name': [], 'data': [] }
+                var dataArray = { 'title': title, 'name': [], 'data': [], 'type': 'string' }
                 for (var i in res.data) {
                     dataArray.name.push(res.data[i].title)
                     dataArray.data.push(res.data[i].html)
@@ -344,24 +344,62 @@ export const getReportDataByAreaCode = function({ commit, state }, data) {
     //获取文件数据
 export const getDataFileByCodeAndId = function({ commit, state }, { areaCode, dataId }) {
         var codeList = ''
+        var dataArray = { 'title': '数据详情', 'name': [], 'data': [], 'type': 'file', 'text': [] }
         if (areaCode.length > 0) {
             for (let i in areaCode) {
-                areaCode += ',' + areaCode[i].areacode
+                if (areaCode[i].areacode != 501002) {
+                    codeList += ',' + areaCode[i].areacode
+                    dataArray.name.push(areaCode[i].areaname)
+                }
             }
         } else {
             codeList = ',500000'
+            dataArray.name.push('重庆市')
         }
         getDataFileInfo(codeList.substring(1), dataId).then(res => {
-            var filePath = 'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test/serviceMap/zip/' + res.data.filePath
-            var promise = new JSZip.external.Promise(function(resolve, reject) {
-                JSZipUtils.getBinaryContent(filePath, function(err, data) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(data);
-                    }
-                });
-            });
+            var filePath = ''
+            var htm = ''
+            var html = ''
+            var context = ''
+            var fileName = ''
+            if (res.data.length > 0) {
+                for (var i in res.data) {
+                    filePath = 'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test/serviceMap/zip/' + res.data[i].filePath
+                    fileName = res.data[i].filePath.split('.')[0]
+                    htm = fileName + '.' + 'htm'
+                    html = fileName + '.' + 'html'
+                    var promise = new JSZip.external.Promise(function(resolve, reject) {
+                        JSZipUtils.getBinaryContent(filePath, function(err, data) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve(data);
+                            }
+                        })
+                    })
+                    promise.then(JSZip.loadAsync)
+                        .then(function(zip) {
+                            if (zip.file(htm)) {
+                                return zip.file(htm).async("base64")
+                            } else if (zip.file(html)) {
+                                return zip.file(html).async("base64")
+                            }
+                        })
+                        .then(function success(text) {
+                            dataArray.data.push(text)
+                            dataArray.text.push('')
+                            commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
+                        }, function error(e) {
+                            console.log(e)
+                        })
+                }
+            } else {
+                for (var i in dataArray) {
+                    dataArray.text.push('数据正在建设中...')
+                }
+                commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
+            }
+
         })
     }
     //清空报表

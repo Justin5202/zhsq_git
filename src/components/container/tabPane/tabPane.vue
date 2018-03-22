@@ -233,9 +233,7 @@
 			flyToPoint(item, index) {
 				this.topicIndex = index
 				this.$mapHelper.flyByPointAndZoom(JSON.parse(item.point), 8)
-			},
-			getNextData(code) {
-
+				this.$mapHelper.setPicPopupToMap(JSON.parse(item.point), item.id)
 			},
 			next() {
 				this.page += 1

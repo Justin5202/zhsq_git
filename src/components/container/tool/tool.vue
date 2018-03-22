@@ -160,10 +160,9 @@ export default {
     toggleShowData() {
       this.IsAll = !this.IsAll
       if(this.IsAll) {
-        console.log(this.$store.state.idList, this.$store.state.areaCodeList)
-        this.$mapHelper.setFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, [])
+        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, [])
       } else {
-        this.$mapHelper.setFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, this.$store.state.areaCodeList)
+        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, this.$store.state.areaCodeList)
       }
     },
     //2D 3D切换

@@ -24,6 +24,10 @@
             <div class="area-content">
               <h2>{{item.mc}}</h2>
               <p>{{item.address}}</p>
+							<p>
+								<span v-if="item.sipkc_pkh">市级贫困陈：{{item.sipkc_pkh}}个</span>
+								<span v-if="item.wtprs_pkrs">未脱贫人数：{{item.wtprs_pkrs}}人</span>
+							</p>
             </div>
             <div class="detail"  @click.stop="getTopicDetails(item)">
               <i class="detail-icon"></i>
@@ -33,16 +37,21 @@
         </li>
         <li
           class="search-pane-li"
-          v-for="item in nextList"
+          v-for="(item, index) in nextList"
           v-if="nextList.length>0&&!rightShow"
+					:class="{active: nextListIndex === index}"
         >
-          <div class="search-pane-box">
+          <div class="search-pane-box" @click="flyToPoint(item, index)">
             <div class="icon-box">
               <i class="fp-icon"></i>
             </div>
             <div class="area-content">
               <h2>{{item.mc}}</h2>
               <p>{{item.address}}</p>
+							<p>
+								<span v-if="item.sipkc_pkh">贫困户：{{item.sipkc_pkh}}个</span>
+								<span v-if="item.wtprs_pkrs">脱贫人数：{{item.wtprs_pkrs}}人</span>
+							</p>
             </div>
             <div class="detail"  @click.stop="getTopicDetails(item)">
               <i class="detail-icon"></i>
@@ -77,7 +86,7 @@
 
 <script>
   import {getNextProvertyData, getRightProvertyData} from '@/api/dataSheets'
-	import {mapGetters, mapMutations} from 'vuex'
+	import {mapGetters, mapMutations, mapActions} from 'vuex'
 
 	export default {
 		name: 'tabPane',
@@ -85,6 +94,7 @@
 			return {
         nowIndex: 0,
 				areaIndex: '',
+				nextListIndex: '',
 				page: 1,
         nextList: [],
 				areaList: [],
@@ -101,12 +111,17 @@
 				this.nowIndex = index
 				if(index ==0) {
 					this.rightShow = false
-					let type = 'ly'
-					this.getTopicData(type)
+					this.nextList = []
+					let type = 'fp'
+					this.getProvertyData(type)
 				} else {
 					this.rightShow = true
 					this._getRightProvertyData()
 				}
+			},
+			flyToPoint(item, index) {
+				this.nextListIndex = index
+				this.$mapHelper.flyByPointAndZoom(JSON.parse(item.geopoint), 12)
 			},
 			getNextData(code) {
         getNextProvertyData(code).then(res => {
@@ -135,7 +150,10 @@
 			},
 			...mapMutations({
 				addAreaLayer: 'ADD_PROVERTY_AREA_LAYER'
-			})
+			}),
+			...mapActions([
+				'getProvertyData'
+			])
 		}
 	}
 </script>
@@ -199,7 +217,7 @@
 					}
 					.area-content {
 						display: flex;
-						flex: 2;
+						flex: 3;
 						flex-direction: column;
 						text-align: left;
 						h2 {

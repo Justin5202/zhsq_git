@@ -35,6 +35,7 @@ function addLayer(datapath, id) {
         mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
       }
     })
+  })
 }
 
 const mutations = {
@@ -116,7 +117,8 @@ const mutations = {
             getJson(v.datapath).then(res => {
               mapHelper.addLayerByCodeAndJson(v.id, res)
             })
-        } else {
+        })
+      } else {
             mapHelper.removeLayerByCode(item.macro.data.id)
         }
         /*不存在push，存在替换*/
@@ -545,8 +547,6 @@ const mutations = {
         } else if (flag == 4) {
             addLayer('/ZT_ZTZT_FPZT/ZT_ZTZT_FPZT.json', 'Z10003')
         }
-    }
-<<<<<<< HEAD
   },
   [TYPE.ADD_PROVERTY_AREA_LAYER](state, data) {
     addLayer(data.datapath, data.id)
@@ -561,8 +561,6 @@ const mutations = {
       state.activeAreaInfoList.splice(state.activeAreaInfoList.findIndex(v => v.id == data.id), 1, data)
     }
   }
-=======
->>>>>>> 5ca2931f32f982e228695901f2614e57680ad73e
 }
 
 export default mutations

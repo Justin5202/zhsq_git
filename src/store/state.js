@@ -40,7 +40,9 @@ const state = {
     type: '',
     list: []
   },
-  topicListShow: false
+  topicListShow: false,
+  // 用户登录信息
+  userinfo: {}
 }
 
 export default state

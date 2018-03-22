@@ -1245,7 +1245,7 @@ const setPicPopupToMap = function (geoPoint, _mapguid, _name, _areacode) {
         el: '#picPopup',
         store,
         router,
-        template: '<v-picPopup :mapguid="mapguid"/>',
+        template: '<v-picPopup :mapguid="mapguid" :name="name" :areacode="areacode"/>',
         data: function () {
             return {mapguid: _mapguid, name: _name, areacode: _areacode}
         },

@@ -508,6 +508,48 @@ const mutations = {
     state.areaReportFormShow = areaReportFormShow
   },
 
+    [TYPE.SET_MEASURE_NUM](state, measureNum) {
+        state.measureNum = measureNum
+    },
+    [TYPE.SET_AREA_REPORT_FORM_SHOW](state, areaReportFormShow) {
+        state.areaReportFormShow = areaReportFormShow
+    },
+    [TYPE.SET_SEARCH_AROUND_SHOW](state, flag) {
+        state.searchAroundShow = flag
+    },
+    [TYPE.SET_TOPIC_LIST](state, flag) {
+        state.topicList = flag
+    },
+    [TYPE.SET_TOPIC_LIST_SHOW](state, flag) {
+        state.topicListShow = flag
+    },
+    [TYPE.ADD_TOURSIM_LAYER](state, flag) {
+        if (flag == 0) {
+            addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_5A.json', 'Z10000')
+            addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_4A.json', 'Z10001')
+            addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_3A.json', 'Z10002')
+        } else if (flag == 1) {
+            mapHelper.removeLayerByCode('Z10000')
+            mapHelper.removeLayerByCode('Z10001')
+            mapHelper.removeLayerByCode('Z10002')
+            addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_5A.json', 'Z10000')
+        } else if (flag == 2) {
+            mapHelper.removeLayerByCode('Z10000')
+            mapHelper.removeLayerByCode('Z10001')
+            mapHelper.removeLayerByCode('Z10002')
+            addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_4A.json', 'Z10001')
+        } else if (flag == 3) {
+            mapHelper.removeLayerByCode('Z10000')
+            mapHelper.removeLayerByCode('Z10001')
+            mapHelper.removeLayerByCode('Z10002')
+            addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_3A.json', 'Z10002')
+        } else if (flag == 4) {
+            addLayer('/ZT_ZTZT_FPZT/ZT_ZTZT_FPZT.json', 'Z10003')
+        }
+    },
+    [TYPE.SET_USER_INFO] (state, userinfo) {
+        state.userinfo = userinfo
+    },
   [TYPE.SET_MEASURE_NUM](state, measureNum) {
     state.measureNum = measureNum
   }, [TYPE.SET_AREA_REPORT_FORM_SHOW](state, areaReportFormShow) {

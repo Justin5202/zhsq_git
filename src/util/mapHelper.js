@@ -293,26 +293,41 @@ const _onClick = function (e) {
 
                 switch (popupFlag) {
                     case "ly":
-                        
+                        // 旅游图层的
+                        setPicPopupToMap([
+                            e.lngLat.lng, e.lngLat.lat
+                        ], features[0].properties.wyid, features[0].properties.mc, null);
                         break;
 
                     case "fp":
+                        // 扶贫图层的
+                        switch (features[0].properties.mulu_bm) {
+                            case "F01010100":
+                                setPicPopupToMap([
+                                        e.lngLat.lng, e.lngLat.lat
+                                    ], features[0].properties.mulu_bm, features[0].properties.xzjmc, features[0].properties.xzjdm);
+                                break;
+                            case "F01010200":
+                                setPicPopupToMap([
+                                        e.lngLat.lng, e.lngLat.lat
+                                    ], features[0].properties.mulu_bm, features[0].properties.sqcmc, features[0].properties.sqcdm);
+                                break;
                         
+                            default:
+                                setPopupToMap([
+                                        e.lngLat.lng, e.lngLat.lat
+                                    ], features[0].properties.mapguid);
+                                break;
+                        }
                         break;
                 
                     default:
+                        // 普通POI
+                        setPopupToMap([
+                                e.lngLat.lng, e.lngLat.lat
+                            ], features[0].properties.mapguid);
                         break;
                 }
-                // if (ZTExceptFlag) {
-                //     setPicPopupToMap([
-                //         e.lngLat.lng, e.lngLat.lat
-                //     ], features[0].properties.wyid, features[0].properties.mc, features[0].properties.xzq_bm);
-                // } else {
-                //     setPopupToMap([
-                //         e.lngLat.lng, e.lngLat.lat
-                //     ], features[0].properties.mapguid);
-                // }
-
 
                 // 不在排除的图层中-end
             }

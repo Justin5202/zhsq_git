@@ -10,14 +10,13 @@ import {mapGetters} from 'vuex'
 export default {
     props: {
         mapguid: {},
-        name: {
-            type: String,
-            default: ''
-        },
-        areacode: {
-            type: String,
-            default: ''
-        }
+        name: {},
+        areacode: {}
+    },
+    watch: {
+      areacode(newV, oldV) {
+        console.log(newV, oldV)
+      }
     },
     computed: {
       ...mapGetters([

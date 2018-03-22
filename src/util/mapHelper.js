@@ -425,6 +425,8 @@ const initImageAndDemMap = function (img, dem) {
                 .forEach(element => {
                     map.addLayer(element);
                 })
+            // 判断是否要 加载天地图
+            _containRelationshipCallback();
         })
 
 };
@@ -439,12 +441,15 @@ const setAllImageMapVisibility = function (visibility) {
     if (layersId_img.length > 0) {
 
         if (visibility) {
+            // 需要传参 mapFlay  = img
             layersId_img.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'visible');
             });
             layersId_dt.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
             });
+            // 判断当前视野是否需要显示 天地图
+            _containRelationshipCallback();
         } else {
             layersId_img.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
@@ -469,12 +474,15 @@ const setAllDemMapVisibility = function (visibility) {
     if (layersId_dem.length > 0) {
 
         if (visibility) {
+            // 需要传参 mapFlay  = dem
             layersId_dem.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'visible');
             });
             layersId_dt.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
             });
+            // 判断当前视野是否需要显示 天地图
+            _containRelationshipCallback();
         } else {
             layersId_dem.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
@@ -516,17 +524,60 @@ const _containRelationshipCallback = function () {
 
     let nowLine = turf.lineString(lngLatArray[0]);
 
+    let visibleFlay = false;
+    // 判断是否显示天地图 服务
     if (!turf.booleanDisjoint(cqLine, nowLine)) {
         // 交叉
-
+        visibleFlay = true;
     } else {
         let nowPolygon = turf.polygon(lngLatArray);
         if (turf.booleanContains(cqPolygon, nowPolygon)) {
             // 没有 交叉 的时候 判断 包含 （因为包含的精度不太够）
-            
+            visibleFlay = false;
+        }else{
+            visibleFlay = true;
         }
     }
 
+    switch (mapFlay) {
+        case "dt":
+            _setVecterDemMapVisibility(visibleFlay);
+            break;
+
+        case "img":
+            _setTdtImageMapVisibility(visibleFlay);
+            break;
+
+        case "dem":
+            _setTdtDemMapVisibility(visibleFlay);
+            break;
+    
+        default:
+            break;
+    }
+
+
+
+};
+
+/**
+ * @function 设置天地图矢量服务可见性（私有）
+ * @param （true：可见，false：不可见）
+ * @returns null
+ */
+const _setVecterDemMapVisibility = function (value) {
+    let visibility = map.getLayoutProperty("global-vecter-layer","visibility");
+    if (value){
+        if(visibility != "visible") {
+            map.setLayoutProperty("global-vecter-layer", 'visibility', 'visible');
+            map.setLayoutProperty("global-vecter-layer-symbol", 'visibility', 'visible');
+        }
+    }else{
+        if(visibility != "none") {
+            map.setLayoutProperty("global-vecter-layer", 'visibility', 'none');
+            map.setLayoutProperty("global-vecter-layer-symbol", 'visibility', 'none');
+        }
+    }
 };
 
 /**
@@ -534,21 +585,40 @@ const _containRelationshipCallback = function () {
  * @param （true：可见，false：不可见）
  * @returns null
  */
-const _setTdtImageMapVisibility = function (value) {};
+const _setTdtImageMapVisibility = function (value) {
+    let visibility = map.getLayoutProperty("remote-scense-layer","visibility");
+    if (value){
+        if(visibility != "visible") {
+            map.setLayoutProperty("remote-scense-layer", 'visibility', 'visible');
+            map.setLayoutProperty("remote-scense-layer-symbol", 'visibility', 'visible');
+        }
+    }else{
+        if(visibility != "none") {
+            map.setLayoutProperty("remote-scense-layer", 'visibility', 'none');
+            map.setLayoutProperty("remote-scense-layer-symbol", 'visibility', 'none');
+        }
+    }
+};
 
 /**
  * @function 设置天地图晕染服务可见性（私有）
  * @param （true：可见，false：不可见）
  * @returns null
  */
-const _setTdtDemMapVisibility = function (value) {};
-
-/**
- * @function 设置天地图矢量服务可见性（私有）
- * @param （true：可见，false：不可见）
- * @returns null
- */
-const _setVecterDemMapVisibility = function (value) {};
+const _setTdtDemMapVisibility = function (value) {
+    let visibility = map.getLayoutProperty("dem-layer","visibility");
+    if (value){
+        if(visibility != "visible") {
+            map.setLayoutProperty("dem-layer", 'visibility', 'visible');
+            map.setLayoutProperty("dem-layer-symbol", 'visibility', 'visible');
+        }
+    }else{
+        if(visibility != "none") {
+            map.setLayoutProperty("dem-layer", 'visibility', 'none');
+            map.setLayoutProperty("dem-layer-symbol", 'visibility', 'none');
+        }
+    }
+};
 
 /**
  * @function 添加geojson到地图(画行政区划线)

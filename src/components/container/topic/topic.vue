@@ -34,6 +34,9 @@
 			},
 			getTourism() {
 				if(this.type1) {
+					this.$mapHelper.removeLayerByCode('Z10000')
+		      this.$mapHelper.removeLayerByCode('Z10001')
+		      this.$mapHelper.removeLayerByCode('Z10002')
 					this.setTopicShow(false)
 					this.searchPaneShow(false)
 					this.tablePaneShow(true)
@@ -50,6 +53,7 @@
 			},
 			getProverty() {
 				if(this.type2) {
+					this.$mapHelper.removeLayerByCode('Z10003')
 					this.setTopicShow(false)
 					this.searchPaneShow(false)
 					this.tablePaneShow(true)

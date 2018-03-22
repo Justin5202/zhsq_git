@@ -13,6 +13,7 @@ const login = r => require(['@/components/users/login/login'], r)
 const register = r => require(['@/components/users/register/register'], r)
 const userCenter = r => require(['@/components/users/userCenter/userCenter'], r)
 const searchAround = r => require(['@/components/users/searchAround/searchAround'], r)
+const carousel = r => require(['@/components/container/carousel/carousel'], r)
 
 
 export default new Router({
@@ -52,6 +53,10 @@ export default new Router({
       path:'/searchAround',
       name: 'searchAround',
       component: searchAround
+    }, {
+      path: '/carousel/:id',
+      name: 'carousel',
+      component: carousel
     }
   ]
 })

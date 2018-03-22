@@ -990,6 +990,7 @@ const setPicPopupToMap = function (geoPoint, _mapguid, _name, _areacode) {
     picPopup_vm = new Vue({
         el: '#picPopup',
         store,
+        router,
         template: '<v-picPopup :mapguid="mapguid"/>',
         data: function () {
             return {mapguid: _mapguid, name: _name, areacode: _areacode}

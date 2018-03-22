@@ -15,7 +15,7 @@
           class="search-pane-li"
           v-for="item in topicList.list"
           @click="getNextData(item.areaCode)"
-          v-if="nextList.length==0"
+          v-if="nextList.length==0&&!rightShow"
         >
           <div class="search-pane-box">
             <div class="icon-box">
@@ -34,21 +34,35 @@
         <li
           class="search-pane-li"
           v-for="item in nextList"
-          v-if="nextList.length>0"
+          v-if="nextList.length>0&&!rightShow"
         >
-
           <div class="search-pane-box">
             <div class="icon-box">
               <i class="fp-icon"></i>
             </div>
             <div class="area-content">
               <h2>{{item.mc}}</h2>
-
               <p>{{item.address}}</p>
             </div>
             <div class="detail"  @click.stop="getTopicDetails(item)">
               <i class="detail-icon"></i>
               <span>详情</span>
+            </div>
+          </div>
+        </li>
+				<li
+          class="search-pane-li"
+          v-for="(item, index) in areaList"
+          v-if="areaList.length>0&&rightShow"
+					@click="showAreaInMap(item, index)"
+					:class="{active: areaIndex == index}"
+        >
+          <div class="search-pane-box area-pane-box">
+            <div class="icon-box">
+              <i class="fp-icon"></i>
+            </div>
+            <div class="area-content">
+              <h2>{{item.name}}</h2>
             </div>
           </div>
         </li>
@@ -62,15 +76,19 @@
 </template>
 
 <script>
-  import {getNextProvertyData} from '@/api/dataSheets'
-	import {mapGetters, mapActions} from 'vuex'
+  import {getNextProvertyData, getRightProvertyData} from '@/api/dataSheets'
+	import {mapGetters, mapMutations} from 'vuex'
 
 	export default {
 		name: 'tabPane',
 		data() {
 			return {
-        nowIndex: '',
-        nextList: []
+        nowIndex: 0,
+				areaIndex: '',
+				page: 1,
+        nextList: [],
+				areaList: [],
+				rightShow: false
 			}
 		},
 		computed: {
@@ -81,11 +99,23 @@
 		methods: {
 			getProvertyType(index) {
 				this.nowIndex = index
+				if(index ==0) {
+					this.rightShow = false
+					let type = 'ly'
+					this.getTopicData(type)
+				} else {
+					this.rightShow = true
+					this._getRightProvertyData()
+				}
 			},
 			getNextData(code) {
         getNextProvertyData(code).then(res => {
           this.nextList = res.data.data
         })
+			},
+			showAreaInMap(item, index) {
+				this.areaIndex = index
+				this.addAreaLayer(item)
 			},
 			next() {
 				this.page += 1
@@ -98,18 +128,14 @@
 				this.page -= 1
 				this.getType()
 			},
-			...mapActions([
-				'setAreaList',
-				'getSearchParams',
-				'getAreaDetail',
-				'tablePaneShow',
-				'loadSearchItemMacro',
-				'setReportFormShow',
-				'setAreaReportFormShow',
-				'getReportData',
-				'getAreaCodeAndDataId',
-				'getReportDataByAreaCode'
-			])
+			_getRightProvertyData() {
+				getRightProvertyData().then(res => {
+					this.areaList = res.data
+				})
+			},
+			...mapMutations({
+				addAreaLayer: 'ADD_PROVERTY_AREA_LAYER'
+			})
 		}
 	}
 </script>
@@ -167,6 +193,9 @@
 					}
 					.active {
 						background-color: #dcdfe6;
+					}
+					.area-pane-box {
+						padding-bottom: 20px;
 					}
 					.area-content {
 						display: flex;

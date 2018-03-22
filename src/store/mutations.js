@@ -27,7 +27,7 @@ function addLayer(datapath, id) {
   getJson(datapath).then(res => {
     const result = mapHelper.addLayerByCodeAndJson(id, res)
     getQueryElementByPoint(result).then(res => {
-      if(res.data.flag !== 3) {
+      if(res.data && res.data.flag !== 3) {
         // 地图飞点
         mapHelper.flyByBounds(handleArray(res.data.points))
         mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length-1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
@@ -184,6 +184,9 @@ const mutations = {
           let index = state.activeAreaInfoList.findIndex(i => v.id === i.id)
           if (index < 0) {
             state.activeAreaInfoList.push(v)
+          } else {
+            v.isActive = true
+            state.activeAreaInfoList.splice(index, 1, v)
           }
         })
         /*如果存在第三级目录，不初始叠加图层*/
@@ -451,6 +454,19 @@ const mutations = {
       addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_3A.json', 'Z10002')
     } else if(flag == 4) {
       addLayer('/ZT_ZTZT_FPZT/ZT_ZTZT_FPZT.json', 'Z10003')
+    }
+  },
+  [TYPE.ADD_PROVERTY_AREA_LAYER](state, data) {
+    addLayer(data.datapath, data.id)
+    data.isActive = true
+    data.children = []
+    if(state.areaInfoData.findIndex(v => v.id == data.id)<0) {
+      state.areaInfoData.push(data)
+    }
+    if(state.activeAreaInfoList.findIndex(v => v.id == data.id)<0) {
+      state.activeAreaInfoList.push(data)
+    } else {
+      state.activeAreaInfoList.splice(state.activeAreaInfoList.findIndex(v => v.id == data.id), 1, data)
     }
   }
 }

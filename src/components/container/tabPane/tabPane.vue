@@ -1,7 +1,6 @@
 <template>
 	<div class="tab-pane">
 		<div class="tab-pane-content">
-			<!-- <ul :class="upOrDown?'slideInDown':'slideOutUp'"> -->
 			<ul v-show="upOrDown && tableMenuPaneShow && !searchPaneShow">
 				<li class="tab-pane-li" v-for="(item, index) in arrayData">
 					<div class="tab-pane-li-title">
@@ -12,8 +11,9 @@
 					</div>
 				</li>
 			</ul>
-			<div class="search-pane-content"
-					v-show="upOrDown && !tableMenuPaneShow && searchPaneShow && !topicListShow">
+			<div
+				class="search-pane-content"
+				v-if="upOrDown && !tableMenuPaneShow && searchPaneShow && !topicListShow">
 				<div class="search-type-button">
 					<button
 						class="type-button"
@@ -153,30 +153,14 @@
 							</div>
 						</div>
 					</li>
-					<li class="search-pane-li" v-for="item in topicList.list" v-if="topicList.type=='fp'">
-						<div class="search-pane-box">
-							<div class="icon-box">
-								<i class="fp-icon"></i>
-							</div>
-							<div class="area-content">
-								<h2>{{item.mc}}</h2>
-								<p>{{item.address}}</p>
-							</div>
-							<div class="detail"  @click.stop="getTopicDetails(item)">
-								<i class="detail-icon"></i>
-								<span>详情</span>
-							</div>
-						</div>
-					</li>
 				</ul>
-				<p v-if="topicList.length > 0">
-				  <el-button size="mini" icon="el-icon-arrow-left" @click="prev()">上一页</el-button>
-				  <el-button size="mini" @click="next()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
-				</p>
 			</div>
 			<div class="child-table-content"
 					v-show="upOrDown && !tableMenuPaneShow && !searchPaneShow && !topicListShow">
 				<child-table></child-table>
+			</div>
+			<div class="fb-box">
+				<v-fb></v-fb>
 			</div>
 			<div class="up-control">
 				<i class="control-icon" :class="{down: !upOrDown}" @click="toggleSlide()"></i>
@@ -187,11 +171,13 @@
 
 <script>
 	import ChildTable from '@/components/container/childTable/childTable'
+	import vFb from '@/components/container/fb/fb'
 	import {mapGetters, mapActions} from 'vuex'
 
 	export default {
 		components: {
-			ChildTable
+			ChildTable,
+			vFb
 		},
 		name: 'tabPane',
 		props: {
@@ -247,6 +233,9 @@
 			flyToPoint(item, index) {
 				this.topicIndex = index
 				this.$mapHelper.flyByPointAndZoom(JSON.parse(item.point), 8)
+			},
+			getNextData(code) {
+
 			},
 			next() {
 				this.page += 1
@@ -367,8 +356,8 @@
 	    	}
 		}
 		.search-pane-content {
+			padding-top: 10px;
 			.search-type-button {
-				padding: 10px 0;
 				.type-button {
 					margin: 0 5px;
 					font-size: 12px;

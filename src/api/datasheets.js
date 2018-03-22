@@ -162,6 +162,19 @@ export function getProvertyTopic() {
   })
 }
 
+// 获得扶贫下一级列表
+export function getNextProvertyData(areacode) {
+  const data = Object.assign({}, {
+      method: 'getPovertyAlleviation',
+      areacode: areacode,
+      start: 0,
+      rows: 10
+  })
+  return axios.post(url, qs.stringify(data)).then(res => {
+      return Promise.resolve(res.data)
+  })
+}
+
 export function getProvertyInfo() {
   const data = Object.assign({}, {
       method: 'getPovertyAlleviationInfo',

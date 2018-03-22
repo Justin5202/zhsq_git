@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    {{mapguid}}
+    {{mapguid, name, areacode}}
   </div>
 </template>
 
@@ -8,6 +8,14 @@
 export default {
     props: {
         mapguid: {
+            type: String,
+            default: ''
+        },
+        name: {
+            type: String,
+            default: ''
+        },
+        areacode: {
             type: String,
             default: ''
         }

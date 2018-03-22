@@ -358,7 +358,8 @@ const _onClick = function (e) {
                     case "line":
                         highlightOption["type"] = features[0].layer.type
                         highlightOption["paint"]={
-                            "line-color":"rgba(85,164,241,0.6)"
+                            "line-color":"rgba(85,164,241,0.6)",
+                            "line-width":2
                         }
                         break;
                     case "fill":

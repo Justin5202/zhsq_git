@@ -3,7 +3,7 @@
     <div class="carousel-wrap">
       <transition>
         <div class="img-container">
-          <transition-group tag="ul" class="slide-ul" name="list">
+          <transition-group tag="ul" class="slide-ul" :name="direction">
             <li
             v-for="(item, index) in pic"
             :key="index" v-show="currentIndex === index"
@@ -13,6 +13,8 @@
           </transition-group>
         </div>
       </transition>
+      <span class="left el-icon-arrow-left" @click="pre"></span>
+      <span class="right el-icon-arrow-right" @click="next"></span>
     </div>
     <div class="img-thumbnail">
       <ul class="img-list">
@@ -21,6 +23,7 @@
         </li>
       </ul>
     </div>
+    <p class="back" @click="back"><span class="el-icon-arrow-left"></span>返回</p>
   </div>
 </template>
 <script>
@@ -31,7 +34,8 @@
       return {
         pic: [],
         currentIndex: 0,
-        timer: null
+        timer: null,
+        direction: 'left'
       }
     },
     created() {
@@ -48,11 +52,26 @@
         this.timer = null
       },
       change(index) {
+        this.direction = 'left'
         this.currentIndex = index
+      },
+      pre() {
+        this.direction = 'left'
+        this.currentIndex--
+        if (this.currentIndex < 0) {
+          this.currentIndex = this.pic.length - 1
+        }
+      },
+      next() {
+        this.direction = 'right'
+        this.currentIndex++
+        if (this.currentIndex > this.pic.length - 1) {
+          this.currentIndex = 0
+        }
       },
       autoPlay() {
         this.currentIndex++
-        if (this.currentIndex > this.images.length - 1) {
+        if (this.currentIndex > this.pic.length - 1) {
           this.currentIndex = 0
         }
       },
@@ -60,6 +79,9 @@
         getMorePic(id).then(res => {
           this.pic = res.data
         })
+      },
+      back() {
+        this.$router.go(-1)
       }
     }
   }
@@ -95,6 +117,20 @@
           }
         }
       }
+      .left, .right {
+        position: absolute;
+        color: #fff;
+        font-size: 40px;
+        cursor: pointer;
+      }
+      .left {
+        top: 50%;
+        left: 0;
+      }
+      .right {
+        top: 50%;
+        right: 0;
+      }
     }
     .img-list {
       height: 150px;
@@ -117,22 +153,44 @@
         }
       }
     }
+    .back {
+      color: #fff;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
   }
-  .list-enter-to {
+  // 左滑动
+  .left-enter-to {
     transition: all 1s ease;
     transform: translateX(0);
   }
-
-  .list-leave-active {
+  .left-leave-active {
     transition: all 1s ease;
-    transform: translateX(-100%)
+    transform: translateX(-100%);
+  }
+  .left-enter {
+    transform: translateX(100%);
+  }
+   .left-leave {
+    transform: translateX(0);
   }
 
-  .list-enter {
-    transform: translateX(100%)
+  // 右滑动
+  .right-enter-to {
+    transition: all 1s ease;
+    transform: translateX(0);
   }
-
-  .list-leave {
-    transform: translateX(0)
+  .right-leave-active {
+    transition: all 1s ease;
+    transform: translateX(100%);
+  }
+  .right-enter {
+    transform: translateX(-100%);
+  }
+  .right-leave {
+    transform: translateX(0);
   }
 </style>

@@ -49,13 +49,13 @@
   <div class="layer-tool-box" v-show="layerToolVisible">
     <div class="layer-tool-content">
       <div class="layer-tool-item">
-        <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="" @click="changeBaseMap('sl')">
+        <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="" @click="changeBaseMap('dt')">
       </div>
       <div class="layer-tool-item">
-        <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="" @click="changeBaseMap('xs')">
+        <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="" @click="changeBaseMap('dem')">
       </div>
       <div class="layer-tool-item">
-        <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="" @click="changeBaseMap('yx')">
+        <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="" @click="changeBaseMap('img')">
       </div>
     </div>
     <layer-control></layer-control>
@@ -181,15 +181,18 @@ export default {
     },
     //地图切换
     changeBaseMap(type){
-      if(type == 'sl'){
+      if(type == 'dt'){
+        this.$mapHelper.setMapFlay(type)
         this.$mapHelper.setAllImageMapVisibility(false)
         this.$mapHelper.setAllDemMapVisibility(false)
-      }else if(type == 'xs'){
-        this.$mapHelper.setAllImageMapVisibility(false)
-        this.$mapHelper.setAllDemMapVisibility(true)
-      }else if(type == 'yx'){
+      }else if(type == 'img'){
+        this.$mapHelper.setMapFlay(type)
         this.$mapHelper.setAllImageMapVisibility(true)
         this.$mapHelper.setAllDemMapVisibility(false)
+      }else if(type == 'dem'){
+        this.$mapHelper.setMapFlay(type)
+        this.$mapHelper.setAllImageMapVisibility(false)
+        this.$mapHelper.setAllDemMapVisibility(true)
       }
     },
     //打开图层切换

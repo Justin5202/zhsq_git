@@ -204,7 +204,6 @@ export default {
         'id': id
       })
       var dataType = parseInt(type)%10
-      console.log(dataType)
       if(dataType == 2|| dataType == 3){
         this.getAreaCodeAndDataId({
           "areaCode": this.areaList,
@@ -214,11 +213,15 @@ export default {
           'areaCode': this.areaCodeAndDataId[0],
           'dataId': this.areaCodeAndDataId[1]
         })
+        this.setReportFormShow(true)
+					this.setAreaReportFormShow(false)
       }else if(dataType == 4|| dataType == 5){
         this.getDataFileByCodeAndId({
           "areaCode":this.areaList,
           "dataId":id
         })
+        this.setReportFormShow(false)
+				this.setAreaReportFormShow(true)
       }
     },
     ...mapActions([
@@ -226,7 +229,8 @@ export default {
       'setReportFormShow',
       'getReportData',
       'getAreaCodeAndDataId',
-      'getDataFileByCodeAndId'
+      'getDataFileByCodeAndId',
+      'setAreaReportFormShow'
     ])
   }
 }

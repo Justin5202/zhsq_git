@@ -56,7 +56,8 @@
           </tr>
       </table>
       <div class="table-tab-context">
-          <div v-html="tabContext"></div>
+          <div v-html="item" v-show="getContextType == 'string'&& activeTab == index" class="html-string" v-for="(item,index) in reportFormData.data"></div>
+          <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="getContextType == 'file'&& activeTab == index" v-for="(item,index) in reportFormData.data"></iframe>
       </div>
     </div>
   </div>
@@ -76,7 +77,6 @@ export default {
       dataId: '',
       areaCode: '',
       dataList: [],
-      tabContext:'',
       activeTab:0
     }
   },
@@ -87,12 +87,19 @@ export default {
       'areaReportFormShow',
       'reportFormData',
     ]),
+    getContextType(){
+      let type = ''
+      type = this.reportFormData.type
+      return type
+    }
   },
   methods: {
     //关闭模态框
     colseDialog() {
       this.setReportFormShow(false)
       this.setAreaReportFormShow(false)
+      this.activeTab = 0
+      this.tabContext = this.reportFormData.data[0]
     },
     clearItem(index) {
       this.setAreaList({
@@ -107,7 +114,6 @@ export default {
     //tab 点击
     showContent(index){
       this.activeTab = index
-      this.tabContext = this.reportFormData.data[index]
     },
     //清空按钮点击
     clearForm() {
@@ -130,6 +136,7 @@ export default {
 <style lang="scss" scoped>
 .report-form-detail {
     min-width: 800px;
+    max-width: 1100px;
     background-color: #fff;
     .report-form-header {
         width: 100%;
@@ -264,7 +271,15 @@ export default {
         .table-tab-context{
           width: 100%;
           height: 500px;
+        }
+        .html-string{
+          width: 100%;
+          height: 500px;
           overflow-y: auto;
+        }
+        .html-doc{
+          width: 100%;
+          height: 500px;
         }
     }
 }

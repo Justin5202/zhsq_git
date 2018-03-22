@@ -29,6 +29,7 @@
 </template>
 <script>
 import {login} from '../../../api/user'
+import {mapActions} from 'vuex'
 export default {
   name: 'login',
   data() {
@@ -58,11 +59,13 @@ export default {
       login(username, password).then(res => {
         // -3已登录， -2超时
         if(res.code === '1') {
+          this.setUserinfo(res.data)
           document.cookie = 'loginSession' + "=" + escape(res.data.sessionId)
           this.$router.push('/')
         }
       })
-    }
+    },
+    ...mapActions(['setUserinfo'])
   }
 }
 </script>

@@ -2,13 +2,13 @@
 <div class="tool" :style="{height:toolHeight +'px'}">
   <div class="tool-top">
     <div class="tool-box">
-      <span class="tool-item" @click="openLayerTool()">
+      <span class="tool-item" @click="openLayerTool()" v-show="isInArray(2, this.userinfo.autuority)">
   				          <img src="../../../assets/images/map/图层.png" alt="">
   			      </span>
       <span class="circle" v-if="areaLayerLength > 0">{{areaLayerLength}}</span>
     </div>
     <div class="tool-box">
-      <span class="tool-item" @click="showAreaBox()">
+      <span class="tool-item" @click="showAreaBox()" v-show="isInArray(9, this.userinfo.autuority)">
         				<img src="../../../assets/images/map/区域.png" alt="">
         			</span>
       <span class="circle" v-if="areaList.length > 0">{{areaList.length}}</span>
@@ -19,10 +19,10 @@
       </span>
       <span class="circle" v-if="reportFormLength > 0">{{reportFormLength}}</span>
     </div>
-    <span class="tool-item ">
+    <span class="tool-item" v-show="isInArray(3, this.userinfo.autuority)">
 				<v-measure/>
 			</span>
-    <span class="tool-item ">
+    <span class="tool-item" v-show="isInArray(3, this.userinfo.autuority)">
                 <v-statistics/>
 			</span>
     <span class="tool-item ">
@@ -38,11 +38,11 @@
 				<img v-if="!IsAll" src="../../../assets/images/map/局部图层.png" alt="">
         <img v-else src="../../../assets/images/map/全景图层.png" alt="">
 			</span>
-    <span class="tool-item " @click="changeMapStatus()">
+    <span class="tool-item " v-show="isInArray(4, this.userinfo.autuority)" @click="changeMapStatus()">
 				<img src="../../../assets/images/map/2D@2x.png" alt="" v-show="!is2Dmap">
                 <img src="../../../assets/images/map/3D@2x.png" alt="" v-show="is2Dmap">
 			</span>
-    <span class="tool-item ">
+    <span class="tool-item " v-show="isInArray(8, this.userinfo.autuority)">
 				<img src="../../../assets/images/map/定位.png" alt="">
 			</span>
   </div>
@@ -105,7 +105,8 @@ export default {
       'areaList',
       'activeAreaInfoList',
       'areaInfoData',
-      'searchItemMacroList'
+      'searchItemMacroList',
+      'userinfo'
     ]),
     areaLayerLength() {
       let len = 0
@@ -160,10 +161,9 @@ export default {
     toggleShowData() {
       this.IsAll = !this.IsAll
       if(this.IsAll) {
-        console.log(this.$store.state.idList, this.$store.state.areaCodeList)
-        this.$mapHelper.setFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, [])
+        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, [])
       } else {
-        this.$mapHelper.setFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, this.$store.state.areaCodeList)
+        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, this.$store.state.areaCodeList)
       }
     },
     //2D 3D切换
@@ -231,6 +231,12 @@ export default {
     },
     closeUserCenter() {
       this.showCenter = false
+    },
+    isInArray(element, array) { // 根据用户权限控制工具的显示
+      if (!array) {
+        return false
+      }
+      return array.indexOf(element) != -1 
     }
   }
 }

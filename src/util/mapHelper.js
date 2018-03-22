@@ -293,27 +293,92 @@ const _onClick = function (e) {
 
                 switch (popupFlag) {
                     case "ly":
-                        
+                        // 旅游图层的
+                        setPicPopupToMap([
+                            e.lngLat.lng, e.lngLat.lat
+                        ], features[0].properties.wyid, features[0].properties.mc, null);
                         break;
 
                     case "fp":
+                        // 扶贫图层的
+                        switch (features[0].properties.mulu_bm) {
+                            case "F01010100":
+                                setPicPopupToMap([
+                                        e.lngLat.lng, e.lngLat.lat
+                                    ], features[0].properties.mulu_bm, features[0].properties.xzjmc, features[0].properties.xzjdm);
+                                break;
+                            case "F01010200":
+                                setPicPopupToMap([
+                                        e.lngLat.lng, e.lngLat.lat
+                                    ], features[0].properties.mulu_bm, features[0].properties.sqcmc, features[0].properties.sqcdm);
+                                break;
                         
+                            default:
+                                setPopupToMap([
+                                        e.lngLat.lng, e.lngLat.lat
+                                    ], features[0].properties.mapguid);
+                                break;
+                        }
                         break;
                 
                     default:
+                        // 普通POI
+                        setPopupToMap([
+                                e.lngLat.lng, e.lngLat.lat
+                            ], features[0].properties.mapguid);
                         break;
                 }
-                // if (ZTExceptFlag) {
-                //     setPicPopupToMap([
-                //         e.lngLat.lng, e.lngLat.lat
-                //     ], features[0].properties.wyid, features[0].properties.mc, features[0].properties.xzq_bm);
-                // } else {
-                //     setPopupToMap([
-                //         e.lngLat.lng, e.lngLat.lat
-                //     ], features[0].properties.mapguid);
-                // }
 
+                // 设置高亮
+                removeLayerById("highlightLayer");
+                let highlightOption = {
+                    "id": "highlightLayer",
+                    "source": {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": [{
+                                "type": "Feature",
+                                "geometry": features[0].geometry
+                            }]
+                        }
+                    },
+                    "layout": {                      
+                    }
+                };
 
+                            // 判断点线面symbol
+                switch (features[0].layer.type) {
+                    case "circle":
+                        highlightOption["type"] = features[0].layer.type
+                        highlightOption["paint"]={
+                            "circle-color":"rgba(85,164,241,0.6)"
+                        }
+                        break;
+                    case "line":
+                        highlightOption["type"] = features[0].layer.type
+                        highlightOption["paint"]={
+                            "line-color":"rgba(85,164,241,0.6)"
+                        }
+                        break;
+                    case "fill":
+                        highlightOption["type"] = features[0].layer.type
+                        highlightOption["paint"]={
+                            "fill-color":"rgba(85,164,241,0.6)"
+                        }
+                        break;
+                    case "symbol":
+                        highlightOption["type"] = "circle"
+                        highlightOption["paint"]={
+                            "circle-color":"rgba(85,164,241,0.6)"
+                        }
+                        break;
+
+                    default:
+                        console.log("非点、线、面、symbol、3d类型-点击高亮");
+                        break;
+                }
+                map.addLayer(highlightOption);
                 // 不在排除的图层中-end
             }
 
@@ -454,6 +519,8 @@ const setAllImageMapVisibility = function (visibility) {
             });
             // 判断当前视野是否需要显示 天地图
             _containRelationshipCallback();
+            // 判断 当前是否有数据叠加 开关蒙版
+            _setMBVisibility();
         } else {
             layersId_img.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
@@ -495,6 +562,8 @@ const setAllDemMapVisibility = function (visibility) {
             });
             // 判断当前视野是否需要显示 天地图
             _containRelationshipCallback();
+            // 判断 当前是否有数据叠加 开关蒙版
+            _setMBVisibility();
         } else {
             layersId_dem.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
@@ -594,13 +663,30 @@ const _containRelationshipCallback = function () {
  */
 const _setMBVisibility = function(){
     let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb","visibility");
+    let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb","visibility");
     if (codeArray.length > 0) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+        switch (mapFlay) {
+            case "dt":
+                if (visibility != "visible") {
+                    map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+                }
+                break;
+            case "img":
+                if (img_visibility != "visible") {
+                    map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+                }
+                break;
+        
+            default:
+                break;
         }
+        
     }else{
         if (visibility != "none") {
             map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
+        }
+        if (img_visibility != "none") {
+            map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
         }
     }
 }
@@ -1139,6 +1225,7 @@ const closePopup = function () {
         infoPopup_vm.$destroy();
         infoPopup_vm = null;
     }
+    removeLayerById("highlightLayer");
 };
 
 /**
@@ -1158,7 +1245,7 @@ const setPicPopupToMap = function (geoPoint, _mapguid, _name, _areacode) {
         el: '#picPopup',
         store,
         router,
-        template: '<v-picPopup :mapguid="mapguid"/>',
+        template: '<v-picPopup :mapguid="mapguid" :name="name" :areacode="areacode"/>',
         data: function () {
             return {mapguid: _mapguid, name: _name, areacode: _areacode}
         },
@@ -1182,6 +1269,7 @@ const closePicPopup = function () {
         picPopup_vm.$destroy();
         picPopup_vm = null;
     }
+    removeLayerById("highlightLayer");
 };
 
 /**

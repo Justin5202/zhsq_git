@@ -2,26 +2,34 @@
 <div>
   <i class="el-icon-loading" v-if="!uuidClickedInfo && !showArray.length > 0"></i>
   <div class="pop" v-if="uuidClickedInfo && showArray.length > 0">
-    <div class="pop-title">
-      <h3 class="title">{{uuidClickedInfo._source.address}}</h3>
-      <i class="cross-icon" @click="isShowPop()"></i>
-    </div>
-    <ul class="pop-ul">
-      <li class="pop-li" v-for="item in showArray">
-        <p>{{item._source.name_a}}</p>
-        <span>{{uuidClickedInfo._source[item._source.name]}}</span>
-      </li>
-    </ul>
-      <div class="button-box">
-        <div class="button-item left-button-item" @click="searchAroundShow()">
-          <i class="icon-searcharound"></i>
-          <span class="search-around">搜周边</span>
-        </div>
-        <div class="button-item">
-          <i class="icon-checkdetail"></i>
-          <span>查详情</span>
-        </div>
+    <div v-if="!notPoi">
+      <div class="pop-title">
+        <h3 class="title">{{uuidClickedInfo._source.address}}</h3>
+        <i class="cross-icon" @click="isShowPop()"></i>
       </div>
+      <ul class="pop-ul">
+        <li class="pop-li" v-for="item in showArray">
+          <p>{{item._source.name_a}}</p>
+          <span>{{uuidClickedInfo._source[item._source.name]}}</span>
+        </li>
+      </ul>
+    </div>
+    <div v-if="notPoi">
+      <div class="pop-title">
+        <h3 class="title">{{areaDetailInfo.areaname}}</h3>
+        <i class="cross-icon" @click="isShowPop()"></i>
+      </div>
+    </div>
+    <div class="button-box">
+      <div class="button-item left-button-item" @click="searchAroundShow()">
+        <i class="icon-searcharound"></i>
+        <span class="search-around">搜周边</span>
+      </div>
+      <div class="button-item">
+        <i class="icon-checkdetail"></i>
+        <span>查详情</span>
+      </div>
+    </div>
     </div>
   </div>
 </div>
@@ -29,14 +37,15 @@
 
 <script>
 import {getQueryOnlineByUuid, getThematicMap} from '@/api/dataSheets'
-import {mapActions} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
   data() {
     return {
       uuidClickedInfo: '',
       showArray: [],
-      isShow: false
+      isShow: false,
+      notPoi: false
     }
   },
   props: {
@@ -44,6 +53,11 @@ export default {
       type: String,
       default: ''
     }
+  },
+  computed: {
+    ...mapGetters([
+      'areaDetailInfo'
+    ])
   },
   beforeMount() {
     this._getQueryOnlineByUuid(this.mapguid)
@@ -55,11 +69,41 @@ export default {
     searchAroundShow() {
       this.setAroundSearchShow(true)
     },
+    checkDataType(data) {
+      if(!data._source.ztmc) {
+        return
+      }
+      let info = data._source
+      let reg1 = RegExp(/市政府驻地\?政府机关/)
+      let reg2 = RegExp(/区县驻地\?政府机关/)
+      let reg3 = RegExp(/乡镇|街|驻地/)
+      let reg4 = RegExp(/社区村驻地/)
+      let code = ''
+      if(reg1.exec(info.ztmc)) {
+        code = info.qxdm
+        this.notPoi = true
+      } else if(reg2.exec(info.ztmc)) {
+        code = info.qxdm
+        this.notPoi = true
+      } else if(reg3.exec(info.ztmc)) {
+        code = info.xzjdm
+        this.notPoi = true
+      } else if(reg4.exec(info.ztmc)) {
+        code = info.sqcdm
+        this.notPoi = true
+      }
+      let areaInfo = {
+				areacode: code,
+			  areaname: ''
+      }
+      this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
+    },
     _getQueryOnlineByUuid(id) {
       getQueryOnlineByUuid(id).then(res => {
         if (res.code == "1") {
           let data = JSON.parse(res.data.data)
           this.uuidClickedInfo = data
+          this.checkDataType(data)
           getThematicMap(data._type).then(res => {
             if (res.data !== '[]') {
               this.showArray = JSON.parse(res.data)
@@ -73,7 +117,8 @@ export default {
       })
     },
     ...mapActions([
-      'setAroundSearchShow'
+      'setAroundSearchShow',
+      'setAreaInfo'
     ])
   }
 }

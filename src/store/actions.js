@@ -59,27 +59,18 @@ export const getAreaDetail = function({
         commit(TYPE.TABLE_PANE_SHOW, false)
     })
 }
-export const setAreaInfo = function({
-    commit,
-    state
-}, {
-    areainfo,
-    isRemoveAll
-}) {
+export const setAreaInfo = function({ commit, state }, { areainfo, isRemoveAll }) {
     if (!isRemoveAll) {
         getNextAreaDetailInfo(areainfo.areacode).then(res => {
-            commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
-            commit(TYPE.SET_AREA_INFO, areainfo)
-            commit(TYPE.SET_SELECTED_AREA_LIST, {
-                areainfo,
-                isRemoveAll
-            })
+            if (res.code == '1') {
+                areainfo.areaname = JSON.parse(res.data).areaname
+                commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
+                commit(TYPE.SET_AREA_INFO, areainfo)
+                commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })
+            }
         })
     } else {
-        commit(TYPE.SET_SELECTED_AREA_LIST, {
-            areainfo,
-            isRemoveAll
-        })
+        commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })
     }
 }
 export const deleteAreaInfo = function({
@@ -127,21 +118,9 @@ export const setSecAreaList = function({
 }, list) {
     commit(TYPE.SET_SEC_AREA_LIST, list)
 }
-export const setAreaList = function({
-        commit,
-        state
-    }, {
-        bol,
-        id
-    }) {
-        console.log({
-            bol,
-            id
-        })
-        commit(TYPE.SET_LEFT_ACTIVE_AREA_LIST, {
-            bol,
-            id
-        })
+export const setAreaList = function({ commit, state }, { bol, id }) {
+        console.log({ bol, id })
+        commit(TYPE.SET_LEFT_ACTIVE_AREA_LIST, { bol, id })
     }
     // 区县区域下一级详细信息
 export const getNextAreaInfo = function({
@@ -466,52 +445,56 @@ export const getProvertyData = function({ commit, state }, type) {
     }
     // 获取贫困乡镇数据详情
 export const getAreaPovertyAlleviationDetailByAreaCode = function({ commit, state }, data) {
-    var dataArray = { 'title': data.mc, 'name': [], 'data': { dataContex: [], dataType: [] } }
-    getAreaPovertyAlleviationDetail(data.areaCode).then(res => {
-        var filePath = ''
-        var htm = ''
-        var html = ''
-        var fileName = ''
-        if (res.data[0].data.dataDesc) {
-            dataArray.name.push(res.data[0].name)
-            filePath = 'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test/serviceMap/zip/' + res.data[0].data.dataDesc
-            fileName = res.data[0].data.dataDesc.split('.')[0]
-            htm = fileName + '.' + 'htm'
-            html = fileName + '.' + 'html'
-            var promise = new JSZip.external.Promise(function(resolve, reject) {
-                JSZipUtils.getBinaryContent(filePath, function(err, data) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(data);
-                    }
+        var dataArray = { 'title': data.mc, 'name': [], 'data': { dataContex: [], dataType: [] } }
+        getAreaPovertyAlleviationDetail(data.areaCode).then(res => {
+            var filePath = ''
+            var htm = ''
+            var html = ''
+            var fileName = ''
+            if (res.data[0].data.dataDesc) {
+                dataArray.name.push(res.data[0].name)
+                filePath = 'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test/serviceMap/zip/' + res.data[0].data.dataDesc
+                fileName = res.data[0].data.dataDesc.split('.')[0]
+                htm = fileName + '.' + 'htm'
+                html = fileName + '.' + 'html'
+                var promise = new JSZip.external.Promise(function(resolve, reject) {
+                    JSZipUtils.getBinaryContent(filePath, function(err, data) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(data);
+                        }
+                    })
                 })
-            })
-            promise.then(JSZip.loadAsync)
-                .then(function(zip) {
-                    if (zip.file(htm)) {
-                        return zip.file(htm).async("base64")
-                    } else if (zip.file(html)) {
-                        return zip.file(html).async("base64")
-                    }
-                })
-                .then(function success(text) {
-                    dataArray.data.dataContex.push(text)
-                    dataArray.data.dataType.push('file')
-                    for (var i = 1; i < res.data.length; i++) {
-                        dataArray.name.push(res.data[i].name)
-                        dataArray.data.dataContex.push(res.data[i].data)
-                        dataArray.data.dataType.push('string')
-                    }
-                    commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
-                }, function error(e) {})
-        } else {
-            for (var i = 0; i < res.data.length; i++) {
-                dataArray.name.push(res.data[i].name)
-                dataArray.data.dataContex.push(res.data[i].data)
-                dataArray.data.dataType.push('string')
+                promise.then(JSZip.loadAsync)
+                    .then(function(zip) {
+                        if (zip.file(htm)) {
+                            return zip.file(htm).async("base64")
+                        } else if (zip.file(html)) {
+                            return zip.file(html).async("base64")
+                        }
+                    })
+                    .then(function success(text) {
+                        dataArray.data.dataContex.push(text)
+                        dataArray.data.dataType.push('file')
+                        for (var i = 1; i < res.data.length; i++) {
+                            dataArray.name.push(res.data[i].name)
+                            dataArray.data.dataContex.push(res.data[i].data)
+                            dataArray.data.dataType.push('string')
+                        }
+                        commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
+                    }, function error(e) {})
+            } else {
+                for (var i = 0; i < res.data.length; i++) {
+                    dataArray.name.push(res.data[i].name)
+                    dataArray.data.dataContex.push(res.data[i].data)
+                    dataArray.data.dataType.push('string')
+                }
+                commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
             }
-            commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
-        }
-    })
+        })
+    }
+    // 保存用户登录信息
+export const setUserinfo = function({ commit, state }, data) {
+    commit(TYPE.SET_USER_INFO, data)
 }

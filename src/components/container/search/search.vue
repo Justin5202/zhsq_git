@@ -165,7 +165,7 @@
 				this.activeName = this.selectStart = name
 				let areaInfo = {
 					areacode: id,
-			    areaname: name
+			    	areaname: name
 				}
 				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
 				getSelect(id).then(res => {

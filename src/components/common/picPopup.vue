@@ -7,17 +7,13 @@
 
 <script>
 import {mapGetters} from 'vuex'
+import {getMorePic} from '@/api/datasheets'
+
 export default {
     props: {
         mapguid: {},
-        name: {
-            type: String,
-            default: ''
-        },
-        areacode: {
-            type: String,
-            default: ''
-        }
+        name: {},
+        areacode: {}
     },
     computed: {
       ...mapGetters([
@@ -32,6 +28,9 @@ export default {
         })
         return temp
       }
+    },
+    created() {
+      console.log(this.areacode)
     },
     methods: {
       checkMorePic() {

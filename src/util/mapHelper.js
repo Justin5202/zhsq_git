@@ -88,8 +88,11 @@ var vecterClickExceptLayerArray = null;
 // 点击查询时 影像地图不参与查询的 图层数组 地图初始化时赋值
 var imageClickExceptLayerArray = null;
 
-// 点击查询时 专题数据名 判断显示信息窗还是 图片窗用 地图初始化时赋值
-var ZTExceptLayerArray = null;
+// 点击查询时 专题数据名 判断显示信息窗还是 图片窗用 地图初始化时赋值  旅游
+var ZTExceptLayerArray_ly = null;
+
+// 点击查询时 专题数据名 判断显示信息窗还是 图片窗用 地图初始化时赋值  扶贫
+var ZTExceptLayerArray_fp = null;
 
 /**
  * @function 初始化地图
@@ -110,9 +113,16 @@ const initMap = function (option) {
     }
 
     // 区分专题数据图层（旅游、扶贫）和 目录数据图层 点击地图回调用
-    if (window.ZTExceptLayer) {
-        ZTExceptLayerArray = window
-            .ZTExceptLayer
+    if (window.ZTExceptLayer_ly) {
+        ZTExceptLayerArray_ly = window
+            .ZTExceptLayer_ly
+            .split(",");
+    }
+
+    // 区分专题数据图层（旅游、扶贫）和 目录数据图层 点击地图回调用
+    if (window.ZTExceptLayer_fp) {
+        ZTExceptLayerArray_fp = window
+            .ZTExceptLayer_fp
             .split(",");
     }
 
@@ -184,46 +194,7 @@ const initMap = function (option) {
 
     // 样式 文件有变动时 进行 过滤
     map.on('styledata', function () {
-        codeArray.forEach(element => {
-            if (layersId[element]) {
-
-                let filter = ["any"];
-
-                areacodeArray.forEach(element => {
-                    filter.push([
-                        "all",
-                        [
-                            ">=", "xzq_bm", element
-                        ],
-                        [
-                            "<=", "xzq_bm", element + "z"
-                        ]
-                    ]);
-                });
-
-                // 有区域编码时
-                if (filter.length > 1) {
-                    // 如果有图层一定是数组
-                    layersId[element].forEach(element => {
-                        if (!filterMap[element]) {
-                            map.setFilter(element, filter);
-                        } else {
-                            map.setFilter(element, ["all", filterMap[element], filter]);
-                        }
-                    });
-                } else {
-                    layersId[element].forEach(element => {
-                        if (!filterMap[element]) {
-                            map.setFilter(element, null);
-                        } else {
-                            map.setFilter(element, filterMap[element]);
-                        }
-                    });
-
-                }
-
-            }
-        })
+        doFilterByCodeArrayAndAreacodeArray(codeArray,areacodeArray);
     });
 
     return map;
@@ -289,31 +260,76 @@ const _onClick = function (e) {
                     break;
                 }
             }
-            // 不在排除的图层中
+            
             if (!exceptFlag) {
-                // 判断是否属于 旅游 和 扶贫 弹照片窗 还是 信息窗
-                let ZTExceptFlag = false;
-                ZTExceptLayerArray.forEach((element) => {
-                    if (layersId[element] && (!ZTExceptFlag)) {
+                // 不在排除的图层中-start
+
+                // poi类型不标志位，便利旅游数组，扶贫数组 
+                // popupFlag 为（'ly'弹旅游窗相关、'fp'弹扶贫窗相关、null信息窗相关）
+                let popupFlag = null;
+                ZTExceptLayerArray_ly.forEach((element) => {
+                    // popupFlag 如果已经被赋值就不继续了
+                    if (layersId[element] && (!popupFlag)) {
                         for (let index = 0; index < layersId[element].length; index++) {
                             if (layersId[element][index] == features[0].layer["id"]) {
-                                ZTExceptFlag = true;
+                                popupFlag = "ly";
                                 break;
                             }
                         }
                     }
                 });
 
-                if (ZTExceptFlag) {
-                    setPicPopupToMap([
-                        e.lngLat.lng, e.lngLat.lat
-                    ], features[0].properties.wyid, features[0].properties.mc, features[0].properties.xzq_bm);
-                } else {
-                    setPopupToMap([
-                        e.lngLat.lng, e.lngLat.lat
-                    ], features[0].properties.mapguid);
+                ZTExceptLayerArray_fp.forEach((element) => {
+                    // popupFlag 如果已经被赋值就不继续了
+                    if (layersId[element] && (!popupFlag)) {
+                        for (let index = 0; index < layersId[element].length; index++) {
+                            if (layersId[element][index] == features[0].layer["id"]) {
+                                popupFlag = "fp";
+                                break;
+                            }
+                        }
+                    }
+                });
+
+                switch (popupFlag) {
+                    case "ly":
+                        // 旅游图层的
+                        setPicPopupToMap([
+                            e.lngLat.lng, e.lngLat.lat
+                        ], features[0].properties.wyid, features[0].properties.mc, null);
+                        break;
+
+                    case "fp":
+                        // 扶贫图层的
+                        switch (features[0].properties.mulu_bm) {
+                            case "F01010100":
+                                setPicPopupToMap([
+                                        e.lngLat.lng, e.lngLat.lat
+                                    ], features[0].properties.mulu_bm, features[0].properties.xzjmc, features[0].properties.xzjdm);
+                                break;
+                            case "F01010200":
+                                setPicPopupToMap([
+                                        e.lngLat.lng, e.lngLat.lat
+                                    ], features[0].properties.mulu_bm, features[0].properties.sqcmc, features[0].properties.sqcdm);
+                                break;
+                        
+                            default:
+                                setPopupToMap([
+                                        e.lngLat.lng, e.lngLat.lat
+                                    ], features[0].properties.mapguid);
+                                break;
+                        }
+                        break;
+                
+                    default:
+                        // 普通POI
+                        setPopupToMap([
+                                e.lngLat.lng, e.lngLat.lat
+                            ], features[0].properties.mapguid);
+                        break;
                 }
 
+                // 不在排除的图层中-end
             }
 
         }
@@ -453,6 +469,8 @@ const setAllImageMapVisibility = function (visibility) {
             });
             // 判断当前视野是否需要显示 天地图
             _containRelationshipCallback();
+            // 判断 当前是否有数据叠加 开关蒙版
+            _setMBVisibility();
         } else {
             layersId_img.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
@@ -494,6 +512,8 @@ const setAllDemMapVisibility = function (visibility) {
             });
             // 判断当前视野是否需要显示 天地图
             _containRelationshipCallback();
+            // 判断 当前是否有数据叠加 开关蒙版
+            _setMBVisibility();
         } else {
             layersId_dem.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
@@ -593,13 +613,30 @@ const _containRelationshipCallback = function () {
  */
 const _setMBVisibility = function(){
     let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb","visibility");
+    let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb","visibility");
     if (codeArray.length > 0) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+        switch (mapFlay) {
+            case "dt":
+                if (visibility != "visible") {
+                    map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+                }
+                break;
+            case "img":
+                if (img_visibility != "visible") {
+                    map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+                }
+                break;
+        
+            default:
+                break;
         }
+        
     }else{
         if (visibility != "none") {
             map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
+        }
+        if (img_visibility != "none") {
+            map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
         }
     }
 }
@@ -932,6 +969,55 @@ const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArra
 };
 
 /**
+ * @function 执行filter更改
+ * @param 目录编码数组，行政区编码数组
+ * @returns null
+ */
+const doFilterByCodeArrayAndAreacodeArray= function (_codeArray, _areacodeArray) {
+    _codeArray.forEach(element => {
+        if (layersId[element]) {
+
+            let filter = ["any"];
+
+            _areacodeArray.forEach(element => {
+                filter.push([
+                    "all",
+                    [
+                        ">=", "xzq_bm", element
+                    ],
+                    [
+                        "<=", "xzq_bm", element + "z"
+                    ]
+                ]);
+            });
+
+            // 有区域编码时
+            if (filter.length > 1) {
+                // 如果有图层一定是数组
+                layersId[element].forEach(element => {
+                    if (!filterMap[element]) {
+                        map.setFilter(element, filter);
+                    } else {
+                        map.setFilter(element, ["all", filterMap[element], filter]);
+                    }
+                });
+            } else {
+                layersId[element].forEach(element => {
+                    if (!filterMap[element]) {
+                        map.setFilter(element, null);
+                    } else {
+                        map.setFilter(element, filterMap[element]);
+                    }
+                });
+
+            }
+
+        }
+    })
+
+};
+
+/**
  * @function 飞到某个层级的某个点
  * @param geoPoint (Array),层级
  * @returns null
@@ -1108,7 +1194,7 @@ const setPicPopupToMap = function (geoPoint, _mapguid, _name, _areacode) {
         el: '#picPopup',
         store,
         router,
-        template: '<v-picPopup :mapguid="mapguid"/>',
+        template: '<v-picPopup :mapguid="mapguid" :name="name" :areacode="areacode"/>',
         data: function () {
             return {mapguid: _mapguid, name: _name, areacode: _areacode}
         },
@@ -1258,6 +1344,7 @@ export default {
     setOpacityByCode,
 
     setFilterByCodeArrayAndAreacodeArray,
+    doFilterByCodeArrayAndAreacodeArray,
 
     setMarkToMap,
     setMarksToMap,

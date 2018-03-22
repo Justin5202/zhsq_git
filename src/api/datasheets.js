@@ -166,7 +166,20 @@ export function getProvertyTopic() {
 export function getNextProvertyData(areacode) {
   const data = Object.assign({}, {
       method: 'getPovertyAlleviation',
-      areacode: areacode,
+      zCode: areacode,
+      start: 0,
+      rows: 10
+  })
+  return axios.post(url, qs.stringify(data)).then(res => {
+      return Promise.resolve(res.data)
+  })
+}
+
+// 获得脱贫攻坚数据
+export function getRightProvertyData() {
+  const data = Object.assign({}, {
+      method: 'getPovertyAlleviationData',
+      // areacode: areacode,
       start: 0,
       rows: 10
   })

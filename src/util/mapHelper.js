@@ -11,6 +11,7 @@
 
 import Vue from 'vue'
 import store from '../store/index'
+import router from '../router'
 import infoPopupVm from '../components/common/infoPopup'
 import picPopupVm from '../components/common/picPopup'
 import cqbounds from '../components/common/config/cqbounds'
@@ -479,29 +480,78 @@ const setAllDemMapVisibility = function (visibility) {
  * @returns boolean
  */
 const _containRelationshipCallback = function () {
-    let lngLatBounds = map.getBounds();
+    // let lngLatBounds = map.getBounds();
 
-    let newBounds = turf.polygon([
-        [
-            [
-                lngLatBounds._ne.lng, lngLatBounds._sw.lat
-            ],
-            [
-                lngLatBounds._ne.lng, lngLatBounds._ne.lat
-            ],
-            [
-                lngLatBounds._sw.lng, lngLatBounds._ne.lat
-            ],
-            [
-                lngLatBounds._sw.lng, lngLatBounds._sw.lat
-            ],
-            [lngLatBounds._ne.lng, lngLatBounds._sw.lat]
-        ]
-    ]);
+    // let newBounds = turf.polygon([
+    //     [
+    //         [
+    //             lngLatBounds._ne.lng, lngLatBounds._sw.lat
+    //         ],
+    //         [
+    //             lngLatBounds._ne.lng, lngLatBounds._ne.lat
+    //         ],
+    //         [
+    //             lngLatBounds._sw.lng, lngLatBounds._ne.lat
+    //         ],
+    //         [
+    //             lngLatBounds._sw.lng, lngLatBounds._sw.lat
+    //         ],
+    //         [lngLatBounds._ne.lng, lngLatBounds._sw.lat]
+    //     ]
+    // ]);
 
-    console.log(cq);
+    // var line1 = turf.lineString( [
+    //     [
+    //         lngLatBounds._ne.lng, lngLatBounds._sw.lat
+    //     ],
+    //     [
+    //         lngLatBounds._ne.lng, lngLatBounds._ne.lat
+    //     ],
+    //     [
+    //         lngLatBounds._sw.lng, lngLatBounds._ne.lat
+    //     ],
+    //     [
+    //         lngLatBounds._sw.lng, lngLatBounds._sw.lat
+    //     ],
+    //     [lngLatBounds._ne.lng, lngLatBounds._sw.lat]
+    // ]);
+    // var line2 = turf.lineString(cqbounds[0]);
+    // removeLayerById("123");
+    // removeLayerById("223");
+    // map.addLayer({
+    //     "id": "123",
+    //     "type": "line",
+    //     "source": {
+    //         "type": "geojson",
+    //         "data": newBounds
+    //     },
+    //     "layout": {
+    //         "line-join": "round",
+    //         "line-cap": "round"
+    //     },
+    //     "paint": {
+    //         "line-color": "#00f",
+    //         "line-width": 2
+    //     }
+    // });
+    // map.addLayer({
+    //     "id": "223",
+    //     "type": "line",
+    //     "source": {
+    //         "type": "geojson",
+    //         "data": cq
+    //     },
+    //     "layout": {
+    //         "line-join": "round",
+    //         "line-cap": "round"
+    //     },
+    //     "paint": {
+    //         "line-color": "#00f",
+    //         "line-width": 2
+    //     }
+    // });
 
-    console.log(turf.booleanContains(cq,newBounds));
+    // console.log(turf.booleanCrosses(line2,line1));
 };
 
 /**
@@ -922,6 +972,7 @@ const setPopupToMap = function (geoPoint, _mapguid) {
     infoPopup_vm = new Vue({
         el: '#infoPopup',
         store,
+        router,
         template: '<v-infoPopup :mapguid="mapguid"/>',
         data: function () {
             return {mapguid: _mapguid}

@@ -185,6 +185,18 @@ export function getProvertyInfo() {
       return Promise.resolve(res.data)
   })
 }
+
+//获取详细图片
+export function getMorePic(id) {
+  const data = Object.assign({}, {
+      method: 'getScenicAreaByDataId',
+      id: id
+  })
+  return axios.post(url, qs.stringify(data)).then(res => {
+      return Promise.resolve(res.data)
+  })
+}
+
 // 根据行政区化code值，获取行政区化的详情
 export function getAreaDetailByAreaCode(areacode) {
     const data = Object.assign({}, commonParams, {

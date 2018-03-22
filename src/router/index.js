@@ -38,10 +38,6 @@ export default new Router({
           children: [
             ...toolbar
           ]
-        }, {
-          path: '/carousel:id',
-          name: 'carousel',
-          component: carousel
         }
       ]
     },
@@ -57,6 +53,10 @@ export default new Router({
       path:'/searchAround',
       name: 'searchAround',
       component: searchAround
+    }, {
+      path: '/carousel/:id',
+      name: 'carousel',
+      component: carousel
     }
   ]
 })

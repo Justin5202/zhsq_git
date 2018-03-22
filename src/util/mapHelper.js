@@ -235,12 +235,14 @@ const initMap = function (option) {
  * @returns null
  */
 const _onPitch = function (e) {
-    if (map.getPitch() > 0.00001) {
-        set2dLayersVisibility(false);
-        set3dLayersVisibility(true);
-    } else {
-        set2dLayersVisibility(true);
-        set3dLayersVisibility(false);
+    if (mapFlay == 'dt') {
+        if (map.getPitch() > 0.00001) {
+            set2dLayersVisibility(false);
+            set3dLayersVisibility(true);
+        } else {
+            set2dLayersVisibility(true);
+            set3dLayersVisibility(false);
+        }
     }
 };
 
@@ -446,6 +448,7 @@ const setAllImageMapVisibility = function (visibility) {
                 map.setLayoutProperty(element, 'visibility', 'visible');
             });
             layersId_dt.forEach(element => {
+
                 map.setLayoutProperty(element, 'visibility', 'none');
             });
             // 判断当前视野是否需要显示 天地图
@@ -454,9 +457,17 @@ const setAllImageMapVisibility = function (visibility) {
             layersId_img.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
             });
-            layersId_dt.forEach(element => {
-                map.setLayoutProperty(element, 'visibility', 'visible');
-            });
+            if (mapFlay == 'dt') {
+                layersId_dt.forEach(element => {
+                    map.setLayoutProperty(element, 'visibility', 'visible');
+                });
+            }
+            // 判断当前视野是否需要显示 天地图
+            _containRelationshipCallback();
+            // 2D/3D 图层开闭
+            _onPitch();
+            // 判断 当前是否有数据叠加 开关蒙版
+            _setMBVisibility();
         }
 
     } else {
@@ -487,9 +498,17 @@ const setAllDemMapVisibility = function (visibility) {
             layersId_dem.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
             });
-            layersId_dt.forEach(element => {
-                map.setLayoutProperty(element, 'visibility', 'visible');
-            });
+            if (mapFlay == 'dt') {
+                layersId_dt.forEach(element => {
+                    map.setLayoutProperty(element, 'visibility', 'visible');
+                });
+            }
+            // 判断当前视野是否需要显示 天地图
+            _containRelationshipCallback();
+             // 2D/3D 图层开闭
+             _onPitch();
+             // 判断 当前是否有数据叠加 开关蒙版
+             _setMBVisibility();
         }
 
     } else {
@@ -539,26 +558,51 @@ const _containRelationshipCallback = function () {
         }
     }
 
-    switch (mapFlay) {
-        case "dt":
-            _setVecterDemMapVisibility(visibleFlay);
-            break;
-
-        case "img":
-            _setTdtImageMapVisibility(visibleFlay);
-            break;
-
-        case "dem":
-            _setTdtDemMapVisibility(visibleFlay);
-            break;
+    if (visibleFlay) {
+        switch (mapFlay) {
+            case "dt":
+                _setVecterDemMapVisibility(visibleFlay);
+                break;
     
-        default:
-            break;
+            case "img":
+                _setTdtImageMapVisibility(visibleFlay);
+                break;
+    
+            case "dem":
+                _setTdtDemMapVisibility(visibleFlay);
+                break;
+        
+            default:
+                break;
+        }
+    }else{
+        _setVecterDemMapVisibility(visibleFlay);
+        _setTdtImageMapVisibility(visibleFlay);
+        _setTdtDemMapVisibility(visibleFlay);
     }
+    
 
 
 
 };
+
+/**
+ * @function 设置蒙版可见性（私有）
+ * @param （true：可见，false：不可见）
+ * @returns null
+ */
+const _setMBVisibility = function(){
+    let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb","visibility");
+    if (codeArray.length > 0) {
+        if (visibility != "visible") {
+            map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+        }
+    }else{
+        if (visibility != "none") {
+            map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
+        }
+    }
+}
 
 /**
  * @function 设置天地图矢量服务可见性（私有）
@@ -882,6 +926,9 @@ const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArra
     // 记录 目录和区域 在styledata 事件触发时 过滤
     codeArray = _codeArray;
     areacodeArray = _areacodeArray;
+    // 判断是否开启蒙版
+    _setMBVisibility();
+
 };
 
 /**

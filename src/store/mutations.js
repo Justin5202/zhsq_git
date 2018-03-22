@@ -545,6 +545,9 @@ const mutations = {
         } else if (flag == 4) {
             addLayer('/ZT_ZTZT_FPZT/ZT_ZTZT_FPZT.json', 'Z10003')
         }
+    },
+    [TYPE.SET_USER_INFO] (state, userinfo) {
+        state.userinfo = userinfo
     }
 }
 

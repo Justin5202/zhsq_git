@@ -172,12 +172,12 @@ export default {
         this.$mapHelper.setAllDemMapVisibility(false)
       }else if(type == 'img'){
         this.$mapHelper.setMapFlay(type)
-        this.$mapHelper.setAllImageMapVisibility(false)
-        this.$mapHelper.setAllDemMapVisibility(true)
-      }else if(type == 'dem'){
-        this.$mapHelper.setMapFlay(type)
         this.$mapHelper.setAllImageMapVisibility(true)
         this.$mapHelper.setAllDemMapVisibility(false)
+      }else if(type == 'dem'){
+        this.$mapHelper.setMapFlay(type)
+        this.$mapHelper.setAllImageMapVisibility(false)
+        this.$mapHelper.setAllDemMapVisibility(true)
       }
     },
     //打开图层切换

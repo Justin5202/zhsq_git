@@ -469,6 +469,8 @@ const setAllImageMapVisibility = function (visibility) {
             });
             // 判断当前视野是否需要显示 天地图
             _containRelationshipCallback();
+            // 判断 当前是否有数据叠加 开关蒙版
+            _setMBVisibility();
         } else {
             layersId_img.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
@@ -510,6 +512,8 @@ const setAllDemMapVisibility = function (visibility) {
             });
             // 判断当前视野是否需要显示 天地图
             _containRelationshipCallback();
+            // 判断 当前是否有数据叠加 开关蒙版
+            _setMBVisibility();
         } else {
             layersId_dem.forEach(element => {
                 map.setLayoutProperty(element, 'visibility', 'none');
@@ -609,13 +613,30 @@ const _containRelationshipCallback = function () {
  */
 const _setMBVisibility = function(){
     let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb","visibility");
+    let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb","visibility");
     if (codeArray.length > 0) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+        switch (mapFlay) {
+            case "dt":
+                if (visibility != "visible") {
+                    map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+                }
+                break;
+            case "img":
+                if (img_visibility != "visible") {
+                    map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+                }
+                break;
+        
+            default:
+                break;
         }
+        
     }else{
         if (visibility != "none") {
             map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
+        }
+        if (img_visibility != "none") {
+            map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
         }
     }
 }

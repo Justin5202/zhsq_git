@@ -10698,15 +10698,6 @@
 		"paint": {
 			"fill-color": "rgba(255,255,255,0.35)"
 		}
-	}, {
-		"source-layer": "img_3d_pt",
-		"source": "ZHSQDT",
-		"id": "img-3d-pt",
-		"type": "symbol",
-		"layout": {
-			"icon-image": "zhishengji_zt"
-		},
-		"paint": {}
 	}],
 	"id": "10926",
 	"sources": {

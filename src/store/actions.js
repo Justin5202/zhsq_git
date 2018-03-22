@@ -2,13 +2,15 @@ import * as TYPE from './type'
 import axios from '@/util/http'
 import JSZip from 'jszip'
 import {
-    getSelect,
-    getSearch,
-    getDetailInfo,
-    getNextAreaDetailInfo,
-    getMsMacroData,
-    getQueryElementByPoint,
-    getAreaDetailByAreaCode,
+  getSelect,
+  getSearch,
+  getDetailInfo,
+  getNextAreaDetailInfo,
+  getMsMacroData,
+  getQueryElementByPoint,
+  getTourismTopic,
+  getProvertyTopic,
+  getAreaDetailByAreaCode,
     getEconomicUnitHtmlByAreaCode,
     getDataFileInfo
 } from '@/api/dataSheets'
@@ -424,8 +426,42 @@ export const setMeasurNum = function({
     }
     //行政区划详情显示隐藏
 export const setAreaReportFormShow = function({
-    commit,
-    state
-}, isShow) {
-    commit(TYPE.SET_AREA_REPORT_FORM_SHOW, isShow)
+  commit,
+  state
+}, data) {
+  commit(TYPE.SET_AREA_REPORT_FORM_SHOW, data)
+}
+
+// 搜周边显示隐藏
+export const setAroundSearchShow = function({
+  commit,
+  state
+}, data) {
+  commit(TYPE.SET_SEARCH_AROUND_SHOW, data)
+}
+
+// 获取旅游专题数据
+export const getTopicData = function({commit, state}, type) {
+  getTourismTopic().then(res => {
+    let data = {
+      type: type,
+      list: res.data
+    }
+    commit(TYPE.SET_TOPIC_LIST, data)
+  })
+}
+
+export const addTourismLayer = function({commit, state}, type) {
+  commit(TYPE.ADD_TOURSIM_LAYER, type)
+}
+
+// 获取扶贫专题数据
+export const getProvertyData = function({commit, state}, type) {
+  getProvertyTopic().then(res => {
+    let data = {
+      type: type,
+      list: res.data.data
+    }
+    commit(TYPE.SET_TOPIC_LIST, data)
+  })
 }

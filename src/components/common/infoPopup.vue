@@ -12,14 +12,15 @@
         <span>{{uuidClickedInfo._source[item._source.name]}}</span>
       </li>
     </ul>
-    <div class="button-box">
-      <div class="button-item left-button-item">
-        <i class="icon-searcharound"></i>
-        <span class="search-around">搜周边</span>
-      </div>
-      <div class="button-item">
-        <i class="icon-checkdetail"></i>
-        <span>查详情</span>
+      <div class="button-box">
+        <div class="button-item left-button-item" @click="searchAroundShow()">
+          <i class="icon-searcharound"></i>
+          <span class="search-around">搜周边</span>
+        </div>
+        <div class="button-item">
+          <i class="icon-checkdetail"></i>
+          <span>查详情</span>
+        </div>
       </div>
     </div>
   </div>
@@ -28,6 +29,8 @@
 
 <script>
 import {getQueryOnlineByUuid, getThematicMap} from '@/api/dataSheets'
+import {mapActions} from 'vuex'
+
 export default {
   data() {
     return {
@@ -49,6 +52,9 @@ export default {
     isShowPop() {
       this.$mapHelper.closePopup()
     },
+    searchAroundShow() {
+      this.setAroundSearchShow(true)
+    },
     _getQueryOnlineByUuid(id) {
       getQueryOnlineByUuid(id).then(res => {
         if (res.code == "1") {
@@ -66,9 +72,9 @@ export default {
         }
       })
     },
-    toSearch() {
-      window.location.hash = '/searchAround'
-    }
+    ...mapActions([
+      'setAroundSearchShow'
+    ])
   }
 }
 </script>

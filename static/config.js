@@ -24,5 +24,4 @@ var vecterClickExceptLayer = "dbsj_xzqhhgldy_qy_py_0,qxjcq,zcqjcq,hillshade_high
 var imageClickExceptLayer = "img_sjzh,img_qxjzh,img_99_dpm_11,img_99_dpm_10,img_99_dpm_9,img_dbsj_xzqhhgldy_qy_py_mb"
 
 // 专题图层的名称 点击时判断是弹图片窗 还是 信息窗 用
-var ZTExceptLayer = "Z00000001,Z00000002";
-
+var ZTExceptLayer = "Z10000,Z10001,Z10002,Z10003";

@@ -32,7 +32,15 @@ const state = {
   uuidClickedInfo: {},
   /*点击地图uuid的详细信息*/
   measureNum: '',
-  areaReportFormShow: false
+  areaReportFormShow: false,
+  /*searchAroundshow*/
+  searchAroundShow: false,
+  /*专题列表*/
+  topicList: {
+    type: '',
+    list: []
+  },
+  topicListShow: false
 }
 
 export default state

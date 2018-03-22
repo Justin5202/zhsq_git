@@ -15,3 +15,6 @@
   export const uuidClickedInfo = state => state.uuidClickedInfo
   export const measureNum = state => state.measureNum
   export const areaReportFormShow = state => state.areaReportFormShow
+  export const searchAroundShow = state => state.searchAroundShow
+  export const topicList = state => state.topicList
+  export const topicListShow = state => state.topicListShow

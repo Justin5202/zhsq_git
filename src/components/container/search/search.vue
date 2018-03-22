@@ -57,7 +57,7 @@
 
 <script>
 	import {getSelect} from '@/api/dataSheets'
-  import {mapGetters, mapActions} from 'vuex'
+  import {mapGetters, mapActions, mapMutations} from 'vuex'
 
 	export default {
 		name: 'searchBar',
@@ -111,6 +111,7 @@
 			showSearchPane() {
 				this.searchPaneShow(true)
 				this.tablePaneShow(false)
+				this.setTopicShow(false)
 			},
 			_getSearchParams(params) {
 				this.getSearchParams({'typeParams': {}, 'params': params})
@@ -125,6 +126,9 @@
 				'getNextAreaInfo',
 				'setSelectedAreaList'
 			]),
+			...mapMutations({
+				setTopicShow: 'SET_TOPIC_LIST_SHOW'
+			}),
 			setActive(index) {
 				this.activeIndex = index
 				this.showSubmenu = index === 2 ? true : false;

@@ -15,6 +15,9 @@
 		<div class="report-box">
 			<report-form></report-form>
 		</div>
+		<div class="search-around-box" v-if="searchAroundShow">
+			<search-around></search-around>
+		</div>
 	</div>
 </template>
 
@@ -22,15 +25,17 @@
 	import TabPane from '../tabPane/tabPane'
 	import vTable from '../table/table'
 	import ReportForm from '../reportForm/reportForm'
+	import SearchAround from '@/components/Users/searchAround/searchAround'
 	import {getDataSheets} from '@/api/datasheets.js'
 	import {mapGetters, mapActions} from 'vuex'
 
 	export default {
-		name: 'tab3132432',
+		name: 'tab',
 		components: {
 			TabPane,
 			vTable,
-			ReportForm
+			ReportForm,
+			SearchAround
 		},
 		data() {
 			return {
@@ -60,6 +65,11 @@
 				allData: [],
 				arrayData: []
 			}
+		},
+		computed: {
+			...mapGetters([
+				'searchAroundShow'
+			])
 		},
 		mounted() {
 			this._getDataSheets()
@@ -132,7 +142,7 @@
 			background-color: #e4e7ed;
 		}
 	}
-	.table-box, .report-box {
+	.table-box, .report-box, .search-around-box {
 		position: absolute;
 		top: 0;
 		left: 400px;

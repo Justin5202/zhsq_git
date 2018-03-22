@@ -4,11 +4,11 @@
       <transition>
         <div class="img-container">
           <transition-group tag="ul" class="slide-ul" name="list">
-            <li 
-            v-for="(item, index) in images" 
+            <li
+            v-for="(item, index) in pic"
             :key="index" v-show="currentIndex === index"
             >
-              <img :src="item.path" alt="图片">
+              <img :src="`http://zhsq.digitalcq.com/cqzhsqd2c_v2_test${item.filePath}${item.fileQuality}`" alt="图片">
             </li>
           </transition-group>
         </div>
@@ -16,35 +16,26 @@
     </div>
     <div class="img-thumbnail">
       <ul class="img-list">
-        <li v-for="(item, index) in images" :key="index" @click="change(index)">
-          <img :src="item.path"/>
+        <li v-for="(item, index) in pic" :key="index" @click="change(index)">
+          <img :src="`http://zhsq.digitalcq.com/cqzhsqd2c_v2_test${item.filePath}${item.thumbnailName}`"/>
         </li>
       </ul>
     </div>
   </div>
 </template>
 <script>
+  import {getMorePic} from '@/api/dataSheets'
   export default {
     name: 'carousel',
     data() {
       return {
-        images: [
-          {path: 'http://pic.sc.chinaz.com/files/pic/pic9/201803/zzpic10964.jpg'},
-          {path: 'http://pic.sc.chinaz.com/files/pic/pic9/201711/zzpic8416.jpg'},
-          {path: 'http://pic.sc.chinaz.com/files/pic/pic9/201704/zzpic3210.jpg'},
-          {path: 'http://pic.sc.chinaz.com/files/pic/pic9/201608/apic22556.jpg'},
-          {path: 'http://pic.sc.chinaz.com/files/pic/pic9/201711/zzpic8500.jpg'}
-        ],
+        pic: [],
         currentIndex: 0,
         timer: null
       }
     },
     created() {
-      // this.$nextTick(() => {
-      //   setInterval(() => {
-      //     this.autoPlay()
-      //   }, 3000)
-      // })
+      this._getMorePic(this.$route.params.id)
     },
     methods: {
       go() {
@@ -64,6 +55,11 @@
         if (this.currentIndex > this.images.length - 1) {
           this.currentIndex = 0
         }
+      },
+      _getMorePic(id) {
+        getMorePic(id).then(res => {
+          this.pic = res.data
+        })
       }
     }
   }
@@ -73,12 +69,13 @@
     height: 100%;
     width: 100%;
     background-color: #000;
+    position: relative;
     .carousel-wrap {
-      padding-top: 100px;
-      position: relative;
-      height: 500px;
-      width: 100%;
+      padding-top: 50px;
       margin: 0 auto;
+      position: relative;
+      width: 50%;
+      height: 640px;
       overflow: hidden;
       .slide-ul {
         list-style: none;
@@ -89,27 +86,30 @@
           position: absolute;
           width: 100%;
           height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           img {
             width: 100%;
-            height: 100%;
+            height: auto;
           }
         }
       }
     }
     .img-list {
-      width: 100%;
-      height: 200px;
-      list-style: none;
-      margin-top: 10px;
-      margin-left: 20px;
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2%;
       li {
         height: 100%;
-        width: 200px;
-        float: left;
-        cursor: pointer;
+        width: 150px;
         margin-right: 20px;
         box-sizing: border-box;
         border: 10px solid #fff;
+        list-style: none;
+        cursor: pointer;
         img {
           display: inline-block;
           width: 100%;

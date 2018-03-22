@@ -35,6 +35,7 @@
   import vTab from './tab/tab'
   import vTopic from './topic/topic'
   import vTool from './tool/tool'
+
   export default {
     name: 'container',
     components: {

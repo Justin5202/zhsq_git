@@ -117,7 +117,8 @@
 
 <script>
 	import ChildTable from '@/components/container/childTable/childTable'
-	import {mapGetters, mapActions} from 'vuex'
+	import vFb from '@/components/container/fb/fb'
+	import {mapGetters, mapActions, mapMutations} from 'vuex'
 
 	export default {
 		components: {
@@ -181,6 +182,7 @@
 					id: code
 				}
 				this.getAreaDetail(params)
+				this.setTopicShow(false)
 			},
 			isActiveItem(item) {
 				let type = item.macro.data.type
@@ -220,6 +222,9 @@
 					this.setAreaReportFormShow(true)
 				}
 			},
+			...mapMutations({
+				setTopicShow: 'SET_TOPIC_LIST_SHOW'
+			}),
 			...mapActions([
 				'setAreaList',
 				'getSearchParams',

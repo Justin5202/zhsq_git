@@ -31,8 +31,12 @@
   </div>
   <div class="tool-compass" @click="resetNorth" v-show="toolCompassVisible"></div>
   <div class="tool-bottom">
-    <span class="tool-item">
-				<img src="../../../assets/images/map/局部图层.png" alt="">
+    <span
+      class="tool-item"
+      @click="toggleShowData()"
+    >
+				<img v-if="!IsAll" src="../../../assets/images/map/局部图层.png" alt="">
+        <img v-else src="../../../assets/images/map/全景图层.png" alt="">
 			</span>
     <span class="tool-item " @click="changeMapStatus()">
 				<img src="../../../assets/images/map/2D@2x.png" alt="" v-show="!is2Dmap">
@@ -89,7 +93,8 @@ export default {
       areaBoxIsShow: false,
       angle: "",
       toolCompassVisible: false,
-      showCenter: false
+      showCenter: false,
+      IsAll: false
     }
   },
   created: function() {
@@ -151,6 +156,16 @@ export default {
     }
   },
   methods: {
+    // 全局和局部切换
+    toggleShowData() {
+      this.IsAll = !this.IsAll
+      if(this.IsAll) {
+        console.log(this.$store.state.idList, this.$store.state.areaCodeList)
+        this.$mapHelper.setFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, [])
+      } else {
+        this.$mapHelper.setFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, this.$store.state.areaCodeList)
+      }
+    },
     //2D 3D切换
     changeMapStatus() {
       this.is2Dmap = !this.is2Dmap

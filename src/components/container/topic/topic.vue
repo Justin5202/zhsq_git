@@ -1,15 +1,15 @@
 <template>
 	<div class="topic">
 		<div class="topic-box">
-			<span class="topic-item" @click="showItem()">
+			<span class="topic-item" @click="showItem()" v-show="isInArray(10, this.userinfo.autuority)||isInArray(11, this.userinfo.autuority)">
 				<img v-if="!isShow" src="../../../assets/images/catalog/专题.png" alt="">
 				<img v-else src="../../../assets/images/catalog/专题1.png" alt="">
 			</span>
-			<span class="topic-item init-state" :class="isShow?'slideInLeft':null" @click="getTourism()">
+			<span class="topic-item init-state" :class="isShow?'slideInLeft':null" @click="getTourism()" v-show="isInArray(10, this.userinfo.autuority)">
 				<img v-if="type1" src="../../../assets/images/map/旅游1.png" alt="">
 				<img v-else src="../../../assets/images/map/旅游.png" alt="">
 			</span>
-			<span class="topic-item init-state" :class="isShow?'slideInLeft':null" @click="getProverty()">
+			<span class="topic-item init-state" :class="isShow?'slideInLeft':null" @click="getProverty()" v-show="isInArray(11, this.userinfo.autuority)">
 				<img v-if="type2" src="../../../assets/images/map/扶贫1.png" alt="">
 				<img v-else src="../../../assets/images/map/扶贫.png" alt="">
 			</span>
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-	import {mapActions, mapMutations} from 'vuex'
+	import {mapActions, mapMutations, mapGetters} from 'vuex'
 
 	export default {
 		data() {
@@ -27,6 +27,9 @@
 				type1: false,
 				type2: false
 			}
+		},
+		computed: {
+			...mapGetters(['userinfo'])
 		},
 		methods: {
 			showItem() {
@@ -77,7 +80,13 @@
 			]),
 			...mapMutations({
 				setTopicShow: 'SET_TOPIC_LIST_SHOW'
-			})
+			}),
+			isInArray(element, array) {
+				if (!array) {
+					return false
+				}
+				return array.indexOf(element) != -1
+			}
 		}
 	}
 </script>

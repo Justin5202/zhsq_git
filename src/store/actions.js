@@ -444,3 +444,8 @@ export const getProvertyData = function({commit, state}, type) {
     commit(TYPE.SET_TOPIC_LIST, data)
   })
 }
+
+// 保存用户登录信息
+export const setUserinfo = function({commit, state}, data) {
+    commit(TYPE.SET_USER_INFO, data)
+}

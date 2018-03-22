@@ -20,7 +20,13 @@ import cqbounds from '../components/common/config/cqbounds'
 var map = null;
 
 // 重庆 边界
-const cq = turf.polygon(cqbounds);
+const cqPolygon = turf.polygon(cqbounds);
+
+// 重庆 边界 线
+const cqLine = turf.lineString(cqbounds[0]);
+
+// 标识当前是 矢量地图、影像地图还是 地形图
+var mapFlay = "dt";
 
 // 底图图层id
 var layersId_dt = [];
@@ -326,6 +332,15 @@ const _onDbClick = function (e) {
 };
 
 /**
+ * @function 设置当前是矢量还是影像还是地形
+ * @param 类型 (dt img dem)
+ * @returns null
+ */
+const setMapFlay = function (value) {
+    mapFlay = value;
+};
+
+/**
  * @function 设置isMeasure
  * @param （true:现在是量测，false：现在不是量测）
  * @returns null
@@ -480,78 +495,38 @@ const setAllDemMapVisibility = function (visibility) {
  * @returns boolean
  */
 const _containRelationshipCallback = function () {
-    // let lngLatBounds = map.getBounds();
+    let lngLatBounds = map.getBounds();
+    let lngLatArray = [
+        [
+            [
+                lngLatBounds._ne.lng, lngLatBounds._sw.lat
+            ],
+            [
+                lngLatBounds._ne.lng, lngLatBounds._ne.lat
+            ],
+            [
+                lngLatBounds._sw.lng, lngLatBounds._ne.lat
+            ],
+            [
+                lngLatBounds._sw.lng, lngLatBounds._sw.lat
+            ],
+            [lngLatBounds._ne.lng, lngLatBounds._sw.lat]
+        ]
+    ]
 
-    // let newBounds = turf.polygon([
-    //     [
-    //         [
-    //             lngLatBounds._ne.lng, lngLatBounds._sw.lat
-    //         ],
-    //         [
-    //             lngLatBounds._ne.lng, lngLatBounds._ne.lat
-    //         ],
-    //         [
-    //             lngLatBounds._sw.lng, lngLatBounds._ne.lat
-    //         ],
-    //         [
-    //             lngLatBounds._sw.lng, lngLatBounds._sw.lat
-    //         ],
-    //         [lngLatBounds._ne.lng, lngLatBounds._sw.lat]
-    //     ]
-    // ]);
+    let nowLine = turf.lineString(lngLatArray[0]);
 
-    // var line1 = turf.lineString( [
-    //     [
-    //         lngLatBounds._ne.lng, lngLatBounds._sw.lat
-    //     ],
-    //     [
-    //         lngLatBounds._ne.lng, lngLatBounds._ne.lat
-    //     ],
-    //     [
-    //         lngLatBounds._sw.lng, lngLatBounds._ne.lat
-    //     ],
-    //     [
-    //         lngLatBounds._sw.lng, lngLatBounds._sw.lat
-    //     ],
-    //     [lngLatBounds._ne.lng, lngLatBounds._sw.lat]
-    // ]);
-    // var line2 = turf.lineString(cqbounds[0]);
-    // removeLayerById("123");
-    // removeLayerById("223");
-    // map.addLayer({
-    //     "id": "123",
-    //     "type": "line",
-    //     "source": {
-    //         "type": "geojson",
-    //         "data": newBounds
-    //     },
-    //     "layout": {
-    //         "line-join": "round",
-    //         "line-cap": "round"
-    //     },
-    //     "paint": {
-    //         "line-color": "#00f",
-    //         "line-width": 2
-    //     }
-    // });
-    // map.addLayer({
-    //     "id": "223",
-    //     "type": "line",
-    //     "source": {
-    //         "type": "geojson",
-    //         "data": cq
-    //     },
-    //     "layout": {
-    //         "line-join": "round",
-    //         "line-cap": "round"
-    //     },
-    //     "paint": {
-    //         "line-color": "#00f",
-    //         "line-width": 2
-    //     }
-    // });
+    if (!turf.booleanDisjoint(cqLine, nowLine)) {
+        // 交叉
 
-    // console.log(turf.booleanCrosses(line2,line1));
+    } else {
+        let nowPolygon = turf.polygon(lngLatArray);
+        if (turf.booleanContains(cqPolygon, nowPolygon)) {
+            // 没有 交叉 的时候 判断 包含 （因为包含的精度不太够）
+            
+        }
+    }
+
 };
 
 /**
@@ -1183,6 +1158,7 @@ export default {
     getCenter,
     getBounds,
 
+    setMapFlay,
     setIsMeasure,
     measureOnClickCallback,
     onDbClickCallback,

@@ -52,10 +52,10 @@
         <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="" @click="changeBaseMap('dt')">
       </div>
       <div class="layer-tool-item">
-        <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="" @click="changeBaseMap('dem')">
+        <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="" @click="changeBaseMap('img')">
       </div>
       <div class="layer-tool-item">
-        <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="" @click="changeBaseMap('img')">
+        <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="" @click="changeBaseMap('dem')">
       </div>
     </div>
     <layer-control></layer-control>

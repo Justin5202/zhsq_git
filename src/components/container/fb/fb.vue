@@ -77,7 +77,7 @@
 
 <script>
   import {getNextProvertyData, getRightProvertyData} from '@/api/dataSheets'
-	import {mapGetters, mapMutations} from 'vuex'
+	import {mapGetters, mapMutations,mapActions} from 'vuex'
 
 	export default {
 		name: 'tabPane',
@@ -133,9 +133,21 @@
 					this.areaList = res.data
 				})
 			},
+			//获取详情
+			getTopicDetails(item){
+				console.log(item)
+				this.getAreaPovertyAlleviationDetailByAreaCode(item)
+				this.setReportFormShow(false)
+				this.setAreaReportFormShow(true)
+			},
 			...mapMutations({
 				addAreaLayer: 'ADD_PROVERTY_AREA_LAYER'
-			})
+			}),
+			...mapActions([
+			'getAreaPovertyAlleviationDetailByAreaCode',
+			'setReportFormShow',
+			'setAreaReportFormShow'
+    ]),
 		}
 	}
 </script>

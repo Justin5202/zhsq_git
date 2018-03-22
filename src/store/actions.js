@@ -2,17 +2,18 @@ import * as TYPE from './type'
 import axios from '@/util/http'
 import JSZip from 'jszip'
 import {
-  getSelect,
-  getSearch,
-  getDetailInfo,
-  getNextAreaDetailInfo,
-  getMsMacroData,
-  getQueryElementByPoint,
-  getTourismTopic,
-  getProvertyTopic,
-  getAreaDetailByAreaCode,
+    getSelect,
+    getSearch,
+    getDetailInfo,
+    getNextAreaDetailInfo,
+    getMsMacroData,
+    getQueryElementByPoint,
+    getTourismTopic,
+    getProvertyTopic,
+    getAreaDetailByAreaCode,
     getEconomicUnitHtmlByAreaCode,
-    getDataFileInfo
+    getDataFileInfo,
+    getAreaPovertyAlleviationDetail
 } from '@/api/dataSheets'
 import {
     getJson
@@ -325,19 +326,21 @@ export const getReportDataByAreaCode = function({ commit, state }, data) {
         var title = data[1] + ' ' + '概况'
         if (data[2] == 2) {
             getAreaDetailByAreaCode(data[0]).then(res => {
-                var dataArray = { 'title': title, 'name': [], 'data': [], 'type': 'string' }
+                var dataArray = { 'title': title, 'name': [], 'data': { dataContex: [], dataType: [] } }
                 for (var i in res.data) {
                     dataArray.name.push(res.data[i].name)
-                    dataArray.data.push(res.data[i].data)
+                    dataArray.data.dataContex.push(res.data[i].data)
+                    dataArray.data.dataType.push('string')
                 }
                 commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
             })
         } else if (data[2] == 6) {
             getEconomicUnitHtmlByAreaCode(data[0]).then(res => {
-                var dataArray = { 'title': title, 'name': [], 'data': [], 'type': 'string' }
+                var dataArray = { 'title': title, 'name': [], 'data': { dataContex: [], dataType: [] } }
                 for (var i in res.data) {
                     dataArray.name.push(res.data[i].title)
-                    dataArray.data.push(res.data[i].html)
+                    dataArray.data.dataContex.push(res.data[i].html)
+                    dataArray.data.dataType.push('string')
                 }
                 commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
             })
@@ -346,7 +349,7 @@ export const getReportDataByAreaCode = function({ commit, state }, data) {
     //获取文件数据
 export const getDataFileByCodeAndId = function({ commit, state }, { areaCode, dataId }) {
         var codeList = ''
-        var dataArray = { 'title': '数据详情', 'name': [], 'data': [], 'type': 'file', 'text': [] }
+        var dataArray = { 'title': '数据详情', 'name': [], 'data': { dataContex: [], dataType: ['file'] } }
         if (areaCode.length > 0) {
             for (let i in areaCode) {
                 if (areaCode[i].areacode != 501002) {
@@ -388,17 +391,13 @@ export const getDataFileByCodeAndId = function({ commit, state }, { areaCode, da
                             }
                         })
                         .then(function success(text) {
-                            dataArray.data.push(text)
-                            dataArray.text.push('')
+                            dataArray.data.dataContex.push(text)
                             commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
                         }, function error(e) {
                             console.log(e)
                         })
                 }
             } else {
-                for (var i in dataArray) {
-                    dataArray.text.push('数据正在建设中...')
-                }
                 commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
             }
 
@@ -426,42 +425,93 @@ export const setMeasurNum = function({
     }
     //行政区划详情显示隐藏
 export const setAreaReportFormShow = function({
-  commit,
-  state
+    commit,
+    state
 }, data) {
-  commit(TYPE.SET_AREA_REPORT_FORM_SHOW, data)
+    commit(TYPE.SET_AREA_REPORT_FORM_SHOW, data)
 }
 
 // 搜周边显示隐藏
 export const setAroundSearchShow = function({
-  commit,
-  state
+    commit,
+    state
 }, data) {
-  commit(TYPE.SET_SEARCH_AROUND_SHOW, data)
+    commit(TYPE.SET_SEARCH_AROUND_SHOW, data)
 }
 
 // 获取旅游专题数据
-export const getTopicData = function({commit, state}, type) {
-  getTourismTopic().then(res => {
-    let data = {
-      type: type,
-      list: res.data
-    }
-    commit(TYPE.SET_TOPIC_LIST, data)
-  })
+export const getTopicData = function({ commit, state }, type) {
+    getTourismTopic().then(res => {
+        let data = {
+            type: type,
+            list: res.data
+        }
+        commit(TYPE.SET_TOPIC_LIST, data)
+    })
 }
 
-export const addTourismLayer = function({commit, state}, type) {
-  commit(TYPE.ADD_TOURSIM_LAYER, type)
+export const addTourismLayer = function({ commit, state }, type) {
+    commit(TYPE.ADD_TOURSIM_LAYER, type)
 }
 
 // 获取扶贫专题数据
-export const getProvertyData = function({commit, state}, type) {
-  getProvertyTopic().then(res => {
-    let data = {
-      type: type,
-      list: res.data.data
+export const getProvertyData = function({ commit, state }, type) {
+        getProvertyTopic().then(res => {
+            let data = {
+                type: type,
+                list: res.data.data
+            }
+            commit(TYPE.SET_TOPIC_LIST, data)
+        })
     }
-    commit(TYPE.SET_TOPIC_LIST, data)
-  })
+    // 获取贫困乡镇数据详情
+export const getAreaPovertyAlleviationDetailByAreaCode = function({ commit, state }, data) {
+    var dataArray = { 'title': data.mc, 'name': [], 'data': { dataContex: [], dataType: [] } }
+    getAreaPovertyAlleviationDetail(data.areaCode).then(res => {
+        var filePath = ''
+        var htm = ''
+        var html = ''
+        var fileName = ''
+        if (res.data[0].data.dataDesc) {
+            dataArray.name.push(res.data[0].name)
+            filePath = 'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test/serviceMap/zip/' + res.data[0].data.dataDesc
+            fileName = res.data[0].data.dataDesc.split('.')[0]
+            htm = fileName + '.' + 'htm'
+            html = fileName + '.' + 'html'
+            var promise = new JSZip.external.Promise(function(resolve, reject) {
+                JSZipUtils.getBinaryContent(filePath, function(err, data) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(data);
+                    }
+                })
+            })
+            promise.then(JSZip.loadAsync)
+                .then(function(zip) {
+                    if (zip.file(htm)) {
+                        return zip.file(htm).async("base64")
+                    } else if (zip.file(html)) {
+                        return zip.file(html).async("base64")
+                    }
+                })
+                .then(function success(text) {
+                    dataArray.data.dataContex.push(text)
+                    dataArray.data.dataType.push('file')
+                    for (var i = 1; i < res.data.length; i++) {
+                        dataArray.name.push(res.data[i].name)
+                        dataArray.data.dataContex.push(res.data[i].data)
+                        dataArray.data.dataType.push('string')
+                    }
+                    commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
+                }, function error(e) {})
+        } else {
+            for (var i = 0; i < res.data.length; i++) {
+                dataArray.name.push(res.data[i].name)
+                dataArray.data.dataContex.push(res.data[i].data)
+                dataArray.data.dataType.push('string')
+            }
+            commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
+        }
+    })
 }

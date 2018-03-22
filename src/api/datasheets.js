@@ -142,72 +142,72 @@ export function getStatisticsDetails(shape, dataId) {
 
 // 旅游专题
 export function getTourismTopic() {
-  const data = Object.assign({}, {
-      method: 'getScenicInfo'
-  })
-  return axios.post(url, qs.stringify(data)).then(res => {
-      return Promise.resolve(res.data)
-  })
+    const data = Object.assign({}, {
+        method: 'getScenicInfo'
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
 }
 
 // 扶贫专题
 export function getProvertyTopic() {
-  const data = Object.assign({}, {
-      method: 'getPovertyAlleviation',
-      start: 0,
-      rows: 10
-  })
-  return axios.post(url, qs.stringify(data)).then(res => {
-      return Promise.resolve(res.data)
-  })
+    const data = Object.assign({}, {
+        method: 'getPovertyAlleviation',
+        start: 0,
+        rows: 10
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
 }
 
 // 获得扶贫下一级列表
 export function getNextProvertyData(areacode) {
-  const data = Object.assign({}, {
-      method: 'getPovertyAlleviation',
-      zCode: areacode,
-      start: 0,
-      rows: 10
-  })
-  return axios.post(url, qs.stringify(data)).then(res => {
-      return Promise.resolve(res.data)
-  })
+    const data = Object.assign({}, {
+        method: 'getPovertyAlleviation',
+        zCode: areacode,
+        start: 0,
+        rows: 10
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
 }
 
 // 获得脱贫攻坚数据
 export function getRightProvertyData() {
-  const data = Object.assign({}, {
-      method: 'getPovertyAlleviationData',
-      // areacode: areacode,
-      start: 0,
-      rows: 10
-  })
-  return axios.post(url, qs.stringify(data)).then(res => {
-      return Promise.resolve(res.data)
-  })
+    const data = Object.assign({}, {
+        method: 'getPovertyAlleviationData',
+        // areacode: areacode,
+        start: 0,
+        rows: 10
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
 }
 
 export function getProvertyInfo() {
-  const data = Object.assign({}, {
-      method: 'getPovertyAlleviationInfo',
-      areacode: 0,
-      dataId: 10
-  })
-  return axios.post(url, qs.stringify(data)).then(res => {
-      return Promise.resolve(res.data)
-  })
+    const data = Object.assign({}, {
+        method: 'getPovertyAlleviationInfo',
+        areacode: 0,
+        dataId: 10
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
 }
 
 //获取详细图片
 export function getMorePic(id) {
-  const data = Object.assign({}, {
-      method: 'getScenicAreaByDataId',
-      id: id
-  })
-  return axios.post(url, qs.stringify(data)).then(res => {
-      return Promise.resolve(res.data)
-  })
+    const data = Object.assign({}, {
+        method: 'getScenicAreaByDataId',
+        id: id
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
 }
 
 // 根据行政区化code值，获取行政区化的详情
@@ -237,6 +237,16 @@ export function getDataFileInfo(areacode, dataId) {
         method: 'getDataFileInfo',
         areacode: areacode,
         dataId: dataId
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+}
+//获取贫困乡镇详情
+export function getAreaPovertyAlleviationDetail(areacode) {
+    const data = Object.assign({}, commonParams, {
+        method: 'getAreaPovertyAlleviationDetail',
+        areacode: areacode
     })
     return axios.post(url, qs.stringify(data)).then(res => {
         return Promise.resolve(res.data)

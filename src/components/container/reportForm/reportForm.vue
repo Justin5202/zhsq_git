@@ -56,8 +56,8 @@
           </tr>
       </table>
       <div class="table-tab-context">
-          <div v-html="item" v-show="getContextType == 'string'&& activeTab == index" class="html-string" v-for="(item,index) in reportFormData.data"></div>
-          <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="getContextType == 'file'&& activeTab == index" v-for="(item,index) in reportFormData.data"></iframe>
+          <div v-html="item" v-show="reportFormData.data.dataType[index] == 'string'&& activeTab == index" class="html-string" v-for="(item,index) in reportFormData.data.dataContex"></div>
+          <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'file'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
       </div>
     </div>
   </div>
@@ -86,12 +86,7 @@ export default {
       'reportFormShow',
       'areaReportFormShow',
       'reportFormData',
-    ]),
-    getContextType(){
-      let type = ''
-      type = this.reportFormData.type
-      return type
-    }
+    ])
   },
   methods: {
     //关闭模态框

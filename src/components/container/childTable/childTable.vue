@@ -199,6 +199,7 @@ export default {
     },
     //点击详情按钮
     getDetails(bol, id , type) {
+      console.log(123)
       this.setAreaList({
         'bol': true,
         'id': id

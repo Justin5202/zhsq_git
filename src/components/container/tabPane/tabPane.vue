@@ -1,6 +1,7 @@
 <template>
 	<div class="tab-pane">
 		<div class="tab-pane-content">
+			<!-- <ul :class="upOrDown?'slideInDown':'slideOutUp'"> -->
 			<ul v-show="upOrDown && tableMenuPaneShow && !searchPaneShow">
 				<li class="tab-pane-li" v-for="(item, index) in arrayData">
 					<div class="tab-pane-li-title">
@@ -11,9 +12,7 @@
 					</div>
 				</li>
 			</ul>
-			<div
-				class="search-pane-content"
-				v-if="upOrDown && !tableMenuPaneShow && searchPaneShow && !topicListShow">
+			<div class="search-pane-content" v-show="upOrDown && !tableMenuPaneShow && searchPaneShow">
 				<div class="search-type-button">
 					<button
 						class="type-button"
@@ -29,7 +28,7 @@
 					</li>
 					<li class="search-pane-li" v-else v-for="(item, index) in searchList">
 						<div class="search-pane-box" v-if="item.searchType === 1">
-							<div class="icon-box">
+							<div class="area-icon-box">
 								<i class="poi-icon"></i>
 							</div>
 							<div class="area-content">
@@ -40,7 +39,7 @@
 							</div>
 						</div>
 						<div class="search-pane-box" v-else-if="item.searchType === 2">
-							<div class="icon-box">
+							<div class="area-icon-box">
 								<i class="area-icon"></i>
 							</div>
 							<div class="area-content">
@@ -62,7 +61,7 @@
 							:class="{active: item.isActive}"
 							v-else-if="item.searchType === 4"
 						>
-							<div class="icon-box">
+							<div class="area-icon-box">
 								<i class="data-icon"></i>
 							</div>
 							<div class="area-content" @click="isActiveItem(item)">
@@ -76,7 +75,7 @@
 							</div>
 						</div>
 						<div class="search-pane-box" v-else-if="item.searchType === 5">
-							<div class="icon-box">
+							<div class="area-icon-box">
 								<i class="macro-icon"></i>
 							</div>
 							<div class="area-content" >
@@ -87,7 +86,7 @@
 							</div>
 						</div>
 						<div class="search-pane-box" v-else-if="item.searchType === 6">
-							<div class="icon-box">
+							<div class="area-icon-box">
 								<i class="unit-icon"></i>
 							</div>
 							<div class="area-content" >
@@ -106,61 +105,8 @@
 				  <el-button size="mini" @click="next()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 				</p>
 			</div>
-			<div class="search-pane-content"
-					v-show="upOrDown && !tableMenuPaneShow && !searchPaneShow && topicListShow">
-				<div class="search-type-button">
-					<button
-						class="type-button topic-type-button"
-						v-for="(item, index) in tourismType"
-						:key="index"
-						@click="getTourismType(index)"
-						:class="{clicked: nowIndex === index}"
-						v-if="topicList.type=='ly'"
-					>{{item}}</button>
-				</div>
-				<ul>
-					<li
-						class="search-pane-li"
-						v-for="(item, index) in topicList.list"
-						v-if="topicList.type=='ly'&&nowIndex>0&&item.dj == tourismType[nowIndex]"
-						:class="{active: topicIndex == index}"
-						@click="flyToPoint(item, index)"
-					>
-						<div class="search-pane-box">
-							<div class="icon-box">
-								<i class="ly-icon"></i>
-							</div>
-							<div class="area-content" >
-								<h2>{{item.name}}</h2>
-								<p>{{item.address}}</p>
-							</div>
-						</div>
-					</li>
-					<li
-						class="search-pane-li"
-						v-for="(item, index) in topicList.list"
-						v-if="topicList.type=='ly'&&nowIndex<=0"
-						:class="{active: topicIndex == index}"
-						@click="flyToPoint(item, index)"
-					>
-						<div class="search-pane-box">
-							<div class="icon-box">
-								<i class="ly-icon"></i>
-							</div>
-							<div class="area-content">
-								<h2>{{item.name}}</h2>
-								<p>{{item.address}}</p>
-							</div>
-						</div>
-					</li>
-				</ul>
-			</div>
-			<div class="child-table-content"
-					v-show="upOrDown && !tableMenuPaneShow && !searchPaneShow && !topicListShow">
+			<div class="child-table-content" v-show="upOrDown && !tableMenuPaneShow && !searchPaneShow">
 				<child-table></child-table>
-			</div>
-			<div class="fb-box">
-				<v-fb></v-fb>
 			</div>
 			<div class="up-control">
 				<i class="control-icon" :class="{down: !upOrDown}" @click="toggleSlide()"></i>
@@ -171,13 +117,11 @@
 
 <script>
 	import ChildTable from '@/components/container/childTable/childTable'
-	import vFb from '@/components/container/fb/fb'
 	import {mapGetters, mapActions} from 'vuex'
 
 	export default {
 		components: {
-			ChildTable,
-			vFb
+			ChildTable
 		},
 		name: 'tabPane',
 		props: {
@@ -191,11 +135,8 @@
 				upOrDown: true,
 				type: 1,
 				page: 1,
-				topicPage: 1,
 				buttonType: '',
-				nowIndex: 0,
-				topicIndex: -1,
-				tourismType: ['全部', '5A', '4A', '3A']
+				nowIndex: 0
 			}
 		},
 		computed: {
@@ -208,10 +149,7 @@
 				'activeAreaInfoList',
 				'areaCodeAndDataId',
 				'reportFormData',
-				'areaList',
-				'searchItemMacroList',
-				'topicList',
-				'topicListShow'
+				'areaList'
 			])
 		},
 		methods: {
@@ -225,15 +163,6 @@
 				this.buttonType = 'info'
 				this.nowIndex = index - 1
 				this.getSearchParams({'typeParams': params, 'params': {}})
-			},
-			getTourismType(index) {
-				this.nowIndex = index
-				this.addTourismLayer(index)
-			},
-			flyToPoint(item, index) {
-				this.topicIndex = index
-				this.$mapHelper.flyByPointAndZoom(JSON.parse(item.point), 8)
-				this.$mapHelper.setPicPopupToMap(JSON.parse(item.point), item.id)
 			},
 			next() {
 				this.page += 1
@@ -256,6 +185,7 @@
 			isActiveItem(item) {
 				let type = item.macro.data.type
 				let i = Number(type.substring(0, 1))
+				console.log(i)
 				const params = {
 					id: item.macro.data.id
 				}
@@ -272,7 +202,6 @@
 			},
 			//点击详情按钮
 			getDetails(item) {
-				console.log(item)
 				if(item.macro){
 					this.isActiveItem(item)
 					this.getAreaCodeAndDataId({
@@ -301,7 +230,6 @@
 				'setAreaReportFormShow',
 				'getReportData',
 				'getAreaCodeAndDataId',
-				'addTourismLayer',
 				'getReportDataByAreaCode'
 			])
 		}
@@ -354,8 +282,8 @@
 	    	}
 		}
 		.search-pane-content {
-			padding-top: 10px;
 			.search-type-button {
+				padding: 10px 0;
 				.type-button {
 					margin: 0 5px;
 					font-size: 12px;
@@ -367,9 +295,6 @@
 			    border: 1px solid #dcdfe6;
 			    border-color: #dcdfe6;
 					color: #606266;
-				}
-				.topic-type-button {
-					padding: 7px 28px;
 				}
 				.clicked {
 					color: #fff;
@@ -388,53 +313,44 @@
 						display: flex;
 						justify-content: space-around;
 						padding: 10px;
-						.icon-box {
-							-webkit-box-flex: 0;
-					    -ms-flex: 0 0 20px;
-					    flex: 0 0 20px;
-					    padding-right: 10px;
-							background: none !important;
-							i {
-								display: block;
-								width: 20px;
-								height: 20px;
-							}
-							.area-icon {
-								background: url('../../../assets/images/catalog/行政区划@2x.png') no-repeat;
-								background-size: 100%;
-							}
-							.poi-icon {
-								background: url('../../../assets/images/catalog/搜索定位.png') no-repeat;
-								background-size: 100%;
-							}
-							.macro-icon {
-								background: url('../../../assets/images/catalog/搜索定位.png') no-repeat;
-								background-size: 100%;
-							}
-							.data-icon {
-								background: url('../../../assets/images/catalog/文档@2x.png') no-repeat;
-								background-size: 100%;
-							}
-							.regions-icon {
-								background: url('../../../assets/images/catalog/行政区划@2x.png') no-repeat;
-								background-size: 100%;
-							}
-							.unit-icon {
-								background: url('../../../assets/images/catalog/社会经济@2x.png') no-repeat;
-								background-size: 100%;
-							},
-							.ly-icon {
-								background: url('../../../assets/images/catalog/ly@2x.png') no-repeat;
-								background-size: 100%;
-							}
-							.fp-icon {
-								background: url('../../../assets/images/catalog/fp@2x.png') no-repeat;
-								background-size: 100%;
-							}
-						}
 					}
 					.active {
 						background-color: #dcdfe6;
+					}
+					.area-icon-box {
+						-webkit-box-flex: 0;
+				    -ms-flex: 0 0 20px;
+				    flex: 0 0 20px;
+				    padding-right: 10px;
+						i {
+							display: block;
+							width: 20px;
+							height: 20px;
+						}
+						.area-icon {
+							background: url('../../../assets/images/catalog/行政区划@2x.png') no-repeat;
+							background-size: 100%;
+						}
+						.poi-icon {
+							background: url('../../../assets/images/catalog/搜索定位.png') no-repeat;
+							background-size: 100%;
+						}
+						.macro-icon {
+							background: url('../../../assets/images/catalog/搜索定位.png') no-repeat;
+							background-size: 100%;
+						}
+						.data-icon {
+							background: url('../../../assets/images/catalog/文档@2x.png') no-repeat;
+							background-size: 100%;
+						}
+						.regions-icon {
+							background: url('../../../assets/images/catalog/行政区划@2x.png') no-repeat;
+							background-size: 100%;
+						}
+						.unit-icon {
+							background: url('../../../assets/images/catalog/社会经济@2x.png') no-repeat;
+							background-size: 100%;
+						}
 					}
 					.area-content {
 						display: flex;
@@ -471,9 +387,6 @@
 							color: #20be8c;
 						}
 					}
-				}
-				.active {
-					background-color: #dcdfe6;
 				}
 			}
 		}

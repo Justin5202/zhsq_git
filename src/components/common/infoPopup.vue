@@ -4,7 +4,10 @@
   <div class="pop" v-if="uuidClickedInfo && showArray.length > 0">
     <div v-if="!notPoi">
       <div class="pop-title">
-        <h3 class="title">{{uuidClickedInfo._source.address}}</h3>
+        <h3 class="title" v-if="uuidClickedInfo._source.mc">{{uuidClickedInfo._source.mc}}</h3>
+        <h3 class="title" v-else-if="uuidClickedInfo._source.name">{{uuidClickedInfo._source.name}}</h3>
+        <h3 class="title" v-else-if="uuidClickedInfo._source.jc">{{uuidClickedInfo._source.jc}}</h3>
+        <h3 class="title" v-else>{{uuidClickedInfo._source[showArray[0]._source.name]}}</h3>
         <i class="cross-icon" @click="isShowPop()"></i>
       </div>
       <ul class="pop-ul">

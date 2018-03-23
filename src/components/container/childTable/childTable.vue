@@ -6,7 +6,7 @@
       <div
         class="child-title"
         :class="{active: item.isActive}"
-        @click="isActiveItem(item.isActive, item.id)"
+        @click="isActiveItem(item)"
         v-if="item.target.length > 0 || item.datapath || parseInt(item.type)%10 == 4"
       >
         <div class="arrow" v-if="item.children.length > 0">
@@ -52,7 +52,7 @@
       <ul v-show="isClose">
         <li class="child-table-content-li" v-for="childItem in item.children" v-if="childItem.children.length === 0" :class="{active: childItem.isActive}">
           <div class="sec-blank"></div>
-          <div class="text" @click="isActiveItem(childItem.isActive, childItem.id)">
+          <div class="text" @click="isActiveItem(childItem)">
             <h2>{{childItem.name}}</h2>
             <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
             <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
@@ -71,7 +71,7 @@
             <div class="arrow" @click="thirdChildSlide(index)">
               <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
             </div>
-            <div class="text" @click="isActiveItem(childItem.isActive, childItem.id)">
+            <div class="text" @click="isActiveItem(childItem)">
               <h2>{{childItem.name}}</h2>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
@@ -85,7 +85,7 @@
             </div>
           </div>
           <ul v-show="thirdChildIsShow && nowIndex === index">
-            <li class="child-table-content-li" v-for="thirdChild in childItem.children" :class="{active: thirdChild.isActive}" @click="isActiveItem(thirdChild.isActive, thirdChild.id)">
+            <li class="child-table-content-li" v-for="thirdChild in childItem.children" :class="{active: thirdChild.isActive}" @click="isActiveItem(thirdChild)">
               <div class="fourth-blank"></div>
               <div class="text">
                 <h2>{{thirdChild.name}}</h2>
@@ -109,10 +109,7 @@
 </template>
 
 <script>
-import {
-  mapGetters,
-  mapActions
-} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   data() {
@@ -191,11 +188,8 @@ export default {
       this.thirdChildIsShow = !this.thirdChildIsShow
       this.nowIndex = index
     },
-    isActiveItem(bol, id) {
-      this.setAreaList({
-        'bol': !bol,
-        'id': id
-      })
+    isActiveItem(item) {
+      this.setAreaList(item)
     },
     //点击详情按钮
     getDetails(bol, id , type) {

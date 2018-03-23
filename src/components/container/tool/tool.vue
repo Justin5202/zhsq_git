@@ -288,7 +288,7 @@ export default {
     }
     .tool-bottom {
         position: absolute;
-        bottom: 0;
+        bottom: -100px;
         left: 0;
     }
     .layer-tool-box {

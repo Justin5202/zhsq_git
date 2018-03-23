@@ -25,7 +25,7 @@ const state = {
   areaCodeAndDataId: [],
   searchItemMacroList: [],
   /*搜索结果空间数据列表*/
-  idList: [],
+  layerIdList: [],
   /*图层id列表*/
   areaCodeList: [],
   /*区域code列表*/

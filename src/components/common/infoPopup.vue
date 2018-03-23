@@ -2,7 +2,7 @@
 <div>
   <i class="el-icon-loading" v-if="!uuidClickedInfo && !showArray.length > 0"></i>
   <div class="pop" v-if="uuidClickedInfo && showArray.length > 0">
-    <div v-if="!notPoi">
+    <div v-if="!areaDetailInfo">
       <div class="pop-title">
         <h3 class="title" v-if="uuidClickedInfo._source.mc">{{uuidClickedInfo._source.mc}}</h3>
         <h3 class="title" v-else-if="uuidClickedInfo._source.name">{{uuidClickedInfo._source.name}}</h3>
@@ -17,7 +17,7 @@
         </li>
       </ul>
     </div>
-    <div v-if="notPoi">
+    <div v-if="areaDetailInfo">
       <div class="pop-title">
         <h3 class="title">{{areaDetailInfo.areaname}}</h3>
         <i class="cross-icon" @click="isShowPop()"></i>
@@ -39,22 +39,23 @@
 </template>
 
 <script>
-import {getQueryOnlineByUuid, getThematicMap} from '@/api/dataSheets'
-import {mapActions, mapGetters} from 'vuex'
+import { getQueryOnlineByUuid, getThematicMap } from "@/api/dataSheets";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data() {
     return {
-      uuidClickedInfo: '',
+      uuidClickedInfo: "",
       showArray: [],
       isShow: false,
-      notPoi: false
-    }
+      notPoi: false,
+      dataType:0
+    };
   },
   props: {
     mapguid: {
       type: String,
-      default: ''
+      default: ""
     }
   },
   computed: {
@@ -74,7 +75,15 @@ export default {
       this.setAroundSearchShow(true)
     },
     checkDataType(data) {
-      if(!data._source.ztmc) {
+      if (!data._source.ztmc) {
+        this.uuidClickedInfo = data
+        getThematicMap(data._type).then(res => {
+          if (res.data !== "[]") {
+            this.showArray = JSON.parse(res.data)
+          } else {
+            this.$mapHelper.closePopup()
+          }
+        })
         return
       }
       let info = data._source
@@ -82,55 +91,70 @@ export default {
       let reg2 = RegExp(/区县驻地\?政府机关/)
       let reg3 = RegExp(/乡镇|街|驻地/)
       let reg4 = RegExp(/社区村驻地/)
-      let code = ''
-      if(reg1.exec(info.ztmc)) {
+      let code = ""
+      if (reg1.exec(info.ztmc)) {
         code = info.qxdm
         this.notPoi = true
-      } else if(reg2.exec(info.ztmc)) {
+      } else if (reg2.exec(info.ztmc)) {
         code = info.qxdm
         this.notPoi = true
-      } else if(reg3.exec(info.ztmc)) {
+      } else if (reg3.exec(info.ztmc)) {
         code = info.xzjdm
         this.notPoi = true
-      } else if(reg4.exec(info.ztmc)) {
+      } else if (reg4.exec(info.ztmc)) {
         code = info.sqcdm
         this.notPoi = true
       }
-      let areaInfo = {
-				areacode: code,
-			  areaname: ''
+      if (!this.notPoi) {
+        this.uuidClickedInfo = data
+        getThematicMap(data._type).then(res => {
+          if (res.data !== "[]") {
+            this.showArray = JSON.parse(res.data)
+          } else {
+            this.$mapHelper.closePopup()
+          }
+        })
       }
-      this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
+      let areaInfo = {
+        areacode: code,
+        areaname: ""
+      }
+      this.setAreaInfo({ areainfo: areaInfo, isRemoveAll: false })
     },
     _getQueryOnlineByUuid(id) {
       getQueryOnlineByUuid(id).then(res => {
         if (res.code == "1") {
           let data = JSON.parse(res.data.data)
-          this.uuidClickedInfo = data
           this.checkDataType(data)
-          getThematicMap(data._type).then(res => {
-            if (res.data !== '[]') {
-              this.showArray = JSON.parse(res.data)
-            } else {
-              this.$mapHelper.closePopup()
-            }
-          })
         } else {
           this.$mapHelper.closePopup()
         }
       })
     },
     getDetails(){
-      console.log(this.uuidClickedInfo._source)
-      if(!this.uuidClickedInfo._source.ztmc){
-        console.log(1)
+      var dataArray = []
+      if(this.uuidClickedInfo._source.areacode == this.areaInfo.areacode){
+        this.getReportDataByAreaCode([this.uuidClickedInfo._source.areacode,this.uuidClickedInfo._source.areaname,2])
+				this.setReportFormShow(false)
+				this.setAreaReportFormShow(true)
       }else{
-        console.log(this.areaInfo)
+        var title = this.uuidClickedInfo._source.name || this.uuidClickedInfo._source.mc || this.uuidClickedInfo._source.jc
+        var dataArray = { 'title': title, 'name': [], 'data': [] }
+        for(var i in this.showArray){
+          dataArray.data.push({'name':this.showArray[i]._source.name_a,'context':this.uuidClickedInfo._source[this.showArray[i]._source.name]})
+        }
+        this.setReportFormDetails(dataArray)
+        this.setReportFormShow(false)
+				this.setAreaReportFormShow(true)
       }
     },
     ...mapActions([
       'setAroundSearchShow',
-      'setAreaInfo'
+      'setAreaInfo',
+      'setReportFormShow',
+      'setAreaReportFormShow',
+      'getReportDataByAreaCode',
+      'setReportFormDetails'
     ])
   }
 }
@@ -138,76 +162,76 @@ export default {
 
 <style lang="scss" scoped>
 .pop {
-    width: 250px;
-    .pop-title {
-        display: flex;
-        justify-content: space-between;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-        .title {
-            font-size: 14px;
-            line-height: 40px;
-            padding-left: 10px;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 1;
-            overflow: hidden;
-        }
-        .cross-icon {
-            display: block;
-            width: 40px;
-            height: 40px;
-            background: url("../../assets/images/catalog/关闭搜索.png") no-repeat;
-            background-size: 100%;
-        }
+  width: 250px;
+  .pop-title {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    .title {
+      font-size: 14px;
+      line-height: 40px;
+      padding-left: 10px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      overflow: hidden;
     }
-    .pop-ul {
-      max-height: 200px;
-      overflow-y: scroll;
+    .cross-icon {
+      display: block;
+      width: 40px;
+      height: 40px;
+      background: url("../../assets/images/catalog/关闭搜索.png") no-repeat;
+      background-size: 100%;
     }
-    .pop-li {
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-        padding: 5px 10px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-        font-size: 13px;
-        span {
-            padding-top: 5px;
-            color: #888;
-            font-size: 12px;
-        }
+  }
+  .pop-ul {
+    max-height: 200px;
+    overflow-y: scroll;
+  }
+  .pop-li {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 5px 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+    span {
+      padding-top: 5px;
+      color: #888;
+      font-size: 12px;
     }
-    .button-box {
-        display: flex;
-        margin-top: 30px;
-        padding: 5px 0;
-        background-color: rgba(0, 0, 0, 0.4);
-        .button-item {
-            display: flex;
-            flex: 1;
-            justify-content: center;
-            cursor: pointer;
-            span {
-                line-height: 30px;
-                color: #fff;
-            }
-            i {
-                display: block;
-                width: 30px;
-                height: 30px;
-            }
-            .icon-searcharound {
-                background: url("../../assets/images/calloutview/看@2x.png") no-repeat;
-                background-size: 100%;
-            }
-            .icon-checkdetail {
-                background: url("../../assets/images/calloutview/详情@2x.png") no-repeat;
-                background-size: 100%;
-            }
-        }
-        .left-button-item {
-            border-right: 1px solid #fff;
-        }
+  }
+  .button-box {
+    display: flex;
+    margin-top: 30px;
+    padding: 5px 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    .button-item {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      cursor: pointer;
+      span {
+        line-height: 30px;
+        color: #fff;
+      }
+      i {
+        display: block;
+        width: 30px;
+        height: 30px;
+      }
+      .icon-searcharound {
+        background: url("../../assets/images/calloutview/看@2x.png") no-repeat;
+        background-size: 100%;
+      }
+      .icon-checkdetail {
+        background: url("../../assets/images/calloutview/详情@2x.png") no-repeat;
+        background-size: 100%;
+      }
     }
+    .left-button-item {
+      border-right: 1px solid #fff;
+    }
+  }
 }
 </style>

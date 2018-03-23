@@ -496,5 +496,9 @@ export const getAreaPovertyAlleviationDetailByAreaCode = function({ commit, stat
     }
     // 保存用户登录信息
 export const setUserinfo = function({ commit, state }, data) {
-    commit(TYPE.SET_USER_INFO, data)
+        commit(TYPE.SET_USER_INFO, data)
+    }
+    //专题数据直接展示详情
+export const setReportFormDetails = function({ commit, state }, data) {
+    commit(TYPE.SET_REPORT_FORM_DATA, data)
 }

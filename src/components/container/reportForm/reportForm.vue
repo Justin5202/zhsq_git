@@ -55,9 +55,15 @@
               <td class="table-tab-item" v-for="(item,index) in reportFormData.name" @click="showContent(index)" :class="{active:activeTab == index}">{{item}}</td>
           </tr>
       </table>
-      <div class="table-tab-context" v-if="reportFormData.length > 0">
+      <div class="table-tab-context">
           <div v-html="item" v-show="reportFormData.data.dataType[index] == 'string'&& activeTab == index" class="html-string" v-for="(item,index) in reportFormData.data.dataContex"></div>
           <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'file'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
+          <div class="table-tab-context-special" v-show="!reportFormData.data.dataType">
+             <div v-for="(item,index) in reportFormData.data" class="context-special-item" :class="{itemColor:index%2 != 0}">
+                <span style="margin-left:15px;">{{item.name + ':'}}</span>
+                <span class="font-blue">{{item.context}}</span>
+              </div>
+          </div>
       </div>
     </div>
   </div>
@@ -266,6 +272,21 @@ export default {
         .table-tab-context{
           width: 100%;
           height: 500px;
+          .table-tab-context-special{
+            height: 500px;
+            overflow-y: auto;
+            .context-special-item{
+              width: 100%;
+              height: 50px;
+              display: flex;
+              align-items:center;
+              text-align: left;
+            }
+            .itemColor {
+                width: 100%;
+                background-color: #eee;
+            }
+          }
         }
         .html-string{
           width: 100%;
@@ -275,6 +296,9 @@ export default {
         .html-doc{
           width: 100%;
           height: 500px;
+        }
+        .font-blue{
+          color: #409eff;
         }
     }
 }

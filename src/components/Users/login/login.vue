@@ -103,6 +103,11 @@ export default {
             display: inline-block;
             width: 10%;
             height: 40px;
+            box-sizing: border-box;
+            border: 1px solid lightgrey;
+            border-right: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
           }
           .icon-user {
             background: url('../../../assets/images/Login/login_name@2x.png') no-repeat;
@@ -117,9 +122,11 @@ export default {
           .el-input {
             height: 40px;
             width: 90%;
+            border: 1px solid lightgrey;
+            border-left: 0;
             outline: none;
-            border: none;
-            border-radius: 4px;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
             padding: 0 5px;
             box-sizing: border-box;
           }

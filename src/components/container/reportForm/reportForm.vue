@@ -55,7 +55,7 @@
               <td class="table-tab-item" v-for="(item,index) in reportFormData.name" @click="showContent(index)" :class="{active:activeTab == index}">{{item}}</td>
           </tr>
       </table>
-      <div class="table-tab-context">
+      <div class="table-tab-context" v-if="reportFormData.length > 0">
           <div v-html="item" v-show="reportFormData.data.dataType[index] == 'string'&& activeTab == index" class="html-string" v-for="(item,index) in reportFormData.data.dataContex"></div>
           <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'file'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
       </div>

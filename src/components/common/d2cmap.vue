@@ -16,7 +16,6 @@ export default {
 	],
 	data() {
 		return {
-			map: null,
 			style: {
 				left: 0,
 				top: 0,
@@ -28,40 +27,14 @@ export default {
 	mounted() {
 		// this.initOption(this.initMap);
 		// 后加的
-		this.map = this.$mapHelper.initMap(this.getConfig(dt));
+		window.d2cMap = this.$mapHelper.initMap(this.getConfig(dt));
 		this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(img),this.getLayerAndSourceFromOption(dem));
-		window.d2cMap = this.map;
 		window.addEventListener('resize', this.resize);
 
 	},
-	beforeDestroy() {
-		this.map.remove()
-		this.map = null
-	},
 	methods: {
-		initOption(next) {
-			if (typeof this.option === 'string') {
-				this.http.get(this.option).then(res => {
-					const mapOption = this.getConfig(res.data)
-					next(mapOption)
-				})
-			} else {
-				next(this.option)
-			}
-		},
-		initMap(option) {
-			option.container += new Date().getTime()
-			this.$refs.map.id = option.container
-
-			this.map = this.$mapHelper.initMap(option);
-			this.$mapHelper.getGuidOnClickCallback(function (mapguid) { console.log(mapguid); });
-			window.d2cMap = this.map
-
-			this.map.option = option
-			window.addEventListener('resize', this.resize)
-		},
 		resize() {
-			this.map.resize()
+			window.d2cMap.resize()
 		},
 		// 规范底图style数据格式
 		getConfig(data) {

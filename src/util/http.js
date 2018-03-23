@@ -22,14 +22,14 @@ axios.interceptors.request.use(function(config) {
 axios.interceptors.response.use(function(response) {
   let loading = Loading.service({})
   loading.close()
-  if (response.data.code == -3) {
+  if (response.data.code == '-3') {
     router.replace('/login')
     this.$message({
       message: '您的账号已在别处登录！',
       type: 'warning'
     })
   }
-  if (response.data.code == -2) {
+  if (response.data.code == '-2') {
     router.replace('/login')
   }
   return response

@@ -19,7 +19,8 @@
           <span type="button" @click="logout()">退出登录</span>
         </div>
       </el-aside>
-      <el-main v-show="showPanel">
+      <span class="close_center" @click="closeCenter()" v-if="!showPanel">+</span>
+      <el-main v-else>
         <el-header>
           <h2 class="currentTab">{{currentTab}}<span @click="closePanel()">关闭</span></h2>
         </el-header>
@@ -74,6 +75,8 @@ export default {
     },
     closePanel() {
       this.showPanel = false
+    },
+    closeCenter() {
       this.$emit('close')
     },
     _fetchData() {
@@ -146,6 +149,15 @@ export default {
             cursor: pointer;
           }
         }
+      }
+      .close_center {
+        position: absolute;
+        display: inline-block;
+        right: 10px;
+        color: #fff;
+        transform: rotateZ(45deg);
+        font-size: 60px;
+        cursor: pointer;
       }
       .el-main {
         height: 100%;

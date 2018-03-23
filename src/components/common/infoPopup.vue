@@ -28,7 +28,7 @@
         <i class="icon-searcharound"></i>
         <span class="search-around">搜周边</span>
       </div>
-      <div class="button-item">
+      <div class="button-item" @click="getDetails()">
         <i class="icon-checkdetail"></i>
         <span>查详情</span>
       </div>
@@ -59,7 +59,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'areaDetailInfo'
+      'areaDetailInfo',
+      'areaInfo'
     ])
   },
   beforeMount() {
@@ -118,6 +119,14 @@ export default {
           this.$mapHelper.closePopup()
         }
       })
+    },
+    getDetails(){
+      console.log(this.uuidClickedInfo._source)
+      if(!this.uuidClickedInfo._source.ztmc){
+        console.log(1)
+      }else{
+        console.log(this.areaInfo)
+      }
     },
     ...mapActions([
       'setAroundSearchShow',

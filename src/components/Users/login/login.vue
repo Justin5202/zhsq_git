@@ -30,6 +30,9 @@
 <script>
 import {login} from '../../../api/user'
 import {mapActions} from 'vuex'
+import {Message} from 'element-ui'
+import Vue from 'vue'
+Vue.use(Message)
 export default {
   name: 'login',
   data() {
@@ -61,7 +64,7 @@ export default {
         if(res.code === '1') {
           this.setUserinfo(res.data)
           document.cookie = 'loginSession' + "=" + escape(res.data.sessionId)
-          this.$router.push('/')
+          this.$router.replace('/')
         }
       })
     },

@@ -1025,6 +1025,11 @@ const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArra
  * @returns null
  */
 const doFilterByCodeArrayAndAreacodeArray= function (_codeArray, _areacodeArray) {
+    // 由于切换切换 全球视角功能 不一定会 触发 styleData 事件 所以重复给codeArray,areacodeArray复制
+    if(_areacodeArray != areacodeArray){
+        areacodeArray = _areacodeArray
+    }
+    
     _codeArray.forEach(element => {
         if (layersId[element]) {
 

@@ -124,8 +124,12 @@ export default {
     _getQueryOnlineByUuid(id) {
       getQueryOnlineByUuid(id).then(res => {
         if (res.code == "1") {
-          let data = JSON.parse(res.data.data)
-          this.checkDataType(data)
+          if(res.data.data) {
+            let data = JSON.parse(res.data.data)
+            this.checkDataType(data)
+          } else {
+            this.$mapHelper.closePopup()
+          }
         } else {
           this.$mapHelper.closePopup()
         }

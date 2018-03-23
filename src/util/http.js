@@ -1,8 +1,6 @@
 import axios from 'axios'
 import router from '../router'
-import {Loading, Message} from 'element-ui'
-import Vue from 'vue'
-Vue.use(Message)
+import {Loading} from 'element-ui'
 
 // 拦截请求
 axios.interceptors.request.use(function(config) {
@@ -24,10 +22,6 @@ axios.interceptors.response.use(function(response) {
   loading.close()
   if (response.data.code == '-3') {
     router.replace('/login')
-    this.$message({
-      message: '您的账号已在别处登录！',
-      type: 'warning'
-    })
   }
   if (response.data.code == '-2') {
     router.replace('/login')

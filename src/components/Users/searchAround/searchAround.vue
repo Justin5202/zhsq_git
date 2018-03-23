@@ -40,6 +40,8 @@
   </div>
 </template>
 <script>
+  import {mapActions} from 'vuex'
+
   export default {
     name: 'search-around',
     data() {
@@ -50,8 +52,11 @@
     },
     methods: {
       goback() {
-        this.$router.go(-1)
-      }
+        this.setAroundSearchShow(false)
+      },
+      ...mapActions([
+        'setAroundSearchShow'
+      ])
     }
   }
 </script>

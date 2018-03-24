@@ -1004,15 +1004,17 @@ const removeLayerById = function (id) {
  */
 const removeLayerByCode = function (code) {
     // 用code 找到对应的 图层id 逐一删除
+      
     if (layersId[code]) {
         layersId[code].forEach(element => {
+                 
             map.removeLayer(element);
         });
         layersId[code] = null;
     } else {
         console.log("没找到对应图层");
     }
-
+    console.log(layersId, code) 
 };
 
 /**

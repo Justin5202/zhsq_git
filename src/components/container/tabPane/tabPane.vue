@@ -27,7 +27,10 @@
 					<li class="search-pane-li" v-if="searchList.length === 0">
 						<p style="margin: 0;">暂无搜索数据</p>
 					</li>
-					<li class="search-pane-li" v-else v-for="(item, index) in searchList">
+					<li 
+						class="search-pane-li" 
+						v-else v-for="(item, index) in searchList"
+					>
 						<div class="search-pane-box" v-if="item.searchType === 1">
 							<div class="icon-box">
 								<i class="poi-icon"></i>
@@ -75,15 +78,17 @@
 								<span>详情</span>
 							</div>
 						</div>
-						<div class="search-pane-box" v-else-if="item.searchType === 5">
+						<div 
+							class="search-pane-box" 
+							v-else-if="item.searchType === 5"
+							@click="flyToPoint(item.element.geopoint, item.element.dataId, index)"
+						>
 							<div class="icon-box">
 								<i class="macro-icon"></i>
 							</div>
 							<div class="area-content" >
 								<h2>{{item.element.name}}</h2>
 								<p>{{item.element.desc}}</p>
-							</div>
-							<div class="detail">
 							</div>
 						</div>
 						<div class="search-pane-box" v-else-if="item.searchType === 6">
@@ -124,7 +129,7 @@
 						v-for="(item, index) in topicList.list"
 						v-if="topicList.type=='ly'&&nowIndex>0&&item.dj == tourismType[nowIndex]"
 						:class="{active: topicIndex == index}"
-						@click="flyToPoint(item, index)"
+						@click="flyToPoint(item.point, item.id, index)"
 					>
 						<div class="search-pane-box">
 							<div class="icon-box">
@@ -141,7 +146,7 @@
 						v-for="(item, index) in topicList.list"
 						v-if="topicList.type=='ly'&&nowIndex<=0"
 						:class="{active: topicIndex == index}"
-						@click="flyToPoint(item, index)"
+						@click="flyToPoint(item.point, item.id, index)"
 					>
 						<div class="search-pane-box">
 							<div class="icon-box">
@@ -231,10 +236,10 @@
 				this.nowIndex = index
 				this.addTourismLayer(index)
 			},
-			flyToPoint(item, index) {
+			flyToPoint(point, id, index) {
 				this.topicIndex = index
-				this.$mapHelper.flyByPointAndZoom(JSON.parse(item.point), 8)
-				this.$mapHelper.setPicPopupToMap(JSON.parse(item.point), item.id)
+				this.$mapHelper.flyByPointAndZoom(JSON.parse(point), 8)
+				this.$mapHelper.setPicPopupToMap(JSON.parse(point), id)
 			},
 			next() {
 				this.page += 1

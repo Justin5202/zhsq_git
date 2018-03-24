@@ -31,7 +31,8 @@ export default {
 		window.d2cMap = this.$mapHelper.initMap(this.getConfig(dt));
 		this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(img),this.getLayerAndSourceFromOption(dem),this.getLayerAndSourceFromOption(imgHQ));
 		window.addEventListener('resize', this.resize);
-
+	},
+	created() {
 	},
 	methods: {
 		resize() {

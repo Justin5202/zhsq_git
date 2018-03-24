@@ -211,3 +211,15 @@ input[type="checkbox"]:checked:after {
   -ms-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
+.is-fullscreen {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+.el-loading-spinner {
+  height: 80px !important;
+  width: 100px !important;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .8) !important;
+  left: 50%;
+  transform: translate(-50%, -50%) !important;
+  margin-top: 0 !important;
+}

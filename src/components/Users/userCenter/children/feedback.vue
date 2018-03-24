@@ -1,7 +1,7 @@
 <template>
   <div class="feedback">
     <ul class="nav">
-      <li class="item"
+      <li class="nav-item"
       :class="{active: index===currentIndex}"
       v-for="(item, index) in tabs"
       @click="setActive(index)">{{item.name}}</li>
@@ -9,7 +9,7 @@
     <div class="form-container" v-show="currentIndex === 0">
       <el-form>
         <el-form-item :model="form">
-          <el-input v-model="form.text" :rows="25"  type="textarea" placeholder="请输入您宝贵的意见"></el-input>
+          <el-input v-model="form.text" :rows="23"  type="textarea" placeholder="请输入您宝贵的意见"></el-input>
         </el-form-item>
         <el-button @click="_feedback(form.text)">提交</el-button>
       </el-form>
@@ -130,27 +130,25 @@
   .feedback {
     width: 100%;
     height: 100%;
-    background-color: rgb(248, 247, 247);
     .nav {
       list-style: none;
       width: 100%;
-      height: 5%;
+      height: 40px;
       display: flex;
       justify-content: center;
       border-bottom: 1px solid lightgrey;
       margin-bottom: 30px;
       box-sizing: border-box;
-      .item {
+      .nav-item {
         width: 50%;
         height: 100%;
-        line-height: 50px;
+        line-height: 40px;
         color: #000;
-        font-size: 18px;
+        font-size: 16px;
         cursor: pointer;
       }
-      .active {
-        color: #fff;
-        background-color: rgb(139, 139, 139);
+      .nav-item:hover, .active {
+        color: #335fff;
       }
     }
     .form-container {
@@ -161,38 +159,43 @@
           font-size: 16px;
         }
         .el-button {
-          background-color: rgb(39, 68, 112);
+          background-color:#335fff;
           color: #fff;
-          font-size: 16px;
+          font-size: 15px;
           padding-left: 30px;
           padding-right: 30px;
         }
       }
     }
     .history-container {
-      height: 95%;
+      height: 680px;
       margin-top: -30px;
       display: flex;
       justify-content: flex-start;
       .history-box {
         width: 30%;
         height: 100%;
-        background-color: #fff;
+        border-right: 1px solid lightgray;
+        border-bottom: 0;
+        box-sizing: border-box;
         .list {
           height: 100%;
           overflow: auto;
           list-style: none;
           .list-item {
-            padding: 10px 10px;
+            padding: 8px 8px;
             border-bottom:1px solid lightgrey;
             cursor: pointer;
             box-sizing: border-box;
             p {
               text-align: left;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
             }
             .text {
               font-size: 16px;
-              margin-bottom: 15px;
+              margin-bottom: 8px;
               color: #000;
             }
             .time {
@@ -203,7 +206,7 @@
             margin-top: 10px;
           }
           .active {
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0, 0, 0, 0.1);
           }
         }
       }
@@ -235,6 +238,7 @@
             background-color:#B2E865; 
             padding: 0 10px;
             margin-top: 10px;
+            word-break: break-all;
           }
           i {
             display: inline-block;
@@ -264,6 +268,7 @@
             background-color: #E1E1E1;
             padding: 0 10px;
             margin-top: 10px;
+            word-break: break-all;
           }
           i {
             display: inline-block;

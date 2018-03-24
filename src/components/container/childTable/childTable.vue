@@ -1,5 +1,5 @@
 <template>
-<div class="child-table-content">
+<div class="child-table-content" :style="{maxHeight:childTableHeight}">
   <ul>
     <li class="child-table-content-li child-li" v-if="areaInfoList">
       <!-- 第一级 -->
@@ -108,7 +108,8 @@ export default {
     return {
       isClose: true,
       thirdChildIsShow: false,
-      nowIndex: ''
+      nowIndex: '',
+      childTableHeight:window.innerHeight*0.6 +'px'
     }
   },
   computed: {
@@ -174,7 +175,7 @@ export default {
 
 <style lang="scss" scoped>
 .child-table-content {
-    max-height: 635px;
+    //max-height: 635px;
     background-color: #fff;
     overflow-y: scroll;
     .child-table-content-li {

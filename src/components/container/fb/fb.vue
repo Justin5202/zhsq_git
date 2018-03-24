@@ -10,7 +10,7 @@
           :class="{clicked: nowIndex === index}"
         >{{item}}</button>
       </div>
-      <ul>
+      <ul :style="{maxHeight:fbHeight}">
         <li
           class="search-pane-li"
           v-for="item in topicList.list"
@@ -98,7 +98,8 @@
 				page: 1,
         nextList: [],
 				areaList: [],
-				rightShow: false
+				rightShow: false,
+				fbHeight:window.innerHeight*0.5 + 'px'
 			}
 		},
 		computed: {
@@ -193,7 +194,7 @@
 			}
 			ul {
 				margin: 0;
-				max-height: 526px;
+				//max-height: 526px;
 				overflow-y: scroll;
 				.search-pane-li {
 					list-style: none;

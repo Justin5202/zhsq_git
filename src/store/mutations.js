@@ -44,25 +44,25 @@ const mutations = {
   /** SOURCE */
   [TYPE.REQUEST_SOURCE_START](state) {
     state.sourceLoading = true
-  }, 
+  },
   [TYPE.REQUEST_SOURCE_END](state) {
     state.sourceLoading = false
-  }, 
+  },
   [TYPE.LOAD_SOURCE](state, source) {
     console.info(`[${TYPE.LOAD_SOURCE}]`, source)
     state.mapSource = source
-  }, 
+  },
   [TYPE.UPDATE_ACTIVE_SOURCE](state, source) {
     state.activeSource = source
   },
   /** STYLE */
   [TYPE.REQUEST_STYLE_START](state, source) {
     state.styleLoading = true
-  }, 
+  },
   [TYPE.REQUEST_STYLE_END](state, source) {
     console.info(`[LOAD_STYLE_END]`)
     state.styleLoading = false
-  }, 
+  },
   [TYPE.LOAD_STYLE](state, styles) {
     console.info(`[${TYPE.LOAD_STYLE}]`, styles)
     state.mapStyles = Object.assign({}, state.mapStyles, styles)
@@ -70,17 +70,17 @@ const mutations = {
   /** MAP */
   [TYPE.SET_MAIN_MAP](state, mainMap) {
     state.mainMap = mainMap
-  }, 
+  },
   [TYPE.SEARCH_PANE_IS_SHOW](state, searchPaneShow) {
     state.searchPaneShow = searchPaneShow
-  }, 
+  },
   [TYPE.TABLE_PANE_SHOW](state, tableMenuPaneShow) {
     state.tableMenuPaneShow = tableMenuPaneShow
     state.topicList = []
-  }, 
+  },
   [TYPE.SEARCH_PARAMS](state, searchParams) {
     state.searchParams = searchParams
-  }, 
+  },
   [TYPE.GET_SEARCH_RESULT](state, searchList) {
     for (let val of searchList) {
       if (val) {
@@ -95,26 +95,26 @@ const mutations = {
   [TYPE.MODIFY_AREA_INFO_LIST](state, item) {
     let temp = []
     temp.push(item)
-    if(item.children && item.children.length > 0) {
+    if (item.children && item.children.length > 0) {
       item.children.map(v => {
         temp.push(v)
-        if(v.children && v.children.length > 0) {
+        if (v.children && v.children.length > 0) {
           v.children.map(i => temp.push(i))
         }
       })
     }
     let list = state.areaInfoList
     temp.map(n => {
-      if(list.id === n.id) {
+      if (list.id === n.id) {
         list.isActive = n.isActive
       }
-      if(list.children.length > 0) {
+      if (list.children.length > 0) {
         list.children.map(v => {
-          if(v.id === n.id) {
+          if (v.id === n.id) {
             v.isActive = n.isActive
-          } else if(v.children.length > 0) {
+          } else if (v.children.length > 0) {
             v.children.map(i => {
-              if(i.id === n.id) {
+              if (i.id === n.id) {
                 i.isActive = n.isActive
               }
             })
@@ -135,10 +135,10 @@ const mutations = {
       })
       state.activeAreaInfoList.splice(0, state.activeAreaInfoList.length)
       state.areaInfoList.isActive = false
-      if(state.areaInfoList.children) {
+      if (state.areaInfoList.children) {
         state.areaInfoList.children.map(v => {
           v.isActive = false
-          if(v.children) {
+          if (v.children) {
             v.children.map(i => i.isActive = false)
           }
         })

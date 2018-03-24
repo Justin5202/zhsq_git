@@ -15,7 +15,7 @@
     </div>
     <div class="tool-box">
       <span class="tool-item"  @click="openReportForm">
-        <img src="../../../assets/images/map/报表.png" width="60" height="60" alt="">
+        <img src="../../../assets/images/map/报表.png" alt="">
       </span>
       <span class="circle" v-if="reportFormLength > 0">{{reportFormLength}}</span>
     </div>
@@ -48,14 +48,8 @@
   </div>
   <div class="layer-tool-box" v-show="layerToolVisible">
     <div class="layer-tool-content">
-      <div class="layer-tool-item">
-        <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="" @click="changeBaseMap('dt')">
-      </div>
-      <div class="layer-tool-item">
-        <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="" @click="changeBaseMap('img')">
-      </div>
-      <div class="layer-tool-item">
-        <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="" @click="changeBaseMap('dem')">
+      <div class="layer-tool-item" v-for="(item,index) in mapJsonAndImg.img">
+        <img :src="'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test'+ item"  width="90" height="60" alt="" :title=mapJsonAndImg.name[index] @click="changeBaseMap(mapJsonAndImg.name[index])">
       </div>
     </div>
     <layer-control></layer-control>
@@ -106,7 +100,8 @@ export default {
       'activeAreaInfoList',
       'areaInfoData',
       'searchItemMacroList',
-      'userinfo'
+      'userinfo',
+      'mapJsonAndImg'
     ]),
     areaLayerLength() {
       let len = 0
@@ -181,18 +176,26 @@ export default {
     },
     //地图切换
     changeBaseMap(type){
-      if(type == 'dt'){
-        this.$mapHelper.setMapFlay(type)
+      if(type == '矢量'){
+        this.$mapHelper.setMapFlay('dt')
         this.$mapHelper.setAllImageMapVisibility(false)
         this.$mapHelper.setAllDemMapVisibility(false)
-      }else if(type == 'img'){
-        this.$mapHelper.setMapFlay(type)
+        this.$mapHelper.setAllHQImageMapVisibility(false)
+      }else if(type == '影像'){
+        this.$mapHelper.setMapFlay('img')
         this.$mapHelper.setAllImageMapVisibility(true)
         this.$mapHelper.setAllDemMapVisibility(false)
-      }else if(type == 'dem'){
-        this.$mapHelper.setMapFlay(type)
+        this.$mapHelper.setAllHQImageMapVisibility(false)
+      }else if(type == '渲染'){
+        this.$mapHelper.setMapFlay('dem')
         this.$mapHelper.setAllImageMapVisibility(false)
         this.$mapHelper.setAllDemMapVisibility(true)
+        this.$mapHelper.setAllHQImageMapVisibility(false)
+      }else if(type == '高清影像'){
+        this.$mapHelper.setMapFlay('imgHQ')
+        this.$mapHelper.setAllImageMapVisibility(false)
+        this.$mapHelper.setAllDemMapVisibility(false)
+        this.$mapHelper.setAllHQImageMapVisibility(true)
       }
     },
     //打开图层切换
@@ -212,7 +215,7 @@ export default {
     },
     //获取旋转角度值
     changeAngle(angle) {
-      document.getElementsByClassName("tool-compass")[0].style.transform = "rotate(" + angle + "deg)"
+      document.getElementsByClassName("tool-compass")[0].style.transform = "rotate(" + -angle + "deg)"
       if (angle != 0) {
         this.toolCompassVisible = true
       } else if (angle == 0) {
@@ -294,7 +297,7 @@ export default {
     .layer-tool-box {
         display: flex;
         flex-direction: column;
-        width: 310px;
+        min-width: 310px;
         background-color: #fff;
         position: absolute;
         border-top-left-radius: 4px;
@@ -305,7 +308,7 @@ export default {
             display: flex;
             border-bottom: 1px solid #e4e7ed;
             .layer-tool-item {
-                margin: 10px 0 10px 10px;
+                margin: 10px;
                 cursor: pointer;
                 img {
                     display: block;

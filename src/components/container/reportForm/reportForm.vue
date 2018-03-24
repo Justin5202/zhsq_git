@@ -1,7 +1,7 @@
 <template>
 <div>
   <!-- 普通报表 -->
-  <div class="report-form-detail" v-show="reportFormShow">
+  <div class="report-form-detail" v-show="reportFormShow" :style="reportFormSize">
     <div class="report-form-header">
       <div class="report-form-title">数据详情</div>
       <div class="report-form-close">
@@ -42,7 +42,7 @@
     </div>
   </div>
   <!-- 行政区划的报表 -->
-  <div class="report-form-detail" v-show="areaReportFormShow">
+  <div class="report-form-detail" v-show="areaReportFormShow" :style="reportFormSize">
     <div class="report-form-header">
       <div class="report-form-title">{{reportFormData.title}}</div>
       <div class="report-form-close">
@@ -55,7 +55,7 @@
               <td class="table-tab-item" v-for="(item,index) in reportFormData.name" @click="showContent(index)" :class="{active:activeTab == index}">{{item}}</td>
           </tr>
       </table>
-      <div class="table-tab-context">
+      <div class="table-tab-context" v-if="areaReportFormShow">
           <div v-html="item" v-show="reportFormData.data.dataType[index] == 'string'&& activeTab == index" class="html-string" v-for="(item,index) in reportFormData.data.dataContex"></div>
           <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'file'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
           <div class="table-tab-context-special" v-show="!reportFormData.data.dataType">
@@ -83,7 +83,11 @@ export default {
       dataId: '',
       areaCode: '',
       dataList: [],
-      activeTab:0
+      activeTab:0,
+      reportFormSize:{
+        maxWidth:window.innerWidth*0.55 +'px',
+        minWidth:window.innerWidth*0.5 +'px'
+      }
     }
   },
 
@@ -136,8 +140,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .report-form-detail {
-    min-width: 800px;
-    max-width: 1100px;
+    // min-width: 800px;
+    // max-width: 1100px;
     background-color: #fff;
     .report-form-header {
         width: 100%;

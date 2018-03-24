@@ -28,7 +28,7 @@
         <i class="icon-searcharound"></i>
         <span class="search-around">搜周边</span>
       </div>
-      <div class="button-item">
+      <div class="button-item" @click="getDetails()">
         <i class="icon-checkdetail"></i>
         <span>查详情</span>
       </div>
@@ -48,7 +48,8 @@ export default {
       uuidClickedInfo: "",
       showArray: [],
       isShow: false,
-      notPoi: false
+      notPoi: false,
+      dataType:0
     };
   },
   props: {
@@ -58,7 +59,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["areaDetailInfo"])
+    ...mapGetters([
+      'areaDetailInfo',
+      'areaInfo'
+    ])
   },
   beforeMount() {
     this._getQueryOnlineByUuid(this.mapguid)
@@ -131,7 +135,31 @@ export default {
         }
       })
     },
-    ...mapActions(["setAroundSearchShow", "setAreaInfo"])
+    getDetails(){
+      var dataArray = []
+      if(this.uuidClickedInfo._source.areacode == this.areaInfo.areacode){
+        this.getReportDataByAreaCode([this.uuidClickedInfo._source.areacode,this.uuidClickedInfo._source.areaname,2])
+				this.setReportFormShow(false)
+				this.setAreaReportFormShow(true)
+      }else{
+        var title = this.uuidClickedInfo._source.name || this.uuidClickedInfo._source.mc || this.uuidClickedInfo._source.jc
+        var dataArray = { 'title': title, 'name': [], 'data': [] }
+        for(var i in this.showArray){
+          dataArray.data.push({'name':this.showArray[i]._source.name_a,'context':this.uuidClickedInfo._source[this.showArray[i]._source.name]})
+        }
+        this.setReportFormDetails(dataArray)
+        this.setReportFormShow(false)
+				this.setAreaReportFormShow(true)
+      }
+    },
+    ...mapActions([
+      'setAroundSearchShow',
+      'setAreaInfo',
+      'setReportFormShow',
+      'setAreaReportFormShow',
+      'getReportDataByAreaCode',
+      'setReportFormDetails'
+    ])
   }
 }
 </script>

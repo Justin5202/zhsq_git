@@ -154,8 +154,8 @@ export default {
       quitDraw(){
         this.clearDrawResult()
         this.dataId = ""
-        statisticsConditionShow:false
-        statisticsToolShow:false
+        this.statisticsConditionShow = false
+        this.statisticsToolShow=false
         d2cMap.getCanvas().style.cursor = '';
       },
       //关闭统计面板

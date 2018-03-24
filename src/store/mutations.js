@@ -90,8 +90,25 @@ const mutations = {
     state.searchList = searchList
   },
   [TYPE.GET_AREA_DATA](state, list) {
-    console.log(list)
     state.areaInfoList = list
+  },
+  [TYPE.MODIFY_AREA_INFO_LIST](state, item) {
+    let list = state.areaInfoList
+    if(list.id === item.id) {
+      list.isActive = item.isActive
+    } else if(list.children.length > 0) {
+      list.children.map(v => {
+        if(v.id === item.id) {
+          v.isActive = item.isActive
+        } else if(v.children.length > 0) {
+          v.children.map(i => {
+            if(i.id === item.id) {
+              i.isActive = item.isActive
+            }
+          })
+        }
+      })
+    }
   },
   [TYPE.ADD_LAYER_ID_LIST](state, id) {
     state.layerIdList.push(id)
@@ -99,15 +116,19 @@ const mutations = {
   [TYPE.SET_ACTIVE_AREA_LIST](state, { item, isRemoveAll }) {
     if (isRemoveAll) {
       state.activeAreaInfoList.map(v => {
-        v.isActive = false
         /*清空所有图层*/
         mapHelper.removeLayerByCode(v.id)
       })
-      state.activeAreaInfoList = []
-      state.areaInfoData = []
-      state.areaInfoList.map(v => v.isActive = false)
-      /*图层过滤*/
-      mapHelper.setFilterByCodeArrayAndAreacodeArray([], state.areaCodeList)
+      state.activeAreaInfoList.splice(0, state.activeAreaInfoList.length)
+      state.areaInfoList.isActive = false
+      if(state.areaInfoList.children) {
+        state.areaInfoList.children.map(v => {
+          v.isActive = false
+          if(v.children) {
+            v.children.map(i => i.isActive = false)
+          }
+        })
+      }
     } else {
       let index = state.activeAreaInfoList.findIndex(v => v.id === item.id)
       if (index < 0) {

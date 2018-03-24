@@ -56,12 +56,7 @@ function addLayer(datapath, id) {
 *不存在，push进图层列表，并加载地图图层
  */
 function checkData(data, commit) {
-    let cur
-    if(data.length >= 0) {
-        cur = data[0]
-    } else {
-        cur = Object.assign({}, data)
-    }
+    let cur = Object.assign({}, data)
     let temp = state.activeAreaInfoList.slice()
     let layerIdList = state.layerIdList.slice()
     if (cur.children && cur.children.length > 0) {
@@ -77,6 +72,7 @@ function checkData(data, commit) {
                 mapHelper.removeLayerByCode(v.id)
             }
             commit(TYPE.SET_ACTIVE_AREA_LIST, {'item': v, 'isRemoveAll': false})
+            commit(TYPE.MODIFY_AREA_INFO_LIST, v)
         })
     } else {
         let index = temp.findIndex(f => f.id === cur.id)
@@ -88,20 +84,16 @@ function checkData(data, commit) {
             mapHelper.removeLayerByCode(cur.id)
         }
         commit(TYPE.SET_ACTIVE_AREA_LIST, {'item': cur, 'isRemoveAll': false})
+        commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
     }
-    return data
+    return cur
 }
 
 /*
 *判断数据type类型，做相应操作
 */
-function checkClickedDataType(data, commit) {
-    let cur
-    if(data.length && data.length >= 0) {
-        cur = data[0]
-    } else {
-        cur = Object.assign({}, data)
-    }
+function checkClickedDataType({dispatch, data, commit, first}) {
+    let cur = Object.assign({}, data)
     let type = parseInt(Number(cur.type) / 10)
     let yu = Number(cur.type) % 10
     let temp
@@ -109,51 +101,51 @@ function checkClickedDataType(data, commit) {
     // type为0，仅为目录，直接显示列表
     if (type === 0) {
         console.log('仅为目录')
-        data[0].isActive = false
-        temp = data
+        cur.isActive = false
+        temp = cur
     } else if (type === 1) { // type为1，无下一级目录
         if (yu === 0) { // yu为0，不做任何操作
             console.log('仅为目录')
-            data[0].isActive = false
-            temp = data
+            cur.isActive = false
+            temp = cur
         } else if (yu === 1) { // yu为1，仅有空间数据，即加载空间数据
-            temp = checkData(data, commit)
+            temp = checkData(cur, commit)
         } else if (yu === 2) { // yu为2，仅有统计数据，加载统计数据
             console.log('仅有统计数据，加载统计数据')
-            data[0].isActive = true
-            if(data[0].children.length > 0) {
-                data[0].isActive = false
-                data[0].children.map(v => {
+            cur.isActive = true
+            if(first && cur.children.length > 0) {
+                cur.isActive = false
+                cur.children.map(v => {
                     v.isActive = false
                 })
             } else {
-                data[0].isActive = false
+                cur.isActive = false
+                // commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
             }
-            temp = data
+            temp = cur
         } else if (yu === 3) { // yu为3，有空间数据和统计数据，优先加载空间数据
-            temp = checkData(data, commit)
+            temp = checkData(cur, commit)
         } else if (yu === 4) { // yu为4，仅有文本数据，即加载文本数据
             console.log('仅有文本数据，即加载文本数据')
-            if(data[0].children.length > 0) {
-                data[0].isActive = false
-                data[0].children.map(v => {
+            dispatch('getDataFileByCodeAndId', {'areaCode': state.areaList, 'dataId': cur.id})
+            dispatch('setAreaReportFormShow', true)
+            if(first && cur.children.length > 0) {
+                cur.isActive = false
+                cur.children.map(v => {
                     v.isActive = false
                 })
-            } else {
-                data[0].isActive = true
             }
-            temp = data
+            temp = cur
         } else if (yu === 5) { // yu为5，有文本数据和空间数据，优先加载空间数据
-            temp = checkData(data, commit)
+            temp = checkData(cur, commit)
         }
     } else if (type === 2) { // type为2，即为图层，加载图层
-        temp = checkData(data, commit)
+        temp = checkData(cur, commit)
     } else if (type === 3) { // type为3，即为网页，记载网页
 
     } else if (type === 4) { // type为4，即为720图片
 
     }
-    console.log(temp)
     return temp
 }
 
@@ -173,8 +165,8 @@ export const getSearchParams = function ({ dispatch, commit, state }, { typePara
 }
 export const getAreaDetail = function ({ dispatch, commit, state }, params) {
     getDetailInfo(Object.assign({}, params)).then(res => {
-        let data = res.data
-        commit(TYPE.GET_AREA_DATA, checkClickedDataType(data, commit))
+        let data = res.data[0]
+        commit(TYPE.GET_AREA_DATA, checkClickedDataType({dispatch, data, commit, 'first': true}))
         // 隐藏目录列表、搜索列表
         commit(TYPE.SEARCH_PANE_IS_SHOW, false)
         commit(TYPE.TABLE_PANE_SHOW, false)
@@ -223,9 +215,8 @@ export const getSearchResult = function ({ dispatch, commit, state }) {
 export const setSecAreaList = function ({ commit, state }, list) {
     commit(TYPE.SET_SEC_AREA_LIST, list)
 }
-export const setAreaList = function ({ commit, state }, item) {
-    let cur = item
-    checkClickedDataType(cur, commit)
+export const setAreaList = function ({dispatch, commit, state }, item) {
+    checkClickedDataType({dispatch, 'data': item, commit, 'first': false})
 }
 // 区县区域下一级详细信息
 export const getNextAreaInfo = function ({ commit, state }) {
@@ -234,20 +225,11 @@ export const getNextAreaInfo = function ({ commit, state }) {
         commit(TYPE.SET_SEC_AREA_LIST, JSON.parse(res.data))
     })
 }
-export const removeAllAreaList = function ({
-    commit,
-    state
-}) {
-    commit(TYPE.SET_ACTIVE_AREA_LIST, {
-        list: [],
-        isRemoveAll: true
-    })
+export const removeAllAreaList = function ({commit, state}) {
+    commit(TYPE.SET_ACTIVE_AREA_LIST, {list: [], isRemoveAll: true})
 }
 // 加载搜索结果的空间数据，并push到areainfodata
-export const loadSearchItemMacro = function ({
-    commit,
-    state
-}, item) {
+export const loadSearchItemMacro = function ({commit, state}, item) {
     commit(TYPE.SET_SEARCH_MACRO_LIST, item)
 }
 /*移除搜索结果空间数据渲染列表*/
@@ -270,7 +252,7 @@ export const setReportFormShow = function ({ dispatch, commit, state }, isShow) 
     if (isShow) {
         dispatch('getAreaCodeAndDataId', {
             'areaCode': state.areaList,
-            'dataId': [state.areaInfoData, state.searchItemMacroList]
+            'dataId': [state.areaInfoList, state.searchItemMacroList]
         })
         dispatch('getReportData', {
             'areaCode': state.areaCodeAndDataId[0],
@@ -279,29 +261,23 @@ export const setReportFormShow = function ({ dispatch, commit, state }, isShow) 
     }
 }
 //获取areaCode 和 dataId
-export const getAreaCodeAndDataId = function ({
-    commit,
-    state
-}, {
-    areaCode,
-    dataId
-}) {
+export const getAreaCodeAndDataId = function ({commit, state}, {areaCode, dataId}) {
     var AreaCodeAndDataId = []
     var idList = ""
     var codeList = ""
     for (let i in dataId[0]) {
-        if (dataId[0][i].target.length > 0 && dataId[0][i].isActive) {
-            idList += ',' + dataId[0][i].id
+        if (dataId[0].target.length > 0 && dataId[0].isActive) {
+            idList += ',' + dataId[0].id
         }
-        if (dataId[0][i].children.length > 0) {
-            for (let j in dataId[0][i].children) {
-                if (dataId[0][i].children[j].target.length > 0 && dataId[0][i].children[j].isActive) {
-                    idList += ',' + dataId[0][i].children[j].id
+        if (dataId[0].children.length > 0) {
+            for (let j in dataId[0].children) {
+                if (dataId[0].children[j].target.length > 0 && dataId[0].children[j].isActive) {
+                    idList += ',' + dataId[0].children[j].id
                 }
-                if (dataId[0][i].children[j].children.length > 0) {
-                    for (let k in dataId[0][i].children[j].children) {
-                        if (dataId[0][i].children[j].children[k].target.length > 0 && dataId[0][i].children[j].children[k].isActive) {
-                            idList += ',' + dataId[0][i].children[j].children[k].id
+                if (dataId[0].children[j].children.length > 0) {
+                    for (let k in dataId[0].children[j].children) {
+                        if (dataId[0].children[j].children[k].target.length > 0 && dataId[0].children[j].children[k].isActive) {
+                            idList += ',' + dataId[0].children[j].children[k].id
                         }
                     }
                 }
@@ -494,17 +470,11 @@ export const clearReport = function ({
     })
 }
 //获取测量数据
-export const setMeasurNum = function ({
-    commit,
-    state
-}, data) {
+export const setMeasurNum = function ({commit,state}, data) {
     commit(TYPE.SET_MEASURE_NUM, data)
 }
 //行政区划详情显示隐藏
-export const setAreaReportFormShow = function ({
-    commit,
-    state
-}, data) {
+export const setAreaReportFormShow = function ({commit, state}, data) {
     commit(TYPE.SET_AREA_REPORT_FORM_SHOW, data)
 }
 

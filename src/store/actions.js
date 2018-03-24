@@ -15,6 +15,13 @@ import {
     getDataFileInfo,
     getAreaPovertyAlleviationDetail
 } from '@/api/dataSheets'
+import {
+    getAreaCodeAndDataIdInJS,
+    getReportDataInJS,
+    getReportDataByAreaCodeInJS,
+    getDataFileByCodeAndIdInJS,
+    getAreaPovertyAlleviationDetailByAreaCodeInJS
+} from '@/util/reportForm'
 import { getJson } from '@/api/getJson'
 import mapHelper from '@/util/mapHelper'
 import state from './state'
@@ -41,7 +48,7 @@ function addLayer(datapath, id) {
     getJson(datapath).then(res => {
         const result = mapHelper.addLayerByCodeAndJson(id, res)
         getQueryElementByPoint(result).then(res => {
-            if (res.data.points && res.data.mapguid && res.data.flag !== 3) {
+            if (res.data && res.data.flag !== 3) {
                 // 地图飞点
                 mapHelper.flyByBounds(handleArray(res.data.points))
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length - 1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
@@ -128,17 +135,27 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
     // type为0，仅为目录，直接显示列表
     if (type === 0) {
         console.log('仅为目录')
+        cur.isActive = false
         temp = cur
     } else if (type === 1) { // type为1，无下一级目录
         if (yu === 0) { // yu为0，不做任何操作
             console.log('仅为目录')
+            cur.isActive = false
             temp = cur
         } else if (yu === 1) { // yu为1，仅有空间数据，即加载空间数据
             temp = checkData(cur, commit, first)
         } else if (yu === 2) { // yu为2，仅有统计数据，加载统计数据
             console.log('仅有统计数据，加载统计数据')
-            cur.isActive = !cur.isActive
-            commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+            cur.isActive = true
+            if (first && cur.children.length > 0) {
+                cur.isActive = false
+                cur.children.map(v => {
+                    v.isActive = false
+                })
+            } else {
+                cur.isActive = false
+                    // commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+            }
             temp = cur
         } else if (yu === 3) { // yu为3，有空间数据和统计数据，优先加载空间数据
             console.log('有空间数据和统计数据，优先加载空间数据')
@@ -156,11 +173,10 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
         console.log('即为图层，加载图层')
         temp = checkData(cur, commit, first)
     } else if (type === 3) { // type为3，即为网页，记载网页
-        console.log('即为网页，记载网页')
+
     } else if (type === 4) { // type为4，即为720图片
-        console.log('为720图片')
+
     }
-    return temp
 }
 
 /*
@@ -176,10 +192,10 @@ function addIsActive(data) {
             }
         })
     }
-    return data
+    return temp
 }
 
-export const searchPaneShow = function ({ commit, state }, isShow) {
+export const searchPaneShow = function({ commit, state }, isShow) {
     commit(TYPE.SEARCH_PANE_IS_SHOW, isShow)
 }
 export const tablePaneShow = function ({ commit, state }, isShow) {
@@ -363,7 +379,11 @@ export const setUserinfo = function ({ commit, state }, data) {
 export const setReportFormDetails = function ({ commit, state }, data) {
     commit(TYPE.SET_REPORT_FORM_DATA, data)
 }
-//保存底图图片和Json
-export const setNewMapJsonAndImg = function ({ commit, state }, data) {
+// 获取贫困乡镇数据详情
+export const getAreaPovertyAlleviationDetailByAreaCode = function({ commit, state }, data) {
+    var dataArray = getAreaPovertyAlleviationDetailByAreaCodeInJS
+    commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
+}
+export const setNewMapJsonAndImg = function({ commit, state }, data) {
     commit(TYPE.SET_MAP_JSON_AND_IMG, data)
 }

@@ -128,7 +128,7 @@ export default {
       if (dataType == 2 || dataType == 3) {
         this.getAreaCodeAndDataId({
           areaCode: this.areaList,
-          dataId: [this.areaInfoData, this.searchItemMacroList]
+          dataId: [this.areaInfoList, this.searchItemMacroList]
         });
         this.getReportData({
           areaCode: this.areaCodeAndDataId[0],

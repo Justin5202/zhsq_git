@@ -45,7 +45,6 @@ function getAreaCodeAndDataId(areaCode, dataId) {
     }
     AreaCodeAndDataId.push(codeList.substring(1))
     AreaCodeAndDataId.push(idList.substring(1))
-        // commit(TYPE.SET_AREACODE_AND_DATAID, AreaCodeAndDataId)
 }
 //获取报表详情
 function getReportData(areaCode, dataId) {

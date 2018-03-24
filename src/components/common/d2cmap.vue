@@ -5,11 +5,10 @@
 import dt from './config/dt'
 import dem from './config/dem'
 import img from './config/img'
-import imgHQ from './config/imgHQ'
 import infoTemp from '../page/testPage'
 import Vue from 'vue'
-import {mapActions} from 'vuex'
-
+import {mapGetters,mapActions} from 'vuex'
+import {getNewMapConfig,getNewMapJson} from '@/api/dataSheets'
 export default {
 	name: 'd2cmap',
 	props: [
@@ -25,13 +24,12 @@ export default {
 			}
 		}
 	},
+	created(){
+		this.getMapJsonAndImg()
+	},
 	mounted() {
 		// this.initOption(this.initMap);
 		// 后加的
-		window.d2cMap = this.$mapHelper.initMap(this.getConfig(dt));
-		this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(img),this.getLayerAndSourceFromOption(dem),this.getLayerAndSourceFromOption(imgHQ));
-		window.addEventListener('resize', this.resize);
-
 	},
 	methods: {
 		resize() {
@@ -65,7 +63,7 @@ export default {
 		},
 		//获取底图Json
 		getMapJsonAndImg(){
-			var dataArray = {'json':[],'img':[],'name':[]}
+			var dataArray = {'json':{},'img':[],'name':[]}
 			var sum = 0
 			getNewMapConfig().then(res =>{
 				for( var i in res.data){
@@ -73,22 +71,58 @@ export default {
 					dataArray.name.push(res.data[i].m_name)
 					var length = res.data.length
 					var name = res.data[i].m_name
-					getNewMapJson(res.data[i].m_url).then(res =>{
-						sum ++ 
-						dataArray.json.push(res)
-						console.log(name,res)
-						if(sum == length){
-							this.setNewMapJsonAndImg(dataArray)
-							window.d2cMap = this.$mapHelper.initMap(this.getConfig(dataArray.json[0]));
-							this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(dataArray.json[1]),this.getLayerAndSourceFromOption(dataArray.json[2]),this.getLayerAndSourceFromOption(dataArray.json[3]));
-							window.addEventListener('resize', this.resize);
-						}
-					})
+					switch(name){
+						case'矢量':
+						getNewMapJson(res.data[0].m_url).then(res =>{
+							sum ++ 
+							dataArray.json['dt'] = res
+							if(sum == length){
+								this.loadThisMap(dataArray)
+							}
+						})
+						break
+						case'影像':
+						getNewMapJson(res.data[1].m_url).then(res =>{
+							sum ++ 
+							dataArray.json['img'] = res
+							if(sum == length){
+								this.loadThisMap(dataArray)
+							}
+						})
+						break
+						case'渲染':
+						getNewMapJson(res.data[2].m_url).then(res =>{
+							sum ++ 
+							dataArray.json['dem'] = res
+							if(sum == length){
+								this.loadThisMap(dataArray)
+							}
+						})
+						break
+						case'高清影像':
+						getNewMapJson(res.data[3].m_url).then(res =>{
+							sum ++ 
+							dataArray.json['img_HQ'] = res
+							if(sum == length){
+								this.loadThisMap(dataArray)
+							}
+						})
+						break
+					}
 				}
 			})
 		},
+		//加载地图
+		loadThisMap(data){
+			console.log(data)
+			this.setNewMapJsonAndImg(data)
+			window.d2cMap = this.$mapHelper.initMap(this.getConfig(data.json['dt']));
+			this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(data.json['img']),this.getLayerAndSourceFromOption(data.json['dem']),this.getLayerAndSourceFromOption(data.json['img_HQ']));
+			window.addEventListener('resize', this.resize);
+		},
 		...mapActions([
-			'setUuidInfo'
+			'setUuidInfo',
+			'setNewMapJsonAndImg'
 		])
 	}
 }

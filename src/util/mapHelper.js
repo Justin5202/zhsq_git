@@ -34,6 +34,9 @@ var layersId_dt = [];
 // 影像图层id
 var layersId_img = [];
 
+// 影像图层id
+var layersId_imgHQ = [];
+
 // 晕染图层id
 var layersId_dem = [];
 
@@ -450,13 +453,19 @@ const onRotateCallback = function (_callback) {
  * @param 影像的图层和源 , 濡染的图层和源
  * @returns null
  */
-const initImageAndDemMap = function (img, dem) {
+const initImageAndDemMap = function (img, dem,imgHQ) {
     layersId_img = [];
+    layersId_imgHQ = [];
     layersId_dem = [];
     // 设置 隐藏
     for (let index = 0; index < img.layers.length; index++) {
         layersId_img.push(img.layers[index]["id"]);
         img.layers[index]["layout"]["visibility"] = "none";
+    }
+
+    for (let index = 0; index < imgHQ.layers.length; index++) {
+        layersId_imgHQ.push(imgHQ.layers[index]["id"]);
+        imgHQ.layers[index]["layout"]["visibility"] = "none";
     }
 
     for (let index = 0; index < dem.layers.length; index++) {
@@ -475,6 +484,14 @@ const initImageAndDemMap = function (img, dem) {
                 }
             }
 
+            for (let k in imgHQ.sources) {
+                try {
+                    map.addSource(k, imgHQ.sources[k]);
+                } catch (error) {
+                    console.log("HQ影像出现重复的source");
+                }
+            }
+
             for (let k in dem.sources) {
                 try {
                     map.addSource(k, dem.sources[k]);
@@ -485,6 +502,11 @@ const initImageAndDemMap = function (img, dem) {
 
             // 加layers
             img
+                .layers
+                .forEach(element => {
+                    map.addLayer(element);
+                })
+            imgHQ
                 .layers
                 .forEach(element => {
                     map.addLayer(element);
@@ -541,6 +563,50 @@ const setAllImageMapVisibility = function (visibility) {
 
     } else {
         console.log("获取影像图层id失败")
+    }
+};
+
+/**
+ * @function 设置全部HQ影像服务可见性
+ * @param （true：可见，false：不可见）
+ * @returns null
+ */
+const setAllHQImageMapVisibility = function (visibility) {
+    // 判断层级是否显示 天地图影像
+    if (layersId_imgHQ.length > 0) {
+
+        if (visibility) {
+            // 需要传参 mapFlay  = img
+            layersId_imgHQ.forEach(element => {
+                map.setLayoutProperty(element, 'visibility', 'visible');
+            });
+            layersId_dt.forEach(element => {
+
+                map.setLayoutProperty(element, 'visibility', 'none');
+            });
+            // 判断当前视野是否需要显示 天地图
+            _containRelationshipCallback();
+            // 判断 当前是否有数据叠加 开关蒙版
+            _setMBVisibility();
+        } else {
+            layersId_imgHQ.forEach(element => {
+                map.setLayoutProperty(element, 'visibility', 'none');
+            });
+            if (mapFlay == 'dt') {
+                layersId_dt.forEach(element => {
+                    map.setLayoutProperty(element, 'visibility', 'visible');
+                });
+            }
+            // 判断当前视野是否需要显示 天地图
+            _containRelationshipCallback();
+            // 2D/3D 图层开闭
+            _onPitch();
+            // 判断 当前是否有数据叠加 开关蒙版
+            _setMBVisibility();
+        }
+
+    } else {
+        console.log("获取HQ影像图层id失败")
     }
 };
 
@@ -638,6 +704,10 @@ const _containRelationshipCallback = function () {
             case "img":
                 _setTdtImageMapVisibility(visibleFlay);
                 break;
+
+            case "imgHQ":
+                _setTdtHQImageMapVisibility(visibleFlay);
+                break;
     
             case "dem":
                 _setTdtDemMapVisibility(visibleFlay);
@@ -650,6 +720,7 @@ const _containRelationshipCallback = function () {
         _setVecterDemMapVisibility(visibleFlay);
         _setTdtImageMapVisibility(visibleFlay);
         _setTdtDemMapVisibility(visibleFlay);
+        _setTdtHQImageMapVisibility(visibleFlay);
     }
     
 
@@ -665,6 +736,7 @@ const _containRelationshipCallback = function () {
 const _setMBVisibility = function(){
     let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb","visibility");
     let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb","visibility");
+    let imgHQ_visibility = map.getLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb","visibility");
     if (codeArray.length > 0) {
         switch (mapFlay) {
             case "dt":
@@ -675,6 +747,11 @@ const _setMBVisibility = function(){
             case "img":
                 if (img_visibility != "visible") {
                     map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+                }
+                break;
+            case "imgHQ":
+                if (imgHQ_visibility != "visible") {
+                    map.setLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
                 }
                 break;
         
@@ -688,6 +765,9 @@ const _setMBVisibility = function(){
         }
         if (img_visibility != "none") {
             map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
+        }
+        if (imgHQ_visibility != "none") {
+            map.setLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
         }
     }
 }
@@ -728,6 +808,26 @@ const _setTdtImageMapVisibility = function (value) {
         if(visibility != "none") {
             map.setLayoutProperty("remote-scense-layer", 'visibility', 'none');
             map.setLayoutProperty("remote-scense-layer-symbol", 'visibility', 'none');
+        }
+    }
+};
+
+/**
+ * @function 设置天地图HQ影像服务可见性（私有）
+ * @param （true：可见，false：不可见）
+ * @returns null
+ */
+const _setTdtHQImageMapVisibility = function (value) {
+    let visibility = map.getLayoutProperty("HQ_remote-scense-layer","visibility");
+    if (value){
+        if(visibility != "visible") {
+            map.setLayoutProperty("HQ_remote-scense-layer", 'visibility', 'visible');
+            map.setLayoutProperty("HQ_remote-scense-layer-symbol", 'visibility', 'visible');
+        }
+    }else{
+        if(visibility != "none") {
+            map.setLayoutProperty("HQ_remote-scense-layer", 'visibility', 'none');
+            map.setLayoutProperty("HQ_remote-scense-layer-symbol", 'visibility', 'none');
         }
     }
 };
@@ -822,28 +922,40 @@ const addLayerByCodeAndJson = function (code, json) {
         json
             .layers
             .forEach(element => {
-                // 记录 添加图层 的 fitler
-                filterMap[element.id] = element.filter;
-
-                sourceLayer.push(element["source-layer"]);
-
-                if (element["filter"]) {
-                    filterRes["layers"].push({"filter": element["filter"]});
-                }
-
-                map.addLayer(element);
-                // 记录 id 与 code 对应关系
-                layersId[code].push(element.id);
-                // 冒泡找最小值
-                if (element.minzoom) {
-                    if (element.minzoom < minzoom) {
-                        minzoom = element.minzoom;
-                    }
-                } else {
-                    if (6 < minzoom) {
-                        minzoom = 6;
+                let flay = true;
+                if(element["layout"]){
+                    if(element["layout"]["visibility"]){
+                        if (element["layout"]["visibility"] == "none") {
+                            flay = false;
+                        }                        
                     }
                 }
+                // 不可见的图层不要
+                if(flay){
+                    // 记录 添加图层 的 fitler
+                    filterMap[element.id] = element.filter;
+
+                    sourceLayer.push(element["source-layer"]);
+
+                    if (element["filter"]) {
+                        filterRes["layers"].push({"filter": element["filter"]});
+                    }
+
+                    map.addLayer(element);
+                    // 记录 id 与 code 对应关系
+                    layersId[code].push(element.id);
+                    // 冒泡找最小值
+                    if (element.minzoom) {
+                        if (element.minzoom < minzoom) {
+                            minzoom = element.minzoom;
+                        }
+                    } else {
+                        if (6 < minzoom) {
+                            minzoom = 6;
+                        }
+                    }
+                }
+
             });
 
         // 闪烁
@@ -892,15 +1004,17 @@ const removeLayerById = function (id) {
  */
 const removeLayerByCode = function (code) {
     // 用code 找到对应的 图层id 逐一删除
+      
     if (layersId[code]) {
         layersId[code].forEach(element => {
+                 
             map.removeLayer(element);
         });
         layersId[code] = null;
     } else {
         console.log("没找到对应图层");
     }
-
+    console.log(layersId, code) 
 };
 
 /**
@@ -1397,6 +1511,7 @@ export default {
     set3dLayersVisibility,
     setAllDemMapVisibility,
     setAllImageMapVisibility,
+    setAllHQImageMapVisibility,
 
     setVisibilityByCode,
     setOpacityByCode,

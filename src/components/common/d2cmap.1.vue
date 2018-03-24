@@ -31,8 +31,7 @@ export default {
 		window.d2cMap = this.$mapHelper.initMap(this.getConfig(dt));
 		this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(img),this.getLayerAndSourceFromOption(dem),this.getLayerAndSourceFromOption(imgHQ));
 		window.addEventListener('resize', this.resize);
-	},
-	created() {
+
 	},
 	methods: {
 		resize() {
@@ -63,30 +62,6 @@ export default {
 			res["layers"] = option.layers;
 			res["sources"] = option.sources;
 			return res;
-		},
-		//获取底图Json
-		getMapJsonAndImg(){
-			var dataArray = {'json':[],'img':[],'name':[]}
-			var sum = 0
-			getNewMapConfig().then(res =>{
-				for( var i in res.data){
-					dataArray.img.push(res.data[i].m_image)
-					dataArray.name.push(res.data[i].m_name)
-					var length = res.data.length
-					var name = res.data[i].m_name
-					getNewMapJson(res.data[i].m_url).then(res =>{
-						sum ++ 
-						dataArray.json.push(res)
-						console.log(name,res)
-						if(sum == length){
-							this.setNewMapJsonAndImg(dataArray)
-							window.d2cMap = this.$mapHelper.initMap(this.getConfig(dataArray.json[0]));
-							this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(dataArray.json[1]),this.getLayerAndSourceFromOption(dataArray.json[2]),this.getLayerAndSourceFromOption(dataArray.json[3]));
-							window.addEventListener('resize', this.resize);
-						}
-					})
-				}
-			})
 		},
 		...mapActions([
 			'setUuidInfo'

@@ -192,7 +192,7 @@ function addIsActive(data) {
             }
         })
     }
-    return temp
+    return data
 }
 
 export const searchPaneShow = function({ commit, state }, isShow) {

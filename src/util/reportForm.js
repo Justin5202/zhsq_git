@@ -46,37 +46,6 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         AreaCodeAndDataId.push(idList.substring(1))
         return AreaCodeAndDataId
     }
-<<<<<<< HEAD
-    AreaCodeAndDataId.push(codeList.substring(1))
-    AreaCodeAndDataId.push(idList.substring(1))
-}
-//获取报表详情
-function getReportData(areaCode, dataId) {
-    var typeNum = 0; //用于保存数据类型数量
-    var areaNum = 0; //用于保存不同的地区数量
-    var arrayList = []
-    var yearListMax = [] //用于保存最大的年份数组长度
-    var dataArray = {}
-    getMsMacroData(areaCode, dataId).then(res => {
-        for (let i in res.data) {
-            typeNum++
-            areaNum = 0 //只取一次循环的数量
-            for (let j in res.data[i]) {
-                areaNum++
-                var dataByYear = []; //用于保存每条数据
-                for (let k = 0; k < res.data[i][j]['year'].length; k++) {
-                    var yearList = res.data[i][j]['year'][k]
-                    if (yearListMax.length < res.data[i][j]['year'].length) {
-                        yearListMax = res.data[i][j]['year']
-                    }
-                    var filedsData = res.data[i][j][yearList][0].filedsData.split('|ZX|')
-                    for (var p = 0; p < filedsData.length; p++) {
-                        if (dataByYear.length < filedsData.length) {
-                            dataByYear.push({
-                                "type": filedsData[p].split(':')[0],
-                                "areaName": res.data[i][j][yearList][0].areaName,
-                                "areaCode": j
-=======
     //获取报表详情
 export const getReportDataInJS = function(areaCode, dataId) {
         var typeNum = 0; //用于保存数据类型数量
@@ -112,7 +81,6 @@ export const getReportDataInJS = function(areaCode, dataId) {
                                 "name": res.data[i][j][yearList][0].name,
                                 "id": res.data[i][j][yearList][0].dataId,
                                 "dataByYear": dataByYear
->>>>>>> adff55e07cf21af60c3bfd3394fa0a70d7d98397
                             })
                         }
                     }

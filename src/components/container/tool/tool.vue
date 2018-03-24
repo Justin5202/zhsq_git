@@ -49,7 +49,8 @@
   <div class="layer-tool-box" v-show="layerToolVisible">
     <div class="layer-tool-content">
       <div class="layer-tool-item" v-for="(item,index) in mapJsonAndImg.img">
-        <img src="item"  width="90" height="60" alt="" @click="changeBaseMap('dt')">
+        <img :src="item"  width="90" height="60" alt="" @click="changeBaseMap('dt')">
+        <span>{{mapJsonAndImg.name[index]}}</span>
       </div>
     </div>
     <layer-control></layer-control>

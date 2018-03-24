@@ -45,6 +45,10 @@ function addLayer(datapath, id) {
                 // 地图飞点
                 mapHelper.flyByBounds(handleArray(res.data.points))
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length - 1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
+                /*删除地图mark */
+                for (let i = 0; i < 10; i++) {
+                    mapHelper.removeLayerById((state.searchParams.start + i).toString())
+                }
                 /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             }
@@ -55,36 +59,59 @@ function addLayer(datapath, id) {
  *判断当前图层列表是否存在，存在删除，并移除地图图层
  *不存在，push进图层列表，并加载地图图层
  */
-function checkData(data, commit) {
+function checkData(data, commit, first) {
+    console.log(first)
     let cur = Object.assign({}, data)
     let temp = state.activeAreaInfoList.slice()
     let layerIdList = state.layerIdList.slice()
     if (cur.children && cur.children.length > 0) {
         cur.children.map(v => {
             let index = temp.findIndex(f => f.id === v.id)
-            if (index < 0) {
-                addLayer(v.datapath, v.id)
-                v.isActive = true
-                cur.isActive = true
+            if(first) {
+                if (index < 0) {
+                    addLayer(v.datapath, v.id)
+                    v.isActive = true
+                    cur.isActive = true
+                    commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
+                    commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+                    commit(TYPE.ADD_LAYER_ID_LIST, v.id)
+                } 
             } else {
-                v.isActive = false
-                cur.isActive = false
-                mapHelper.removeLayerByCode(v.id)
+                if (index < 0) {
+                    addLayer(v.datapath, v.id)
+                    v.isActive = true
+                    cur.isActive = true
+                } else if (!first) {
+                    v.isActive = false
+                    cur.isActive = false
+                    mapHelper.removeLayerByCode(v.id)
+                }
+                commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
+                commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+                commit(TYPE.ADD_LAYER_ID_LIST, v.id)
             }
-            commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
         })
-        commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
     } else {
         let index = temp.findIndex(f => f.id === cur.id)
-        if (index < 0) {
-            addLayer(cur.datapath, cur.id)
-            cur.isActive = true
+        if(first) {
+            if (index < 0) {
+                addLayer(cur.datapath, cur.id)
+                cur.isActive = true
+                commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
+                commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+            }
         } else {
-            cur.isActive = false
-            mapHelper.removeLayerByCode(cur.id)
+            if (index < 0) {
+                addLayer(cur.datapath, cur.id)
+                cur.isActive = true
+            } else if (!first) {
+                cur.isActive = false
+                mapHelper.removeLayerByCode(cur.id)
+            }
+            commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
+            commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+            commit(TYPE.ADD_LAYER_ID_LIST, cur.id)
         }
-        commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
-        commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
     }
     return cur
 }
@@ -92,7 +119,7 @@ function checkData(data, commit) {
 /*
 *判断数据type类型，做相应操作
 */
-function checkClickedDataType({ dispatch, data, commit }) {
+function checkClickedDataType({ dispatch, data, commit, first }) {
     let cur = Object.assign({}, data)
     let type = parseInt(Number(cur.type) / 10)
     let yu = Number(cur.type) % 10
@@ -107,7 +134,7 @@ function checkClickedDataType({ dispatch, data, commit }) {
             console.log('仅为目录')
             temp = cur
         } else if (yu === 1) { // yu为1，仅有空间数据，即加载空间数据
-            temp = checkData(cur, commit)
+            temp = checkData(cur, commit, first)
         } else if (yu === 2) { // yu为2，仅有统计数据，加载统计数据
             console.log('仅有统计数据，加载统计数据')
             cur.isActive = !cur.isActive
@@ -115,7 +142,7 @@ function checkClickedDataType({ dispatch, data, commit }) {
             temp = cur
         } else if (yu === 3) { // yu为3，有空间数据和统计数据，优先加载空间数据
             console.log('有空间数据和统计数据，优先加载空间数据')
-            temp = checkData(cur, commit)
+            temp = checkData(cur, commit, first)
         } else if (yu === 4) { // yu为4，仅有文本数据，即加载文本数据
             console.log('仅有文本数据，即加载文本数据')
             // dispatch('getDataFileByCodeAndId', { 'areaCode': state.areaList, 'dataId': cur.id })
@@ -123,11 +150,11 @@ function checkClickedDataType({ dispatch, data, commit }) {
             temp = cur
         } else if (yu === 5) { // yu为5，有文本数据和空间数据，优先加载空间数据
             console.log('有文本数据和空间数据，优先加载空间数据')
-            temp = checkData(cur, commit)
+            temp = checkData(cur, commit, first)
         }
     } else if (type === 2) { // type为2，即为图层，加载图层
         console.log('即为图层，加载图层')
-        temp = checkData(cur, commit)
+        temp = checkData(cur, commit, first)
     } else if (type === 3) { // type为3，即为网页，记载网页
         console.log('即为网页，记载网页')
     } else if (type === 4) { // type为4，即为720图片
@@ -170,7 +197,7 @@ export const getSearchParams = function ({ dispatch, commit, state }, { typePara
             /*地点数据标点*/
             res.data.map((v, index) => {
                 if (v.element) {
-                    if(state.searchParams.start && typeParams.start > state.searchParams.start) {
+                    if (state.searchParams.start && typeParams.start > state.searchParams.start) {
                         mapHelper.removeLayerById((state.searchParams.start + index - 10).toString())
                     } else {
                         mapHelper.removeLayerById((state.searchParams.start + index).toString())
@@ -195,7 +222,7 @@ export const getAreaDetail = function ({ dispatch, commit, state }, params) {
     getDetailInfo(Object.assign({}, params)).then(res => {
         let data = addIsActive(res.data[0])
         commit(TYPE.GET_AREA_DATA, data)
-        checkClickedDataType({ dispatch, data, commit })
+        checkClickedDataType({ dispatch, data, commit, "first": true })
         // 隐藏目录列表、搜索列表
         commit(TYPE.SEARCH_PANE_IS_SHOW, false)
         commit(TYPE.TABLE_PANE_SHOW, false)
@@ -245,7 +272,7 @@ export const setSecAreaList = function ({ commit, state }, list) {
     commit(TYPE.SET_SEC_AREA_LIST, list)
 }
 export const setAreaList = function ({ dispatch, commit, state }, data) {
-    checkClickedDataType({ dispatch, data, commit })
+    checkClickedDataType({ dispatch, data, commit, 'first': false})
 }
 // 区县区域下一级详细信息
 export const getNextAreaInfo = function ({ commit, state }) {

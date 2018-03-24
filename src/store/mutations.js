@@ -34,7 +34,7 @@ function addLayer(datapath, id) {
           1, handleArray(res.data.points).length - 1), res.data.mapguid,
           'TS_定位1', 0.8, result.minzoom)
         /*图层过滤*/
-        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList,
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList,
           state.areaCodeList)
       }
     })
@@ -90,7 +90,26 @@ const mutations = {
     state.searchList = searchList
   },
   [TYPE.GET_AREA_DATA](state, list) {
-    state.areaInfoList = list
+    let n = 0
+    if (state.areaInfoList.length > 0) {
+      state.areaInfoList.map(v => {
+        if (v.id !== list.id) {
+          n += 1
+        }
+      })
+      if (n == state.areaInfoList.length) {
+        state.areaInfoList.unshift(list)
+      } else {
+        let index = state.areaInfoList.findIndex(v => v.id === list.id)
+        if (index > -1) {
+          let temp = state.areaInfoList[index]
+          state.areaInfoList.splice(index, 1)
+          state.areaInfoList.unshift(temp)
+        }
+      }
+    } else {
+      state.areaInfoList.push(list)
+    }
   },
   [TYPE.MODIFY_AREA_INFO_LIST](state, item) {
     let temp = []
@@ -103,7 +122,7 @@ const mutations = {
         }
       })
     }
-    let list = state.areaInfoList
+    let list = state.areaInfoList[0]
     temp.map(n => {
       if (list.id === n.id) {
         list.isActive = n.isActive
@@ -130,19 +149,20 @@ const mutations = {
     if (isRemoveAll) {
       state.activeAreaInfoList.map(v => {
         /*清空所有图层*/
-        console.log(v.id)
         mapHelper.removeLayerByCode(v.id)
       })
       state.activeAreaInfoList.splice(0, state.activeAreaInfoList.length)
-      state.areaInfoList.isActive = false
-      if (state.areaInfoList.children) {
-        state.areaInfoList.children.map(v => {
-          v.isActive = false
-          if (v.children) {
-            v.children.map(i => i.isActive = false)
-          }
-        })
-      }
+      state.areaInfoList.map(v => {
+        v.isActive = false
+        if (v.children) {
+          v.children.map(i => {
+            i.isActive = false
+            if (i.children) {
+              i.children.map(v => v.isActive = false)
+            }
+          })
+        }
+      })
     } else {
       let index = state.activeAreaInfoList.findIndex(v => v.id === item.id)
       if (index < 0) {
@@ -195,7 +215,8 @@ const mutations = {
           mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
           mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid)
           /*图层过滤*/
-          mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+          console.log(state.layerIdList, state.areaCodeList)
+          mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerlayerIdList, state.areaCodeList)
         }
       }
     } else {
@@ -204,7 +225,7 @@ const mutations = {
         mapHelper.removeLayerById(v.areacode.toString())
       })
       /*图层过滤*/
-      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList = [])
+      mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerlayerIdList, state.areaCodeList = [])
       state.areaList = []
     }
   },

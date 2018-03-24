@@ -1014,7 +1014,6 @@ const removeLayerByCode = function (code) {
     } else {
         console.log("没找到对应图层");
     }
-    console.log(layersId, code) 
 };
 
 /**

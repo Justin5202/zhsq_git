@@ -1,25 +1,25 @@
 <template>
 <div class="child-table-content" :style="{maxHeight:childTableHeight}">
   <ul>
-    <li class="child-table-content-li child-li" v-if="areaInfoList">
+    <li class="child-table-content-li child-li" v-if="areaInfoList.length>0">
       <!-- 第一级 -->
       <div
         class="child-title"
-        :class="{active: areaInfoList.isActive}"
-        @click="isActiveItem(areaInfoList)"
+        :class="{active: areaInfoList[0].isActive}"
+        @click="isActiveItem(areaInfoList[0])"
       >
-        <div class="arrow" v-if="areaInfoList.children.length > 0">
+        <div class="arrow" v-if="areaInfoList[0].children.length > 0">
           <i class="arrow-icon" :class="{down: isClose}" @click="closeLiBox()"></i>
         </div>
         <div class="blank" v-else></div>
         <div class="text">
-          <h2>{{areaInfoList.name}}</h2>
-          <p v-if="areaInfoList.target.length!==0">{{areaInfoList.target[0].areaname}} {{areaInfoList.target[0].year}}</p>
-          <p v-if="areaInfoList.target.length!==0">{{areaInfoList.target[0].cityTarget}}</p>
+          <h2>{{areaInfoList[0].name}}</h2>
+          <p v-if="areaInfoList[0].target.length!==0">{{areaInfoList[0].target[0].areaname}} {{areaInfoList[0].target[0].year}}</p>
+          <p v-if="areaInfoList[0].target.length!==0">{{areaInfoList[0].target[0].cityTarget}}</p>
         </div>
-        <div class="detail" v-if="areaInfoList.target.length!==0 || parseInt(areaInfoList.type)%10 == 4" @click.stop="getDetails(areaInfoList.isActive, areaInfoList.id,areaInfoList.type)">
-          <i class="detail-icon" :class="{avtiveDetailIcon: !areaInfoList.isActive}"></i>
-          <span :class="{activeColor: !areaInfoList.isActive}">详情</span>
+        <div class="detail" v-if="areaInfoList[0].target.length!==0 || parseInt(areaInfoList[0].type)%10 == 4" @click.stop="getDetails(areaInfoList[0].isActive, areaInfoList[0].id,areaInfoList[0].type)">
+          <i class="detail-icon" :class="{avtiveDetailIcon: !areaInfoList[0].isActive}"></i>
+          <span :class="{activeColor: !areaInfoList[0].isActive}">详情</span>
         </div>
         <div class="collection">
           <i class="collection-icon"></i>
@@ -28,7 +28,7 @@
       <ul v-show="isClose">
         <li 
           class="child-table-content-li child-li" 
-          v-for="(childItem, index) in areaInfoList.children"
+          v-for="(childItem, index) in areaInfoList[0].children"
         >
           <div 
             class="child-title" 

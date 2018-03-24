@@ -49,8 +49,7 @@
   <div class="layer-tool-box" v-show="layerToolVisible">
     <div class="layer-tool-content">
       <div class="layer-tool-item" v-for="(item,index) in mapJsonAndImg.img">
-        <img :src="item"  width="90" height="60" alt="" @click="changeBaseMap('dt')">
-        <span>{{mapJsonAndImg.name[index]}}</span>
+        <img :src="'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test'+ item"  width="90" height="60" alt="" :title=mapJsonAndImg.name[index] @click="changeBaseMap(mapJsonAndImg.name[index])">
       </div>
     </div>
     <layer-control></layer-control>
@@ -177,18 +176,26 @@ export default {
     },
     //地图切换
     changeBaseMap(type){
-      if(type == 'dt'){
-        this.$mapHelper.setMapFlay(type)
+      if(type == '矢量'){
+        this.$mapHelper.setMapFlay('dt')
         this.$mapHelper.setAllImageMapVisibility(false)
         this.$mapHelper.setAllDemMapVisibility(false)
-      }else if(type == 'img'){
-        this.$mapHelper.setMapFlay(type)
+        this.$mapHelper.setAllHQImageMapVisibility(false)
+      }else if(type == '影像'){
+        this.$mapHelper.setMapFlay('img')
         this.$mapHelper.setAllImageMapVisibility(true)
         this.$mapHelper.setAllDemMapVisibility(false)
-      }else if(type == 'dem'){
-        this.$mapHelper.setMapFlay(type)
+        this.$mapHelper.setAllHQImageMapVisibility(false)
+      }else if(type == '渲染'){
+        this.$mapHelper.setMapFlay('dem')
         this.$mapHelper.setAllImageMapVisibility(false)
         this.$mapHelper.setAllDemMapVisibility(true)
+        this.$mapHelper.setAllHQImageMapVisibility(false)
+      }else if(type == '高清影像'){
+        this.$mapHelper.setMapFlay('imgHQ')
+        this.$mapHelper.setAllImageMapVisibility(false)
+        this.$mapHelper.setAllDemMapVisibility(false)
+        this.$mapHelper.setAllHQImageMapVisibility(true)
       }
     },
     //打开图层切换
@@ -284,13 +291,13 @@ export default {
     }
     .tool-bottom {
         position: absolute;
-        bottom: 0;
+        bottom: -100px;
         left: 0;
     }
     .layer-tool-box {
         display: flex;
         flex-direction: column;
-        width: 310px;
+        min-width: 310px;
         background-color: #fff;
         position: absolute;
         border-top-left-radius: 4px;
@@ -301,7 +308,7 @@ export default {
             display: flex;
             border-bottom: 1px solid #e4e7ed;
             .layer-tool-item {
-                margin: 10px 0 10px 10px;
+                margin: 10px;
                 cursor: pointer;
                 img {
                     display: block;

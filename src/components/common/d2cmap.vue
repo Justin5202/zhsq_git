@@ -74,10 +74,10 @@ export default {
 						sum ++ 
 						dataArray.json.push(res)
 						if(sum == 4){
-							window.d2cMap = this.$mapHelper.initMap(this.getConfig(dataArray.json[0]));
-							this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(dataArray.json[1]),this.getLayerAndSourceFromOption(dataArray.json[2]));
-							window.addEventListener('resize', this.resize);
 							this.setNewMapJsonAndImg(dataArray)
+							window.d2cMap = this.$mapHelper.initMap(this.getConfig(dataArray.json[0]));
+							this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(dataArray.json[1]),this.getLayerAndSourceFromOption(dataArray.json[2]),this.getLayerAndSourceFromOption(dataArray.json[3]));
+							window.addEventListener('resize', this.resize);
 						}
 					})
 				}

@@ -1,6 +1,6 @@
 <template>
   <div class="layer-table">
-    <div class="layer-box" v-show="(activeAreaInfoList.length + searchItemMacroList.length) !== 0">
+    <div class="layer-box" v-show="activeAreaInfoList.length !== 0">
       <div class="layer-title-box">
         <h2>图层</h2>
         <span class="trash-icon" @click="removeAll()"></span>
@@ -14,49 +14,16 @@
         <el-checkbox-group v-model="checkedItem" @change="handleCheckedItemsChange">
           <div class="check-box"
             v-for="(item, index) in activeAreaInfoList"
-            v-if="item.children.length ===0 && item.isActive"
+            v-if="item.isActive"
           >
             <div class="check-item">
               <el-checkbox :label="item.id" :key="item.id">{{item.name}}</el-checkbox>
               <div class="cross-box">
-                <i class="cross-icon" @click="removeItem(item.id)"></i>
+                <i class="cross-icon" @click="removeItem(item)"></i>
               </div>
             </div>
             <div class="slider-box" v-if="checkedTransparency">
               <el-slider v-model="transparencyArray[index]" @change="setLayerOpacity(index)"></el-slider>
-            </div>
-          </div>
-          <div
-            v-for="item in activeAreaInfoList"
-            v-if="item.children.length > 0"
-          >
-            <div class="check-box"
-              v-for="v in item.children"
-              v-if="v.isActive"
-            >
-              <div class="check-item">
-                <el-checkbox :label="v.name" :key="v.name"></el-checkbox>
-                <div class="cross-box">
-                  <i class="cross-icon" @click="removeItem(v.id)"></i>
-                </div>
-              </div>
-              <div class="slider-box" v-if="checkedTransparency">
-                <el-slider v-model="value1"></el-slider>
-              </div>
-            </div>
-          </div>
-          <div class="check-box"
-            v-for="item in searchItemMacroList"
-            v-if="item.isActive"
-          >
-            <div class="check-item">
-              <el-checkbox :label="item.macro.data.name" :key="item.macro.data.name"></el-checkbox>
-              <div class="cross-box">
-                <i class="cross-icon" @click="removeSearchItem(item)"></i>
-              </div>
-            </div>
-            <div class="slider-box" v-if="checkedTransparency">
-              <el-slider v-model="value1"></el-slider>
             </div>
           </div>
         </el-checkbox-group>
@@ -127,8 +94,8 @@ export default {
     removeAll() {
       this.removeAllAreaList()
     },
-    removeItem(id) {
-      this.setAreaList({'bol': false, 'id': id})
+    removeItem(item) {
+      this.setAreaList(item)
     },
     removeSearchItem(item) {
       this.removeSearchItem(item)

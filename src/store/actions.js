@@ -13,35 +13,149 @@ import {
     getAreaDetailByAreaCode,
     getEconomicUnitHtmlByAreaCode,
     getDataFileInfo,
-    getAreaPovertyAlleviationDetail,
-    getNewMapConfig,
-    getNewMapJson
+    getAreaPovertyAlleviationDetail
 } from '@/api/dataSheets'
-import {
-    getJson
-} from '@/api/getJson'
+import { getJson } from '@/api/getJson'
 import mapHelper from '@/util/mapHelper'
+import state from './state'
 
-export const searchPaneShow = function({
-    commit,
-    state
-}, isShow) {
+// 数组处理
+function handleArray(array) {
+    let temp = []
+    array.map(v => {
+        temp.push(v.split(','))
+    })
+    temp.push([mapHelper.getCenter().lng, mapHelper.getCenter().lat])
+    temp.map(v => {
+        v.map(v => v = Number(v))
+    })
+    return temp
+}
+
+/* 图层加载
+ * 1：当前区域
+ * 2：拓展10公里
+ * 3：无
+ */
+function addLayer(datapath, id) {
+    getJson(datapath).then(res => {
+        const result = mapHelper.addLayerByCodeAndJson(id, res)
+        getQueryElementByPoint(result).then(res => {
+            if (res.data && res.data.flag !== 3) {
+                // 地图飞点
+                mapHelper.flyByBounds(handleArray(res.data.points))
+                mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length - 1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
+                    /*图层过滤*/
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
+            }
+        })
+    })
+}
+/*
+ *判断当前图层列表是否存在，存在删除，并移除地图图层
+ *不存在，push进图层列表，并加载地图图层
+ */
+function checkData(data, commit) {
+    let cur = Object.assign({}, data)
+    let temp = state.activeAreaInfoList.slice()
+    let layerIdList = state.layerIdList.slice()
+    if (cur.children && cur.children.length > 0) {
+        cur.children.map(v => {
+            let index = temp.findIndex(f => f.id === v.id)
+            if (index < 0) {
+                addLayer(v.datapath, v.id)
+                v.isActive = true
+                cur.isActive = true
+            } else {
+                v.isActive = false
+                cur.isActive = false
+                mapHelper.removeLayerByCode(v.id)
+            }
+            commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
+            commit(TYPE.MODIFY_AREA_INFO_LIST, v)
+        })
+    } else {
+        let index = temp.findIndex(f => f.id === cur.id)
+        if (index < 0) {
+            addLayer(cur.datapath, cur.id)
+            cur.isActive = true
+        } else {
+            cur.isActive = false
+            mapHelper.removeLayerByCode(cur.id)
+        }
+        commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
+        commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+    }
+    return cur
+}
+
+/*
+ *判断数据type类型，做相应操作
+ */
+function checkClickedDataType({ dispatch, data, commit, first }) {
+    let cur = Object.assign({}, data)
+    let type = parseInt(Number(cur.type) / 10)
+    let yu = Number(cur.type) % 10
+    let temp
+        // 加入图层数组前，判断是否存在，存在删除，不存在push，然后设置isActive
+        // type为0，仅为目录，直接显示列表
+    if (type === 0) {
+        console.log('仅为目录')
+        cur.isActive = false
+        temp = cur
+    } else if (type === 1) { // type为1，无下一级目录
+        if (yu === 0) { // yu为0，不做任何操作
+            console.log('仅为目录')
+            cur.isActive = false
+            temp = cur
+        } else if (yu === 1) { // yu为1，仅有空间数据，即加载空间数据
+            temp = checkData(cur, commit)
+        } else if (yu === 2) { // yu为2，仅有统计数据，加载统计数据
+            console.log('仅有统计数据，加载统计数据')
+            cur.isActive = true
+            if (first && cur.children.length > 0) {
+                cur.isActive = false
+                cur.children.map(v => {
+                    v.isActive = false
+                })
+            } else {
+                cur.isActive = false
+                    // commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+            }
+            temp = cur
+        } else if (yu === 3) { // yu为3，有空间数据和统计数据，优先加载空间数据
+            temp = checkData(cur, commit)
+        } else if (yu === 4) { // yu为4，仅有文本数据，即加载文本数据
+            console.log('仅有文本数据，即加载文本数据')
+            dispatch('getDataFileByCodeAndId', { 'areaCode': state.areaList, 'dataId': cur.id })
+            dispatch('setAreaReportFormShow', true)
+            if (first && cur.children.length > 0) {
+                cur.isActive = false
+                cur.children.map(v => {
+                    v.isActive = false
+                })
+            }
+            temp = cur
+        } else if (yu === 5) { // yu为5，有文本数据和空间数据，优先加载空间数据
+            temp = checkData(cur, commit)
+        }
+    } else if (type === 2) { // type为2，即为图层，加载图层
+        temp = checkData(cur, commit)
+    } else if (type === 3) { // type为3，即为网页，记载网页
+
+    } else if (type === 4) { // type为4，即为720图片
+
+    }
+    return temp
+}
+
+export const searchPaneShow = function({ commit, state }, isShow) {
     commit(TYPE.SEARCH_PANE_IS_SHOW, isShow)
 }
-export const tablePaneShow = function({
-    commit,
-    state
-}, isShow) {
+export const tablePaneShow = function({ commit, state }, isShow) {
     commit(TYPE.TABLE_PANE_SHOW, isShow)
 }
-export const getSearchParams = function({
-    dispatch,
-    commit,
-    state
-}, {
-    typeParams,
-    params
-}) {
+export const getSearchParams = function({ dispatch, commit, state }, { typeParams, params }) {
     commit(TYPE.SEARCH_PARAMS, Object.assign({}, state.searchParams, params, typeParams, state.areaInfo))
         // 首先选择type时不做请求
     if (params == {}) {
@@ -49,13 +163,10 @@ export const getSearchParams = function({
     }
     dispatch('getSearchResult')
 }
-export const getAreaDetail = function({
-    dispatch,
-    commit,
-    state
-}, params) {
+export const getAreaDetail = function({ dispatch, commit, state }, params) {
     getDetailInfo(Object.assign({}, params)).then(res => {
-        commit(TYPE.GET_AREA_DATA, res.data)
+        let data = res.data[0]
+        commit(TYPE.GET_AREA_DATA, checkClickedDataType({ dispatch, data, commit, 'first': true }))
             // 隐藏目录列表、搜索列表
         commit(TYPE.SEARCH_PANE_IS_SHOW, false)
         commit(TYPE.TABLE_PANE_SHOW, false)
@@ -75,23 +186,10 @@ export const setAreaInfo = function({ commit, state }, { areainfo, isRemoveAll }
         commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })
     }
 }
-export const deleteAreaInfo = function({
-    commit,
-    state
-}, {
-    areainfo,
-    isRemoveAll
-}) {
-    commit(TYPE.SET_SELECTED_AREA_LIST, {
-        areainfo,
-        isRemoveAll
-    })
+export const deleteAreaInfo = function({ commit, state }, { areainfo, isRemoveAll }) {
+    commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })
 }
-export const getSearchResult = function({
-    dispatch,
-    commit,
-    state
-}) {
+export const getSearchResult = function({ dispatch, commit, state }) {
     getSearch(state.searchParams).then(res => {
         if (res.code == '1') {
             commit(TYPE.GET_SEARCH_RESULT, res.data)
@@ -114,40 +212,24 @@ export const getSearchResult = function({
         }
     })
 }
-export const setSecAreaList = function({
-    commit,
-    state
-}, list) {
+export const setSecAreaList = function({ commit, state }, list) {
     commit(TYPE.SET_SEC_AREA_LIST, list)
 }
-export const setAreaList = function({ commit, state }, { bol, id }) {
-        console.log({ bol, id })
-        commit(TYPE.SET_LEFT_ACTIVE_AREA_LIST, { bol, id })
+export const setAreaList = function({ dispatch, commit, state }, item) {
+        checkClickedDataType({ dispatch, 'data': item, commit, 'first': false })
     }
     // 区县区域下一级详细信息
-export const getNextAreaInfo = function({
-    commit,
-    state
-}) {
+export const getNextAreaInfo = function({ commit, state }) {
     getNextAreaDetailInfo(state.areaInfo.areacode).then(res => {
         console.log(JSON.parse(res.data))
         commit(TYPE.SET_SEC_AREA_LIST, JSON.parse(res.data))
     })
 }
-export const removeAllAreaList = function({
-        commit,
-        state
-    }) {
-        commit(TYPE.SET_ACTIVE_AREA_LIST, {
-            list: [],
-            isRemoveAll: true
-        })
+export const removeAllAreaList = function({ commit, state }) {
+        commit(TYPE.SET_ACTIVE_AREA_LIST, { list: [], isRemoveAll: true })
     }
     // 加载搜索结果的空间数据，并push到areainfodata
-export const loadSearchItemMacro = function({
-        commit,
-        state
-    }, item) {
+export const loadSearchItemMacro = function({ commit, state }, item) {
         commit(TYPE.SET_SEARCH_MACRO_LIST, item)
     }
     /*移除搜索结果空间数据渲染列表*/
@@ -165,226 +247,21 @@ export const setUuidInfo = function({
         commit(TYPE.SET_UUID_INFO, uuidinfo)
     }
     //报表显示隐藏
-export const setReportFormShow = function({
-        dispatch,
-        commit,
-        state
-    }, isShow) {
-        commit(TYPE.SET_REPORT_FORM_SHOW, isShow)
-        if (isShow) {
-            dispatch('getAreaCodeAndDataId', {
-                'areaCode': state.areaList,
-                'dataId': [state.areaInfoData, state.searchItemMacroList]
-            })
-            dispatch('getReportData', {
-                'areaCode': state.areaCodeAndDataId[0],
-                'dataId': state.areaCodeAndDataId[1]
-            })
-        }
-    }
-    //获取areaCode 和 dataId
-export const getAreaCodeAndDataId = function({
-        commit,
-        state
-    }, {
-        areaCode,
-        dataId
-    }) {
-        var AreaCodeAndDataId = []
-        var idList = ""
-        var codeList = ""
-        for (let i in dataId[0]) {
-            if (dataId[0][i].target.length > 0 && dataId[0][i].isActive) {
-                idList += ',' + dataId[0][i].id
-            }
-            if (dataId[0][i].children.length > 0) {
-                for (let j in dataId[0][i].children) {
-                    if (dataId[0][i].children[j].target.length > 0 && dataId[0][i].children[j].isActive) {
-                        idList += ',' + dataId[0][i].children[j].id
-                    }
-                    if (dataId[0][i].children[j].children.length > 0) {
-                        for (let k in dataId[0][i].children[j].children) {
-                            if (dataId[0][i].children[j].children[k].target.length > 0 && dataId[0][i].children[j].children[k].isActive) {
-                                idList += ',' + dataId[0][i].children[j].children[k].id
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        for (let i in dataId[1]) {
-            if (dataId[1][i].macro.filedsData && dataId[1][i].isActive) {
-                idList += ',' + dataId[1][i].macro.dataId
-            }
-        }
-        if (areaCode.length > 0) {
-            for (let i in areaCode) {
-                codeList += ',' + areaCode[i].areacode
-            }
-        } else {
-            codeList = ',500000'
-        }
-        AreaCodeAndDataId.push(codeList.substring(1))
-        AreaCodeAndDataId.push(idList.substring(1))
-        commit(TYPE.SET_AREACODE_AND_DATAID, AreaCodeAndDataId)
-    }
-    //获取报表详情
-export const getReportData = function({
-        commit,
-        state
-    }, {
-        areaCode,
-        dataId
-    }) {
-        var typeNum = 0; //用于保存数据类型数量
-        var areaNum = 0; //用于保存不同的地区数量
-        var arrayList = []
-        var yearListMax = [] //用于保存最大的年份数组长度
-        var dataArray = {}
-        getMsMacroData(areaCode, dataId).then(res => {
-            for (let i in res.data) {
-                typeNum++
-                areaNum = 0 //只取一次循环的数量
-                for (let j in res.data[i]) {
-                    areaNum++
-                    var dataByYear = []; //用于保存每条数据
-                    for (let k = 0; k < res.data[i][j]['year'].length; k++) {
-                        var yearList = res.data[i][j]['year'][k]
-                        if (yearListMax.length < res.data[i][j]['year'].length) {
-                            yearListMax = res.data[i][j]['year']
-                        }
-                        var filedsData = res.data[i][j][yearList][0].filedsData.split('|ZX|')
-                        for (var p = 0; p < filedsData.length; p++) {
-                            if (dataByYear.length < filedsData.length) {
-                                dataByYear.push({
-                                    "type": filedsData[p].split(':')[0],
-                                    "areaName": res.data[i][j][yearList][0].areaName,
-                                    "areaCode": j
-                                })
-                            }
-                            dataByYear[p][yearList] = filedsData[p].split(':')[1] || "--"
-                        }
-                        if (k == res.data[i][j]['year'].length - 1) {
-                            arrayList.push({
-                                "name": res.data[i][j][yearList][0].name,
-                                "id": res.data[i][j][yearList][0].dataId,
-                                "dataByYear": dataByYear
-                            })
-                        }
-                    }
-                }
-            }
-            //将返回数据拆分拼接
-            var result = []
-            var dataList = []
-            for (var i = 0; i < Math.ceil(arrayList.length / areaNum); i++) {
-                var start = i * areaNum;
-                var end = start + areaNum;
-                result.push(arrayList.slice(start, end));
-            }
-            for (var m = 0; m < result.length; m++) {
-                for (var n = 0; n < result[m].length; n += areaNum) {
-                    var temporary = [];
-                    for (var k = 0; k < result[m][n].dataByYear.length; k++) {
-                        for (var j = 0; j < areaNum; j++) {
-                            if ((n + j) > 0) {
-                                result[m][n + j].dataByYear[k].type = ""
-                            }
-                            temporary.push(result[m][n + j].dataByYear[k])
-                        }
-                    }
-                    result[m][0].dataByYear = temporary
-                }
-                dataList.push(result[m][0])
-            }
-            dataArray.data = dataList
-            dataArray.year = yearListMax.reverse()
-            commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
+export const setReportFormShow = function({ dispatch, commit, state }, isShow) {
+    commit(TYPE.SET_REPORT_FORM_SHOW, isShow)
+    if (isShow) {
+        dispatch('getAreaCodeAndDataId', {
+            'areaCode': state.areaList,
+            'dataId': [state.areaInfoList, state.searchItemMacroList]
+        })
+        dispatch('getReportData', {
+            'areaCode': state.areaCodeAndDataId[0],
+            'dataId': state.areaCodeAndDataId[1]
         })
     }
-    //根据areacode获取行政区划详情
-export const getReportDataByAreaCode = function({ commit, state }, data) {
-        var title = data[1] + ' ' + '概况'
-        if (data[2] == 2) {
-            getAreaDetailByAreaCode(data[0]).then(res => {
-                var dataArray = { 'title': title, 'name': [], 'data': { dataContex: [], dataType: [] } }
-                for (var i in res.data) {
-                    dataArray.name.push(res.data[i].name)
-                    dataArray.data.dataContex.push(res.data[i].data)
-                    dataArray.data.dataType.push('string')
-                }
-                commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
-            })
-        } else if (data[2] == 6) {
-            getEconomicUnitHtmlByAreaCode(data[0]).then(res => {
-                var dataArray = { 'title': title, 'name': [], 'data': { dataContex: [], dataType: [] } }
-                for (var i in res.data) {
-                    dataArray.name.push(res.data[i].title)
-                    dataArray.data.dataContex.push(res.data[i].html)
-                    dataArray.data.dataType.push('string')
-                }
-                commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
-            })
-        }
-    }
-    //获取文件数据
-export const getDataFileByCodeAndId = function({ commit, state }, { areaCode, dataId }) {
-        var codeList = ''
-        var dataArray = { 'title': '数据详情', 'name': [], 'data': { dataContex: [], dataType: ['file'] } }
-        if (areaCode.length > 0) {
-            for (let i in areaCode) {
-                if (areaCode[i].areacode != 501002) {
-                    codeList += ',' + areaCode[i].areacode
-                    dataArray.name.push(areaCode[i].areaname)
-                }
-            }
-        } else {
-            codeList = ',500000'
-            dataArray.name.push('重庆市')
-        }
-        getDataFileInfo(codeList.substring(1), dataId).then(res => {
-            var filePath = ''
-            var htm = ''
-            var html = ''
-            var context = ''
-            var fileName = ''
-            if (res.data.length > 0) {
-                for (var i in res.data) {
-                    filePath = 'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test/serviceMap/zip/' + res.data[i].filePath
-                    fileName = res.data[i].filePath.split('.')[0]
-                    htm = fileName + '.' + 'htm'
-                    html = fileName + '.' + 'html'
-                    var promise = new JSZip.external.Promise(function(resolve, reject) {
-                        JSZipUtils.getBinaryContent(filePath, function(err, data) {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve(data);
-                            }
-                        })
-                    })
-                    promise.then(JSZip.loadAsync)
-                        .then(function(zip) {
-                            if (zip.file(htm)) {
-                                return zip.file(htm).async("base64")
-                            } else if (zip.file(html)) {
-                                return zip.file(html).async("base64")
-                            }
-                        })
-                        .then(function success(text) {
-                            dataArray.data.dataContex.push(text)
-                            commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
-                        }, function error(e) {
-                            console.log(e)
-                        })
-                }
-            } else {
-                commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
-            }
+}
 
-        })
-    }
-    //清空报表
+//清空报表
 export const clearReport = function({
         commit,
         state
@@ -398,25 +275,16 @@ export const clearReport = function({
         })
     }
     //获取测量数据
-export const setMeasurNum = function({
-        commit,
-        state
-    }, data) {
+export const setMeasurNum = function({ commit, state }, data) {
         commit(TYPE.SET_MEASURE_NUM, data)
     }
     //行政区划详情显示隐藏
-export const setAreaReportFormShow = function({
-    commit,
-    state
-}, data) {
+export const setAreaReportFormShow = function({ commit, state }, data) {
     commit(TYPE.SET_AREA_REPORT_FORM_SHOW, data)
 }
 
 // 搜周边显示隐藏
-export const setAroundSearchShow = function({
-    commit,
-    state
-}, data) {
+export const setAroundSearchShow = function({ commit, state }, data) {
     commit(TYPE.SET_SEARCH_AROUND_SHOW, data)
 }
 
@@ -437,66 +305,16 @@ export const addTourismLayer = function({ commit, state }, type) {
 
 // 获取扶贫专题数据
 export const getProvertyData = function({ commit, state }, type) {
-        getProvertyTopic().then(res => {
-            let data = {
-                type: type,
-                list: res.data.data
-            }
-            commit(TYPE.SET_TOPIC_LIST, data)
-        })
-    }
-    // 获取贫困乡镇数据详情
-export const getAreaPovertyAlleviationDetailByAreaCode = function({ commit, state }, data) {
-        var dataArray = { 'title': data.mc, 'name': [], 'data': { dataContex: [], dataType: [] } }
-        getAreaPovertyAlleviationDetail(data.areaCode).then(res => {
-            var filePath = ''
-            var htm = ''
-            var html = ''
-            var fileName = ''
-            if (res.data[0].data.dataDesc) {
-                dataArray.name.push(res.data[0].name)
-                filePath = 'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test/serviceMap/zip/' + res.data[0].data.dataDesc
-                fileName = res.data[0].data.dataDesc.split('.')[0]
-                htm = fileName + '.' + 'htm'
-                html = fileName + '.' + 'html'
-                var promise = new JSZip.external.Promise(function(resolve, reject) {
-                    JSZipUtils.getBinaryContent(filePath, function(err, data) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(data);
-                        }
-                    })
-                })
-                promise.then(JSZip.loadAsync)
-                    .then(function(zip) {
-                        if (zip.file(htm)) {
-                            return zip.file(htm).async("base64")
-                        } else if (zip.file(html)) {
-                            return zip.file(html).async("base64")
-                        }
-                    })
-                    .then(function success(text) {
-                        dataArray.data.dataContex.push(text)
-                        dataArray.data.dataType.push('file')
-                        for (var i = 1; i < res.data.length; i++) {
-                            dataArray.name.push(res.data[i].name)
-                            dataArray.data.dataContex.push(res.data[i].data)
-                            dataArray.data.dataType.push('string')
-                        }
-                        commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
-                    }, function error(e) {})
-            } else {
-                for (var i = 0; i < res.data.length; i++) {
-                    dataArray.name.push(res.data[i].name)
-                    dataArray.data.dataContex.push(res.data[i].data)
-                    dataArray.data.dataType.push('string')
-                }
-                commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
-            }
-        })
-    }
-    // 保存用户登录信息
+    getProvertyTopic().then(res => {
+        let data = {
+            type: type,
+            list: res.data.data
+        }
+        commit(TYPE.SET_TOPIC_LIST, data)
+    })
+}
+
+// 保存用户登录信息
 export const setUserinfo = function({ commit, state }, data) {
         commit(TYPE.SET_USER_INFO, data)
     }

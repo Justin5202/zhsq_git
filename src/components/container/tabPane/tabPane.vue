@@ -23,7 +23,7 @@
 						:class="{clicked: nowIndex === index}"
 					>{{item}}</button>
 				</div>
-				<ul>
+				<ul :style="{maxHeight:tabPaneHeight}">
 					<li class="search-pane-li" v-if="searchList.length === 0">
 						<p style="margin: 0;">暂无搜索数据</p>
 					</li>
@@ -118,7 +118,7 @@
 						v-if="topicList.type=='ly'"
 					>{{item}}</button>
 				</div>
-				<ul>
+				<ul :style="{maxHeight:tabPaneHeight}">
 					<li
 						class="search-pane-li"
 						v-for="(item, index) in topicList.list"
@@ -195,7 +195,8 @@
 				buttonType: '',
 				nowIndex: 0,
 				topicIndex: -1,
-				tourismType: ['全部', '5A', '4A', '3A']
+				tourismType: ['全部', '5A', '4A', '3A'],
+				tabPaneHeight:window.innerHeight *0.5 +'px'
 			}
 		},
 		computed: {
@@ -383,7 +384,7 @@
 			}
 			ul {
 				margin: 0;
-				max-height: 526px;
+				// max-height: 526px;
 				overflow-y: scroll;
 				.search-pane-li {
 					list-style: none;

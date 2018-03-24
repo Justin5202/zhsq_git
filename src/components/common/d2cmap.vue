@@ -7,7 +7,8 @@ import dem from './config/dem'
 import img from './config/img'
 import infoTemp from '../page/testPage'
 import Vue from 'vue'
-import {mapActions} from 'vuex'
+import {mapGetters,mapActions} from 'vuex'
+import {getNewMapConfig,getNewMapJson} from '@/api/dataSheets'
 
 export default {
 	name: 'd2cmap',
@@ -24,13 +25,12 @@ export default {
 			}
 		}
 	},
+	created(){
+		this.getMapJsonAndImg()
+	},
 	mounted() {
 		// this.initOption(this.initMap);
 		// 后加的
-		window.d2cMap = this.$mapHelper.initMap(this.getConfig(dt));
-		this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(img),this.getLayerAndSourceFromOption(dem));
-		window.addEventListener('resize', this.resize);
-
 	},
 	methods: {
 		resize() {
@@ -62,8 +62,30 @@ export default {
 			res["sources"] = option.sources;
 			return res;
 		},
+		//获取底图Json
+		getMapJsonAndImg(){
+			var dataArray = {'json':[],'img':[],'name':[]}
+			var sum = 0
+			getNewMapConfig().then(res =>{
+				for( var i in res.data){
+					dataArray.img.push(res.data[i].mImage)
+					dataArray.name.push(res.data[i].mName)
+					getNewMapJson(res.data[i].mUrl).then(res =>{
+						sum ++ 
+						dataArray.json.push(res)
+						if(sum == 4){
+							window.d2cMap = this.$mapHelper.initMap(this.getConfig(dataArray.json[0]));
+							this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(dataArray.json[1]),this.getLayerAndSourceFromOption(dataArray.json[2]));
+							window.addEventListener('resize', this.resize);
+							this.setNewMapJsonAndImg(dataArray)
+						}
+					})
+				}
+			})
+		},
 		...mapActions([
-			'setUuidInfo'
+			'setUuidInfo',
+			'setNewMapJsonAndImg'
 		])
 	}
 }

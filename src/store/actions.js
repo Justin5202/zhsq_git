@@ -13,7 +13,9 @@ import {
     getAreaDetailByAreaCode,
     getEconomicUnitHtmlByAreaCode,
     getDataFileInfo,
-    getAreaPovertyAlleviationDetail
+    getAreaPovertyAlleviationDetail,
+    getNewMapConfig,
+    getNewMapJson
 } from '@/api/dataSheets'
 import {
     getJson
@@ -500,5 +502,9 @@ export const setUserinfo = function({ commit, state }, data) {
     }
     //专题数据直接展示详情
 export const setReportFormDetails = function({ commit, state }, data) {
-    commit(TYPE.SET_REPORT_FORM_DATA, data)
+        commit(TYPE.SET_REPORT_FORM_DATA, data)
+    }
+    //保存底图图片和Json
+export const setNewMapJsonAndImg = function({ commit, state }, data) {
+    commit(TYPE.SET_MAP_JSON_AND_IMG, data)
 }

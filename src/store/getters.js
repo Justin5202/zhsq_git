@@ -19,4 +19,5 @@
   export const topicList = state => state.topicList
   export const topicListShow = state => state.topicListShow
   export const areaDetailInfo = state => state.areaDetailInfo
-  export const userinfo = state => state.userinfo 
+  export const userinfo = state => state.userinfo
+  export const mapJsonAndImg = state => state.mapJsonAndImg

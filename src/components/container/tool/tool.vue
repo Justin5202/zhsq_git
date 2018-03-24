@@ -15,7 +15,7 @@
     </div>
     <div class="tool-box">
       <span class="tool-item"  @click="openReportForm">
-        <img src="../../../assets/images/map/报表.png" width="60" height="60" alt="">
+        <img src="../../../assets/images/map/报表.png" alt="">
       </span>
       <span class="circle" v-if="reportFormLength > 0">{{reportFormLength}}</span>
     </div>
@@ -48,14 +48,8 @@
   </div>
   <div class="layer-tool-box" v-show="layerToolVisible">
     <div class="layer-tool-content">
-      <div class="layer-tool-item">
-        <img src="../../../assets/images/map/矢量3D.png" title="矢量地图" width="90" height="60" alt="" @click="changeBaseMap('dt')">
-      </div>
-      <div class="layer-tool-item">
-        <img src="../../../assets/images/map/影像图标.jpg" title="影像地图" width="90" height="60" alt="" @click="changeBaseMap('img')">
-      </div>
-      <div class="layer-tool-item">
-        <img src="../../../assets/images/map/渲染图标.png" title="晕渲地图" width="90" height="60" alt="" @click="changeBaseMap('dem')">
+      <div class="layer-tool-item" v-for="(item,index) in mapJsonAndImg.img">
+        <img src="item"  width="90" height="60" alt="" @click="changeBaseMap('dt')">
       </div>
     </div>
     <layer-control></layer-control>
@@ -106,7 +100,8 @@ export default {
       'activeAreaInfoList',
       'areaInfoData',
       'searchItemMacroList',
-      'userinfo'
+      'userinfo',
+      'mapJsonAndImg'
     ]),
     areaLayerLength() {
       let len = 0
@@ -212,7 +207,7 @@ export default {
     },
     //获取旋转角度值
     changeAngle(angle) {
-      document.getElementsByClassName("tool-compass")[0].style.transform = "rotate(" + angle + "deg)"
+      document.getElementsByClassName("tool-compass")[0].style.transform = "rotate(" + -angle + "deg)"
       if (angle != 0) {
         this.toolCompassVisible = true
       } else if (angle == 0) {

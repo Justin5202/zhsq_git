@@ -1,36 +1,32 @@
 <template>
   <div class="user-center">
+    <!-- <span class="triangle-top"></span> -->
     <el-container>
-      <el-aside width="400px">
-        <el-header>
-          <h2 class="title">个人中心</h2>
-          <el-menu
-          mode="verticle"
-          text-color="#000"
-          active-text-color="#606266">
-            <el-menu-item
-            v-for="(item, index) in tabs"
-            index="index"
-            :key="index"
-            @click="setCurrent(item.name, index)">{{item.name}}</el-menu-item>
-          </el-menu>
-        </el-header>
-        <div class="footer">
-          <span type="button" @click="logout()">退出登录</span>
-        </div>
-      </el-aside>
-      <span class="close_center" @click="closeCenter()" v-if="!showPanel">+</span>
-      <el-main v-else>
-        <el-header>
-          <h2 class="currentTab">{{currentTab}}<span @click="closePanel()">关闭</span></h2>
-        </el-header>
-        <el-main>
-          <v-my-message :data="datalist" v-if="currentIndex === 0"></v-my-message>
-          <v-feedback v-else-if="currentIndex === 1"></v-feedback>
-          <v-contact v-else-if="currentIndex === 2"></v-contact>
-        </el-main>
+      <el-header>
+        <h2 class="title"><img src="../../../assets/images/head.jpg"/>个人中心</h2>
+      </el-header>
+      <el-main>
+        <ul class="menu">
+          <li class="menu-item" v-for="(item, index) in tabs" :key="index" @click="setCurrent(item.name,index)">
+            {{item.name}}
+          </li>
+        </ul>
       </el-main>
+      <el-footer>
+        <p class="back" @click="closeCenter">返回</p>        
+        <p class="out" @click="logout">退出登录</p>
+      </el-footer>
     </el-container>
+    <div class="left-side" v-show="showPanel">
+      <header>
+        <h2 class="title"><span class="close" @click="closePanel">关闭</span>{{currentTab}}</h2>
+      </header>
+      <div class="container">
+        <v-my-message :data="datalist" v-if="currentIndex === 0"/>
+        <v-feedback v-else-if="currentIndex === 1"/>
+        <v-contact v-else-if="currentIndex === 2"/>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -77,13 +73,13 @@ export default {
       this.showPanel = false
     },
     closeCenter() {
+      this.closePanel()
       this.$emit('close')
     },
     _fetchData() {
       let time = Math.round(new Date() / 1000)
       fetchData(time).then(res => {
-        console.log(res.message)
-        this.datalist.push({text: res.message, time: time})
+        this.datalist = res.data.infos
       })
     },
     clearCache() {
@@ -99,94 +95,106 @@ export default {
 </script>
 <style lang="scss" scoped>
   .user-center {
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    height: 398px;
+    width: 300px;
     position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    .el-container {
-      height:100%;
-      .el-aside {
-        position: relative;
-        height: 100%;
-        background-color: rgb(248, 247, 247);
-        border-right: 1px solid rgb(48, 46, 46);
+    right: 10px;
+    top: 15px;
+    background-color: #fff;
+    box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    .el-header {
+      height: 80px !important;
+      background-color: #335fff;
+      padding: 0;
+      color: #fff;
+      border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+      .title {
+        line-height: 80px;
+        font-weight: 400;
+        img {
+          height: 50px;
+          width: 50px;
+          border-radius: 50%;
+          overflow: hidden;
+          vertical-align: middle;
+          padding-right: 10px;
+        }
+      }
+    }
+    .el-main {
+      padding: 0;
+      height: 278px;
+      .menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+        font-size: 14px;
+        .menu-item {
+          padding-left: 14px;
+          height: 40px;
+          line-height: 40px;
+          border-bottom: 1px solid #e0e0e0;
+          box-sizing: border-box;
+          cursor: pointer;
+        }
+      }
+    }
+    .el-footer {
+      height: 40px !important;
+      padding: 0;
+      display: flex;
+      p {
+        width: 49%;
+        padding-right: 10px;
+        line-height: 40px;
+        text-align: right;
+        font-size: 14px;
+        cursor: pointer;
         box-sizing: border-box;
-        .el-header {
-          padding: 0;
-          .title {
-            height: 100%;
-            line-height: 60px;
-            color: white;
-            font-weight: 500;
-            font-size: 20px;
-            background-color: rgb(91, 104, 121);
-          }
-        }
-        .el-menu {
-          background-color: rgb(248, 247, 247);
-          .el-menu-item {
-            font-size: 16px;
-            border-bottom: 1px solid lightgrey;
-            height: 90px;
-            line-height:90px;
-          }
-        }
-        .footer {
-          width: 100%;
-          position: absolute;
-          bottom: 0;
-          span {
+      }
+      .back {
+        text-align: left;
+        padding-left: 10px;
+      }
+    }
+    .left-side {
+      box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      height: 800px;
+      width: 900px;
+      position: absolute;
+      right: 100%;
+      margin-right: 10px;
+      top: 0;
+      background-color: #fff;
+      header {
+        height: 80px;
+        .title {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+          height: 80px;
+          line-height: 80px;
+          font-weight: 400;
+          color: #fff;
+          background-color: #335fff;
+          position: relative;
+          .close {
             display: inline-block;
-            width: 100%;
-            border: none;
-            outline: none;
-            padding: 15px 0;
-            background-color: red;
-            color:#fff;
+            height: 40px;
+            line-height: 40px;
+            position: absolute;
+            left: 10px;
+            top: 0;
+            font-size: 16px;
             cursor: pointer;
           }
         }
       }
-      .close_center {
-        position: absolute;
-        display: inline-block;
-        right: 10px;
-        color: #fff;
-        transform: rotateZ(45deg);
-        font-size: 60px;
-        cursor: pointer;
-      }
-      .el-main {
-        height: 100%;
-        margin-bottom: -60px;
-        padding: 0;
-        box-sizing: border-box;
-        .el-header {
-          padding: 0;
-          .currentTab {
-            height: 60px;
-            line-height: 60px;
-            color: white;
-            font-weight: 500;
-            font-size: 20px;
-            background-color: rgb(91, 104, 121);
-            position: relative;
-            span {
-              position: absolute;
-              right: 10px;
-              top: 50%;
-              transform: translateY(-50%);
-              cursor: pointer;
-            }
-          }
-        }
-        .el-main {
-          height: 100%;
-          background-color: #fff;
-        }
+      .container {
+        height: 720px;
       }
     }
   }

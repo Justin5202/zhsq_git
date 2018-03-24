@@ -3,7 +3,7 @@
     <!-- <span class="triangle-top"></span> -->
     <el-container>
       <el-header>
-        <h2 class="title"><img src="http://img4.imgtn.bdimg.com/it/u=1373411777,3992091759&fm=27&gp=0.jpg"/>个人中心</h2>
+        <h2 class="title"><img src="../../../assets/images/head.jpg"/>个人中心</h2>
       </el-header>
       <el-main>
         <ul class="menu">

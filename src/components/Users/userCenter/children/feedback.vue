@@ -221,7 +221,6 @@
           text-align: center;
         }
         .message-me {
-          height: 50px;
           width: 50%;
           position: absolute;
           right: 40px;
@@ -230,7 +229,8 @@
           align-items: center;
           .message-me-content {
             display: inline-block;
-            height: 40px;
+            max-width: 260px;
+            min-height: 40px;
             line-height: 40px;
             background: url('../../../../assets/images/usercenter/me_chat@2x.png') no-repeat;
             background-position: 100%;
@@ -239,6 +239,7 @@
             padding: 0 10px;
             margin-top: 10px;
             word-break: break-all;
+            text-align: left;
           }
           i {
             display: inline-block;
@@ -251,7 +252,6 @@
         }
         .message-admin {
           width: 50%;
-          height: 50px;
           position: absolute;
           left: 40px;
           top: 100px;
@@ -260,8 +260,9 @@
           align-items: center;
           .message-admin-content {
             display: inline-block;
-            height: 40px;
+            min-height: 40px;
             line-height: 40px;
+            max-width: 260px;
             background: url('../../../../assets/images/usercenter/manager_chat@2x.png') no-repeat;
             background-position: 100%;
             background-size: 50px;

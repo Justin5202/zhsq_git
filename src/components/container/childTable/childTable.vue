@@ -2,12 +2,11 @@
 <div class="child-table-content">
   <ul>
     <li class="child-table-content-li child-li" v-if="areaInfoList">
-      <!-- 第一级可以点击 -->
+      <!-- 第一级 -->
       <div
         class="child-title"
         :class="{active: areaInfoList.isActive}"
         @click="isActiveItem(areaInfoList)"
-        v-if="areaInfoList.target.length > 0 || areaInfoList.datapath || parseInt(areaInfoList.type)%10 == 4"
       >
         <div class="arrow" v-if="areaInfoList.children.length > 0">
           <i class="arrow-icon" :class="{down: isClose}" @click="closeLiBox()"></i>
@@ -26,31 +25,13 @@
           <i class="collection-icon"></i>
         </div>
       </div>
-      <!-- 第一级不可点击 -->
-      <div
-        class="child-title"
-        :class="{active: activeAreaInfoList.length !== falseLength}"
-        v-else
-      >
-        <div class="arrow" v-if="areaInfoList.children.length > 0">
-          <i class="arrow-icon" :class="{down: isClose}" @click="closeLiBox()"></i>
-        </div>
-        <div class="blank" v-else></div>
-        <div class="text">
-          <h2>{{areaInfoList.name}}</h2>
-          <p v-if="areaInfoList.target.length!==0">{{areaInfoList.target[0].areaname}} {{areaInfoList.target[0].year}}</p>
-          <p v-if="areaInfoList.target.length!==0">{{areaInfoList.target[0].cityTarget}}</p>
-        </div>
-        <div class="detail" v-if="areaInfoList.target.length!==0" @click.stop="getDetails(areaInfoList.isActive, areaInfoList.id , areaInfoList.type)">
-          <i class="detail-icon" :class="{avtiveDetailIcon: areaInfoList.length === falseLength}"></i>
-          <span :class="{activeColor: areaInfoList.length === falseLength}">详情</span>
-        </div>
-        <div class="collection">
-          <i class="collection-icon"></i>
-        </div>
-      </div>
       <ul v-show="isClose">
-        <li class="child-table-content-li" v-for="childItem in areaInfoList.children" v-if="childItem.children.length === 0" :class="{active: childItem.isActive}">
+        <li 
+          class="child-table-content-li" 
+          v-for="childItem in areaInfoList.children" 
+          v-if="childItem.children.length === 0" 
+          :class="{active: childItem.isActive}"
+        >
           <div class="sec-blank"></div>
           <div class="text" @click="isActiveItem(childItem)">
             <h2>{{childItem.name}}</h2>
@@ -65,8 +46,14 @@
             <i class="collection-icon"></i>
           </div>
         </li>
-        <li class="child-table-content-li child-li" v-for="(childItem, index) in areaInfoList.children" v-if="childItem.children.length > 0">
-          <div class="child-title" :class="{active: childItem.isActive && childFalseLenArray[index] !== childItem.children.length}">
+        <li 
+          class="child-table-content-li child-li" 
+          v-for="(childItem, index) in areaInfoList.children" 
+          v-if="childItem.children.length > 0"
+        >
+          <div 
+            class="child-title" 
+            :class="{active: childItem.isActive}">
             <div class="third-blank"></div>
             <div class="arrow" @click="thirdChildSlide(index)">
               <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
@@ -85,7 +72,12 @@
             </div>
           </div>
           <ul v-show="thirdChildIsShow && nowIndex === index">
-            <li class="child-table-content-li" v-for="thirdChild in childItem.children" :class="{active: thirdChild.isActive}" @click="isActiveItem(thirdChild)">
+            <li 
+              class="child-table-content-li" 
+              v-for="thirdChild in childItem.children" 
+              :class="{active: thirdChild.isActive}" 
+              @click="isActiveItem(thirdChild)"
+            >
               <div class="fourth-blank"></div>
               <div class="text">
                 <h2>{{thirdChild.name}}</h2>
@@ -121,7 +113,6 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'areaInfoData',
       'areaInfoList',
       'activeAreaInfoList',
       'areaCodeAndDataId',
@@ -129,56 +120,6 @@ export default {
       'areaList',
       'searchItemMacroList'
     ]),
-    falseLength() {
-      let len = 0
-      this.areaInfoData.map(v => {
-        if (v.children.length > 0) {
-          if (v.children.children && v.children.children.length > 0) {
-            v.children.children.map(i => {
-              if (!i.isActive) {
-                len += 1
-              }
-            })
-          } else {
-            v.children.map(i => {
-              if (!i.isActive) {
-                len += 1
-              }
-            })
-          }
-        } else {
-          if (!v.isActive) {
-            len += 1
-          }
-        }
-      })
-      return len
-    },
-    childFalseLenArray() {
-      let lenArray = []
-      this.areaInfoData.map(v => {
-        if (v.children.length > 0) {
-          let len = 0
-          if (v.children.children && v.children.children.length > 0) {
-            v.children.children.map(i => {
-              if (!i.isActive) {
-                len += 1
-              }
-            })
-          } else {
-            v.children.map(i => {
-              if (!i.isActive) {
-                len += 1
-              }
-            })
-          }
-          lenArray.push(len)
-        } else {
-          lenArray.push(-1)
-        }
-      })
-      return lenArray
-    }
   },
   methods: {
     closeLiBox() {

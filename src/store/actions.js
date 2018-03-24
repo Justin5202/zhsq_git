@@ -41,7 +41,7 @@ function addLayer(datapath, id) {
     getJson(datapath).then(res => {
         const result = mapHelper.addLayerByCodeAndJson(id, res)
         getQueryElementByPoint(result).then(res => {
-            if (res.data && res.data.flag !== 3) {
+            if (res.data.points && res.data.mapguid && res.data.flag !== 3) {
                 // 地图飞点
                 mapHelper.flyByBounds(handleArray(res.data.points))
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length - 1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
@@ -72,8 +72,8 @@ function checkData(data, commit) {
                 mapHelper.removeLayerByCode(v.id)
             }
             commit(TYPE.SET_ACTIVE_AREA_LIST, {'item': v, 'isRemoveAll': false})
-            commit(TYPE.MODIFY_AREA_INFO_LIST, v)
         })
+        commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
     } else {
         let index = temp.findIndex(f => f.id === cur.id)
         if (index < 0) {
@@ -92,7 +92,7 @@ function checkData(data, commit) {
 /*
 *判断数据type类型，做相应操作
 */
-function checkClickedDataType({dispatch, data, commit, first}) {
+function checkClickedDataType({dispatch, data, commit}) {
     let cur = Object.assign({}, data)
     let type = parseInt(Number(cur.type) / 10)
     let yu = Number(cur.type) % 10
@@ -101,52 +101,55 @@ function checkClickedDataType({dispatch, data, commit, first}) {
     // type为0，仅为目录，直接显示列表
     if (type === 0) {
         console.log('仅为目录')
-        cur.isActive = false
         temp = cur
     } else if (type === 1) { // type为1，无下一级目录
         if (yu === 0) { // yu为0，不做任何操作
             console.log('仅为目录')
-            cur.isActive = false
             temp = cur
         } else if (yu === 1) { // yu为1，仅有空间数据，即加载空间数据
             temp = checkData(cur, commit)
         } else if (yu === 2) { // yu为2，仅有统计数据，加载统计数据
             console.log('仅有统计数据，加载统计数据')
-            cur.isActive = true
-            if(first && cur.children.length > 0) {
-                cur.isActive = false
-                cur.children.map(v => {
-                    v.isActive = false
-                })
-            } else {
-                cur.isActive = false
-                // commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
-            }
+            cur.isActive = !cur.isActive
+            commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
             temp = cur
         } else if (yu === 3) { // yu为3，有空间数据和统计数据，优先加载空间数据
+            console.log('有空间数据和统计数据，优先加载空间数据')
             temp = checkData(cur, commit)
         } else if (yu === 4) { // yu为4，仅有文本数据，即加载文本数据
             console.log('仅有文本数据，即加载文本数据')
             dispatch('getDataFileByCodeAndId', {'areaCode': state.areaList, 'dataId': cur.id})
             dispatch('setAreaReportFormShow', true)
-            if(first && cur.children.length > 0) {
-                cur.isActive = false
-                cur.children.map(v => {
-                    v.isActive = false
-                })
-            }
             temp = cur
         } else if (yu === 5) { // yu为5，有文本数据和空间数据，优先加载空间数据
+            console.log('有文本数据和空间数据，优先加载空间数据')
             temp = checkData(cur, commit)
         }
     } else if (type === 2) { // type为2，即为图层，加载图层
+        console.log('即为图层，加载图层')
         temp = checkData(cur, commit)
     } else if (type === 3) { // type为3，即为网页，记载网页
-
+        console.log('即为网页，记载网页')
     } else if (type === 4) { // type为4，即为720图片
-
+        console.log('为720图片')
     }
     return temp
+}
+
+/*
+*数据添加isActive标志位
+*/
+function addIsActive(data) {
+    data.isActive = false
+    if(data.children.length > 0) {
+        data.children.map(v => {
+            v.isActive = false
+            if(v.children.length > 0) {
+                v.children.map(i => i.isActive = false)
+            }
+        })
+    }
+    return data
 }
 
 export const searchPaneShow = function ({ commit, state }, isShow) {
@@ -165,8 +168,9 @@ export const getSearchParams = function ({ dispatch, commit, state }, { typePara
 }
 export const getAreaDetail = function ({ dispatch, commit, state }, params) {
     getDetailInfo(Object.assign({}, params)).then(res => {
-        let data = res.data[0]
-        commit(TYPE.GET_AREA_DATA, checkClickedDataType({dispatch, data, commit, 'first': true}))
+        let data = addIsActive(res.data[0])
+        commit(TYPE.GET_AREA_DATA, data)
+        checkClickedDataType({dispatch, data, commit})
         // 隐藏目录列表、搜索列表
         commit(TYPE.SEARCH_PANE_IS_SHOW, false)
         commit(TYPE.TABLE_PANE_SHOW, false)
@@ -215,8 +219,8 @@ export const getSearchResult = function ({ dispatch, commit, state }) {
 export const setSecAreaList = function ({ commit, state }, list) {
     commit(TYPE.SET_SEC_AREA_LIST, list)
 }
-export const setAreaList = function ({dispatch, commit, state }, item) {
-    checkClickedDataType({dispatch, 'data': item, commit, 'first': false})
+export const setAreaList = function ({dispatch, commit, state }, data) {
+    checkClickedDataType({dispatch, data, commit})
 }
 // 区县区域下一级详细信息
 export const getNextAreaInfo = function ({ commit, state }) {
@@ -233,17 +237,11 @@ export const loadSearchItemMacro = function ({commit, state}, item) {
     commit(TYPE.SET_SEARCH_MACRO_LIST, item)
 }
 /*移除搜索结果空间数据渲染列表*/
-export const removeSearchItem = function ({
-    commit,
-    state
-}, item) {
+export const removeSearchItem = function ({commit, state}, item) {
     commit(TYPE.SET_SEARCH_MACRO_LIST, item)
 }
 /*设置uuidinfo*/
-export const setUuidInfo = function ({
-    commit,
-    state
-}, uuidinfo) {
+export const setUuidInfo = function ({commit, state}, uuidinfo) {
     commit(TYPE.SET_UUID_INFO, uuidinfo)
 }
 //报表显示隐藏
@@ -301,13 +299,7 @@ export const getAreaCodeAndDataId = function ({commit, state}, {areaCode, dataId
     commit(TYPE.SET_AREACODE_AND_DATAID, AreaCodeAndDataId)
 }
 //获取报表详情
-export const getReportData = function ({
-    commit,
-    state
-}, {
-    areaCode,
-    dataId
-}) {
+export const getReportData = function ({commit, state}, {areaCode, dataId}) {
     var typeNum = 0; //用于保存数据类型数量
     var areaNum = 0; //用于保存不同的地区数量
     var arrayList = []
@@ -457,17 +449,8 @@ export const getDataFileByCodeAndId = function ({ commit, state }, { areaCode, d
     })
 }
 //清空报表
-export const clearReport = function ({
-    commit,
-    state
-}, {
-    key,
-    data
-}) {
-    commit(TYPE.CLEAR_REPORT_FORM, {
-        key,
-        data
-    })
+export const clearReport = function ({commit, state}, {key, data}) {
+    commit(TYPE.CLEAR_REPORT_FORM, {key, data})
 }
 //获取测量数据
 export const setMeasurNum = function ({commit,state}, data) {

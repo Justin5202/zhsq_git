@@ -93,22 +93,35 @@ const mutations = {
     state.areaInfoList = list
   },
   [TYPE.MODIFY_AREA_INFO_LIST](state, item) {
-    let list = state.areaInfoList
-    if(list.id === item.id) {
-      list.isActive = item.isActive
-    } else if(list.children.length > 0) {
-      list.children.map(v => {
-        if(v.id === item.id) {
-          v.isActive = item.isActive
-        } else if(v.children.length > 0) {
-          v.children.map(i => {
-            if(i.id === item.id) {
-              i.isActive = item.isActive
-            }
-          })
+    let temp = []
+    temp.push(item)
+    if(item.children && item.children.length > 0) {
+      item.children.map(v => {
+        temp.push(v)
+        if(v.children && v.children.length > 0) {
+          v.children.map(i => temp.push(i))
         }
       })
     }
+    let list = state.areaInfoList
+    temp.map(n => {
+      if(list.id === n.id) {
+        list.isActive = n.isActive
+      }
+      if(list.children.length > 0) {
+        list.children.map(v => {
+          if(v.id === n.id) {
+            v.isActive = n.isActive
+          } else if(v.children.length > 0) {
+            v.children.map(i => {
+              if(i.id === n.id) {
+                i.isActive = n.isActive
+              }
+            })
+          }
+        })
+      }
+    })
   },
   [TYPE.ADD_LAYER_ID_LIST](state, id) {
     state.layerIdList.push(id)
@@ -117,6 +130,7 @@ const mutations = {
     if (isRemoveAll) {
       state.activeAreaInfoList.map(v => {
         /*清空所有图层*/
+        console.log(v.id)
         mapHelper.removeLayerByCode(v.id)
       })
       state.activeAreaInfoList.splice(0, state.activeAreaInfoList.length)
@@ -260,9 +274,6 @@ const mutations = {
     addLayer(data.datapath, data.id)
     data.isActive = true
     data.children = []
-    if (state.areaInfoData.findIndex(v => v.id == data.id) < 0) {
-      state.areaInfoData.push(data)
-    }
     if (state.activeAreaInfoList.findIndex(v => v.id == data.id) < 0) {
       state.activeAreaInfoList.push(data)
     } else {

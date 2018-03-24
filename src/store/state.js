@@ -17,7 +17,6 @@ const state = {
   areaList: [],
   searchParams: {},
   searchList: [],
-  areaInfoData: [],
   areaInfoList: [],
   activeAreaInfoList: [],
   reportFormShow: false,

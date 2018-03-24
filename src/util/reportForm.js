@@ -1,6 +1,14 @@
+import JSZip from 'jszip'
+import {
+    getMsMacroData,
+    getAreaDetailByAreaCode,
+    getEconomicUnitHtmlByAreaCode,
+    getDataFileInfo,
+    getAreaPovertyAlleviationDetail
+} from '@/api/dataSheets'
 import state from '@/store/state'
 //获取areaCode 和 dataId
-function getAreaCodeAndDataId({ commit, state }, { areaCode, dataId }) {
+function getAreaCodeAndDataId(areaCode, dataId) {
     var AreaCodeAndDataId = []
     var idList = ""
     var codeList = ""
@@ -37,16 +45,10 @@ function getAreaCodeAndDataId({ commit, state }, { areaCode, dataId }) {
     }
     AreaCodeAndDataId.push(codeList.substring(1))
     AreaCodeAndDataId.push(idList.substring(1))
-    commit(TYPE.SET_AREACODE_AND_DATAID, AreaCodeAndDataId)
+        // commit(TYPE.SET_AREACODE_AND_DATAID, AreaCodeAndDataId)
 }
 //获取报表详情
-function getReportData({
-    commit,
-    state
-}, {
-    areaCode,
-    dataId
-}) {
+function getReportData(areaCode, dataId) {
     var typeNum = 0; //用于保存数据类型数量
     var areaNum = 0; //用于保存不同的地区数量
     var arrayList = []
@@ -110,11 +112,11 @@ function getReportData({
         }
         dataArray.data = dataList
         dataArray.year = yearListMax.reverse()
-        commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
+            // commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
     })
 }
 //根据areacode获取行政区划详情
-function getReportDataByAreaCode({ commit, state }, data) {
+function getReportDataByAreaCode(data) {
     var title = data[1] + ' ' + '概况'
     if (data[2] == 2) {
         getAreaDetailByAreaCode(data[0]).then(res => {
@@ -124,7 +126,7 @@ function getReportDataByAreaCode({ commit, state }, data) {
                 dataArray.data.dataContex.push(res.data[i].data)
                 dataArray.data.dataType.push('string')
             }
-            commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
+            // commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
         })
     } else if (data[2] == 6) {
         getEconomicUnitHtmlByAreaCode(data[0]).then(res => {
@@ -134,7 +136,7 @@ function getReportDataByAreaCode({ commit, state }, data) {
                 dataArray.data.dataContex.push(res.data[i].html)
                 dataArray.data.dataType.push('string')
             }
-            commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
+            // commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
         })
     }
 }
@@ -196,7 +198,7 @@ function getDataFileByCodeAndId({ commit, state }, { areaCode, dataId }) {
     })
 }
 // 获取贫困乡镇数据详情
-export const getAreaPovertyAlleviationDetailByAreaCode = function({ commit, state }, data) {
+function getAreaPovertyAlleviationDetailByAreaCode({ commit, state }, data) {
     var dataArray = { 'title': data.mc, 'name': [], 'data': { dataContex: [], dataType: [] } }
     getAreaPovertyAlleviationDetail(data.areaCode).then(res => {
         var filePath = ''

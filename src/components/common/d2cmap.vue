@@ -68,12 +68,15 @@ export default {
 			var sum = 0
 			getNewMapConfig().then(res =>{
 				for( var i in res.data){
-					dataArray.img.push(res.data[i].mImage)
-					dataArray.name.push(res.data[i].mName)
-					getNewMapJson(res.data[i].mUrl).then(res =>{
+					dataArray.img.push(res.data[i].m_image)
+					dataArray.name.push(res.data[i].m_name)
+					var length = res.data.length
+					var name = res.data[i].m_name
+					getNewMapJson(res.data[i].m_url).then(res =>{
 						sum ++ 
 						dataArray.json.push(res)
-						if(sum == 4){
+						console.log(name,res)
+						if(sum == length){
 							this.setNewMapJsonAndImg(dataArray)
 							window.d2cMap = this.$mapHelper.initMap(this.getConfig(dataArray.json[0]));
 							this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(dataArray.json[1]),this.getLayerAndSourceFromOption(dataArray.json[2]),this.getLayerAndSourceFromOption(dataArray.json[3]));

@@ -209,7 +209,6 @@
 				'searchPaneShow',
 				'tableMenuPaneShow',
 				'searchList',
-				'areaInfoData',
 				'areaInfoList',
 				'activeAreaInfoList',
 				'areaCodeAndDataId',
@@ -284,7 +283,7 @@
 					this.isActiveItem(item)
 					this.getAreaCodeAndDataId({
 						"areaCode": this.areaList,
-						"dataId": [this.areaInfoData, this.searchItemMacroList]
+						"dataId": [this.areaInfoList, this.searchItemMacroList]
 					})
 					this.getReportData({
 						'areaCode': this.areaCodeAndDataId[0],

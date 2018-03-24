@@ -39,7 +39,7 @@ export default {
 		getConfig(data) {
 			return {
 				container: data.container || 'map',
-				center: data.center,
+				center: [106.57064820281084,29.55623360001735],
 				bearing: data.bearing,
 				zoom: data.zoom,
 				maxzoom: data.maxzoom || 18,

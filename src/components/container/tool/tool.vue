@@ -98,7 +98,7 @@ export default {
     ...mapGetters([
       'areaList',
       'activeAreaInfoList',
-      'areaInfoData',
+      'areaInfoList',
       'searchItemMacroList',
       'userinfo',
       'mapJsonAndImg'
@@ -120,21 +120,21 @@ export default {
     reportFormLength() {
       let len = 0
       let type = 0
-      for (var i in this.areaInfoData) {
-        type = parseInt(this.areaInfoData[i].type)%10
-        if ((type == 2 || type == 3)&& this.areaInfoData[i].isActive) {
+      for (var i in this.areaInfoList) {
+        type = parseInt(this.areaInfoList[i].type)%10
+        if ((type == 2 || type == 3)&& this.areaInfoList[i].isActive) {
           len++
         }
-        if (this.areaInfoData[i].children.length > 0) {
-          for (var j in this.areaInfoData[i].children) {
-            type = parseInt(this.areaInfoData[i].children[j].type)%10
-            if ((type == 2 || type == 3) && this.areaInfoData[i].children[j].isActive) {
+        if (this.areaInfoList[i].children.length > 0) {
+          for (var j in this.areaInfoList[i].children) {
+            type = parseInt(this.areaInfoList[i].children[j].type)%10
+            if ((type == 2 || type == 3) && this.areaInfoList[i].children[j].isActive) {
               len++
             }
-            if (this.areaInfoData[i].children[j].children.length > 0) {
-              for (var k in this.areaInfoData[i].children[j].children) {
-                type = parseInt(this.areaInfoData[i].children[j].children[k].type)%10
-                if ((type == 2 || type == 3) && this.areaInfoData[i].children[j].children[k].isActive) {
+            if (this.areaInfoList[i].children[j].children.length > 0) {
+              for (var k in this.areaInfoList[i].children[j].children) {
+                type = parseInt(this.areaInfoList[i].children[j].children[k].type)%10
+                if ((type == 2 || type == 3) && this.areaInfoList[i].children[j].children[k].isActive) {
                   len++
                 }
               }

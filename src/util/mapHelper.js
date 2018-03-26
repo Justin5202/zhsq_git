@@ -778,7 +778,7 @@ const _setMBVisibility = function(){
  * @returns null
  */
 const _setVecterDemMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("global-vecter-layer","visibility");
+    let visibility = map.getLayoutProperty("gjtdt_global-vecter-layer","visibility");
     if (value){
         if(visibility != "visible") {
             map.setLayoutProperty("global-vecter-layer", 'visibility', 'visible');
@@ -798,16 +798,16 @@ const _setVecterDemMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtImageMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("remote-scense-layer","visibility");
+    let visibility = map.getLayoutProperty("gjtdt_remote-scense-layer","visibility");
     if (value){
         if(visibility != "visible") {
-            map.setLayoutProperty("remote-scense-layer", 'visibility', 'visible');
-            map.setLayoutProperty("remote-scense-layer-symbol", 'visibility', 'visible');
+            map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'visible');
+            map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'visible');
         }
     }else{
         if(visibility != "none") {
-            map.setLayoutProperty("remote-scense-layer", 'visibility', 'none');
-            map.setLayoutProperty("remote-scense-layer-symbol", 'visibility', 'none');
+            map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'none');
+            map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'none');
         }
     }
 };
@@ -818,16 +818,16 @@ const _setTdtImageMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtHQImageMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("HQ_remote-scense-layer","visibility");
+    let visibility = map.getLayoutProperty("gjtdt_HQ_remote-scense-layer","visibility");
     if (value){
         if(visibility != "visible") {
-            map.setLayoutProperty("HQ_remote-scense-layer", 'visibility', 'visible');
-            map.setLayoutProperty("HQ_remote-scense-layer-symbol", 'visibility', 'visible');
+            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'visible');
+            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'visible');
         }
     }else{
         if(visibility != "none") {
-            map.setLayoutProperty("HQ_remote-scense-layer", 'visibility', 'none');
-            map.setLayoutProperty("HQ_remote-scense-layer-symbol", 'visibility', 'none');
+            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'none');
+            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'none');
         }
     }
 };
@@ -838,16 +838,16 @@ const _setTdtHQImageMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtDemMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("dem-layer","visibility");
+    let visibility = map.getLayoutProperty("gjtdt_dem-layer","visibility");
     if (value){
         if(visibility != "visible") {
-            map.setLayoutProperty("dem-layer", 'visibility', 'visible');
-            map.setLayoutProperty("dem-layer-symbol", 'visibility', 'visible');
+            map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'visible');
+            map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'visible');
         }
     }else{
         if(visibility != "none") {
-            map.setLayoutProperty("dem-layer", 'visibility', 'none');
-            map.setLayoutProperty("dem-layer-symbol", 'visibility', 'none');
+            map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'none');
+            map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'none');
         }
     }
 };

@@ -324,6 +324,9 @@ const mutations = {
     },
     [TYPE.SET_MAP_JSON_AND_IMG](state, data) {
         state.mapJsonAndImg = data
+    },
+    [TYPE.SET_URL_PATH](state, url) {
+        state.urlpath = url
     }
 }
 

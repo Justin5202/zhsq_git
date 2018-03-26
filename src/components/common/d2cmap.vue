@@ -27,10 +27,6 @@ export default {
 	created(){
 		this.getMapJsonAndImg()
 	},
-	mounted() {
-		// this.initOption(this.initMap);
-		// 后加的
-	},
 	methods: {
 		resize() {
 			window.d2cMap.resize()

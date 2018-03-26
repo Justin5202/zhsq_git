@@ -42,7 +42,8 @@ const state = {
     topicListShow: false,
     // 用户登录信息
     userinfo: {},
-    mapJsonAndImg: {}
+    mapJsonAndImg: {},
+    urlpath: ''
 }
 
 export default state

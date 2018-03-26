@@ -288,6 +288,7 @@ export default {
         top: 10px;
         right: 60px;
     }
+
     .layer-tool-box {
         display: flex;
         flex-direction: column;

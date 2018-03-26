@@ -147,6 +147,8 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
             console.log('仅有统计数据，加载统计数据')
             if (first) {
                 cur.isActive = true
+                commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+                dispatch('setReportFormShow', true)
             } else {
                 cur.isActive = !cur.isActive
             }
@@ -159,6 +161,11 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
             console.log('仅有文本数据，即加载文本数据')
             if (first) {
                 cur.isActive = false
+                dispatch('setAreaReportFormShow', true)
+                dispatch('getDataFileByCodeAndId', {
+                    areaCode: state.areaList,
+                    dataId: cur.id
+                })
             } else {
                 cur.isActive = !cur.isActive
             }

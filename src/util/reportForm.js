@@ -49,10 +49,11 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         }
         AreaCodeAndDataId.push(codeList.substring(1))
         AreaCodeAndDataId.push(idList.substring(1))
+        console.log(AreaCodeAndDataId)
         return AreaCodeAndDataId
     }
     //获取报表详情
-export const getReportDataInJS = async function(areaCode, dataId) {
+export const getReportDataInJS = function(areaCode, dataId) {
         var typeNum = 0; //用于保存数据类型数量
         var areaNum = 0; //用于保存不同的地区数量
         var arrayList = []
@@ -251,7 +252,7 @@ export const getAreaPovertyAlleviationDetailByAreaCodeInJS = function(data) {
                     })
                     .then(function success(text) {
                         dataArray.data.dataContex.push(text)
-                        dataArray.data.dataType.push('file')
+                        dataArray.data.dataType.push('html')
                         for (var i = 1; i < res.data.length; i++) {
                             dataArray.name.push(res.data[i].name)
                             dataArray.data.dataContex.push(res.data[i].data)

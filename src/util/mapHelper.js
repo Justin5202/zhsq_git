@@ -148,6 +148,12 @@ const initMap = function (option) {
         .forEach(element => {
             // 底图中的id
             layersId_dt.push(element.id);
+            if (element.id == "gjtdt_global-vecter-layer") {
+                element["layout"]["visibility"] = "none";
+            }
+            if (element.id == "gjtdt_global-vecter-layer-symbol") {
+                element["layout"]["visibility"] = "none";
+            }
             if (element.metadata) {
                 if (element.metadata["mapbox:group"] == groupUUID_2d) {
                     layersId_2d.push(element.id);
@@ -197,7 +203,9 @@ const initMap = function (option) {
 
     // 样式 文件有变动时 进行 过滤
     map.on('styledata', () => {
-        doFilterByCodeArrayAndAreacodeArray(codeArray, areacodeArray);
+        if (codeArray.length > 0) {
+            doFilterByCodeArrayAndAreacodeArray(codeArray, areacodeArray);
+        }
     });
 
     return map;
@@ -247,12 +255,10 @@ const _onClick = function (e) {
         let features = map.queryRenderedFeatures(e.point);
         // 要素的mapguid
         if (features.length > 0) {
-            let feature = null;
+            let feature = features[0];
             // 判断是否有蒙版 有取第二个 feature
-            if (codeArray.length>0) {
+            if (feature.layer["id"] == "dbsj_xzqhhgldy_qy_py_mb" || feature.layer["id"] == "img_dbsj_xzqhhgldy_qy_py_mb" || feature.layer["id"] == "HQ_img_dbsj_xzqhhgldy_qy_py_mb" ) {
                 feature = features[1];
-            }else{
-                feature = features[0];
             }
 
             // 是否存在 排除的 图层 id
@@ -1011,7 +1017,8 @@ const addLayerByCodeAndJson = function (code, json) {
 
             });
 
-        // 闪烁
+        /* 闪烁*/
+        
         setTimeout(() => {
             for (let i = 1; i < 5; i++) {
                 setTimeout(function () {
@@ -1020,9 +1027,9 @@ const addLayerByCodeAndJson = function (code, json) {
                     } else {
                         setVisibilityByCode(code, false);
                     }
-                }, i * 800)
+                }, i * 500)
             }
-        }, 2000);
+        }, 1000);
 
     }
     return {

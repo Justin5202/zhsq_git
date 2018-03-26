@@ -61,7 +61,7 @@
           <!-- 展示html页面 -->
           <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'html'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
           <!-- 展示pdf -->
-          <pdf class="html-pdf" :src="'data:application/pdf;base64,' + item" v-show="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></pdf>
+          <!-- <pdf class="html-pdf" :src="'data:application/pdf;base64,' + item" v-show="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></pdf> -->
           <div class="table-tab-context-special" v-show="!reportFormData.data.dataType">
              <div v-for="(item,index) in reportFormData.data" class="context-special-item" :class="{itemColor:index%2 != 0}">
                 <span style="margin-left:15px;">{{item.name + ':'}}</span>
@@ -81,10 +81,10 @@ import {
   mapGetters,
   mapActions
 } from 'Vuex'
-import pdf from 'vue-pdf'
+// import pdf from 'vue-pdf'
 export default {
   components: {
-    pdf
+    // pdf
   },
   data() {
     return {

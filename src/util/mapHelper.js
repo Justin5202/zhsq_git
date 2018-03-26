@@ -781,13 +781,13 @@ const _setVecterDemMapVisibility = function (value) {
     let visibility = map.getLayoutProperty("gjtdt_global-vecter-layer","visibility");
     if (value){
         if(visibility != "visible") {
-            map.setLayoutProperty("global-vecter-layer", 'visibility', 'visible');
-            map.setLayoutProperty("global-vecter-layer-symbol", 'visibility', 'visible');
+            map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'visible');
+            map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'visible');
         }
     }else{
         if(visibility != "none") {
-            map.setLayoutProperty("global-vecter-layer", 'visibility', 'none');
-            map.setLayoutProperty("global-vecter-layer-symbol", 'visibility', 'none');
+            map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'none');
+            map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'none');
         }
     }
 };

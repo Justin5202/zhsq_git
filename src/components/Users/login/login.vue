@@ -31,8 +31,6 @@
 import {login} from '../../../api/user'
 import {mapActions} from 'vuex'
 import {Message} from 'element-ui'
-import Vue from 'vue'
-Vue.use(Message)
 export default {
   name: 'login',
   data() {
@@ -50,14 +48,14 @@ export default {
           message: '请输入用户名',
           type: 'error'
         })
-        return
+        return false
       }
       if (password === '') {
         this.$message({
           message: '请输入密码',
           type: 'error'
         })
-        return
+        return false
       }
       login(username, password).then(res => {
         // -3已登录， -2超时

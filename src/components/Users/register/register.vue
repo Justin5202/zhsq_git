@@ -11,7 +11,7 @@
           <el-input 
           placeholder="请输入验证码" 
           v-model="form.checkNum">
-            <el-button @click="getCode()" slot="append">{{codeTime}}</el-button>
+            <el-button @click="_getCheckCode(form.phoneNum)" slot="append">{{codeTime}}</el-button>
           </el-input>
         </el-form-item>
         <el-form-item>
@@ -56,7 +56,7 @@
   </div>
 </template>
 <script>
-  import { register, getRegisterInfo } from '../../../api/user'
+  import { register, getRegisterInfo, getCheckCode } from '../../../api/user'
   import {Message} from 'element-ui'
   export default {
     name: 'register',
@@ -67,6 +67,7 @@
         timer: null,
         branchList: '',
         areaList: '',
+        code: '',
         form: {
           phoneNum: '',
           truename: '',
@@ -81,7 +82,7 @@
       this._getRegisterInfo()
     },
     methods: {
-      getCode() {
+      setRevserseTime() {
         const TIME_COUNT = 60;
         if (!this.timer) {
           this.count = TIME_COUNT
@@ -119,6 +120,12 @@
             type: 'error'
           })
           return false
+        } else if (option.checkNum !== this.code) {
+          this.$message({
+            message: '请输入正确的验证码',
+            type: 'error'
+          })
+          return false
         }
 
         if (option.password === '') {
@@ -150,7 +157,9 @@
         }
 
         register(option).then(res => {
-          console.log(res);
+          if (res.code === '1') {
+            this.$router.replace('/login')
+          }
         })
       },
       _getRegisterInfo() {
@@ -158,6 +167,32 @@
           this.branchList = res.data.branch
           this.areaList = res.data.qx
         })
+      },
+      _getCheckCode(phone) {
+        if (phone === '') {
+          this.$message({
+            message: '请输入您的手机号码',
+            type: 'error'
+          })
+          return false
+        } else if (!/^[1][3,4,5,7,8][0-9]{9}$/.test(phone)) {
+          this.$message({
+            message: '请输入正确的手机号码',
+            type: 'error'
+          })
+          return false
+        }
+        this.setRevserseTime()
+        getCheckCode(phone).then(res => {
+          if (res.code === '1') {
+            this.$message({
+              message: '验证码已发送，请注意短信查收',
+              type: 'success'
+            })
+            this.code = res.data.checkCode
+          }
+        })
+        
       }
     }
   }

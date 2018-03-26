@@ -31,6 +31,9 @@ export default {
             getProvertyInfo(code, id).then(res => {
                 this.path = res.data.path
             })
+        },
+        goBack() {
+            this.$router.go(-1)
         }
     },
     destroyed() {
@@ -47,5 +50,16 @@ export default {
             width: 100%;
             height: 100%;
         }
+    }
+    p {
+        display: inline-block;
+        font-size: 14px;
+        position: fixed;
+        z-index: 99;
+        top: 50%;
+        left:10px;
+        color: #fff;
+        cursor: pointer;
+        transform: translateY(-50%);
     }
 </style>

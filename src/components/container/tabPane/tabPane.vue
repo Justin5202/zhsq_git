@@ -271,6 +271,7 @@ export default {
       };
       this.getAreaDetail(params);
       this.setTopicShow(false);
+      this.setLayerControlShow(false)
     },
     isActiveItem(item) {
       let type = item.macro.data.type;
@@ -315,7 +316,8 @@ export default {
       }
     },
     ...mapMutations({
-      setTopicShow: "SET_TOPIC_LIST_SHOW"
+      setTopicShow: "SET_TOPIC_LIST_SHOW",
+      setLayerControlShow: 'SET_LAYER_CONTROL_SHOW'
     }),
     ...mapActions([
       "setAreaList",

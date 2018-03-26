@@ -46,7 +46,7 @@
 				<img src="../../../assets/images/map/定位.png" alt="">
 			</span>
   </div>
-  <div class="layer-tool-box" v-if="layerToolVisible">
+  <div class="layer-tool-box" v-if="layerControlShow">
     <div class="layer-tool-content">
       <div class="layer-tool-item" v-for="(item,index) in mapJsonAndImg.img">
         <img :src="'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test'+ item"  width="90" height="60" alt="" :title=mapJsonAndImg.name[index] @click="changeBaseMap(mapJsonAndImg.name[index])">
@@ -83,7 +83,6 @@ export default {
     return {
       toolHeight: window.innerHeight * 0.8,
       is2Dmap: true,
-      layerToolVisible: false,
       areaBoxIsShow: false,
       angle: "",
       toolCompassVisible: false,
@@ -101,7 +100,8 @@ export default {
       'areaInfoList',
       'searchItemMacroList',
       'userinfo',
-      'mapJsonAndImg'
+      'mapJsonAndImg',
+      'layerControlShow'
     ]),
     areaLayerLength() {
       let len = 0
@@ -200,7 +200,7 @@ export default {
     },
     //打开图层切换
     openLayerTool() {
-      this.layerToolVisible = !this.layerToolVisible
+      this.$store.commit('SET_LAYER_CONTROL_SHOW', !this.layerControlShow)
     },
     openReportForm() {
       this.setReportFormShow(true)

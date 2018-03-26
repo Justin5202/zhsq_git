@@ -43,7 +43,8 @@ const state = {
     // 用户登录信息
     userinfo: {},
     mapJsonAndImg: {},
-    urlpath: ''
+    urlpath: '',
+    layerControlShow: false
 }
 
 export default state

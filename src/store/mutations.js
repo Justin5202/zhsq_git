@@ -327,6 +327,9 @@ const mutations = {
     },
     [TYPE.SET_URL_PATH](state, url) {
         state.urlpath = url
+    },
+    [TYPE.SET_LAYER_CONTROL_SHOW](state, flag) {
+        state.layerControlShow = flag
     }
 }
 

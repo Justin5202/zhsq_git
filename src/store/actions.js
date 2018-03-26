@@ -58,6 +58,8 @@ function addLayer(datapath, id) {
                 }
                 /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
+                mapHelper.closePopup()
+                mapHelper.closePicPopup()
             }
         })
     })

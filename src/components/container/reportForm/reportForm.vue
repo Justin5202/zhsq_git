@@ -46,7 +46,7 @@
     <div class="report-form-header">
       <div class="report-form-title">{{reportFormData.title}}</div>
       <div class="report-form-close">
-        <span @click="colseDialog()">关闭</span>
+        <el-button size="mini" @click="colseDialog()">关闭</el-button>
       </div>
     </div>
     <div class="table-box">

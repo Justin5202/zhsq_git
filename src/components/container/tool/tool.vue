@@ -46,7 +46,7 @@
 				<img src="../../../assets/images/map/定位.png" alt="">
 			</span>
   </div>
-  <div class="layer-tool-box" v-show="layerToolVisible">
+  <div class="layer-tool-box" v-if="layerToolVisible">
     <div class="layer-tool-content">
       <!-- <div class="layer-tool-item" v-for="(item,index) in mapJsonAndImg.img">
         <img :src="'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test'+ item"  width="90" height="60" alt="" :title=mapJsonAndImg.name[index] @click="changeBaseMap(mapJsonAndImg.name[index])">
@@ -260,14 +260,10 @@ export default {
 }
 .tool {
     width: 60px;
-    .tool-top {
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-    .tool-box {
-        position: relative;
-    }
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
     .tool-item {
         display: inline-block;
         width: 60px;
@@ -288,11 +284,6 @@ export default {
         position: absolute;
         top: 10px;
         right: 60px;
-    }
-    .tool-bottom {
-        position: absolute;
-        bottom: -100px;
-        left: 0;
     }
     .layer-tool-box {
         display: flex;

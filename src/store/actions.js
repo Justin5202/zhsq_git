@@ -162,8 +162,6 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
             temp = checkData(cur, commit, first)
         } else if (yu === 4) { // yu为4，仅有文本数据，即加载文本数据
             console.log('仅有文本数据，即加载文本数据')
-            // dispatch('getDataFileByCodeAndId', { 'areaCode': state.areaList, 'dataId': cur.id })
-            // dispatch('setAreaReportFormShow', true)
             temp = cur
         } else if (yu === 5) { // yu为5，有文本数据和空间数据，优先加载空间数据
             console.log('有文本数据和空间数据，优先加载空间数据')

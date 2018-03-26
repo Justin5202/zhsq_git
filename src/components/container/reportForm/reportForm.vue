@@ -56,8 +56,12 @@
           </tr>
       </table>
       <div class="table-tab-context" v-if="areaReportFormShow">
+          <!-- 展示html字符串 -->
           <div v-html="item" v-show="reportFormData.data.dataType[index] == 'string'&& activeTab == index" class="html-string" v-for="(item,index) in reportFormData.data.dataContex"></div>
-          <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'file'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
+          <!-- 展示html页面 -->
+          <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'html'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
+          <!-- 展示pdf -->
+          <pdf class="html-pdf" :src="'data:application/pdf;base64,' + item" v-show="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></pdf>
           <div class="table-tab-context-special" v-show="!reportFormData.data.dataType">
              <div v-for="(item,index) in reportFormData.data" class="context-special-item" :class="{itemColor:index%2 != 0}">
                 <span style="margin-left:15px;">{{item.name + ':'}}</span>
@@ -77,7 +81,11 @@ import {
   mapGetters,
   mapActions
 } from 'Vuex'
+import pdf from 'vue-pdf'
 export default {
+  components: {
+    pdf
+  },
   data() {
     return {
       dataId: '',
@@ -90,7 +98,6 @@ export default {
       }
     }
   },
-
   computed: {
     ...mapGetters([
       'reportFormShow',
@@ -300,6 +307,12 @@ export default {
         .html-doc{
           width: 100%;
           height: 500px;
+        }
+        .html-pdf{
+          display:inline-block;
+          width: 100%;
+          height: 500px;
+          overflow-y: auto;
         }
         .font-blue{
           color: #409eff;

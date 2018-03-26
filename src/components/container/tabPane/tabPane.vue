@@ -304,7 +304,7 @@
 					})
 					this.setReportFormShow(true)
 					this.setAreaReportFormShow(false)
-				}else if(item.searchType == 4 || item.searchType ==6){
+				}else if(item.searchType == 2 || item.searchType ==6){
 					this.getReportDataByAreaCode([item['area']['areacode'],item['area']['areaname'],item['searchType']])
 					this.setReportFormShow(false)
 					this.setAreaReportFormShow(true)

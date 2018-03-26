@@ -283,7 +283,7 @@
 					this.getAreaDetail(params)
 				} else if(i === 2){
 					/*加载空间数据，加入数据table*/
-					this.setAreaList(item.macro.data)
+					this.setAreaList(item)
 				}
 			},
 			toggleSlide() {

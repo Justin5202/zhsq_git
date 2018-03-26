@@ -1171,7 +1171,6 @@ const setVisibilityByCode = function (code, visibility) {
 const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArray) {
     // 记录 目录和区域 在styledata 事件触发时 过滤
     codeArray = _codeArray;
-    console.log(codeArray, _codeArray)
     areacodeArray = _areacodeArray;
 };
 

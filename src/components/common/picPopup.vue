@@ -41,7 +41,9 @@ export default {
       return temp
     },
     thumb2() {
-      return `http://zhsq.digitalcq.com/cqzhsqd2c_v2_test${this.result.filePath}${this.result.thumbnail}`
+      if(this.areacode && this.mapguid) {
+        return `http://zhsq.digitalcq.com/cqzhsqd2c_v2_test${this.result.filePath}${this.result.thumbnail}`
+      }
     }
   },
   created() {
@@ -57,7 +59,8 @@ export default {
     },
     goToPage() {
       this.$router.push({
-        path: `/720picture/${this.areacode}/${this.mapguid}`
+        path: `/web/${this.areacode}/${this.mapguid}`
+        // path: `/720picture/${this.result.path}/${this.areacode}`
       })
     },
     checkDetail() {
@@ -82,6 +85,7 @@ export default {
     display: block;
     margin: 0 auto;
     width: 100%;
+    cursor: pointer;
   }
   p {
     cursor: pointer;

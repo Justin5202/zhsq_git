@@ -31,9 +31,9 @@ function addLayer(datapath, id) {
                 // 地图飞点
                 mapHelper.flyByBounds(handleArray(res.data.points))
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(
-                    1, handleArray(res.data.points).length - 1), res.data.mapguid,
-                    'TS_定位1', 0.8, result.minzoom)
-                /*图层过滤*/
+                            1, handleArray(res.data.points).length - 1), res.data.mapguid,
+                        'TS_定位1', 0.8, result.minzoom)
+                    /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList,
                     state.areaCodeList)
             }
@@ -215,15 +215,15 @@ const mutations = {
                 temp.splice(index, 1)
                 let codeIndex = state.areaCodeList.findIndex(v => v === areainfo.areacode)
                 state.areaCodeList.splice(codeIndex, 1)
-                /*删除行政区划线*/
+                    /*删除行政区划线*/
                 let areaIndex = state.secAreaList.findIndex(v => v.areacode ===
                     areainfo.areacode)
                 mapHelper.removeLayerById(areainfo.areacode.toString())
-                /*图层过滤*/
+                    /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             } else {
                 temp.push(areainfo)
-                /*更新选中区域areacode列表*/
+                    /*更新选中区域areacode列表*/
                 if (areainfo.areacode !== '501002') {
                     state.areaCodeList.push(areainfo.areacode)
                 }
@@ -234,7 +234,7 @@ const mutations = {
                         .geojson)
                     mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
                     mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid)
-                    /*图层过滤*/
+                        /*图层过滤*/
                     console.log(state.layerIdList, state.areaCodeList)
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 }
@@ -242,9 +242,9 @@ const mutations = {
         } else {
             /*删除全部行政区划线*/
             state.areaList.map(v => {
-                mapHelper.removeLayerById(v.areacode.toString())
-            })
-            /*图层过滤*/
+                    mapHelper.removeLayerById(v.areacode.toString())
+                })
+                /*图层过滤*/
             mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             state.areaList = []
         }

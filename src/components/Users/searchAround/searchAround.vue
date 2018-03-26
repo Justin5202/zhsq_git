@@ -19,8 +19,8 @@
           </p>
           <div class="list-box">
             <ul class="list">
-              <li class="list-item" v-for="n in 6">
-                <p class="list-item-title">交通设施</p>
+              <li class="list-item" v-for="index in 6" >
+                <p class="list-item-title" :style="{color: colors[index]}">交通设施</p>
                 <ul class="sublist">
                   <li>机场</li>
                   <li>医院</li>
@@ -47,7 +47,7 @@
     data() {
       return {
         searchContent: '',
-        colors: ['#FF9999','#FF6666','#FFCCCC','#99CC00','#0099CC','#996699','#CCCC99']
+        colors: ['#FF9999','#FF6666','#993333','#999933','#99CC00','#FF9900','#336699']
       }
     },
     methods: {

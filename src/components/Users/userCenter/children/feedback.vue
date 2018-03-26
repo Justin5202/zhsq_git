@@ -9,15 +9,18 @@
     <div class="form-container" v-show="currentIndex === 0">
       <el-form>
         <el-form-item :model="form">
-          <el-input v-model="form.text" :rows="23"  type="textarea" placeholder="请输入您宝贵的意见"></el-input>
+          <el-input v-model="form.text" :rows="19"  type="textarea" placeholder="请输入您宝贵的意见"></el-input>
         </el-form-item>
         <el-button @click="_feedback(form.text)">提交</el-button>
       </el-form>
     </div>
     <div class="history-container" v-show="currentIndex === 1">
-      <div class="history-box">
+      <div class="history-box" v-show="!showDialogBox">
         <ul class="list">
-          <li v-for="(item, index) in suggestList" class="list-item" :class="{active:index===selectedIndex}" @click="handleSelect(index, item)">
+          <li 
+          v-for="(item, index) in suggestList" 
+          class="list-item" :class="{active:index===selectedIndex}" 
+          @click="handleSelect(index, item)">
             <p class="text">{{item.suggest}}</p>
             <p class="time">{{item.addtime | formatDate}}</p>
           </li>
@@ -27,7 +30,7 @@
           </li>
         </ul>
       </div>
-      <div class="message-box" v-show="messageTime !== ''">
+      <div class="message-box" v-show="showDialogBox">
         <p class="message-time">{{messageTime | formatDate}}</p>
         <div class="message-me">
           <span class="message-me-content">{{myContent}}</span><i></i>
@@ -35,6 +38,7 @@
         <div class="message-admin" v-show="adminContent">
           <i></i><span class="message-admin-content">{{adminContent}}</span>
         </div>
+        <p class="back_to_list" @click="closeDialog"><span class="el-icon-arrow-left"></span>返回</p>
       </div>
     </div>
   </div>
@@ -58,7 +62,8 @@
         myContent: '',
         adminContent: '',
         suggestList: [],
-        page: 1
+        page: 1,
+        showDialogBox: false
       }
     },
     filters: {
@@ -105,6 +110,7 @@
         this.messageTime = item.addtime
         this.myContent = item.suggest
         this.adminContent = item.replyDescp
+        this.showDialog()
       },
       _getSuggestList() {
         let start = (this.page - 1) * 10
@@ -122,6 +128,12 @@
       next() {
         this.page++
         this._getSuggestList()
+      },
+      showDialog() {
+        this.showDialogBox = true
+      },
+      closeDialog() {
+        this.showDialogBox = false
       }
     }
   }
@@ -168,12 +180,12 @@
       }
     }
     .history-container {
-      height: 680px;
+      height: 580px;
       margin-top: -30px;
       display: flex;
       justify-content: flex-start;
       .history-box {
-        width: 30%;
+        width: 100%;
         height: 100%;
         border-right: 1px solid lightgray;
         border-bottom: 0;
@@ -183,7 +195,7 @@
           overflow: auto;
           list-style: none;
           .list-item {
-            padding: 8px 8px;
+            padding: 5px 8px;
             border-bottom:1px solid lightgrey;
             cursor: pointer;
             box-sizing: border-box;
@@ -195,7 +207,7 @@
             }
             .text {
               font-size: 16px;
-              margin-bottom: 8px;
+              margin-bottom: 5px;
               color: #000;
             }
             .time {
@@ -212,7 +224,7 @@
       }
       .message-box {
         height: 100%;
-        width: 70%;
+        width: 100%;
         position: relative;
         .message-time {
           width: 100%;
@@ -221,9 +233,9 @@
           text-align: center;
         }
         .message-me {
-          width: 50%;
+          width: 90%;
           position: absolute;
-          right: 40px;
+          right: 10px;
           display: flex;
           justify-content: flex-end;
           align-items: center;
@@ -251,9 +263,9 @@
           }
         }
         .message-admin {
-          width: 50%;
+          width: 100%;
           position: absolute;
-          left: 40px;
+          left: 10px;
           top: 100px;
           display: flex;
           justify-content: flex-start;
@@ -280,6 +292,14 @@
             background-size: 100%;
           }
         }
+      }
+      .back_to_list {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        font-size: 14px;
+        cursor: pointer;
+        color: #335fff;
       }
     }
   }

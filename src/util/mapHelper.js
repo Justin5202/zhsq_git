@@ -79,7 +79,7 @@ var picPopup = null;
 // 缓存图片窗的 vue实体
 var picPopup_vm = null;
 
-// 传入的 目前叠加了哪些目录编码的数组
+// 传入的 目前叠加了哪些目录编码的数组 用来判断 是否开启蒙版
 var codeArray = [];
 
 // 传入的 目前叠加了哪些areacode的数组
@@ -247,18 +247,26 @@ const _onClick = function (e) {
         let features = map.queryRenderedFeatures(e.point);
         // 要素的mapguid
         if (features.length > 0) {
+            let feature = null;
+            // 判断是否有蒙版 有取第二个 feature
+            if (codeArray.length>0) {
+                feature = features[1];
+            }else{
+                feature = features[0];
+            }
+
             // 是否存在 排除的 图层 id
             let exceptFlag = false;
 
             for (let index = 0; index < vecterClickExceptLayerArray.length; index++) {
-                if (vecterClickExceptLayerArray[index] == features[0].layer["id"]) {
+                if (vecterClickExceptLayerArray[index] == feature.layer["id"]) {
                     exceptFlag = true;
                     break;
                 }
             }
 
             for (let index = 0; index < imageClickExceptLayerArray.length; index++) {
-                if (imageClickExceptLayerArray[index] == features[0].layer["id"]) {
+                if (imageClickExceptLayerArray[index] == feature.layer["id"]) {
                     exceptFlag = true;
                     break;
                 }
@@ -272,7 +280,7 @@ const _onClick = function (e) {
                     // popupFlag 如果已经被赋值就不继续了
                     if (layersId[element] && (!popupFlag)) {
                         for (let index = 0; index < layersId[element].length; index++) {
-                            if (layersId[element][index] == features[0].layer["id"]) {
+                            if (layersId[element][index] == feature.layer["id"]) {
                                 popupFlag = "ly";
                                 break;
                             }
@@ -284,7 +292,7 @@ const _onClick = function (e) {
                     // popupFlag 如果已经被赋值就不继续了
                     if (layersId[element] && (!popupFlag)) {
                         for (let index = 0; index < layersId[element].length; index++) {
-                            if (layersId[element][index] == features[0].layer["id"]) {
+                            if (layersId[element][index] == feature.layer["id"]) {
                                 popupFlag = "fp";
                                 break;
                             }
@@ -297,27 +305,27 @@ const _onClick = function (e) {
                         // 旅游图层的
                         setPicPopupToMap([
                             e.lngLat.lng, e.lngLat.lat
-                        ], features[0].properties.wyid, features[0].properties.mc, null);
+                        ], feature.properties.wyid, feature.properties.mc, null);
                         break;
 
                     case "fp":
                         // 扶贫图层的
-                        switch (features[0].properties.mulu_bm) {
+                        switch (feature.properties.mulu_bm) {
                             case "F01010100":
                                 setPicPopupToMap([
                                     e.lngLat.lng, e.lngLat.lat
-                                ], features[0].properties.mulu_bm, features[0].properties.xzjmc, features[0].properties.xzjdm);
+                                ], feature.properties.mulu_bm, feature.properties.xzjmc, feature.properties.xzjdm);
                                 break;
                             case "F01010200":
                                 setPicPopupToMap([
                                     e.lngLat.lng, e.lngLat.lat
-                                ], features[0].properties.mulu_bm, features[0].properties.sqcmc, features[0].properties.sqcdm);
+                                ], feature.properties.mulu_bm, feature.properties.sqcmc, feature.properties.sqcdm);
                                 break;
 
                             default:
                                 setPopupToMap([
                                     e.lngLat.lng, e.lngLat.lat
-                                ], features[0].properties.mapguid);
+                                ], feature.properties.mapguid);
                                 break;
                         }
                         break;
@@ -326,7 +334,7 @@ const _onClick = function (e) {
                         // 普通POI
                         setPopupToMap([
                             e.lngLat.lng, e.lngLat.lat
-                        ], features[0].properties.mapguid);
+                        ], feature.properties.mapguid);
                         break;
                 }
 
@@ -341,7 +349,7 @@ const _onClick = function (e) {
                             "features": [
                                 {
                                     "type": "Feature",
-                                    "geometry": features[0].geometry
+                                    "geometry": feature.geometry
                                 }
                             ]
                         }
@@ -350,22 +358,22 @@ const _onClick = function (e) {
                 };
 
                 // 判断点线面symbol
-                switch (features[0].layer.type) {
+                switch (feature.layer.type) {
                     case "circle":
-                        highlightOption["type"] = features[0].layer.type
+                        highlightOption["type"] = feature.layer.type
                         highlightOption["paint"] = {
                             "circle-color": "rgba(85,164,241,0.6)"
                         }
                         break;
                     case "line":
-                        highlightOption["type"] = features[0].layer.type
+                        highlightOption["type"] = feature.layer.type
                         highlightOption["paint"] = {
                             "line-color": "rgba(85,164,241,0.6)",
                             "line-width": 2
                         }
                         break;
                     case "fill":
-                        highlightOption["type"] = features[0].layer.type
+                        highlightOption["type"] = feature.layer.type
                         highlightOption["paint"] = {
                             "fill-color": "rgba(85,164,241,0.6)"
                         }

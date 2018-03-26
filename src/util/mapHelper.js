@@ -196,8 +196,8 @@ const initMap = function (option) {
     map.on("dblclick", _onDbClick);
 
     // 样式 文件有变动时 进行 过滤
-    map.on('styledata', function () {
-        doFilterByCodeArrayAndAreacodeArray(codeArray,areacodeArray);
+    map.on('styledata', () => {
+        doFilterByCodeArrayAndAreacodeArray(codeArray, areacodeArray);
     });
 
     return map;
@@ -263,12 +263,10 @@ const _onClick = function (e) {
                     break;
                 }
             }
-            
-            if (!exceptFlag) {
-                // 不在排除的图层中-start
 
-                // poi类型不标志位，便利旅游数组，扶贫数组 
-                // popupFlag 为（'ly'弹旅游窗相关、'fp'弹扶贫窗相关、null信息窗相关）
+            if (!exceptFlag) {
+                // 不在排除的图层中-start poi类型不标志位，便利旅游数组，扶贫数组 popupFlag
+                // 为（'ly'弹旅游窗相关、'fp'弹扶贫窗相关、null信息窗相关）
                 let popupFlag = null;
                 ZTExceptLayerArray_ly.forEach((element) => {
                     // popupFlag 如果已经被赋值就不继续了
@@ -307,28 +305,28 @@ const _onClick = function (e) {
                         switch (features[0].properties.mulu_bm) {
                             case "F01010100":
                                 setPicPopupToMap([
-                                        e.lngLat.lng, e.lngLat.lat
-                                    ], features[0].properties.mulu_bm, features[0].properties.xzjmc, features[0].properties.xzjdm);
+                                    e.lngLat.lng, e.lngLat.lat
+                                ], features[0].properties.mulu_bm, features[0].properties.xzjmc, features[0].properties.xzjdm);
                                 break;
                             case "F01010200":
                                 setPicPopupToMap([
-                                        e.lngLat.lng, e.lngLat.lat
-                                    ], features[0].properties.mulu_bm, features[0].properties.sqcmc, features[0].properties.sqcdm);
+                                    e.lngLat.lng, e.lngLat.lat
+                                ], features[0].properties.mulu_bm, features[0].properties.sqcmc, features[0].properties.sqcdm);
                                 break;
-                        
+
                             default:
                                 setPopupToMap([
-                                        e.lngLat.lng, e.lngLat.lat
-                                    ], features[0].properties.mapguid);
+                                    e.lngLat.lng, e.lngLat.lat
+                                ], features[0].properties.mapguid);
                                 break;
                         }
                         break;
-                
+
                     default:
                         // 普通POI
                         setPopupToMap([
-                                e.lngLat.lng, e.lngLat.lat
-                            ], features[0].properties.mapguid);
+                            e.lngLat.lng, e.lngLat.lat
+                        ], features[0].properties.mapguid);
                         break;
                 }
 
@@ -340,41 +338,42 @@ const _onClick = function (e) {
                         "type": "geojson",
                         "data": {
                             "type": "FeatureCollection",
-                            "features": [{
-                                "type": "Feature",
-                                "geometry": features[0].geometry
-                            }]
+                            "features": [
+                                {
+                                    "type": "Feature",
+                                    "geometry": features[0].geometry
+                                }
+                            ]
                         }
                     },
-                    "layout": {                      
-                    }
+                    "layout": {}
                 };
 
-                            // 判断点线面symbol
+                // 判断点线面symbol
                 switch (features[0].layer.type) {
                     case "circle":
                         highlightOption["type"] = features[0].layer.type
-                        highlightOption["paint"]={
-                            "circle-color":"rgba(85,164,241,0.6)"
+                        highlightOption["paint"] = {
+                            "circle-color": "rgba(85,164,241,0.6)"
                         }
                         break;
                     case "line":
                         highlightOption["type"] = features[0].layer.type
-                        highlightOption["paint"]={
-                            "line-color":"rgba(85,164,241,0.6)",
-                            "line-width":2
+                        highlightOption["paint"] = {
+                            "line-color": "rgba(85,164,241,0.6)",
+                            "line-width": 2
                         }
                         break;
                     case "fill":
                         highlightOption["type"] = features[0].layer.type
-                        highlightOption["paint"]={
-                            "fill-color":"rgba(85,164,241,0.6)"
+                        highlightOption["paint"] = {
+                            "fill-color": "rgba(85,164,241,0.6)"
                         }
                         break;
                     case "symbol":
                         highlightOption["type"] = "circle"
-                        highlightOption["paint"]={
-                            "circle-color":"rgba(85,164,241,0.6)"
+                        highlightOption["paint"] = {
+                            "circle-color": "rgba(85,164,241,0.6)"
                         }
                         break;
 
@@ -453,7 +452,7 @@ const onRotateCallback = function (_callback) {
  * @param 影像的图层和源 , 濡染的图层和源
  * @returns null
  */
-const initImageAndDemMap = function (img, dem,imgHQ) {
+const initImageAndDemMap = function (img, dem, imgHQ) {
     layersId_img = [];
     layersId_imgHQ = [];
     layersId_dem = [];
@@ -472,53 +471,102 @@ const initImageAndDemMap = function (img, dem,imgHQ) {
         layersId_dem.push(dem.layers[index]["id"]);
         dem.layers[index]["layout"]["visibility"] = "none";
     }
-    map
-        .on('load', function () {
-
-            // 地图加 source
-            for (let k in img.sources) {
-                try {
-                    map.addSource(k, img.sources[k]);
-                } catch (error) {
-                    console.log("影像出现重复的source");
-                }
+    if (map.loaded()) {
+        // 地图加 source
+        for (let k in img.sources) {
+            try {
+                map.addSource(k, img.sources[k]);
+            } catch (error) {
+                console.log("影像出现重复的source");
             }
+        }
 
-            for (let k in imgHQ.sources) {
-                try {
-                    map.addSource(k, imgHQ.sources[k]);
-                } catch (error) {
-                    console.log("HQ影像出现重复的source");
-                }
+        for (let k in imgHQ.sources) {
+            try {
+                map.addSource(k, imgHQ.sources[k]);
+            } catch (error) {
+                console.log("HQ影像出现重复的source");
             }
+        }
 
-            for (let k in dem.sources) {
-                try {
-                    map.addSource(k, dem.sources[k]);
-                } catch (error) {
-                    console.log("晕染出现重复的source");
-                }
+        for (let k in dem.sources) {
+            try {
+                map.addSource(k, dem.sources[k]);
+            } catch (error) {
+                console.log("晕染出现重复的source");
             }
+        }
 
-            // 加layers
-            img
-                .layers
-                .forEach(element => {
-                    map.addLayer(element);
-                })
-            imgHQ
-                .layers
-                .forEach(element => {
-                    map.addLayer(element);
-                })
-            dem
-                .layers
-                .forEach(element => {
-                    map.addLayer(element);
-                })
-            // 判断是否要 加载天地图
-            _containRelationshipCallback();
-        })
+        // 加layers
+        img
+            .layers
+            .forEach(element => {
+                map.addLayer(element);
+            })
+        imgHQ
+            .layers
+            .forEach(element => {
+                map.addLayer(element);
+            })
+        dem
+            .layers
+            .forEach(element => {
+                map.addLayer(element);
+            })
+        // 判断是否要 加载天地图
+        _containRelationshipCallback();
+        _setMBVisibility();
+    } else {
+        map
+            .on('load', function () {
+
+                // 地图加 source
+                for (let k in img.sources) {
+                    try {
+                        map.addSource(k, img.sources[k]);
+                    } catch (error) {
+                        console.log("影像出现重复的source");
+                    }
+                }
+
+                for (let k in imgHQ.sources) {
+                    try {
+                        map.addSource(k, imgHQ.sources[k]);
+                    } catch (error) {
+                        console.log("HQ影像出现重复的source");
+                    }
+                }
+
+                for (let k in dem.sources) {
+                    try {
+                        map.addSource(k, dem.sources[k]);
+                    } catch (error) {
+                        console.log("晕染出现重复的source");
+                    }
+                }
+
+                // 加layers
+                img
+                    .layers
+                    .forEach(element => {
+                        map.addLayer(element);
+                    })
+                imgHQ
+                    .layers
+                    .forEach(element => {
+                        map.addLayer(element);
+                    })
+                dem
+                    .layers
+                    .forEach(element => {
+                        map.addLayer(element);
+                    })
+                // 判断是否要 加载天地图
+                _containRelationshipCallback();
+                _setMBVisibility();
+                
+            })
+    }
 
 };
 
@@ -642,10 +690,10 @@ const setAllDemMapVisibility = function (visibility) {
             }
             // 判断当前视野是否需要显示 天地图
             _containRelationshipCallback();
-             // 2D/3D 图层开闭
-             _onPitch();
-             // 判断 当前是否有数据叠加 开关蒙版
-             _setMBVisibility();
+            // 2D/3D 图层开闭
+            _onPitch();
+            // 判断 当前是否有数据叠加 开关蒙版
+            _setMBVisibility();
         }
 
     } else {
@@ -690,7 +738,7 @@ const _containRelationshipCallback = function () {
         if (turf.booleanContains(cqPolygon, nowPolygon)) {
             // 没有 交叉 的时候 判断 包含 （因为包含的精度不太够）
             visibleFlay = false;
-        }else{
+        } else {
             visibleFlay = true;
         }
     }
@@ -700,7 +748,7 @@ const _containRelationshipCallback = function () {
             case "dt":
                 _setVecterDemMapVisibility(visibleFlay);
                 break;
-    
+
             case "img":
                 _setTdtImageMapVisibility(visibleFlay);
                 break;
@@ -708,23 +756,20 @@ const _containRelationshipCallback = function () {
             case "imgHQ":
                 _setTdtHQImageMapVisibility(visibleFlay);
                 break;
-    
+
             case "dem":
                 _setTdtDemMapVisibility(visibleFlay);
                 break;
-        
+
             default:
                 break;
         }
-    }else{
+    } else {
         _setVecterDemMapVisibility(visibleFlay);
         _setTdtImageMapVisibility(visibleFlay);
         _setTdtDemMapVisibility(visibleFlay);
         _setTdtHQImageMapVisibility(visibleFlay);
     }
-    
-
-
 
 };
 
@@ -733,41 +778,41 @@ const _containRelationshipCallback = function () {
  * @param （true：可见，false：不可见）
  * @returns null
  */
-const _setMBVisibility = function(){
-    let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb","visibility");
-    let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb","visibility");
-    let imgHQ_visibility = map.getLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb","visibility");
+const _setMBVisibility = function () {
+    let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", "visibility");
+    let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
+    let imgHQ_visibility = map.getLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
     if (codeArray.length > 0) {
         switch (mapFlay) {
             case "dt":
                 if (visibility != "visible") {
-                    map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+                    map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'visible');
                 }
                 break;
             case "img":
                 if (img_visibility != "visible") {
-                    map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+                    map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'visible');
                 }
                 break;
             case "imgHQ":
                 if (imgHQ_visibility != "visible") {
-                    map.setLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'visible');
+                    map.setLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'visible');
                 }
                 break;
-        
+
             default:
                 break;
         }
-        
-    }else{
+
+    } else {
         if (visibility != "none") {
-            map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
+            map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'none');
         }
         if (img_visibility != "none") {
-            map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
+            map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'none');
         }
         if (imgHQ_visibility != "none") {
-            map.setLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb",'visibility', 'none');
+            map.setLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'none');
         }
     }
 }
@@ -778,14 +823,14 @@ const _setMBVisibility = function(){
  * @returns null
  */
 const _setVecterDemMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_global-vecter-layer","visibility");
-    if (value){
-        if(visibility != "visible") {
+    let visibility = map.getLayoutProperty("gjtdt_global-vecter-layer", "visibility");
+    if (value) {
+        if (visibility != "visible") {
             map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'visible');
             map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'visible');
         }
-    }else{
-        if(visibility != "none") {
+    } else {
+        if (visibility != "none") {
             map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'none');
             map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'none');
         }
@@ -798,14 +843,14 @@ const _setVecterDemMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtImageMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_remote-scense-layer","visibility");
-    if (value){
-        if(visibility != "visible") {
+    let visibility = map.getLayoutProperty("gjtdt_remote-scense-layer", "visibility");
+    if (value) {
+        if (visibility != "visible") {
             map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'visible');
             map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'visible');
         }
-    }else{
-        if(visibility != "none") {
+    } else {
+        if (visibility != "none") {
             map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'none');
             map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'none');
         }
@@ -818,14 +863,14 @@ const _setTdtImageMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtHQImageMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_HQ_remote-scense-layer","visibility");
-    if (value){
-        if(visibility != "visible") {
+    let visibility = map.getLayoutProperty("gjtdt_HQ_remote-scense-layer", "visibility");
+    if (value) {
+        if (visibility != "visible") {
             map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'visible');
             map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'visible');
         }
-    }else{
-        if(visibility != "none") {
+    } else {
+        if (visibility != "none") {
             map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'none');
             map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'none');
         }
@@ -838,14 +883,14 @@ const _setTdtHQImageMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtDemMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_dem-layer","visibility");
-    if (value){
-        if(visibility != "visible") {
+    let visibility = map.getLayoutProperty("gjtdt_dem-layer", "visibility");
+    if (value) {
+        if (visibility != "visible") {
             map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'visible');
             map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'visible');
         }
-    }else{
-        if(visibility != "none") {
+    } else {
+        if (visibility != "none") {
             map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'none');
             map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'none');
         }
@@ -923,15 +968,15 @@ const addLayerByCodeAndJson = function (code, json) {
             .layers
             .forEach(element => {
                 let flay = true;
-                if(element["layout"]){
-                    if(element["layout"]["visibility"]){
+                if (element["layout"]) {
+                    if (element["layout"]["visibility"]) {
                         if (element["layout"]["visibility"] == "none") {
                             flay = false;
-                        }                        
+                        }
                     }
                 }
                 // 不可见的图层不要
-                if(flay){
+                if (flay) {
                     // 记录 添加图层 的 fitler
                     filterMap[element.id] = element.filter;
 
@@ -1004,10 +1049,10 @@ const removeLayerById = function (id) {
  */
 const removeLayerByCode = function (code) {
     // 用code 找到对应的 图层id 逐一删除
-      
+
     if (layersId[code]) {
         layersId[code].forEach(element => {
-                 
+
             map.removeLayer(element);
         });
         layersId[code] = null;
@@ -1128,9 +1173,6 @@ const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArra
     codeArray = _codeArray;
     console.log(codeArray, _codeArray)
     areacodeArray = _areacodeArray;
-    // 判断是否开启蒙版
-    _setMBVisibility();
-
 };
 
 /**
@@ -1138,12 +1180,11 @@ const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArra
  * @param 目录编码数组，行政区编码数组
  * @returns null
  */
-const doFilterByCodeArrayAndAreacodeArray= function (_codeArray, _areacodeArray) {
+const doFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArray) {
     // 由于切换切换 全球视角功能 不一定会 触发 styleData 事件 所以重复给codeArray,areacodeArray复制
-    if(_areacodeArray != areacodeArray){
+    if (_areacodeArray != areacodeArray) {
         areacodeArray = _areacodeArray
     }
-    
     _codeArray.forEach(element => {
         if (layersId[element]) {
 
@@ -1183,8 +1224,7 @@ const doFilterByCodeArrayAndAreacodeArray= function (_codeArray, _areacodeArray)
             }
 
         }
-    })
-
+    });
 };
 
 /**

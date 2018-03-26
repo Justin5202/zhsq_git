@@ -31,10 +31,10 @@ function addLayer(datapath, id) {
                 // 地图飞点
                 mapHelper.flyByBounds(handleArray(res.data.points))
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(
-                            1, handleArray(res.data.points).length - 1), res.data.mapguid,
-                        'TS_定位1', 0.8, result.minzoom)
-                    /*图层过滤*/
-                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList,
+                    1, handleArray(res.data.points).length - 1), res.data.mapguid,
+                    'TS_定位1', 0.8, result.minzoom)
+                /*图层过滤*/
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList,
                     state.areaCodeList)
             }
         })
@@ -90,7 +90,26 @@ const mutations = {
         state.searchList = searchList
     },
     [TYPE.GET_AREA_DATA](state, list) {
-        state.areaInfoList = list
+        let n = 0
+        if (state.areaInfoList.length > 0) {
+            state.areaInfoList.map(v => {
+                if (v.id !== list.id) {
+                    n += 1
+                }
+            })
+            if (n == state.areaInfoList.length) {
+                state.areaInfoList.unshift(list)
+            } else {
+                let index = state.areaInfoList.findIndex(v => v.id === list.id)
+                if (index > -1) {
+                    let temp = state.areaInfoList[index]
+                    state.areaInfoList.splice(index, 1)
+                    state.areaInfoList.unshift(temp)
+                }
+            }
+        } else {
+            state.areaInfoList.push(list)
+        }
     },
     [TYPE.MODIFY_AREA_INFO_LIST](state, item) {
         let temp = []
@@ -103,7 +122,7 @@ const mutations = {
                 }
             })
         }
-        let list = state.areaInfoList
+        let list = state.areaInfoList[0]
         temp.map(n => {
             if (list.id === n.id) {
                 list.isActive = n.isActive
@@ -130,19 +149,20 @@ const mutations = {
         if (isRemoveAll) {
             state.activeAreaInfoList.map(v => {
                 /*清空所有图层*/
-                console.log(v.id)
                 mapHelper.removeLayerByCode(v.id)
             })
             state.activeAreaInfoList.splice(0, state.activeAreaInfoList.length)
-            state.areaInfoList.isActive = false
-            if (state.areaInfoList.children) {
-                state.areaInfoList.children.map(v => {
-                    v.isActive = false
-                    if (v.children) {
-                        v.children.map(i => i.isActive = false)
-                    }
-                })
-            }
+            state.areaInfoList.map(v => {
+                v.isActive = false
+                if (v.children) {
+                    v.children.map(i => {
+                        i.isActive = false
+                        if (i.children) {
+                            i.children.map(v => v.isActive = false)
+                        }
+                    })
+                }
+            })
         } else {
             let index = state.activeAreaInfoList.findIndex(v => v.id === item.id)
             if (index < 0) {
@@ -170,20 +190,40 @@ const mutations = {
                     bol = true
                 }
             }
+        }
+    },
+    [TYPE.SET_SEC_AREA_LIST](state, secAreaList) {
+        state.secAreaList = secAreaList
+    },
+    [TYPE.SET_AREA_DETAIL_INFO](state, areaDetailInfo) {
+        state.areaDetailInfo = areaDetailInfo
+    },
+    [TYPE.SET_AREA_INFO](state, areaInfo) {
+        state.areaInfo = areaInfo
+    },
+    [TYPE.SET_SELECTED_AREA_LIST](state, { areainfo, isRemoveAll }) {
+        if (!isRemoveAll) {
+            let temp = state.areaList
+            let bol = false
+            for (let val of temp) {
+                if (val.areacode === areainfo.areacode) {
+                    bol = true
+                }
+            }
             if (bol) {
                 let index = temp.findIndex(v => v.areacode === areainfo.areacode)
                 temp.splice(index, 1)
                 let codeIndex = state.areaCodeList.findIndex(v => v === areainfo.areacode)
                 state.areaCodeList.splice(codeIndex, 1)
-                    /*删除行政区划线*/
+                /*删除行政区划线*/
                 let areaIndex = state.secAreaList.findIndex(v => v.areacode ===
                     areainfo.areacode)
                 mapHelper.removeLayerById(areainfo.areacode.toString())
-                    /*图层过滤*/
-                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+                /*图层过滤*/
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             } else {
                 temp.push(areainfo)
-                    /*更新选中区域areacode列表*/
+                /*更新选中区域areacode列表*/
                 if (areainfo.areacode !== '501002') {
                     state.areaCodeList.push(areainfo.areacode)
                 }
@@ -194,17 +234,18 @@ const mutations = {
                         .geojson)
                     mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
                     mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid)
-                        /*图层过滤*/
-                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+                    /*图层过滤*/
+                    console.log(state.layerIdList, state.areaCodeList)
+                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 }
             }
         } else {
             /*删除全部行政区划线*/
             state.areaList.map(v => {
-                    mapHelper.removeLayerById(v.areacode.toString())
-                })
-                /*图层过滤*/
-            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList = [])
+                mapHelper.removeLayerById(v.areacode.toString())
+            })
+            /*图层过滤*/
+            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             state.areaList = []
         }
     },
@@ -280,9 +321,6 @@ const mutations = {
             state.activeAreaInfoList.splice(state.activeAreaInfoList.findIndex(v =>
                 v.id == data.id), 1, data)
         }
-    },
-    [TYPE.SET_MAP_JSON_AND_IMG](state, data) {
-        state.mapJsonAndImg = data
     }
 }
 

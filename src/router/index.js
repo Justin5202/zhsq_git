@@ -12,6 +12,7 @@ const mapTest = r => require(['@/components/page/map_test'], r)
 const login = r => require(['@/components/users/login/login'], r)
 const register = r => require(['@/components/users/register/register'], r)
 const carousel = r => require(['@/components/container/carousel/carousel'], r)
+const web = r => require(['@/components/container/web/web'], r)
 
 
 export default new Router({
@@ -51,6 +52,10 @@ export default new Router({
       path: '/carousel/:id',
       name: 'carousel',
       component: carousel
+    },{
+      path: '/720picture/:code/:id',
+      name: 'web',
+      component: web
     }
   ]
 })

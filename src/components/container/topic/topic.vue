@@ -63,7 +63,7 @@
 					this.type2 = !this.type2
 				} else {
 					let type = 'fp'
-					this.getProvertyData(type)
+					this.getProvertyData({'type': type})
 					this.addTourismLayer(4)
 					this.setTopicShow(true)
 					this.searchPaneShow(false)

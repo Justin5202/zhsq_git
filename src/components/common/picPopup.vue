@@ -1,61 +1,90 @@
 <template>
   <div class="pic-pop">
-    <img :src="thumb" alt="">
-    <p @click="checkMorePic()">查看图片</p>
+    <div v-if="mapguid && !areacode">
+      <img :src="thumb1" alt="">
+      <p @click="checkMorePic()">查看图片</p>
+    </div>
+    <div v-if="mapguid && areacode">
+      <img :src="thumb2" alt="" @click="goToPage()">
+      <p @click="checkDetail()">查看详情 ></p>
+    </div>
   </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
-import {getMorePic} from '@/api/datasheets'
+import { mapGetters } from "vuex"
+import { getMorePic, getMsMacroData, getProvertyInfo } from "@/api/datasheets"
 
 export default {
-    props: {
-        mapguid: {},
-        name: {},
-        areacode: {}
-    },
-    computed: {
-      ...mapGetters([
-        'topicList'
-      ]),
-      thumb() {
-        let temp = ''
-        this.topicList.list.map(v => {
-          if(v.id == this.mapguid) {
-            temp = 'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test' + v.filePath + v.thumbnail
-          }
-        })
-        return temp
-      }
-    },
-    created() {
-      console.log(this.areacode)
-    },
-    methods: {
-      checkMorePic() {
-        this.$router.push({
-          path: `/carousel/${this.mapguid}`
-        })
-      }
+  props: {
+    mapguid: {},
+    name: {},
+    areacode: {}
+  },
+  data() {
+    return {
+      result: ''
     }
+  },
+  computed: {
+    ...mapGetters(["topicList"]),
+    thumb1() {
+      let temp = ""
+      this.topicList.list.map(v => {
+        if (v.id == this.mapguid) {
+          temp =
+            "http://zhsq.digitalcq.com/cqzhsqd2c_v2_test" +
+            v.filePath +
+            v.thumbnail
+        }
+      })
+      return temp
+    },
+    thumb2() {
+      return `http://zhsq.digitalcq.com/cqzhsqd2c_v2_test${this.result.filePath}${this.result.thumbnail}`
+    }
+  },
+  created() {
+    if(this.areacode && this.mapguid) {
+      this._getProvertyInfo(this.areacode, this.mapguid)
+    }
+  },
+  methods: {
+    checkMorePic() {
+      this.$router.push({
+        path: `/carousel/${this.mapguid}`
+      })
+    },
+    goToPage() {
+      this.$router.push({
+        path: `/720picture/${this.areacode}/${this.mapguid}`
+      })
+    },
+    checkDetail() {
+    },
+    _getProvertyInfo(code, id) {
+      getProvertyInfo(code, id).then(res => {
+        this.result = res.data
+      })
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-  .pic-pop {
-    width: 100px;
-    margin: -10px -10px -15px;
-    padding: 5px;
-    text-align: center;
-    border-radius: 4px;
-    img {
-      display: block;
-      margin: 0 auto;
-      width: 100%;
-    }
-    p {
-      cursor: pointer;
-    }
+.pic-pop {
+  width: 100px;
+  margin: -10px -10px -15px;
+  padding: 5px;
+  text-align: center;
+  border-radius: 4px;
+  img {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
   }
+  p {
+    cursor: pointer;
+  }
+}
 </style>

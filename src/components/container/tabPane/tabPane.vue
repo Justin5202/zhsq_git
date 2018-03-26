@@ -81,7 +81,8 @@
 						<div 
 							class="search-pane-box" 
 							v-else-if="item.searchType === 5"
-							@click="flyToPoint(item.element.geopoint, item.element.dataId, index)"
+							@click="flyToPoi(item, index)"
+							:class="{active: searchIndex === index}"
 						>
 							<div class="icon-box">
 								<i class="macro-icon"></i>
@@ -200,6 +201,7 @@
 				buttonType: '',
 				nowIndex: 0,
 				topicIndex: -1,
+				searchIndex: -1,
 				tourismType: ['全部', '5A', '4A', '3A'],
 				tabPaneHeight:window.innerHeight *0.5 +'px'
 			}
@@ -235,10 +237,21 @@
 				this.nowIndex = index
 				this.addTourismLayer(index)
 			},
+			flyToPoi(item, index) {
+				this.searchIndex = index
+				this.$mapHelper.flyByPointAndZoom(item.element.geopoint, 16)
+				this.$mapHelper.setPopupToMap(item.element.geopoint, item.element.uuid)
+			},
 			flyToPoint(point, id, index) {
+				let p
+				if(point instanceof Array) {
+					p = point
+				} else {
+					p = JSON.parse(point)
+				}
 				this.topicIndex = index
-				this.$mapHelper.flyByPointAndZoom(JSON.parse(point), 8)
-				this.$mapHelper.setPicPopupToMap(JSON.parse(point), id)
+				this.$mapHelper.flyByPointAndZoom(p, 8)
+				this.$mapHelper.setPicPopupToMap(p, id)
 			},
 			next() {
 				this.page += 1

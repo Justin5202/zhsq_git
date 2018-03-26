@@ -1,25 +1,25 @@
 <template>
 <div class="child-table-content" :style="{maxHeight:childTableHeight}">
   <ul>
-    <li class="child-table-content-li child-li" v-if="areaInfoList">
+    <li class="child-table-content-li child-li" v-if="areaInfoList.length>0">
       <!-- 第一级 -->
       <div
         class="child-title"
-        :class="{active: areaInfoList.isActive}"
-        @click="isActiveItem(areaInfoList)"
+        :class="{active: areaInfoList[0].isActive}"
+        @click="isActiveItem(areaInfoList[0])"
       >
-        <div class="arrow" v-if="areaInfoList.children.length > 0">
+        <div class="arrow" v-if="areaInfoList[0].children.length > 0">
           <i class="arrow-icon" :class="{down: isClose}" @click="closeLiBox()"></i>
         </div>
         <div class="blank" v-else></div>
         <div class="text">
-          <h2>{{areaInfoList.name}}</h2>
-          <p v-if="areaInfoList.target.length!==0">{{areaInfoList.target[0].areaname}} {{areaInfoList.target[0].year}}</p>
-          <p v-if="areaInfoList.target.length!==0">{{areaInfoList.target[0].cityTarget}}</p>
+          <h2>{{areaInfoList[0].name}}</h2>
+          <p v-if="areaInfoList[0].target.length!==0">{{areaInfoList[0].target[0].areaname}} {{areaInfoList[0].target[0].year}}</p>
+          <p v-if="areaInfoList[0].target.length!==0">{{areaInfoList[0].target[0].cityTarget}}</p>
         </div>
-        <div class="detail" v-if="areaInfoList.target.length!==0 || parseInt(areaInfoList.type)%10 == 4" @click.stop="getDetails(areaInfoList.isActive, areaInfoList.id,areaInfoList.type)">
-          <i class="detail-icon" :class="{avtiveDetailIcon: !areaInfoList.isActive}"></i>
-          <span :class="{activeColor: !areaInfoList.isActive}">详情</span>
+        <div class="detail" v-if="areaInfoList[0].target.length!==0 || parseInt(areaInfoList[0].type)%10 == 4" @click.stop="getDetails(areaInfoList[0].isActive, areaInfoList[0].id,areaInfoList[0].type)">
+          <i class="detail-icon" :class="{avtiveDetailIcon: !areaInfoList[0].isActive}"></i>
+          <span :class="{activeColor: !areaInfoList[0].isActive}">详情</span>
         </div>
         <div class="collection">
           <i class="collection-icon"></i>
@@ -27,35 +27,19 @@
       </div>
       <ul v-show="isClose">
         <li 
-          class="child-table-content-li" 
-          v-for="childItem in areaInfoList.children" 
-          v-if="childItem.children.length === 0" 
-          :class="{active: childItem.isActive}"
-        >
-          <div class="sec-blank"></div>
-          <div class="text" @click="isActiveItem(childItem)">
-            <h2>{{childItem.name}}</h2>
-            <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
-            <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
-          </div>
-          <div class="detail" v-if="childItem.target.length!==0" @click.stop="getDetails(childItem.isActive, childItem.id , childItem.type)">
-            <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
-            <span :class="{activeColor: !childItem.isActive}">详情</span>
-          </div>
-          <div class="collection">
-            <i class="collection-icon"></i>
-          </div>
-        </li>
-        <li 
           class="child-table-content-li child-li" 
-          v-for="(childItem, index) in areaInfoList.children" 
-          v-if="childItem.children.length > 0"
+          v-for="(childItem, index) in areaInfoList[0].children"
         >
           <div 
             class="child-title" 
             :class="{active: childItem.isActive}">
-            <div class="third-blank"></div>
-            <div class="arrow" @click="thirdChildSlide(index)">
+            <div class="sec-blank" v-if="childItem.children.length <= 0"></div>
+            <div class="third-blank" v-else></div>
+            <div 
+              class="arrow" 
+              v-if="childItem.children.length > 0" 
+              @click="thirdChildSlide(index)"
+            >
               <i class="arrow-icon" :class="{down: thirdChildIsShow && nowIndex === index}"></i>
             </div>
             <div class="text" @click="isActiveItem(childItem)">
@@ -78,7 +62,7 @@
               :class="{active: thirdChild.isActive}" 
               @click="isActiveItem(thirdChild)"
             >
-              <div class="fourth-blank"></div>
+              <div class="blank"></div>
               <div class="text">
                 <h2>{{thirdChild.name}}</h2>
                 <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].areaname}} {{thirdChild.target[0].year}}</p>
@@ -192,13 +176,10 @@ export default {
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
     .sec-blank {
-      width: 50px;
+      width: 60px;
     }
     .third-blank {
-      width: 25px;
-    }
-    .fourth-blank {
-      width: 80px;
+      width: 16px;
     }
     .arrow {
       .arrow-icon {

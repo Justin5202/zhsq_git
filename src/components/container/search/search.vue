@@ -81,7 +81,8 @@
 				subAreaData1: [],
 				subAreaData2: [],
 				showThreeLevelMenu: false, // 是否显示三级菜单
-				showThreeLevelMenuMore: false // 是否显示三级菜单“更多...”
+				showThreeLevelMenuMore: false, // 是否显示三级菜单“更多...”
+				clickCount: 0
 			}
 		},
 		computed: {
@@ -147,7 +148,7 @@
 				this.selectCode = areacode
 				let areaInfo = {
 					areacode: areacode,
-			    areaname: areaname
+			    	areaname: areaname
 				}
 				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
 				if(index === 2) {
@@ -161,28 +162,33 @@
 					this.showThreeLevelMenu = false
 				}
 			},
+			areaClickEvent(id, name) {
+				this.clickCount += 1
+				setTimeout(() => {
+					if(this.clickCount == 1) {
+						this.activeName = this.selectStart = name
+						let areaInfo = {
+							areacode: id,
+							areaname: name
+						}
+						this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
+					} else if(this.clickCount == 2) {
+						getSelect(id).then(res => {
+							this.subAreaData1 = res.data.slice(0, 8)
+							this.subAreaData2 = res.data.slice(8)
+						})
+						this.showThreeLevelMenu = true
+						this.showSubmenuMore = false
+						this.showThreeLevelMenuMore = false
+					}
+					this.clickCount = 0
+				}, 300)
+			},
 			handleArea(id, name) { // 二级点击时触发的事件
-				this.activeName = this.selectStart = name
-				let areaInfo = {
-					areacode: id,
-			    	areaname: name
-				}
-				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
-				getSelect(id).then(res => {
-					this.subAreaData1 = res.data.slice(0, 8)
-					this.subAreaData2 = res.data.slice(8)
-				})
-				this.showThreeLevelMenu = true
-				this.showSubmenuMore = false
-				this.showThreeLevelMenuMore = false
+				this.areaClickEvent(id, name)
 			},
 			handleSubArea(id, name) { // 三级菜单点击时触发的事件
-				this.activeName = this.selectStart = name
-				let areaInfo = {
-					areacode: id,
-			    areaname: name
-				}
-				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
+				this.areaClickEvent(id, name)
 			},
 			showSubMore() { // 显示二级菜单，隐藏三级菜单
 				this.showSubmenuMore = true
@@ -276,6 +282,9 @@
 		padding: 10px 0;
 		cursor: pointer;
 		color:#888;
+		-moz-user-select:none;
+      	-webkit-user-select: none;       
+      	-ms-user-select: none;     
 		.area-item {
 			display: block;
 		}

@@ -6,7 +6,7 @@ import {Loading} from 'element-ui'
 axios.interceptors.request.use(function(config) {
   let loading = Loading.service({
     fullscreen: true,
-    text: '拼命加载中...',
+    text: '加载中...',
     background: 'rgba(0, 0, 0, .8)'
   })
   return config

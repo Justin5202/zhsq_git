@@ -57,6 +57,9 @@ export default {
       }
     }
   },
+  created() {
+    this.handleCheckAllChange(true)
+  },
   computed: {
     ...mapGetters([
       'activeAreaInfoList',

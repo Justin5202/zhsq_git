@@ -41,7 +41,7 @@ export default {
 				container: data.container || 'map',
 				center: [106.57064820281084,29.55623360001735],
 				bearing: data.bearing,
-				zoom: data.zoom,
+				zoom: 10,
 				maxzoom: data.maxzoom || 18,
 				minzoom: data.minzoom || 0,
 				style: {

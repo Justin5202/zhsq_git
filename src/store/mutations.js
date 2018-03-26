@@ -321,6 +321,9 @@ const mutations = {
             state.activeAreaInfoList.splice(state.activeAreaInfoList.findIndex(v =>
                 v.id == data.id), 1, data)
         }
+    },
+    [TYPE.SET_MAP_JSON_AND_IMG](state, data) {
+        state.mapJsonAndImg = data
     }
 }
 

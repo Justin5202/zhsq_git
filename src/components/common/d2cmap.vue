@@ -78,6 +78,7 @@ export default {
 							dataArray.json['dt'] = res
 							if(sum == length){
 								this.loadThisMap(dataArray)
+								this.setNewMapJsonAndImg(dataArray)
 							}
 						})
 						break
@@ -87,6 +88,7 @@ export default {
 							dataArray.json['img'] = res
 							if(sum == length){
 								this.loadThisMap(dataArray)
+								this.setNewMapJsonAndImg(dataArray)
 							}
 						})
 						break
@@ -96,6 +98,7 @@ export default {
 							dataArray.json['dem'] = res
 							if(sum == length){
 								this.loadThisMap(dataArray)
+								this.setNewMapJsonAndImg(dataArray)
 							}
 						})
 						break
@@ -105,6 +108,7 @@ export default {
 							dataArray.json['img_HQ'] = res
 							if(sum == length){
 								this.loadThisMap(dataArray)
+								this.setNewMapJsonAndImg(dataArray)
 							}
 						})
 						break
@@ -114,8 +118,6 @@ export default {
 		},
 		//加载地图
 		loadThisMap(data){
-			console.log(data)
-			this.setNewMapJsonAndImg(data)
 			window.d2cMap = this.$mapHelper.initMap(this.getConfig(data.json['dt']));
 			this.$mapHelper.initImageAndDemMap(this.getLayerAndSourceFromOption(data.json['img']),this.getLayerAndSourceFromOption(data.json['dem']),this.getLayerAndSourceFromOption(data.json['img_HQ']));
 			window.addEventListener('resize', this.resize);

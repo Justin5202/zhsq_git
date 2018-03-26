@@ -444,7 +444,7 @@
 							.unit-icon {
 								background: url('../../../assets/images/catalog/社会经济@2x.png') no-repeat;
 								background-size: 100%;
-							},
+							}
 							.ly-icon {
 								background: url('../../../assets/images/catalog/ly@2x.png') no-repeat;
 								background-size: 100%;

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
+import { mapGetters,mapActions} from "vuex"
 import { getMorePic, getMsMacroData, getProvertyInfo } from "@/api/datasheets"
 
 export default {
@@ -61,12 +61,20 @@ export default {
       })
     },
     checkDetail() {
+      this.getAreaPovertyAlleviationDetailByAreaCode({'mc':this.name,'areaCode':this.areacode,'id':this.mapguid})
+			this.setReportFormShow(false)
+			this.setAreaReportFormShow(true)
     },
     _getProvertyInfo(code, id) {
       getProvertyInfo(code, id).then(res => {
         this.result = res.data
       })
-    }
+    },
+    ...mapActions([
+			'getAreaPovertyAlleviationDetailByAreaCode',
+			'setReportFormShow',
+			'setAreaReportFormShow'
+    ]),
   }
 }
 </script>

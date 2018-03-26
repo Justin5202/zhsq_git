@@ -362,6 +362,7 @@ export const addTourismLayer = function ({ commit, state }, type) {
 
 // 获取扶贫专题数据
 export const getProvertyData = function ({ commit, state }, {type, start}) {
+    console.log(type, start)
     getProvertyTopic(start).then(res => {
         let data = {
             type: type,

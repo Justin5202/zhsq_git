@@ -189,11 +189,11 @@ export function getRightProvertyData() {
     })
 }
 
-export function getProvertyInfo() {
+export function getProvertyInfo(code, id) {
     const data = Object.assign({}, {
         method: 'getPovertyAlleviationInfo',
-        areacode: 0,
-        dataId: 10
+        areacode: code,
+        dataId: id
     })
     return axios.post(url, qs.stringify(data)).then(res => {
         return Promise.resolve(res.data)

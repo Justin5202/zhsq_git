@@ -220,7 +220,7 @@ const mutations = {
                     areainfo.areacode)
                 mapHelper.removeLayerById(areainfo.areacode.toString())
                 /*图层过滤*/
-                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList)
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             } else {
                 temp.push(areainfo)
                 /*更新选中区域areacode列表*/
@@ -236,7 +236,7 @@ const mutations = {
                     mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid)
                     /*图层过滤*/
                     console.log(state.layerIdList, state.areaCodeList)
-                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerlayerIdList, state.areaCodeList)
+                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 }
             }
         } else {
@@ -245,7 +245,7 @@ const mutations = {
                 mapHelper.removeLayerById(v.areacode.toString())
             })
             /*图层过滤*/
-            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.idList, state.areaCodeList = [])
+            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             state.areaList = []
         }
     },

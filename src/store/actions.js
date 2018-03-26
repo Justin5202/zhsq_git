@@ -146,22 +146,24 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
             temp = checkData(cur, commit, first)
         } else if (yu === 2) { // yu为2，仅有统计数据，加载统计数据
             console.log('仅有统计数据，加载统计数据')
-            cur.isActive = true
-            if (first && cur.children.length > 0) {
-                cur.isActive = false
-                cur.children.map(v => {
-                    v.isActive = false
-                })
+            if (first) {
+                cur.isActive = true
             } else {
-                cur.isActive = false
-                    // commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+                cur.isActive = !cur.isActive
             }
+            commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
             temp = cur
         } else if (yu === 3) { // yu为3，有空间数据和统计数据，优先加载空间数据
             console.log('有空间数据和统计数据，优先加载空间数据')
             temp = checkData(cur, commit, first)
         } else if (yu === 4) { // yu为4，仅有文本数据，即加载文本数据
             console.log('仅有文本数据，即加载文本数据')
+            if (first) {
+                cur.isActive = true
+            } else {
+                cur.isActive = !cur.isActive
+            }
+            commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
             temp = cur
         } else if (yu === 5) { // yu为5，有文本数据和空间数据，优先加载空间数据
             console.log('有文本数据和空间数据，优先加载空间数据')

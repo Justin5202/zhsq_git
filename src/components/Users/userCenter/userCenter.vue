@@ -161,13 +161,13 @@ export default {
       }
     }
     .left-side {
+      // animation: fadeIn 1s  alternate-reverse;
       box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
       border-radius: 4px;
-      height: 800px;
-      width: 900px;
+      height: 700px;
+      width: 350px;
       position: absolute;
-      right: 100%;
-      margin-right: 10px;
+      right: 0;
       top: 0;
       background-color: #fff;
       header {
@@ -194,8 +194,17 @@ export default {
         }
       }
       .container {
-        height: 720px;
+        height: 620px;
       }
+    }
+  }
+
+  @keyframes fadeIn {
+    to {
+      left: 100%
+    }
+    from {
+      left: 0;
     }
   }
 </style>

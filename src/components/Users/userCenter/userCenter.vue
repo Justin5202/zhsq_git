@@ -1,33 +1,36 @@
 <template>
-  <div class="user-center">
-    <!-- <span class="triangle-top"></span> -->
-    <el-container>
-      <el-header>
-        <h2 class="title"><img src="../../../assets/images/head.jpg"/>个人中心</h2>
-      </el-header>
-      <el-main>
-        <ul class="menu">
-          <li class="menu-item" v-for="(item, index) in tabs" :key="index" @click="setCurrent(item.name,index)">
-            {{item.name}}
-          </li>
-        </ul>
-      </el-main>
-      <el-footer>
-        <p class="back" @click="closeCenter">返回</p>        
-        <p class="out" @click="logout">退出登录</p>
-      </el-footer>
-    </el-container>
-    <div class="left-side" v-show="showPanel">
-      <header>
-        <h2 class="title"><span class="close" @click="closePanel">关闭</span>{{currentTab}}</h2>
-      </header>
-      <div class="container">
-        <v-my-message :data="datalist" v-if="currentIndex === 0"/>
-        <v-feedback v-else-if="currentIndex === 1"/>
-        <v-contact v-else-if="currentIndex === 2"/>
-      </div>
+  <transition name="fade">
+    <div class="user-center">
+      <el-container>
+        <el-header>
+          <h2 class="title"><img src="../../../assets/images/head.jpg"/>个人中心</h2>
+        </el-header>
+        <el-main>
+          <ul class="menu">
+            <li class="menu-item" v-for="(item, index) in tabs" :key="index" @click="setCurrent(item.name,index)">
+              {{item.name}}
+            </li>
+          </ul>
+        </el-main>
+        <el-footer>
+          <p class="back" @click="closeCenter">返回</p>        
+          <p class="out" @click="logout">退出登录</p>
+        </el-footer>
+      </el-container>
+      <transition name="move">
+        <div class="left-side" v-show="showPanel">
+          <header>
+            <h2 class="title"><span class="close" @click="closePanel">关闭</span>{{currentTab}}</h2>
+          </header>
+          <div class="container">
+            <v-my-message :data="datalist" v-if="currentIndex === 0"/>
+            <v-feedback v-else-if="currentIndex === 1"/>
+            <v-contact v-else-if="currentIndex === 2"/>
+          </div>
+        </div>
+      </transition>
     </div>
-  </div>
+  </transition>
 </template>
 <script>
 import vMyMessage from '@/components/users/userCenter/children/myMessage'
@@ -96,7 +99,7 @@ export default {
 <style lang="scss" scoped>
   .user-center {
     height: 398px;
-    width: 300px;
+    width: 350px;
     position: fixed;
     right: 10px;
     top: 15px;
@@ -134,8 +137,8 @@ export default {
         font-size: 14px;
         .menu-item {
           padding-left: 14px;
-          height: 40px;
-          line-height: 40px;
+          height: 50px;
+          line-height: 50px;
           border-bottom: 1px solid #e0e0e0;
           box-sizing: border-box;
           cursor: pointer;
@@ -161,7 +164,6 @@ export default {
       }
     }
     .left-side {
-      // animation: fadeIn 1s  alternate-reverse;
       box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
       border-radius: 4px;
       height: 700px;
@@ -199,12 +201,50 @@ export default {
     }
   }
 
-  @keyframes fadeIn {
-    to {
-      left: 100%
+  .move-enter-active {
+    animation: moveIn 0.3s linear;
+  }
+  .move-leave-active {
+    animation: moveOut 0.3s linear;
+  }
+  @keyframes moveIn {
+     from {
+      right: -100%;
     }
+    to {
+      right: 0;
+    }
+  }
+  @keyframes moveOut {
     from {
-      left: 0;
+      right: 0;
+    }
+    to {
+      right: -100%;
+    }
+    
+  }
+
+  .fade-enter-active {
+    animation: fadeIn 0.3s linear;
+  }
+  .fade-leave-active {
+    animation: fadeOut 0.3s linear;
+  }
+  @keyframes fadeIn {
+    from {
+      right: -350px;
+    }
+    to {
+      right: 15px;
+    }
+  }
+  @keyframes fadeOut {
+    from {
+      right: 15px;
+    }
+    to {
+      right: -350px;
     }
   }
 </style>

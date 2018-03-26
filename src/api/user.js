@@ -64,21 +64,43 @@ export function register(option) { // 注册
     method: 'register',
     arLoginname: option.phoneNum,
     arTruename: option.truename,
-    arPassword: MD5(option.password),
-    arMobiole: option.phoneNum,
+    arPassword: option.password,
+    arMobile: option.phoneNum,
     arBranch: option.branchId,
     arAreacode: option.areacode,
     checkCode: option.checkNum
   })
-
   return axios.post(url, qs.stringify(data)).then(res => {
     return Promise.resolve(res.data)
   })
 
 }
 
-export function getRegisterInfo() {
-  return axios.get(url+'?method=getRegisterInfo').then(res => {
+export function getRegisterInfo() { // 获取部门、区县列表
+  let data = Object.assign({}, commonParams, {
+    method: 'getRegisterInfo'
+  })
+  let params = ''
+  for (let key in data) {
+    params += `${key}=${data[key]}&`
+  }
+  params = params.substring(0, params.length - 1)
+  return axios.get(`${url}?${params}`).then(res => {
+    return Promise.resolve(res.data)
+  })
+}
+
+export function getCheckCode(phone) { // 获取验证码
+  let data = Object.assign({}, commonParams, {
+    method: 'getCheckCode',
+    phone: phone
+  })
+  let params = ''
+  for (let key in data) {
+    params += `${key}=${data[key]}&`
+  }
+  params = params.substring(0, params.length - 1)
+  return axios.get(`${url}?${params}`).then(res => {
     return Promise.resolve(res.data)
   })
 }

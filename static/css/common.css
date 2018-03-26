@@ -215,6 +215,7 @@ input[type="checkbox"]:checked:after {
   background-color: rgba(0, 0, 0, 0) !important;
 }
 .el-loading-spinner {
+  padding-top: 10px;
   height: 80px !important;
   width: 100px !important;
   border-radius: 4px;

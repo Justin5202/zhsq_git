@@ -158,7 +158,7 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
         } else if (yu === 4) { // yu为4，仅有文本数据，即加载文本数据
             console.log('仅有文本数据，即加载文本数据')
             if (first) {
-                cur.isActive = true
+                cur.isActive = false
             } else {
                 cur.isActive = !cur.isActive
             }
@@ -172,9 +172,9 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
         console.log('即为图层，加载图层')
         temp = checkData(cur, commit, first)
     } else if (type === 3) { // type为3，即为网页，记载网页
-
+        console.log('即为网页，加载网页')
     } else if (type === 4) { // type为4，即为720图片
-
+        console.log('为720图片')
     }
 }
 
@@ -336,8 +336,9 @@ export const addTourismLayer = function({ commit, state }, type) {
 }
 
 // 获取扶贫专题数据
-export const getProvertyData = function({ commit, state }, type) {
-    getProvertyTopic().then(res => {
+export const getProvertyData = function({ commit, state }, { type, start }) {
+    console.log(type, start)
+    getProvertyTopic(start).then(res => {
         let data = {
             type: type,
             list: res.data.data

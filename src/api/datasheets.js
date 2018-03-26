@@ -151,10 +151,11 @@ export function getTourismTopic() {
 }
 
 // 扶贫专题
-export function getProvertyTopic() {
+export function getProvertyTopic(start) {
+    let s = start || 0
     const data = Object.assign({}, {
         method: 'getPovertyAlleviation',
-        start: 0,
+        start: s,
         rows: 10
     })
     return axios.post(url, qs.stringify(data)).then(res => {
@@ -188,11 +189,11 @@ export function getRightProvertyData() {
     })
 }
 
-export function getProvertyInfo() {
+export function getProvertyInfo(code, id) {
     const data = Object.assign({}, {
         method: 'getPovertyAlleviationInfo',
-        areacode: 0,
-        dataId: 10
+        areacode: code,
+        dataId: id
     })
     return axios.post(url, qs.stringify(data)).then(res => {
         return Promise.resolve(res.data)

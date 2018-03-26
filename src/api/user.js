@@ -58,3 +58,27 @@ export function getSuggestList(start) { // 获取反馈历史
     return Promise.resolve(res.data)
   })
 }
+
+export function register(option) { // 注册
+  let data = Object.assign({}, commonParams, {
+    method: 'register',
+    arLoginname: option.phoneNum,
+    arTruename: option.truename,
+    arPassword: MD5(option.password),
+    arMobiole: option.phoneNum,
+    arBranch: option.branchId,
+    arAreacode: option.areacode,
+    checkCode: option.checkNum
+  })
+
+  return axios.post(url, qs.stringify(data)).then(res => {
+    return Promise.resolve(res.data)
+  })
+
+}
+
+export function getRegisterInfo() {
+  return axios.get(url+'?method=getRegisterInfo').then(res => {
+    return Promise.resolve(res.data)
+  })
+}

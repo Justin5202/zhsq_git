@@ -264,7 +264,7 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-end;
-    .tool-box{
+    .tool-box {
       position: relative;
     }
     .tool-item {

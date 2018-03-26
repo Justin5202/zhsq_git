@@ -23,7 +23,7 @@
       list-style: none;
       .list-item {
         text-align: left;
-        padding: 40px 50px;
+        padding: 20px 10px;
         border-bottom:1px solid lightgrey;
         color: #000;
         font-size: 18px;

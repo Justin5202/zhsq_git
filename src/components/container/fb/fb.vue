@@ -114,7 +114,8 @@
 					this.rightShow = false
 					this.nextList = []
 					let type = 'fp'
-					this.getProvertyData(type)
+					let start = this.page * 10
+					this.getProvertyData({'type': type, 'start': start})
 				} else {
 					this.rightShow = true
 					this._getRightProvertyData()
@@ -135,14 +136,14 @@
 			},
 			next() {
 				this.page += 1
-				this.getType()
+				this.getProvertyType(0)
 			},
 			prev() {
 				if(this.page === 1) {
 					return
 				}
 				this.page -= 1
-				this.getType()
+				this.getProvertyType(0)
 			},
 			_getRightProvertyData() {
 				getRightProvertyData().then(res => {

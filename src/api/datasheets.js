@@ -268,3 +268,13 @@ export function getNewMapJson(url) {
         return Promise.resolve(res.data)
     })
 }
+
+//搜周边列表
+export function getHotAround() {
+    const data = Object.assign({}, commonParams, {
+        method: 'getHotAround'
+    })
+    return axios.post(url, qs.stringify(data)).then(res => {
+        return Promise.resolve(res.data)
+    })
+}

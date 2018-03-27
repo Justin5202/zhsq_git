@@ -10,7 +10,12 @@
           </div>
           <div class="el-form-item">
             <span class="icon icon-password"></span>
-            <input class="el-input" type="password" v-model="form.password" placeholder="请输入密码">
+            <input 
+            class="el-input" 
+            type="password" 
+            v-model="form.password" 
+            placeholder="请输入密码"
+            @keyup.enter="_login(form.username, form.password)">
           </div>
           <div class="btn-box">
             <el-button type="primary" @click="_login(form.username, form.password)">登录</el-button>
@@ -41,6 +46,9 @@ export default {
       }
     }
   },
+  destroyed() {
+    window.location.reload()
+  },
   methods: {
     _login(username, password) {
       if (username === '') {
@@ -63,6 +71,11 @@ export default {
           this.setUserinfo(res.data)
           document.cookie = 'loginSession' + "=" + escape(res.data.sessionId)
           this.$router.replace('/')
+        } else if (res.code === '4') {
+          this.$message({
+            message: '用户名或密码错误',
+            type: 'error'
+          })
         }
       })
     },

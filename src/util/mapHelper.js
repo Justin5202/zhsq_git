@@ -257,7 +257,7 @@ const _onClick = function (e) {
         if (features.length > 0) {
             let feature = features[0];
             // 判断是否有蒙版 有取第二个 feature
-            if (feature.layer["id"] == "dbsj_xzqhhgldy_qy_py_mb" || feature.layer["id"] == "img_dbsj_xzqhhgldy_qy_py_mb" || feature.layer["id"] == "HQ_img_dbsj_xzqhhgldy_qy_py_mb" ) {
+            if (feature.layer["id"] == "dbsj_xzqhhgldy_qy_py_mb" || feature.layer["id"] == "img_dbsj_xzqhhgldy_qy_py_mb" || feature.layer["id"] == "HQ_img_dbsj_xzqhhgldy_qy_py_mb") {
                 feature = features[1];
             }
 
@@ -578,7 +578,7 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                 // 判断是否要 加载天地图
                 _containRelationshipCallback();
                 _setMBVisibility();
-                
+
             })
     }
 
@@ -1018,7 +1018,7 @@ const addLayerByCodeAndJson = function (code, json) {
             });
 
         /* 闪烁*/
-        
+
         setTimeout(() => {
             for (let i = 1; i < 5; i++) {
                 setTimeout(function () {
@@ -1363,21 +1363,21 @@ const setMarksToMap = function (layerId, geoPointArray, _mapguidArray, icon, ico
  * @param 坐标 （数组）， _mapguid
  * @returns null
  */
-const setPopupToMap = function (geoPoint, _mapguid) {
+const setPopupToMap = function (_geoPoint, _mapguid) {
     closePopup();
     infoPopup = new window
         .d2c
         .Popup({closeButton: false})
-        .setLngLat(geoPoint)
+        .setLngLat(_geoPoint)
         .setHTML("<div id = 'infoPopup'></div>")
         .addTo(map);
     infoPopup_vm = new Vue({
         el: '#infoPopup',
         store,
         router,
-        template: '<v-infoPopup :mapguid="mapguid"/>',
+        template: '<v-infoPopup :mapguid="mapguid" :geoPoint="geoPoint"/>',
         data: function () {
-            return {mapguid: _mapguid}
+            return {mapguid: _mapguid, geoPoint: _geoPoint}
         },
         components: {
             'v-infoPopup': infoPopupVm

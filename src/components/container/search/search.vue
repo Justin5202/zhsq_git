@@ -112,8 +112,14 @@
 		computed: {
 			...mapGetters([
 				'areaList',
-				'areaInfo'
+				'areaInfo',
+				'searchParams'
 			])
+		},
+		watch: {
+			searchParams(newV, oldV) {
+				this.searchContent = newV.name
+			}
 		},
 		methods: {
 			select() {
@@ -123,8 +129,6 @@
 				if(this.searchContent === '') {
 					return
 				}
-				start = start || '重庆市'
-				code = code || '500000'
 				const params = {
 					name: this.searchContent,
 					start: 0,

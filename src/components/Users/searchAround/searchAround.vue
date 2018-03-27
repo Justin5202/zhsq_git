@@ -6,7 +6,8 @@
           <p class="back" @click="goback"><i class="el-icon-arrow-left"></i><span>周边搜索</span></p>
           <div class="search">
             <div class="el-input">
-              <span class="icon"></span><input type="text" v-model="searchContent" placeholder="搜地点、查数据"/>
+              <input type="text" v-model="searchContent" placeholder="搜地点、查数据" @keyup.enter="search"/>
+              <span class="icon" @click="search"></span>
             </div>
             <span class="count">数据总量:29,821,105条</span>
           </div>
@@ -19,17 +20,10 @@
           </p>
           <div class="list-box">
             <ul class="list">
-              <li class="list-item" v-for="index in 6" >
-                <p class="list-item-title" :style="{color: colors[index]}">交通设施</p>
+              <li class="list-item" v-for="(item, index) in list" >
+                <p class="list-item-title" :style="{color: colors[index]}">{{item.name}}</p>
                 <ul class="sublist">
-                  <li>机场</li>
-                  <li>医院</li>
-                  <li>文化</li>
-                  <li>教育</li>
-                  <li>福利</li>
-                  <li>殡葬</li>
-                  <li>宗教</li>
-                  <li>应急避难</li>
+                  <li v-for="i in item.children" @click="getSearch(i)">{{i.name}}</li>
                 </ul>
               </li>
             </ul>
@@ -41,37 +35,82 @@
 </template>
 <script>
   import {mapActions} from 'vuex'
+  import {getHotAround} from '@/api/datasheets'
 
   export default {
     name: 'search-around',
     data() {
       return {
+        list: [],
         searchContent: '',
-        colors: ['#FF9999','#FF6666','#993333','#999933','#99CC00','#FF9900','#336699']
+        colors: ['#FF9999','#FF6666','#993333','#999933','#99CC00','#FF9900','#336699','#FF6666','#993333']
       }
+    },
+    mounted() {
+      this._getHotAround()
     },
     methods: {
       goback() {
         this.setAroundSearchShow(false)
       },
+      search() {
+        if(this.searchContent === '') {
+					return
+				}
+				const params = {
+					name: this.searchContent,
+					start: 0,
+					rows: 10,
+					type: 1,
+					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
+				}
+        this.getSearchParams({'typeParams': {}, 'params': params})
+        this.searchPaneShow(true)
+				this.tablePaneShow(false)
+        this.setTopicShow(false)
+        this.setAroundSearchShow(false)
+      },
+      getSearch(item) {
+				const params = {
+					name: item.name,
+					start: 0,
+					rows: 10,
+					type: 1,
+					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
+				}
+        this.getSearchParams({'typeParams': {}, 'params': params})
+        this.searchPaneShow(true)
+				this.tablePaneShow(false)
+        this.setTopicShow(false)
+        this.setAroundSearchShow(false)
+      },
+      _getHotAround() {
+        getHotAround().then(res => {
+          this.list = res.data
+        })
+      },
       ...mapActions([
-        'setAroundSearchShow'
+        'setAroundSearchShow',
+        'getSearchParams',
+        'searchPaneShow',
+        'tablePaneShow',
+        'setTopicShow'
       ])
     }
   }
 </script>
 <style lang="scss" scoped>
   ::-webkit-input-placeholder {
-    color: #fff;
+    color: rgb(199, 190, 190);
   }
   :-moz-placeholder {
-    color: #fff;
+    color: rgb(199, 190, 190);
   }
   ::-moz-placeholder {
-    color: #fff;
+    color: rgb(199, 190, 190);
   }
   :-ms-input-placeholder {
-    color: #fff;
+    color: rgb(199, 190, 190);
   }
   .search-around {
     height: 100%;
@@ -102,10 +141,11 @@
             .el-input {
               height: 40px;
               width: 240px;
-              margin: 20px 0 0 40px;
+              margin: 20px 0 5px 40px;
               border-bottom: 1px solid rgb(168, 167, 167);
               display: flex;
               justify-content: flex-start;
+              box-sizing: border-box;
               .icon {
                 display: inline-block;
                 width: 20px;
@@ -128,7 +168,7 @@
             }
             .count {
               color: #fff;
-              padding: 0 40px;
+              padding: 0 40px 5px 40px;
               align-self: flex-end;
             }
           }
@@ -182,27 +222,26 @@
               width: 100%;
               justify-content: space-between;
               .list-item {
-                width: 50%;
+                width: 49%;
                 margin-bottom: 40px;
                 display: flex;
+                justify-content: flex-start;
                 p {
-                  width: 66px;
-                  margin-right: 40px;
+                  width: 77px;
+                  margin-right: 30px;
                 }
                 .sublist {
                   display: flex;
                   flex-wrap: wrap;
-                  justify-content: space-between;
+                  justify-content: flex-start;
+                  width: 80%;
                   li {
                     cursor: pointer;
-                    width: 20%;
+                    width: 25%;
                     text-align: left;
-                    margin: 0 5px 30px 0;
+                    margin: 0 0 10px 0;
                   }
                 }
-              }
-              .list-item:nth-of-type(even) {
-                justify-content: flex-end;
               }
             }
           }

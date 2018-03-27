@@ -10,7 +10,12 @@
           </div>
           <div class="el-form-item">
             <span class="icon icon-password"></span>
-            <input class="el-input" type="password" v-model="form.password" placeholder="请输入密码">
+            <input 
+            class="el-input" 
+            type="password" 
+            v-model="form.password" 
+            placeholder="请输入密码"
+            @keyup.enter="_login(form.username, form.password)">
           </div>
           <div class="btn-box">
             <el-button type="primary" @click="_login(form.username, form.password)">登录</el-button>

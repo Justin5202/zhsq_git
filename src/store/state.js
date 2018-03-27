@@ -10,7 +10,7 @@ const state = {
     tableMenuPaneShow: true,
     areaInfo: {
         areacode: 500000,
-        areaname: '重庆'
+        areaname: '重庆市'
     },
     secAreaList: [],
     areaDetailInfo: '',

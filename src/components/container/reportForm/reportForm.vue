@@ -57,7 +57,12 @@
       </table>
       <div class="table-tab-context" v-if="areaReportFormShow">
           <!-- 展示html字符串 -->
-          <div v-html="item" v-show="reportFormData.data.dataType[index] == 'string'&& activeTab == index" class="html-string" v-for="(item,index) in reportFormData.data.dataContex"></div>
+          <div 
+            v-html="item" 
+            v-if="reportFormData.data && reportFormData.data.dataType[index] == 'string' && activeTab == index" 
+            class="html-string" 
+            v-for="(item,index) in reportFormData.data.dataContex">
+          </div>
           <!-- 展示html页面 -->
           <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'html'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
           <!-- 展示pdf -->

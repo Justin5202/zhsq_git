@@ -1,7 +1,7 @@
 <template>
 	<div class="search">
 	  	<el-input placeholder="搜地点、查数据" v-model="searchContent" @focus="showSearchPane()" class="input-with-select">
-				<el-button slot="prepend" @click="showBox()">{{activeName}}<i class="el-icon-arrow-down"></i></el-button>
+			<el-button slot="prepend" @click="showBox()">{{areaInfo.areaname}}<i class="el-icon-arrow-down"></i></el-button>
 	    	<el-button slot="append" icon="el-icon-search" @click="clickSearch(selectStart, selectCode)"></el-button>
 	  	</el-input>
 			<div class="select-box" v-show="showSelectBox">
@@ -72,7 +72,6 @@
 					{name: '区县', code: '501002'}
 				],
 				activeIndex: 0,
-				activeName: '重庆市',
 				showSelectBox: false,
 				showSubmenu: false, // 是否显示二级菜单
 				showSubmenuMore: false, // 是否显示二级菜单“更多...”
@@ -87,7 +86,8 @@
 		},
 		computed: {
 			...mapGetters([
-				'areaList'
+				'areaList',
+				'areaInfo'
 			])
 		},
 		methods: {
@@ -144,7 +144,7 @@
 			},
 			handleClick(index, areaname, areacode) { // 一级菜单点击时触发的事件
 				this.setActive(index)
-				this.activeName = this.selectStart = areaname
+				this.selectStart = areaname
 				this.selectCode = areacode
 				let areaInfo = {
 					areacode: areacode,
@@ -166,7 +166,7 @@
 				this.clickCount += 1
 				setTimeout(() => {
 					if(this.clickCount == 1) {
-						this.activeName = this.selectStart = name
+						this.selectStart = name
 						let areaInfo = {
 							areacode: id,
 							areaname: name

@@ -161,7 +161,7 @@ export default {
 .child-table-content {
   //max-height: 635px;
   background-color: #fff;
-  overflow-y: scroll;
+  overflow-y: auto;
   .child-table-content-li {
     display: flex;
     padding: 10px 0 5px;

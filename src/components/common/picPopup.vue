@@ -41,7 +41,7 @@ export default {
       return temp
     },
     thumb2() {
-      if(this.areacode && this.mapguid) {
+      if(this.areacode && this.mapguid && this.result) {
         return `http://zhsq.digitalcq.com/cqzhsqd2c_v2_test${this.result.filePath}${this.result.thumbnail}`
       }
     }
@@ -71,6 +71,9 @@ export default {
     _getProvertyInfo(code, id) {
       getProvertyInfo(code, id).then(res => {
         this.result = res.data
+        if(!res.data) {
+          this.checkDetail()
+        }
       })
     },
     ...mapActions([

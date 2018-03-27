@@ -2,18 +2,12 @@
 	<div id="map" ref="map" :style="style" class="wh100"></div>
 </template>
 <script>
-import dt from './config/dt'
-import dem from './config/dem'
-import img from './config/img'
-import infoTemp from '../page/testPage'
+
 import Vue from 'vue'
 import {mapGetters,mapActions} from 'vuex'
 import {getNewMapConfig,getNewMapJson} from '@/api/dataSheets'
 export default {
 	name: 'd2cmap',
-	props: [
-		'option',
-	],
 	data() {
 		return {
 			style: {
@@ -35,9 +29,9 @@ export default {
 		getConfig(data) {
 			return {
 				container: data.container || 'map',
-				center: [106.57064820281084,29.55623360001735],
+				center: [106.54421663106075,29.56028988250158],
 				bearing: data.bearing,
-				zoom: 10,
+				zoom: 13,
 				maxzoom: data.maxzoom || 18,
 				minzoom: data.minzoom || 0,
 				style: {

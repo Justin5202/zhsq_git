@@ -54,6 +54,7 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         AreaCodeAndDataId.push(codeList.substring(1))
         AreaCodeAndDataId.push(idList.substring(1))
         AreaCodeAndDataId.push(itemList)
+        console.log(itemList)
         return AreaCodeAndDataId
     }
     //获取报表详情
@@ -135,8 +136,44 @@ export const getReportDataByAreaCodeInJS = function(data) {
                 var dataArray = { 'title': title, 'name': [], 'data': { dataContex: [], dataType: [] } }
                 for (var i in res.data) {
                     dataArray.name.push(res.data[i].name)
-                    dataArray.data.dataContex.push(res.data[i].data)
-                    dataArray.data.dataType.push('string')
+                    if (res.data[i].type == 1) {
+                        dataArray.data.dataContex.push(res.data[i].data)
+                        dataArray.data.dataType.push('string')
+                    } else if (res.data[i].type == 2) {
+                        var filePath = 'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test/serviceMap/zip/' + res.data[i].data.dataDesc
+                        var fileName = res.data[i].data.dataDesc.split('.')[0]
+                        var htm = fileName + '.' + 'htm'
+                        var html = fileName + '.' + 'html'
+                        var pdf = fileName + '.' + 'pdf'
+                        var promise = new JSZip.external.Promise(function(resolve, reject) {
+                            JSZipUtils.getBinaryContent(filePath, function(err, data) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    resolve(data);
+                                }
+                            })
+                        })
+                        promise.then(JSZip.loadAsync)
+                            .then(function(zip) {
+                                if (zip.file(htm)) {
+                                    dataArray.data.dataType.push('html')
+                                    return zip.file(htm).async("base64")
+                                } else if (zip.file(html)) {
+                                    dataArray.data.dataType.push('html')
+                                    return zip.file(html).async("base64")
+                                } else if (zip.file(pdf)) {
+                                    dataArray.data.dataType.push('pdf')
+                                    return zip.file(pdf).async("base64")
+                                }
+                            })
+                            .then(function success(text) {
+                                dataArray.data.dataContex.push(text)
+                                resolve(dataArray)
+                            }, function error(e) {
+                                console.log(e)
+                            })
+                    }
                 }
                 resolve(dataArray)
             })

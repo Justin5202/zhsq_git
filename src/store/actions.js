@@ -438,16 +438,20 @@ export const clearReport = function({ commit, state }, { key, data }) {
     }
     //根据报表类型，请求对应方法，针对areaCodeList改变时调用
 export const setFunByReportFormType = function({ dispatch, commit, state }) {
-    if (state.reportFormShow || state.areaReportFormShow) {
-        if (state.reportFormtype == 1) {
-            dispatch('setReportFormShow', true)
-        } else if (state.reportFormtype == 2) {
-            dispatch('setAreaReportFormShow', true)
-            dispatch('getDataFileByCodeAndId', {
-                areaCode: state.areaList,
-                dataId: state.areaCodeAndDataId.idList,
-                index: ''
-            })
+        if (state.reportFormShow || state.areaReportFormShow) {
+            if (state.reportFormtype == 1) {
+                dispatch('setReportFormShow', true)
+            } else if (state.reportFormtype == 2) {
+                dispatch('setAreaReportFormShow', true)
+                dispatch('getDataFileByCodeAndId', {
+                    areaCode: state.areaList,
+                    dataId: state.areaCodeAndDataId.idList,
+                    index: ''
+                })
+            }
         }
     }
+    //设置绘制面板的type
+export const setDrawPanelType = function({ commit, state }, type) {
+    commit(TYPE.SET_DRAW_PANEL_TYPE, type)
 }

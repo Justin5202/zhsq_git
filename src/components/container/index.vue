@@ -16,7 +16,6 @@
               <keep-alive>
                 <router-view v-if="$route.meta.keepAlive" class="router"/>
               </keep-alive>
-              <router-view v-if="!$route.meta.keepAlive" class="router"/>
             </el-col>
         </el-row>
       </div>

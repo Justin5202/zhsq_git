@@ -7,8 +7,8 @@ axios.defaults.timeout = 6000
 axios.interceptors.request.use(function (config) {
   let loading = Loading.service({
     fullscreen: true,
-    text: '加载中...',
-    background: 'rgba(0, 0, 0, .8)'
+    background: 'rgba(0, 0, 0, .6)',
+    spinner: 'icon-loading'
   })
   return config
 }, function (err) {

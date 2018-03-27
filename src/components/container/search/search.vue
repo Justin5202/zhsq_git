@@ -195,6 +195,7 @@
 				} else {
 					this.showSubmenuMore = false
 					this.showThreeLevelMenu = false
+					this.showFourthLevelMenu = false
 				}
 			},
 			areaClickEvent(id, name, parentId, level) {
@@ -237,6 +238,7 @@
 			showSubMore() { // 隐藏二级菜单，显示三级菜单
 				this.showSubmenuMore = true
 				this.showThreeLevelMenu = false
+				this.showFourthLevelMenu = false
 			},
 			showThreeLevelMore() { // 显示三级菜单更多
 				this.showThreeLevelMenuMore = true

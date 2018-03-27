@@ -1,7 +1,7 @@
 <template>
   <div>
       <img src="../../../assets/images/map/量算.png" width="60" height="60" alt="" @click="createMeasure()">
-      <div class="measure-box" v-show="measureBoxShow">
+      <div class="measure-box" v-if="drawPanelType == 'measure'">
           <div class="measure-num">{{measureNum}}</div>
           <div class="measure-type">
               <span class="measure-type-name measure-type-line " :class="{measureTypeActive:measureType == 'line'}" @click="changeMeasureType('line')">线</span>
@@ -20,19 +20,26 @@ import {mapGetters,mapActions} from 'Vuex'
 export default {
   data(){
       return{
-          measureBoxShow:false,
           measureType:"",
           Measure:{}
       }
   },
   computed:{
     ...mapGetters([
-      'measureNum'
+      'measureNum',
+      'drawPanelType'
     ])
+  },
+  watch:{
+      drawPanelType:function(val){
+        if(val != 'measure'){
+            this.clearMeasureResult()
+        }
+      }
   },
   methods:{
     createMeasure(){
-        this.measureBoxShow = true
+        this.setDrawPanelType('measure')
         this.$mapHelper.setIsMeasure(true)
         d2cMap.getCanvas().style.cursor = 'crosshair';
         this.changeMeasureType('line')
@@ -95,11 +102,12 @@ export default {
     quitMeasure(){
         this.clearMeasureResult()
         this.$mapHelper.setIsMeasure(false)
-        this.measureBoxShow = false
+        this.setDrawPanelType('unCheck')
         d2cMap.getCanvas().style.cursor = "";
     },
     ...mapActions([
-        'setMeasurNum'
+        'setMeasurNum',
+        'setDrawPanelType'
     ])
   }
 }

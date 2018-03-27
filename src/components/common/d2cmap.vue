@@ -18,9 +18,10 @@ export default {
 			}
 		}
 	},
-	created(){
+	mounted(){
 		this.getMapJsonAndImg()
 	},
+
 	methods: {
 		resize() {
 			window.d2cMap.resize()
@@ -31,7 +32,7 @@ export default {
 				container: data.container || 'map',
 				center: [106.54421663106075,29.56028988250158],
 				bearing: data.bearing,
-				zoom: 13,
+				zoom: 10,
 				maxzoom: data.maxzoom || 18,
 				minzoom: data.minzoom || 0,
 				style: {

@@ -114,14 +114,16 @@
   }
   .search-around {
     height: 100%;
+    width: 800px;
     text-align: left;
+    border-radius: 4px;
     .el-container {
       height: 100%;
       .el-header {
         height: 15% !important;
         padding: 0;
         .wrap {
-          width: 1024px;
+          width: 100%;
           height: 100%;
           background: url('../../../assets/images/catalog/综合市情系统.jpg') no-repeat;
           background-size: 100% 100%;
@@ -179,7 +181,7 @@
         height:85%;
         background-color: rgb(233, 229, 229);
         .wrap {
-          width: 1024px;
+          width: 800px;
           height: 95%;
           box-sizing: border-box;
           background: #fff;
@@ -227,8 +229,9 @@
                 display: flex;
                 justify-content: flex-start;
                 p {
+                  font-size: 15px;
                   width: 77px;
-                  margin-right: 30px;
+                  margin-right: 20px;
                 }
                 .sublist {
                   display: flex;
@@ -236,6 +239,7 @@
                   justify-content: flex-start;
                   width: 80%;
                   li {
+                    font-size: 14px;
                     cursor: pointer;
                     width: 25%;
                     text-align: left;

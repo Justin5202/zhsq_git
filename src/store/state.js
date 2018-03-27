@@ -10,7 +10,7 @@ const state = {
     tableMenuPaneShow: true,
     areaInfo: {
         areacode: 500000,
-        areaname: '重庆'
+        areaname: '重庆市'
     },
     secAreaList: [],
     areaDetailInfo: '',
@@ -44,7 +44,9 @@ const state = {
     userinfo: {},
     mapJsonAndImg: {},
     //报表类型（1.统计数据,2.文本数据）
-    reportFormtype: ''
+    reportFormtype: '',
+    urlpath: '',
+    layerControlShow: false
 }
 
 export default state

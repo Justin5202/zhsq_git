@@ -1,12 +1,12 @@
 <template>
   <div class="iframe">
-      <iframe :src="path" frameborder="0"></iframe>
-      <p @click="goBack"><span class="el-icon-arrow-left"></span>返回</p>
+      <iframe :src="urlpath ? urlpath : path" frameborder="0"></iframe>
   </div>
 </template>
 
 <script>
 import {getProvertyInfo} from '@/api/datasheets'
+import {mapGetters} from 'vuex'
 
 export default {
     data() {
@@ -14,10 +14,17 @@ export default {
             path: ''
         }
     },
+    computed: {
+        ...mapGetters([
+            'urlpath'
+        ])
+    },
     created() {
         let areacode = this.$route.params.code
         let dataId = this.$route.params.id
-        this._getProvertyInfo(areacode, dataId)
+        if(areacode !== dataId) {
+            this._getProvertyInfo(areacode, dataId)
+        }
     },
     methods: {
         _getProvertyInfo(code, id) {
@@ -28,6 +35,9 @@ export default {
         goBack() {
             this.$router.go(-1)
         }
+    },
+    destroyed() {
+        this.$store.commit('SET_URL_PATH', '')
     }
 }
 </script>

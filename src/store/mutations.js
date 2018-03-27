@@ -247,6 +247,10 @@ const mutations = {
                 /*图层过滤*/
             mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             state.areaList = []
+            state.areaInfo = {
+                areacode: 500000,
+                areaname: '重庆市'
+            }
         }
     },
     [TYPE.SET_UUID_INFO](state, uuidClickedInfo) {
@@ -327,6 +331,12 @@ const mutations = {
     },
     [TYPE.SET_REPORT_FORM_TYPE](state, data) {
         state.reportFormtype = data
+    },
+    [TYPE.SET_URL_PATH](state, url) {
+        state.urlpath = url
+    },
+    [TYPE.SET_LAYER_CONTROL_SHOW](state, flag) {
+        state.layerControlShow = flag
     }
 }
 

@@ -22,3 +22,5 @@
   export const userinfo = state => state.userinfo
   export const mapJsonAndImg = state => state.mapJsonAndImg
   export const layerIdList = state => state.layerIdList
+  export const urlpath = state => state.urlpath
+  export const layerControlShow = state => state.layerControlShow

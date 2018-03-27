@@ -6,13 +6,12 @@
       <div
         class="child-title"
         :class="{active: areaInfoList[0].isActive}"
-        @click="isActiveItem(areaInfoList[0])"
       >
         <div class="arrow" v-if="areaInfoList[0].children.length > 0">
           <i class="arrow-icon" :class="{down: isClose}" @click="closeLiBox()"></i>
         </div>
         <div class="blank" v-else></div>
-        <div class="text">
+        <div class="text" @click="isActiveItem(areaInfoList[0])">
           <h2>{{areaInfoList[0].name}}</h2>
           <p v-if="areaInfoList[0].target.length!==0">{{areaInfoList[0].target[0].areaname}} {{areaInfoList[0].target[0].year}}</p>
           <p v-if="areaInfoList[0].target.length!==0">{{areaInfoList[0].target[0].cityTarget}}</p>
@@ -158,7 +157,7 @@ export default {
 .child-table-content {
   //max-height: 635px;
   background-color: #fff;
-  overflow-y: scroll;
+  overflow-y: auto;
   .child-table-content-li {
     display: flex;
     padding: 10px 0 5px;

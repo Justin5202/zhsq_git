@@ -1,7 +1,7 @@
 <template>
 	<div class="search">
 	  	<el-input placeholder="搜地点、查数据" v-model="searchContent" @focus="showSearchPane()" class="input-with-select">
-				<el-button slot="prepend" @click="showBox()">{{activeName}}<i class="el-icon-arrow-down"></i></el-button>
+			<el-button slot="prepend" @click="showBox()">{{areaInfo.areaname}}<i class="el-icon-arrow-down"></i></el-button>
 	    	<el-button slot="append" icon="el-icon-search" @click="clickSearch(selectStart, selectCode)"></el-button>
 	  	</el-input>
 			<div class="select-box" v-show="showSelectBox">
@@ -51,6 +51,27 @@
 						</li>
 					</ul>
 				</div>
+				<div class="fourth-level-menu" v-if="showFourthLevelMenu">
+					<p>社区村</p>
+					<ul class="areas">
+						<li 
+						v-for="item in subSubAreaData1" 
+						:class="{active: areaList.findIndex(v => v.areacode === item.areacode) >= 0}"
+						@click="handleFourthLevel(item.areacode, item.areaname)"
+						>
+							<span class="area-item">{{item.areaname}}</span>
+						</li>
+						<li v-if="!showFourthLevelMenuMore" @click="showFourthLevelMore()">更多...</li>
+						<li 
+						v-else 
+						v-for="item in subSubAreaData2"
+						:class="{active: areaList.findIndex(v => v.areacode === item.areacode) >= 0}"
+						@click="handleFourthLevel(item.areacode, item.areaname)"
+						>
+							<span class="area-item">{{item.areaname}}</span>
+						</li>
+					</ul>
+				</div>
 			</div>
 	</div>
 </template>
@@ -72,7 +93,6 @@
 					{name: '区县', code: '501002'}
 				],
 				activeIndex: 0,
-				activeName: '重庆市',
 				showSelectBox: false,
 				showSubmenu: false, // 是否显示二级菜单
 				showSubmenuMore: false, // 是否显示二级菜单“更多...”
@@ -82,12 +102,17 @@
 				subAreaData2: [],
 				showThreeLevelMenu: false, // 是否显示三级菜单
 				showThreeLevelMenuMore: false, // 是否显示三级菜单“更多...”
-				clickCount: 0
+				clickCount: 0,
+				subSubAreaData1:[],
+				subSubAreaData2: [],
+				showFourthLevelMenu: false,
+				showFourthLevelMenuMore: false
 			}
 		},
 		computed: {
 			...mapGetters([
-				'areaList'
+				'areaList',
+				'areaInfo'
 			])
 		},
 		methods: {
@@ -144,7 +169,7 @@
 			},
 			handleClick(index, areaname, areacode) { // 一级菜单点击时触发的事件
 				this.setActive(index)
-				this.activeName = this.selectStart = areaname
+				this.selectStart = areaname
 				this.selectCode = areacode
 				let areaInfo = {
 					areacode: areacode,
@@ -166,7 +191,7 @@
 				this.clickCount += 1
 				setTimeout(() => {
 					if(this.clickCount == 1) {
-						this.activeName = this.selectStart = name
+						this.selectStart = name
 						let areaInfo = {
 							areacode: id,
 							areaname: name
@@ -180,7 +205,7 @@
 						this.showThreeLevelMenu = true
 						this.showSubmenuMore = false
 						this.showThreeLevelMenuMore = false
-					}
+					} 
 					this.clickCount = 0
 				}, 300)
 			},
@@ -188,14 +213,44 @@
 				this.areaClickEvent(id, name)
 			},
 			handleSubArea(id, name) { // 三级菜单点击时触发的事件
-				this.areaClickEvent(id, name)
+				this.clickCount += 1
+				setTimeout(() => {
+					if(this.clickCount == 1) {
+						this.activeName = this.selectStart = name
+						let areaInfo = {
+							areacode: id,
+							areaname: name
+						}
+						this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
+					} else if(this.clickCount == 2) {
+						getSelect(id).then(res => {
+							this.subSubAreaData1 = res.data.slice(0, 8)
+							this.subSubAreaData2 = res.data.slice(8)
+						})
+						this.showFourthLevelMenu = true
+						this.showThreeLevelMenuMore = false
+						this.showFourthLevelMenuMore = false
+					} 
+					this.clickCount = 0
+				}, 300)
 			},
-			showSubMore() { // 显示二级菜单，隐藏三级菜单
+			showSubMore() { // 隐藏二级菜单，显示三级菜单
 				this.showSubmenuMore = true
 				this.showThreeLevelMenu = false
 			},
-			showThreeLevelMore() {
+			showThreeLevelMore() { // 显示三级菜单更多
 				this.showThreeLevelMenuMore = true
+			},
+			showFourthLevelMore() {
+				this.showFourthLevelMenuMore = true
+			},
+			handleFourthLevel(id, name) {
+				this.activeName = this.selectStart = name
+				let areaInfo = {
+					areacode: id,
+					areaname: name
+				}
+				this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
 			}
 		},
 	}
@@ -301,10 +356,11 @@
 			border-right: 1px solid lightgrey;
 		}
 	}
-	.three-level-menu p {
+	.three-level-menu p, .fourth-level-menu p {
 		color:#888;
 		font-size: 14px;
 		padding: 5px;
 		background-color: rgb(247, 244, 244);
 	}
+
 </style>

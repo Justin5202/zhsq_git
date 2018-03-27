@@ -11,6 +11,12 @@
         >{{item}}</button>
       </div>
       <ul :style="{maxHeight:fbHeight}">
+				<li 
+					class="search-pane-li" 
+					v-if="topicList.list.length===0&&nextList.length==0&&areaList.length==0"
+				>
+					<div class="search-pane-box">暂无数据</div>
+				</li>
         <li
           class="search-pane-li"
           v-for="item in topicList.list"
@@ -113,6 +119,7 @@
 				if(index ==0) {
 					this.rightShow = false
 					this.nextList = []
+					this.areaList= []
 					let type = 'fp'
 					let start = this.page * 10
 					this.getProvertyData({'type': type, 'start': start})
@@ -196,7 +203,7 @@
 			ul {
 				margin: 0;
 				//max-height: 526px;
-				overflow-y: scroll;
+				overflow-y: auto;
 				.search-pane-li {
 					list-style: none;
 					border-bottom: 1px solid #dcdfe6;

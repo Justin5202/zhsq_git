@@ -47,7 +47,9 @@ export default {
     }
   },
   destroyed() {
-    window.location.reload()
+    if (this.$route.name == 'zhsq_d2c') {
+      window.location.reload()
+    }
   },
   methods: {
     _login(username, password) {

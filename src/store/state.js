@@ -42,7 +42,9 @@ const state = {
     topicListShow: false,
     // 用户登录信息
     userinfo: {},
-    mapJsonAndImg: {}
+    mapJsonAndImg: {},
+    //报表类型（1.统计数据,2.文本数据）
+    reportFormtype: ''
 }
 
 export default state

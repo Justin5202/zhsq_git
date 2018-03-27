@@ -13,22 +13,26 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         var idList = ""
         var type = 0
         var codeList = ""
+        var itemList = []
         for (let i in dataId[0]) {
             type = parseInt(dataId[0][i].type) % 10
             if ((type == 2 || type == 3) && dataId[0][i].isActive) {
                 idList += ',' + dataId[0][i].id
+                itemList.push(dataId[0][i])
             }
             if (dataId[0][i].children.length > 0) {
                 for (let j in dataId[0][i].children) {
                     type = parseInt(dataId[0][i].children[j].type) % 10
                     if ((type == 2 || type == 3) && dataId[0][i].children[j].isActive) {
                         idList += ',' + dataId[0][i].children[j].id
+                        itemList.push(dataId[0][i].children[j])
                     }
                     if (dataId[0][i].children[j].children.length > 0) {
                         for (let k in dataId[0][i].children[j].children) {
                             type = parseInt(dataId[0][i].children[j].children[k].type) % 10
                             if ((type == 2 || type == 3) && dataId[0][i].children[j].children[k].isActive) {
                                 idList += ',' + dataId[0][i].children[j].children[k].id
+                                itemList.push(dataId[0][i].children[j].children[k])
                             }
                         }
                     }
@@ -49,7 +53,7 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         }
         AreaCodeAndDataId.push(codeList.substring(1))
         AreaCodeAndDataId.push(idList.substring(1))
-        console.log(AreaCodeAndDataId)
+        AreaCodeAndDataId.push(itemList)
         return AreaCodeAndDataId
     }
     //获取报表详情
@@ -154,14 +158,19 @@ export const getReportDataByAreaCodeInJS = function(data) {
 }
 
 //获取文件数据
-export const getDataFileByCodeAndIdInJS = function(areaCode, dataId) {
+export const getDataFileByCodeAndIdInJS = function(areaCode, dataId, index) {
         var codeList = ''
-        var dataArray = { 'title': '数据详情', 'name': [], 'data': { dataContex: [], dataType: [] } }
+        var dataArray = { 'title': '数据详情', 'name': [], 'code': [], 'data': { dataContex: [], dataType: [] } }
         if (areaCode.length > 0) {
             for (let i in areaCode) {
                 if (areaCode[i].areacode != 501002) {
-                    codeList += ',' + areaCode[i].areacode
+                    if (index) {
+                        codeList = ',' + areaCode[index].areacode
+                    } else {
+                        codeList = ',' + areaCode[0].areacode
+                    }
                     dataArray.name.push(areaCode[i].areaname)
+                    dataArray.code.push(areaCode[i].areacode)
                 }
             }
         } else {
@@ -213,6 +222,7 @@ export const getDataFileByCodeAndIdInJS = function(areaCode, dataId) {
                             })
                     }
                 } else {
+                    dataArray.data.dataContex.push('数据建设中...')
                     resolve(dataArray)
                 }
             })

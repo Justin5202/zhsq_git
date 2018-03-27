@@ -164,7 +164,8 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
                 dispatch('setAreaReportFormShow', true)
                 dispatch('getDataFileByCodeAndId', {
                     areaCode: state.areaList,
-                    dataId: cur.id
+                    dataId: cur.id,
+                    index: ''
                 })
             } else {
                 cur.isActive = !cur.isActive
@@ -392,6 +393,7 @@ export const getAreaCodeAndDataId = function({ commit, state }, { areaCode, data
     //获取报表详情
 export const getReportData = async function({ commit, state }, { areaCode, dataId }) {
         var dataArray = await getReportDataInJS(areaCode, dataId)
+        commit(TYPE.SET_REPORT_FORM_TYPE, 1)
         commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
     }
     //根据areacode获取行政区划详情
@@ -400,8 +402,10 @@ export const getReportDataByAreaCode = async function({ commit, state }, data) {
         commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
     }
     //获取文件数据
-export const getDataFileByCodeAndId = async function({ commit, state }, { areaCode, dataId }) {
-        var dataArray = await getDataFileByCodeAndIdInJS(areaCode, dataId)
+export const getDataFileByCodeAndId = async function({ commit, state }, { areaCode, dataId, index }) {
+        var dataArray = await getDataFileByCodeAndIdInJS(areaCode, dataId, index)
+        commit(TYPE.SET_REPORT_FORM_TYPE, 2)
+        commit(TYPE.SET_AREACODE_AND_DATAID, { 'codeList': [], 'idList': dataId, 'itemList': [] })
         commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
     }
     // 获取贫困乡镇数据详情
@@ -411,5 +415,20 @@ export const getAreaPovertyAlleviationDetailByAreaCode = async function({ commit
     }
     //清空报表
 export const clearReport = function({ commit, state }, { key, data }) {
-    commit(TYPE.CLEAR_REPORT_FORM, { key, data })
+        commit(TYPE.CLEAR_REPORT_FORM, { key, data })
+    }
+    //根据报表类型，请求对应方法，针对areaCodeList改变时调用
+export const setFunByReportFormType = function({ dispatch, commit, state }) {
+    if (state.reportFormShow || state.areaReportFormShow) {
+        if (state.reportFormtype == 1) {
+            dispatch('setReportFormShow', true)
+        } else if (state.reportFormtype == 2) {
+            dispatch('setAreaReportFormShow', true)
+            dispatch('getDataFileByCodeAndId', {
+                areaCode: state.areaList,
+                dataId: state.areaCodeAndDataId.idList,
+                index: ''
+            })
+        }
+    }
 }

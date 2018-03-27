@@ -51,15 +51,18 @@
     </div>
     <div class="table-box">
       <table style="width:100%;table-layout:fixed">
-          <tr class="table-tab">
+          <tr class="table-tab" v-if="!reportFormData.code">
               <td class="table-tab-item" v-for="(item,index) in reportFormData.name" @click="showContent(index)" :class="{active:activeTab == index}">{{item}}</td>
+          </tr>
+          <tr class="table-tab" v-if="reportFormData.code">
+              <td class="table-tab-item" v-for="(item,index) in reportFormData.name" @click="showContent(index,'exist')" :class="{active:activeTab == index}">{{item}}</td>
           </tr>
       </table>
       <div class="table-tab-context" v-if="areaReportFormShow">
           <!-- 展示html字符串 -->
-          <div v-html="item" v-show="reportFormData.data.dataType[index] == 'string'&& activeTab == index" class="html-string" v-for="(item,index) in reportFormData.data.dataContex"></div>
+          <div v-html="item" v-show="reportFormData.data.dataType[index] == 'string'&& activeContent == index" class="html-string" v-for="(item,index) in reportFormData.data.dataContex"></div>
           <!-- 展示html页面 -->
-          <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'html'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
+          <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'html'&& activeContent == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
           <!-- 展示pdf -->
           <!-- <pdf class="html-pdf" :src="'data:application/pdf;base64,' + item" v-show="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></pdf> -->
           <div class="table-tab-context-special" v-show="!reportFormData.data.dataType">
@@ -92,10 +95,17 @@ export default {
       areaCode: '',
       dataList: [],
       activeTab:0,
+      activeContent:0,
       reportFormSize:{
         maxWidth:window.innerWidth*0.55 +'px',
         minWidth:window.innerWidth*0.5 +'px'
       }
+    }
+  },
+  watch:{
+    areaList:function(val){
+      this.setFunByReportFormType()
+      this.activeTab = 0
     }
   },
   computed: {
@@ -103,6 +113,9 @@ export default {
       'reportFormShow',
       'areaReportFormShow',
       'reportFormData',
+      'areaInfoList',
+      'areaCodeAndDataId',
+      'areaList'
     ])
   },
   methods: {
@@ -114,18 +127,27 @@ export default {
       this.tabContext = this.reportFormData.data[0]
     },
     clearItem(index) {
-      this.setAreaList({
-        'bol': false,
-        'id': this.reportFormData.data[index].id
-      })
+      this.areaCodeAndDataId[2][index].isActive = false
+      this.setAreaList(this.areaCodeAndDataId[2][index])
       this.clearReport({
         "key": index,
         "data": this.reportFormData.data
       })
     },
     //tab 点击
-    showContent(index){
-      this.activeTab = index
+    showContent(index,code){
+      if(code){
+        this.getDataFileByCodeAndId({
+          'areaCode': this.areaList,
+          'dataId': this.areaCodeAndDataId.idList,
+          'index': index
+        })
+        this.activeTab = index
+        this.activeContent = 0
+      }else{
+        this.activeTab = index
+        this.activeContent = index
+      }
     },
     //清空按钮点击
     clearForm() {
@@ -138,9 +160,11 @@ export default {
     ...mapActions([
       'setAreaList',
       'setReportFormShow',
+      'setAreaReportFormShow',
       'clearReport',
       'removeAllAreaList',
-      'setAreaReportFormShow'
+      'setFunByReportFormType',
+      'getDataFileByCodeAndId'
     ])
   }
 }

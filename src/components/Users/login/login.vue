@@ -63,6 +63,11 @@ export default {
           this.setUserinfo(res.data)
           document.cookie = 'loginSession' + "=" + escape(res.data.sessionId)
           this.$router.replace('/')
+        } else if (res.code === '4') {
+          this.$message({
+            message: '用户名或密码错误',
+            type: 'error'
+          })
         }
       })
     },

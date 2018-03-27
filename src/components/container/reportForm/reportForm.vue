@@ -64,7 +64,7 @@
           <!-- 展示html页面 -->
           <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'html'&& activeContent == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
           <!-- 展示pdf -->
-          <!-- <pdf class="html-pdf" :src="'data:application/pdf;base64,' + item" v-show="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></pdf> -->
+          <embed  class="html-pdf" :src="'data'+':application/pdf;base64,' + item" type="application/pdf" v-show="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex">
           <div class="table-tab-context-special" v-show="!reportFormData.data.dataType">
              <div v-for="(item,index) in reportFormData.data" class="context-special-item" :class="{itemColor:index%2 != 0}">
                 <span style="margin-left:15px;">{{item.name + ':'}}</span>

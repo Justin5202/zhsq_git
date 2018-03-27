@@ -237,3 +237,11 @@ input[type="checkbox"]:checked:after {
   transform: translate(-50%, -50%) !important;
   margin-top: 0 !important;
 }
+
+.d2cgl-popup-content {
+  background-color: rgba(255,255,255,0) !important;
+  padding: 0 !important;
+}
+.d2cgl-popup-tip {
+  border-top-color: rgba(0, 0, 0, 0.4) !important;
+}

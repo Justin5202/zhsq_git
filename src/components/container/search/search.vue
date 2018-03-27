@@ -19,7 +19,7 @@
 					<ul class="areas">
 						<li
 							v-for="(item, index) in areaData1"
-							@click="handleArea(item.areacode, item.areaname)"
+							@click="handleArea(item.areacode, item.areaname, 'third')"
 							:class="{active: areaList.findIndex(v => v.areacode === item.areacode) >= 0}"
 						>
 							<span class="area-item">{{item.areaname}}</span>
@@ -28,7 +28,7 @@
 						<li
 							v-else
 							v-for="item in areaData2"
-							@click="handleArea(item.areacode, item.areaname)"
+							@click="handleArea(item.areacode, item.areaname, 'third')"
 							:class="{active: areaList.findIndex(v => v.areacode === item.areacode) >= 0}"
 						>
 							<span class="area-item">{{item.areaname}}</span>
@@ -40,7 +40,7 @@
 					<ul class="areas">
 						<li
 							v-for="item in subAreaData1"
-							@click="handleSubArea(item.areacode, item.areaname)"
+							@click="handleSubArea(item.areacode, item.areaname, 'fourth')"
 							:class="{active: areaList.findIndex(v => v.areacode === item.areacode) >= 0}"
 						>
 							<span class="area-item">{{item.areaname}}</span>
@@ -49,7 +49,7 @@
 						<li
 							v-else
 							v-for="item in subAreaData2"
-							@click="handleSubArea(item.areacode, item.areaname)"
+							@click="handleSubArea(item.areacode, item.areaname, 'fourth')"
 							:class="{active: areaList.findIndex(v => v.areacode === item.areacode) >= 0}"
 						>
 							<span class="area-item">{{item.areaname}}</span>
@@ -196,7 +196,7 @@
 					this.showThreeLevelMenu = false
 				}
 			},
-			areaClickEvent(id, name) {
+			areaClickEvent(id, name, level) {
 				this.clickCount += 1
 				setTimeout(() => {
 					if(this.clickCount == 1) {
@@ -208,40 +208,29 @@
 						this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
 					} else if(this.clickCount == 2) {
 						getSelect(id).then(res => {
-							this.subAreaData1 = res.data.slice(0, 8)
-							this.subAreaData2 = res.data.slice(8)
+							if (level === 'third') {
+								this.subAreaData1 = res.data.slice(0, 8)
+								this.subAreaData2 = res.data.slice(8)
+								this.showThreeLevelMenu = true
+								this.showSubmenuMore = false
+								this.showThreeLevelMenuMore = false
+							} else if (level === 'fourth') {
+								this.subSubAreaData1 = res.data.slice(0, 8)
+								this.subSubAreaData2 = res.data.slice(8)
+								this.showFourthLevelMenu = true
+								this.showThreeLevelMenuMore = false
+								this.showFourthLevelMenuMore = false
+							}
 						})
-						this.showThreeLevelMenu = true
-						this.showSubmenuMore = false
-						this.showThreeLevelMenuMore = false
 					} 
 					this.clickCount = 0
 				}, 300)
 			},
-			handleArea(id, name) { // 二级点击时触发的事件
-				this.areaClickEvent(id, name)
+			handleArea(id, name, level) { // 二级点击时触发的事件
+				this.areaClickEvent(id, name, level)
 			},
-			handleSubArea(id, name) { // 三级菜单点击时触发的事件
-				this.clickCount += 1
-				setTimeout(() => {
-					if(this.clickCount == 1) {
-						this.activeName = this.selectStart = name
-						let areaInfo = {
-							areacode: id,
-							areaname: name
-						}
-						this.setAreaInfo({'areainfo': areaInfo, 'isRemoveAll': false})
-					} else if(this.clickCount == 2) {
-						getSelect(id).then(res => {
-							this.subSubAreaData1 = res.data.slice(0, 8)
-							this.subSubAreaData2 = res.data.slice(8)
-						})
-						this.showFourthLevelMenu = true
-						this.showThreeLevelMenuMore = false
-						this.showFourthLevelMenuMore = false
-					} 
-					this.clickCount = 0
-				}, 300)
+			handleSubArea(id, name, level) { // 三级菜单点击时触发的事件
+				this.areaClickEvent(id, name, level)
 			},
 			showSubMore() { // 隐藏二级菜单，显示三级菜单
 				this.showSubmenuMore = true
@@ -249,6 +238,7 @@
 			},
 			showThreeLevelMore() { // 显示三级菜单更多
 				this.showThreeLevelMenuMore = true
+				this.showFourthLevelMenu = false
 			},
 			showFourthLevelMore() {
 				this.showFourthLevelMenuMore = true

@@ -87,6 +87,8 @@ export default {
     },
     handleCheckAllChange(val) {
       this.checkedItem = val ? this.checkedList : []
+      // 设置初始透明度100
+      this.checkedItem.map(v => this.transparencyArray.push(100))
       this.isIndeterminate = false
     },
     handleCheckedItemsChange(value) {

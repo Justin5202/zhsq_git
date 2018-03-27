@@ -2,7 +2,7 @@
 <div>
   <i class="el-icon-loading" v-if="!uuidClickedInfo && !showArray.length > 0"></i>
   <div class="pop" v-if="uuidClickedInfo && showArray.length > 0">
-    <div v-if="!areaDetailInfo">
+    <div v-if="!notPoi">
       <div class="pop-title">
         <h3 class="title" v-if="uuidClickedInfo._source.mc">{{uuidClickedInfo._source.mc}}</h3>
         <h3 class="title" v-else-if="uuidClickedInfo._source.name">{{uuidClickedInfo._source.name}}</h3>
@@ -17,7 +17,7 @@
         </li>
       </ul>
     </div>
-    <div v-if="areaDetailInfo">
+    <div v-if="notPoi">
       <div class="pop-title">
         <h3 class="title">{{areaDetailInfo.areaname}}</h3>
         <i class="cross-icon" @click="isShowPop()"></i>
@@ -75,6 +75,7 @@ export default {
       this.setAroundSearchShow(true)
     },
     checkDataType(data) {
+      this.notPoi = false
       if (!data._source.ztmc) {
         this.uuidClickedInfo = data
         getThematicMap(data._type).then(res => {
@@ -190,7 +191,7 @@ export default {
   }
   .pop-ul {
     max-height: 200px;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
   .pop-li {
     display: flex;

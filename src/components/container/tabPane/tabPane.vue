@@ -176,342 +176,358 @@
 </template>
 
 <script>
-	import ChildTable from '@/components/container/childTable/childTable'
-	import vFb from '@/components/container/fb/fb'
-	import {mapGetters, mapActions, mapMutations} from 'vuex'
+import ChildTable from "@/components/container/childTable/childTable";
+import vFb from "@/components/container/fb/fb";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
-	export default {
-		components: {
-			ChildTable,
-			vFb
-		},
-		name: 'tabPane',
-		props: {
-			arrayData: {
-				type: Array,
-				dafault: []
-			}
-		},
-		data() {
-			return {
-				upOrDown: true,
-				type: 1,
-				page: 1,
-				topicPage: 1,
-				buttonType: '',
-				nowIndex: 0,
-				topicIndex: -1,
-				searchIndex: -1,
-				tourismType: ['全部', '5A', '4A', '3A'],
-				tabPaneHeight:window.innerHeight *0.5 +'px'
-			}
-		},
-		computed: {
-			...mapGetters([
-				'searchPaneShow',
-				'tableMenuPaneShow',
-				'searchList',
-				'areaInfoList',
-				'activeAreaInfoList',
-				'areaCodeAndDataId',
-				'reportFormData',
-				'areaList',
-				'searchItemMacroList',
-				'topicList',
-				'topicListShow'
-			])
-		},
-		methods: {
-			getType(index) {
-				this.type = index || this.type
-				const params = {
-					type: index || this.type,
-					start: (this.page - 1) * 10,
-					rows: 10
-				}
-				this.buttonType = 'info'
-				this.nowIndex = index - 1
-				this.getSearchParams({'typeParams': params, 'params': {}})
-			},
-			getTourismType(index) {
-				this.nowIndex = index
-				this.addTourismLayer(index)
-			},
-			flyToPoi(item, index) {
-				this.searchIndex = index
-				this.$mapHelper.flyByPointAndZoom(item.element.geopoint, 16)
-				this.$mapHelper.setPopupToMap(item.element.geopoint, item.element.uuid)
-			},
-			flyToPoint(point, id, index) {
-				let p
-				if(point instanceof Array) {
-					p = point
-				} else {
-					p = JSON.parse(point)
-				}
-				this.topicIndex = index
-				this.$mapHelper.flyByPointAndZoom(p, 8)
-				this.$mapHelper.setPicPopupToMap(p, id)
-			},
-			next() {
-				this.page += 1
-				this.getType()
-			},
-			prev() {
-				if(this.page === 1) {
-					return
-				}
-				this.page -= 1
-				this.getType()
-			},
-			getAreaData(code) {
-				const params = {
-					areacode: 500000,
-					id: code
-				}
-				this.getAreaDetail(params)
-				this.setTopicShow(false)
-			},
-			isActiveItem(item) {
-				let type = item.macro.data.type
-				let i = Number(type.substring(0, 1))
-				const params = {
-					id: item.macro.data.id
-				}
-				if(i === 1) {
-					/*存在第二级目录*/
-					this.getAreaDetail(params)
-				} else if(i === 2){
-					/*加载空间数据，加入数据table*/
-					this.setAreaList(item.macro.data)
-				}
-			},
-			toggleSlide() {
-				this.upOrDown = !this.upOrDown
-			},
-			//点击详情按钮
-			getDetails(item) {
-				console.log(item)
-				if(item.searchType == 4){
-					this.isActiveItem(item)
-					this.getAreaCodeAndDataId({
-						"areaCode": this.areaList,
-						"dataId": [this.areaInfoList, this.searchItemMacroList]
-					})
-					this.getReportData({
-						'areaCode': this.areaCodeAndDataId[0],
-						'dataId': this.areaCodeAndDataId[1]
-					})
-					this.setReportFormShow(true)
-					this.setAreaReportFormShow(false)
-				}else if(item.searchType == 2 || item.searchType ==6){
-					this.getReportDataByAreaCode([item['area']['areacode'],item['area']['areaname'],item['searchType']])
-					this.setReportFormShow(false)
-					this.setAreaReportFormShow(true)
-				}
-			},
-			...mapMutations({
-				setTopicShow: 'SET_TOPIC_LIST_SHOW'
-			}),
-			...mapActions([
-				'setAreaList',
-				'getSearchParams',
-				'getAreaDetail',
-				'tablePaneShow',
-				'loadSearchItemMacro',
-				'setReportFormShow',
-				'setAreaReportFormShow',
-				'getReportData',
-				'getAreaCodeAndDataId',
-				'addTourismLayer',
-				'getReportDataByAreaCode'
-			])
-		}
-	}
+export default {
+  components: {
+    ChildTable,
+    vFb
+  },
+  name: "tabPane",
+  props: {
+    arrayData: {
+      type: Array,
+      dafault: []
+    }
+  },
+  data() {
+    return {
+      upOrDown: true,
+      type: 1,
+      page: 1,
+      topicPage: 1,
+      buttonType: "",
+      nowIndex: 0,
+      topicIndex: -1,
+      searchIndex: -1,
+      tourismType: ["全部", "5A", "4A", "3A"],
+      tabPaneHeight: window.innerHeight * 0.5 + "px"
+    };
+  },
+  computed: {
+    ...mapGetters([
+      "searchPaneShow",
+      "tableMenuPaneShow",
+      "searchList",
+      "areaInfoList",
+      "activeAreaInfoList",
+      "areaCodeAndDataId",
+      "reportFormData",
+      "areaList",
+      "searchItemMacroList",
+      "topicList",
+      "topicListShow"
+    ])
+  },
+  methods: {
+    getType(index) {
+      this.type = index || this.type;
+      const params = {
+        type: index || this.type,
+        start: (this.page - 1) * 10,
+        rows: 10
+      };
+      this.buttonType = "info";
+      this.nowIndex = index - 1;
+      this.getSearchParams({ typeParams: params, params: {} });
+    },
+    getTourismType(index) {
+      this.nowIndex = index;
+      this.addTourismLayer(index);
+    },
+    flyToPoi(item, index) {
+      this.searchIndex = index;
+      this.$mapHelper.flyByPointAndZoom(item.element.geopoint, 16);
+      this.$mapHelper.setPopupToMap(item.element.geopoint, item.element.uuid);
+    },
+    flyToPoint(point, id, index) {
+      let p;
+      if (point instanceof Array) {
+        p = point;
+      } else {
+        p = JSON.parse(point);
+      }
+      this.topicIndex = index;
+      this.$mapHelper.flyByPointAndZoom(p, 8);
+      this.$mapHelper.setPicPopupToMap(p, id);
+    },
+    next() {
+      this.page += 1;
+      this.getType();
+    },
+    prev() {
+      if (this.page === 1) {
+        return;
+      }
+      this.page -= 1;
+      this.getType();
+    },
+    getAreaData(code) {
+      const params = {
+        areacode: 500000,
+        id: code
+      };
+      this.getAreaDetail(params);
+      this.setTopicShow(false);
+      this.setLayerControlShow(false)
+    },
+    isActiveItem(item) {
+      let type = item.macro.data.type;
+      let i = Number(type.substring(0, 1));
+      const params = {
+        id: item.macro.data.id
+      };
+      if (i === 1) {
+        /*存在第二级目录*/
+        this.getAreaDetail(params);
+      } else if (i === 2) {
+        /*加载空间数据，加入数据table*/
+        this.setAreaList(item);
+      }
+    },
+    toggleSlide() {
+      this.upOrDown = !this.upOrDown;
+    },
+    //点击详情按钮
+    getDetails(item) {
+      console.log(item);
+      if (item.searchType == 4) {
+        this.isActiveItem(item);
+        this.getAreaCodeAndDataId({
+          areaCode: this.areaList,
+          dataId: [this.areaInfoList, this.searchItemMacroList]
+        });
+        this.getReportData({
+          areaCode: this.areaCodeAndDataId[0],
+          dataId: this.areaCodeAndDataId[1]
+        });
+        this.setReportFormShow(true);
+        this.setAreaReportFormShow(false);
+      } else if (item.searchType == 2 || item.searchType == 6) {
+        this.getReportDataByAreaCode([
+          item["area"]["areacode"],
+          item["area"]["areaname"],
+          item["searchType"]
+        ]);
+        this.setReportFormShow(false);
+        this.setAreaReportFormShow(true);
+      }
+    },
+    ...mapMutations({
+      setTopicShow: "SET_TOPIC_LIST_SHOW",
+      setLayerControlShow: 'SET_LAYER_CONTROL_SHOW'
+    }),
+    ...mapActions([
+      "setAreaList",
+      "getSearchParams",
+      "getAreaDetail",
+      "tablePaneShow",
+      "loadSearchItemMacro",
+      "setReportFormShow",
+      "setAreaReportFormShow",
+      "getReportData",
+      "getAreaCodeAndDataId",
+      "addTourismLayer",
+      "getReportDataByAreaCode"
+    ])
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-
-	.tab-pane {
-		margin-top: 15px;
-		.tab-pane-content {
-			border-radius: 4px;
-			background-color: #fff;
-			-webkit-box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
-	    	box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
-		}
-		ul {
-			margin: 0;
-			padding: 0;
-	    	.tab-pane-li {
-	    		list-style: none;
-				.tab-pane-li-title {
-					padding: 0 15px;
-					background-color: #e4e7ed;
-					.item-title {
-						margin: 0;
-						padding: 10px 0;
-						font-size: 14px;
-						font-weight: bold;
-						text-align: left;
-					}
-				}
-				.tab-pane-li-content {
-					display: flex;
-					flex-wrap: wrap;
-					padding: 0 15px;
-					span {
-						display: inline-block;
-						width: 25%;
-						padding: 10px 0;
-						font-size: 12px;
-						color: #888;
-						cursor: pointer;
-						&:hover {
-							text-decoration: underline;
-							color: #2c3e50;
-						}
-					}
-				}
-	    	}
-		}
-		.search-pane-content {
-			padding-top: 10px;
-			.search-type-button {
-				.type-button {
-					margin: 0 5px;
-					font-size: 12px;
-					padding: 7px 36px;
-					border-radius: 25px;
-					border: 0;
-					cursor: pointer;
-			    background: #fff;
-			    border: 1px solid #dcdfe6;
-			    border-color: #dcdfe6;
-					color: #606266;
-				}
-				.topic-type-button {
-					padding: 7px 28px;
-				}
-				.clicked {
-					color: #fff;
-			    background-color: #909399;
-			    border-color: #909399;
-				}
-			}
-			ul {
-				margin: 0;
-				// max-height: 526px;
-				overflow-y: scroll;
-				.search-pane-li {
-					list-style: none;
-					border-bottom: 1px solid #dcdfe6;
-					.search-pane-box {
-						display: flex;
-						justify-content: space-around;
-						padding: 10px;
-						.icon-box {
-							-webkit-box-flex: 0;
-					    -ms-flex: 0 0 20px;
-					    flex: 0 0 20px;
-					    padding-right: 10px;
-							background: none !important;
-							i {
-								display: block;
-								width: 20px;
-								height: 20px;
-							}
-							.area-icon {
-								background: url('../../../assets/images/catalog/行政区划@2x.png') no-repeat;
-								background-size: 100%;
-							}
-							.poi-icon {
-								background: url('../../../assets/images/catalog/搜索定位.png') no-repeat;
-								background-size: 100%;
-							}
-							.macro-icon {
-								background: url('../../../assets/images/catalog/搜索定位.png') no-repeat;
-								background-size: 100%;
-							}
-							.data-icon {
-								background: url('../../../assets/images/catalog/文档@2x.png') no-repeat;
-								background-size: 100%;
-							}
-							.regions-icon {
-								background: url('../../../assets/images/catalog/行政区划@2x.png') no-repeat;
-								background-size: 100%;
-							}
-							.unit-icon {
-								background: url('../../../assets/images/catalog/社会经济@2x.png') no-repeat;
-								background-size: 100%;
-							}
-							.ly-icon {
-								background: url('../../../assets/images/catalog/ly@2x.png') no-repeat;
-								background-size: 100%;
-							}
-							.fp-icon {
-								background: url('../../../assets/images/catalog/fp@2x.png') no-repeat;
-								background-size: 100%;
-							}
-						}
-					}
-					.active {
-						background-color: #dcdfe6;
-					}
-					.area-content {
-						display: flex;
-						flex: 2;
-						flex-direction: column;
-						text-align: left;
-						h2 {
-							margin: 0;
-							font-size: 14px;
-						}
-						p {
-							margin: 0;
-							margin-top: 5px;
-							font-size: 12px;
-							color: #888;
-						}
-					}
-					.detail {
-						flex: 1;
-						display: flex;
-					  flex-direction: column;
-					  align-items: center;
-						cursor: pointer;
-						.detail-icon {
-							margin-top: 10px;
-							display: block;
-							width: 20px;
-							height: 20px;
-							background: url('../../../assets/images/catalog/数据详情@2x.png') no-repeat;
-							background-size: 100%;
-						}
-						span {
-							font-size: 12px;
-							color: #20be8c;
-						}
-					}
-				}
-				.active {
-					background-color: #dcdfe6;
-				}
-			}
-		}
-		.up-control {
-			.control-icon {
-				margin: 0 auto;
-				display: block;
-				width: 60px;
-				height: 30px;
-				background:transparent url('../../../assets/images/catalog/catalog_close@2x.png') no-repeat;
-				background-size: 100%;
-			}
-			.down {
-				background:transparent url('../../../assets/images/catalog/catalog_expand@2x.png') no-repeat;
-				background-size: 100%;
-			}
-		}
-	}
+.tab-pane {
+  margin-top: 15px;
+  .tab-pane-content {
+    border-radius: 4px;
+    background-color: #fff;
+    -webkit-box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    .tab-pane-li {
+      list-style: none;
+      .tab-pane-li-title {
+        padding: 0 15px;
+        background-color: #e4e7ed;
+        .item-title {
+          margin: 0;
+          padding: 10px 0;
+          font-size: 14px;
+          font-weight: bold;
+          text-align: left;
+        }
+      }
+      .tab-pane-li-content {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0 15px;
+        span {
+          display: inline-block;
+          width: 25%;
+          padding: 10px 0;
+          font-size: 12px;
+          color: #888;
+          cursor: pointer;
+          &:hover {
+            text-decoration: underline;
+            color: #2c3e50;
+          }
+        }
+      }
+    }
+  }
+  .search-pane-content {
+    padding-top: 10px;
+    .search-type-button {
+      .type-button {
+        margin: 0 5px;
+        font-size: 12px;
+        padding: 7px 36px;
+        border-radius: 25px;
+        border: 0;
+        cursor: pointer;
+        background: #fff;
+        border: 1px solid #dcdfe6;
+        border-color: #dcdfe6;
+        color: #606266;
+      }
+      .topic-type-button {
+        padding: 7px 28px;
+      }
+      .clicked {
+        color: #fff;
+        background-color: #909399;
+        border-color: #909399;
+      }
+    }
+    ul {
+      margin: 0;
+      // max-height: 526px;
+      overflow-y: scroll;
+      .search-pane-li {
+        list-style: none;
+        border-bottom: 1px solid #dcdfe6;
+        .search-pane-box {
+          display: flex;
+          justify-content: space-around;
+          padding: 10px;
+          .icon-box {
+            -webkit-box-flex: 0;
+            -ms-flex: 0 0 20px;
+            flex: 0 0 20px;
+            padding-right: 10px;
+            background: none !important;
+            i {
+              display: block;
+              width: 20px;
+              height: 20px;
+            }
+            .area-icon {
+              background: url("../../../assets/images/catalog/行政区划@2x.png")
+                no-repeat;
+              background-size: 100%;
+            }
+            .poi-icon {
+              background: url("../../../assets/images/catalog/搜索定位.png")
+                no-repeat;
+              background-size: 100%;
+            }
+            .macro-icon {
+              background: url("../../../assets/images/catalog/搜索定位.png")
+                no-repeat;
+              background-size: 100%;
+            }
+            .data-icon {
+              background: url("../../../assets/images/catalog/文档@2x.png")
+                no-repeat;
+              background-size: 100%;
+            }
+            .regions-icon {
+              background: url("../../../assets/images/catalog/行政区划@2x.png")
+                no-repeat;
+              background-size: 100%;
+            }
+            .unit-icon {
+              background: url("../../../assets/images/catalog/社会经济@2x.png")
+                no-repeat;
+              background-size: 100%;
+            }
+            .ly-icon {
+              background: url("../../../assets/images/catalog/ly@2x.png")
+                no-repeat;
+              background-size: 100%;
+            }
+            .fp-icon {
+              background: url("../../../assets/images/catalog/fp@2x.png")
+                no-repeat;
+              background-size: 100%;
+            }
+          }
+        }
+        .active {
+          background-color: #dcdfe6;
+        }
+        .area-content {
+          display: flex;
+          flex: 2;
+          flex-direction: column;
+          text-align: left;
+          h2 {
+            margin: 0;
+            font-size: 14px;
+          }
+          p {
+            margin: 0;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #888;
+          }
+        }
+        .detail {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          cursor: pointer;
+          .detail-icon {
+            margin-top: 10px;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: url("../../../assets/images/catalog/数据详情@2x.png")
+              no-repeat;
+            background-size: 100%;
+          }
+          span {
+            font-size: 12px;
+            color: #20be8c;
+          }
+        }
+      }
+      .active {
+        background-color: #dcdfe6;
+      }
+    }
+  }
+  .up-control {
+    .control-icon {
+      margin: 0 auto;
+      display: block;
+      width: 60px;
+      height: 30px;
+      background: transparent
+        url("../../../assets/images/catalog/catalog_close@2x.png") no-repeat;
+      background-size: 100%;
+    }
+    .down {
+      background: transparent
+        url("../../../assets/images/catalog/catalog_expand@2x.png") no-repeat;
+      background-size: 100%;
+    }
+  }
+}
 </style>

@@ -1,23 +1,24 @@
 import axios from 'axios'
 import router from '../router'
-import {Loading} from 'element-ui'
+import { Loading } from 'element-ui'
 
+axios.defaults.timeout = 6000
 // 拦截请求
-axios.interceptors.request.use(function(config) {
+axios.interceptors.request.use(function (config) {
   let loading = Loading.service({
     fullscreen: true,
     text: '加载中...',
     background: 'rgba(0, 0, 0, .8)'
   })
   return config
-}, function(err) {
+}, function (err) {
   let loading = Loading.service({})
   loading.close()
   return Promise.reject(err)
 })
 
 // 拦截响应
-axios.interceptors.response.use(function(response) {
+axios.interceptors.response.use(function (response) {
   let loading = Loading.service({})
   loading.close()
   if (response.data.code == '-3') {
@@ -27,7 +28,8 @@ axios.interceptors.response.use(function(response) {
     router.replace('/login')
   }
   return response
-}, function(err) {
+}, function (err) {
+  console.log(err)
   return Promise.reject(err)
 })
 

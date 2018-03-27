@@ -59,7 +59,7 @@ export default new Router({
       name: 'carousel',
       component: carousel
     },{
-      path: '/720picture/:code/:id',
+      path: '/web/:code/:id',
       name: 'web',
       component: web
     }

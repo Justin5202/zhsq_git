@@ -24,6 +24,7 @@ import {
 import { getJson } from '@/api/getJson'
 import mapHelper from '@/util/mapHelper'
 import state from './state'
+import router from '@/router'
 
 // 数组处理
 function handleArray(array) {
@@ -57,6 +58,8 @@ function addLayer(datapath, id) {
                 }
                 /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
+                mapHelper.closePopup()
+                mapHelper.closePicPopup()
             }
         })
     })
@@ -180,6 +183,8 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
         temp = checkData(cur, commit, first)
     } else if (type === 3) { // type为3，即为网页，记载网页
         console.log('即为网页，加载网页')
+        commit(TYPE.SET_URL_PATH, cur.datapath)
+        router.push(`/web/${cur.id}/${cur.id}`)
     } else if (type === 4) { // type为4，即为720图片
         console.log('为720图片')
     }
@@ -293,11 +298,23 @@ export const getSearchResult = function({ dispatch, commit, state }) {
 export const setSecAreaList = function({ commit, state }, list) {
     commit(TYPE.SET_SEC_AREA_LIST, list)
 }
-export const setAreaList = function({ dispatch, commit, state }, data) {
-        checkClickedDataType({ dispatch, data, commit, 'first': false })
+export const setAreaList = function ({ dispatch, commit, state }, param) {
+    let data = param
+    if(data.searchType) {
+        if(data.searchType === 4) {
+            checkClickedDataType({ dispatch, 'data': data.macro.data, commit, 'first': false})
+            let areainfo = {
+                areacode: data.macro.areaCode,
+                areaname: data.macro.areaName
+            }
+            dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
+        }
+    } else {
+        checkClickedDataType({ dispatch, data, commit, 'first': false})
     }
-    // 区县区域下一级详细信息
-export const getNextAreaInfo = function({ commit, state }) {
+}
+// 区县区域下一级详细信息
+export const getNextAreaInfo = function ({ commit, state }) {
     getNextAreaDetailInfo(state.areaInfo.areacode).then(res => {
         console.log(JSON.parse(res.data))
         commit(TYPE.SET_SEC_AREA_LIST, JSON.parse(res.data))

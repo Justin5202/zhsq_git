@@ -20,6 +20,12 @@ export default new Router({
     {
       path: '/',
       component: container,
+      beforeEnter(to, from, next) {
+        if (from.path === '/login') {
+          window.location.reload()
+        }
+        next()
+      },
       children: [
         {
           path: '',

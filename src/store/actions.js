@@ -185,7 +185,7 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
     } else if (type === 3) { // type为3，即为网页，记载网页
         console.log('即为网页，加载网页')
         commit(TYPE.SET_URL_PATH, cur.datapath)
-        router.push(`/web/${cur.id}/${cur.id}`)
+        window.open(cur.datapath)
     } else if (type === 4) { // type为4，即为720图片
         console.log('为720图片')
     }

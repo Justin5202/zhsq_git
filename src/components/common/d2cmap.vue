@@ -25,7 +25,7 @@ export default {
 		}
 	},
 	created(){
-		// this.getMapJsonAndImg()
+		this.getMapJsonAndImg()
 	},
 	methods: {
 		resize() {

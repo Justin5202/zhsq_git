@@ -7,16 +7,26 @@
 <script>
 import mWindow from '@/util/window'
 import vMap from '@/components/common/d2cmap'
-
 export default {
   name: 'test_map',
+  beforeMount() {
+    if(this.from) {
+      window.location.reload()
+    }
+  },
   components: {
     vMap
+  },
+  beforeRouteEnter(to, from, next) {
+    if(from.path == '/login') {
+      next( vm => {
+        vm.from = from.path
+      })
+    }
   },
   mixins: [mWindow],
   data() {
     return {
-      mainMap: null
     }
   },
   computed: {
@@ -26,6 +36,8 @@ export default {
         width: this.window.width + 'px'
       }
     }
+  },
+  created() {
   },
   methods: {
 

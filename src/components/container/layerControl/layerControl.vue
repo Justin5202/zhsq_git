@@ -174,8 +174,8 @@ export default {
             }
           }
           .slider-box {
-            padding: 0 19px;
-            padding-left: 10px;
+            padding: 0 10px;
+            padding-left: 17px;
             .el-slider__button{
               width: 10px;
               height: 10px;

@@ -1363,21 +1363,21 @@ const setMarksToMap = function (layerId, geoPointArray, _mapguidArray, icon, ico
  * @param 坐标 （数组）， _mapguid
  * @returns null
  */
-const setPopupToMap = function (geoPoint, _mapguid) {
+const setPopupToMap = function (_geoPoint, _mapguid) {
     closePopup();
     infoPopup = new window
         .d2c
         .Popup({closeButton: false})
-        .setLngLat(geoPoint)
+        .setLngLat(_geoPoint)
         .setHTML("<div id = 'infoPopup'></div>")
         .addTo(map);
     infoPopup_vm = new Vue({
         el: '#infoPopup',
         store,
         router,
-        template: '<v-infoPopup :mapguid="mapguid"/>',
+        template: '<v-infoPopup :mapguid="mapguid :geoPoint="geoPoint"/>',
         data: function () {
-            return {mapguid: _mapguid}
+            return {mapguid: _mapguid,geoPoint:_geoPoint}
         },
         components: {
             'v-infoPopup': infoPopupVm

@@ -264,8 +264,8 @@ export const setAreaInfo = function({ commit, state }, { areainfo, isRemoveAll }
             if (res.code == '1') {
                 areainfo.areaname = JSON.parse(res.data).areaname
                 commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
-                commit(TYPE.SET_AREA_INFO, areainfo)
                 commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })
+                commit(TYPE.SET_AREA_INFO, areainfo)
             }
         })
     } else {

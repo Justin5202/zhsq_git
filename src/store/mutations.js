@@ -228,30 +228,38 @@ const mutations = {
                 if (state.areaList.length === 0) {
                     state.areaInfo = {
                         areacode: 500000,
-                        areaname: '重庆市'
+                        areaname: '重庆市',
+                        parentid: ''
                     }
                 }
                 /*删除行政区划线*/
-                let areaIndex = state.secAreaList.findIndex(v => v.areacode ===
-                    areainfo.areacode)
                 mapHelper.removeLayerById(areainfo.areacode.toString())
                 /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             } else {
-                temp.push(areainfo)
                 /*更新选中区域areacode列表*/
                 if (areainfo.areacode !== '501002') {
                     state.areaCodeList.push(areainfo.areacode)
                 }
+                state.areaList.push(areainfo)
+                var i = state.areaList.length
+                while (i--) {
+                    if (state.areaList[i].areacode.length !== areainfo.areacode.length) {
+                        // 发现父级，清除父级行政区划
+                        mapHelper.removeLayerById(state.areaList[i].areacode.toString())
+                        // 存在父级区域，删除父级区域
+                        state.areaList.splice(i, 1)
+                    }
+                }
                 /*画行政区划线*/
                 /*选中区域所在详细信息列表的位置,图层id为当前区域所在列表的下标*/
                 if (state.areaDetailInfo) {
+                    // 加载自身
                     mapHelper.addLayerByIdAndGeojson(state.areaDetailInfo.areacode.toString(), state.areaDetailInfo
                         .geojson)
-                    mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
+                    mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 12)
                     mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid)
                     /*图层过滤*/
-                    console.log(state.layerIdList, state.areaCodeList)
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 }
             }
@@ -265,7 +273,8 @@ const mutations = {
             state.areaList = []
             state.areaInfo = {
                 areacode: 500000,
-                areaname: '重庆市'
+                areaname: '重庆市',
+                parentid: ''
             }
         }
     },

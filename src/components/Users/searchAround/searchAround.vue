@@ -6,7 +6,8 @@
           <p class="back" @click="goback"><i class="el-icon-arrow-left"></i><span>周边搜索</span></p>
           <div class="search">
             <div class="el-input">
-              <span class="icon"></span><input type="text" v-model="searchContent" placeholder="搜地点、查数据"/>
+              <input type="text" v-model="searchContent" placeholder="搜地点、查数据" @keyup.enter="search"/>
+              <span class="icon" @click="search"></span>
             </div>
             <span class="count">数据总量:29,821,105条</span>
           </div>
@@ -42,7 +43,7 @@
       return {
         list: [],
         searchContent: '',
-        colors: ['#FF9999','#FF6666','#993333','#999933','#99CC00','#FF9900','#336699']
+        colors: ['#FF9999','#FF6666','#993333','#999933','#99CC00','#FF9900','#336699','#FF6666','#993333']
       }
     },
     mounted() {
@@ -100,16 +101,16 @@
 </script>
 <style lang="scss" scoped>
   ::-webkit-input-placeholder {
-    color: #fff;
+    color: rgb(199, 190, 190);
   }
   :-moz-placeholder {
-    color: #fff;
+    color: rgb(199, 190, 190);
   }
   ::-moz-placeholder {
-    color: #fff;
+    color: rgb(199, 190, 190);
   }
   :-ms-input-placeholder {
-    color: #fff;
+    color: rgb(199, 190, 190);
   }
   .search-around {
     height: 100%;
@@ -140,10 +141,11 @@
             .el-input {
               height: 40px;
               width: 240px;
-              margin: 20px 0 0 40px;
+              margin: 20px 0 5px 40px;
               border-bottom: 1px solid rgb(168, 167, 167);
               display: flex;
               justify-content: flex-start;
+              box-sizing: border-box;
               .icon {
                 display: inline-block;
                 width: 20px;
@@ -166,7 +168,7 @@
             }
             .count {
               color: #fff;
-              padding: 0 40px;
+              padding: 0 40px 5px 40px;
               align-self: flex-end;
             }
           }
@@ -220,9 +222,10 @@
               width: 100%;
               justify-content: space-between;
               .list-item {
-                width: 50%;
+                width: 49%;
                 margin-bottom: 40px;
                 display: flex;
+                justify-content: flex-start;
                 p {
                   width: 77px;
                   margin-right: 30px;
@@ -230,17 +233,15 @@
                 .sublist {
                   display: flex;
                   flex-wrap: wrap;
-                  justify-content: space-between;
+                  justify-content: flex-start;
+                  width: 80%;
                   li {
                     cursor: pointer;
-                    width: 20%;
+                    width: 25%;
                     text-align: left;
-                    margin: 0 5px 10px 0;
+                    margin: 0 0 10px 0;
                   }
                 }
-              }
-              .list-item:nth-of-type(even) {
-                justify-content: flex-end;
               }
             }
           }

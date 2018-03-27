@@ -35,7 +35,6 @@
     </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -177,14 +176,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .pop {
+  background-color: rgba(255, 255,255,0.6);
   width: 250px;
   .pop-title {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     .title {
-      font-size: 14px;
+      font-size: 15px;
       line-height: 40px;
       padding-left: 10px;
       display: -webkit-box;
@@ -211,6 +212,7 @@ export default {
     padding: 5px 10px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     font-size: 13px;
+    font-weight: 400;
     span {
       padding-top: 5px;
       color: #888;
@@ -237,11 +239,11 @@ export default {
         height: 30px;
       }
       .icon-searcharound {
-        background: url("../../assets/images/calloutview/看@2x.png") no-repeat;
+        background: url("../../assets/images/calloutview/POI看@2x.png") no-repeat;
         background-size: 100%;
       }
       .icon-checkdetail {
-        background: url("../../assets/images/calloutview/详情@2x.png") no-repeat;
+        background: url("../../assets/images/calloutview/POI详情@2x.png") no-repeat;
         background-size: 100%;
       }
     }

@@ -242,8 +242,8 @@ const mutations = {
         } else {
             /*删除全部行政区划线*/
             state.areaList.map(v => {
-                mapHelper.removeLayerById(v.areacode.toString())
-            })
+                    mapHelper.removeLayerById(v.areacode.toString())
+                })
                 /*图层过滤*/
             mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             state.areaList = []
@@ -328,6 +328,9 @@ const mutations = {
     },
     [TYPE.SET_MAP_JSON_AND_IMG](state, data) {
         state.mapJsonAndImg = data
+    },
+    [TYPE.SET_REPORT_FORM_TYPE](state, data) {
+        state.reportFormtype = data
     },
     [TYPE.SET_URL_PATH](state, url) {
         state.urlpath = url

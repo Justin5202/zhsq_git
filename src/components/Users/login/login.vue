@@ -46,6 +46,9 @@ export default {
       }
     }
   },
+  destroyed() {
+    window.location.reload()
+  },
   methods: {
     _login(username, password) {
       if (username === '') {

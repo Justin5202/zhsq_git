@@ -1,7 +1,7 @@
 <template>
 	<div class="search">
 	  	<el-input placeholder="搜地点、查数据" v-model="searchContent" @focus="showSearchPane()" class="input-with-select">
-			<el-button slot="prepend" @click="showBox()">{{areaInfo.areaname}}<i class="el-icon-arrow-down"></i></el-button>
+			<el-button slot="prepend" @click="showBox()">{{areaInfo.areanamew}}<i class="el-icon-arrow-down"></i></el-button>
 	    	<el-button slot="append" icon="el-icon-search" @click="clickSearch(selectStart, selectCode)"></el-button>
 	  	</el-input>
 			<div class="select-box" v-show="showSelectBox">

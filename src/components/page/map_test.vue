@@ -11,20 +11,29 @@ import mWindow from '@/util/window'
 import mapOption from '@/settings/map'
 
 import vMap from '@/components/common/d2cmap'
-// import vSourceControl from '@/components/content/sourceControl'
-// import vToolBar from '@/components/container/toolbar.vue'
 export default {
   name: 'test_map',
+  beforeMount() {
+    if(this.from) {
+      window.location.reload()
+    }
+  },
   components: {
-    vMap,
-    // vSourceControl,
-    // vToolBar
+    vMap
+  },
+  beforeRouteEnter(to, from, next) {
+    if(from.path == '/login') {
+      next( vm => {
+        vm.from = from.path
+      })
+    }
   },
   mixins: [mWindow],
   data () {
     return {
       option: mapOption,
-      mainMap: null
+      mainMap: null,
+      from: ''
     }
   },
   computed: {
@@ -34,6 +43,8 @@ export default {
         width: this.window.width + 'px'
       }
     }
+  },
+  created() {
   },
   methods: {
     // 地图加载完成时执行

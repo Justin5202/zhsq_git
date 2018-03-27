@@ -107,8 +107,8 @@ const initMap = function (option) {
     map = new window
         .d2c
         .map(option);
-        
-    // 不参与点击查询的layerid
+
+    // // 不参与点击查询的layerid
     if (window.vecterClickExceptLayer) {
         vecterClickExceptLayerArray = window
             .vecterClickExceptLayer
@@ -120,21 +120,21 @@ const initMap = function (option) {
             .split(",");
     }
 
-    // 区分专题数据图层（旅游、扶贫）和 目录数据图层 点击地图回调用
+    // // 区分专题数据图层（旅游、扶贫）和 目录数据图层 点击地图回调用
     if (window.ZTExceptLayer_ly) {
         ZTExceptLayerArray_ly = window
             .ZTExceptLayer_ly
             .split(",");
     }
 
-    // 区分专题数据图层（旅游、扶贫）和 目录数据图层 点击地图回调用
+    // // 区分专题数据图层（旅游、扶贫）和 目录数据图层 点击地图回调用
     if (window.ZTExceptLayer_fp) {
         ZTExceptLayerArray_fp = window
             .ZTExceptLayer_fp
             .split(",");
     }
 
-    // 获取 2D 3D图层 group id
+    // // 获取 2D 3D图层 group id
     let groupUUID_2d = "";
     let groupUUID_3d = "";
     for (const key in option.style.metadata["mapbox:groups"]) {
@@ -146,7 +146,7 @@ const initMap = function (option) {
         }
     }
 
-    // 获取2d 3d layers id
+    // // 获取2d 3d layers id
     option
         .style
         .layers
@@ -168,45 +168,6 @@ const initMap = function (option) {
                 }
             }
         })
-
-    //绑定右键拖动事件 2D 3D 图层显示用
-    map.on('pitch', _onPitch);
-
-    //绑定右键拖动事件 是否显示 指北针
-    map.on('rotate', _onRotate);
-
-    // 缩放结束 判断当前边界是否在 重庆市域内
-    map.on('zoomend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 拖拽结束 判断当前边界是否在 重庆市域内
-    map.on('dragend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 倾斜结束 判断当前边界是否在 重庆市域内
-    map.on('pitchend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 转角结束 判断当前边界是否在 重庆市域内
-    map.on('rotateend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 绑定点击事件返回 mapguid
-    map.on('click', _onClick);
-
-    // 绑定双击事件
-    map.on("dblclick", _onDbClick);
-
-    // 样式 文件有变动时 进行 过滤
-    map.on('styledata', () => {
-        if (codeArray.length > 0) {
-            doFilterByCodeArrayAndAreacodeArray(codeArray, areacodeArray);
-        }
-    });
 
     return map;
 };
@@ -530,6 +491,46 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
         // 判断是否要 加载天地图
         _containRelationshipCallback();
         _setMBVisibility();
+
+        //绑定右键拖动事件 2D 3D 图层显示用
+        map.on('pitch', _onPitch);
+
+        //绑定右键拖动事件 是否显示 指北针
+        map.on('rotate', _onRotate);
+
+        // 缩放结束 判断当前边界是否在 重庆市域内
+        map.on('zoomend', (e) => {
+            _containRelationshipCallback();
+        });
+
+        // 拖拽结束 判断当前边界是否在 重庆市域内
+        map.on('dragend', (e) => {
+            _containRelationshipCallback();
+        });
+
+        // 倾斜结束 判断当前边界是否在 重庆市域内
+        map.on('pitchend', (e) => {
+            _containRelationshipCallback();
+        });
+
+        // 转角结束 判断当前边界是否在 重庆市域内
+        map.on('rotateend', (e) => {
+            _containRelationshipCallback();
+        });
+
+        // 绑定点击事件返回 mapguid
+        map.on('click', _onClick);
+
+        // 绑定双击事件
+        map.on("dblclick", _onDbClick);
+
+        // 样式 文件有变动时 进行 过滤
+        map.on('styledata', () => {
+            if (codeArray.length > 0) {
+                doFilterByCodeArrayAndAreacodeArray(codeArray, areacodeArray);
+            }
+        });
+
     } else {
         map
             .on('load', function () {
@@ -578,6 +579,45 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                 // 判断是否要 加载天地图
                 _containRelationshipCallback();
                 _setMBVisibility();
+
+                //绑定右键拖动事件 2D 3D 图层显示用
+                map.on('pitch', _onPitch);
+
+                //绑定右键拖动事件 是否显示 指北针
+                map.on('rotate', _onRotate);
+
+                // 缩放结束 判断当前边界是否在 重庆市域内
+                map.on('zoomend', (e) => {
+                    _containRelationshipCallback();
+                });
+
+                // 拖拽结束 判断当前边界是否在 重庆市域内
+                map.on('dragend', (e) => {
+                    _containRelationshipCallback();
+                });
+
+                // 倾斜结束 判断当前边界是否在 重庆市域内
+                map.on('pitchend', (e) => {
+                    _containRelationshipCallback();
+                });
+
+                // 转角结束 判断当前边界是否在 重庆市域内
+                map.on('rotateend', (e) => {
+                    _containRelationshipCallback();
+                });
+
+                // 绑定点击事件返回 mapguid
+                map.on('click', _onClick);
+
+                // 绑定双击事件
+                map.on("dblclick", _onDbClick);
+
+                // 样式 文件有变动时 进行 过滤
+                map.on('styledata', () => {
+                    if (codeArray.length > 0) {
+                        doFilterByCodeArrayAndAreacodeArray(codeArray, areacodeArray);
+                    }
+                });
 
             })
     }

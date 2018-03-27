@@ -14,7 +14,7 @@ import store from '../store/index'
 import router from '../router'
 import infoPopupVm from '../components/common/infoPopup'
 import picPopupVm from '../components/common/picPopup'
-import cqbounds from '../components/common/config/cqbounds'
+import cqbounds from '../../static/json/cqbounds'
 
 // 私有map
 var map = null;
@@ -108,7 +108,7 @@ const initMap = function (option) {
         .d2c
         .map(option);
 
-    // // 不参与点击查询的layerid
+     // // 不参与点击查询的layerid
     if (window.vecterClickExceptLayer) {
         vecterClickExceptLayerArray = window
             .vecterClickExceptLayer

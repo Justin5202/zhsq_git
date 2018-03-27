@@ -103,6 +103,11 @@ var ZTExceptLayerArray_fp = null;
  * @returns map
  */
 const initMap = function (option) {
+    // 初始化地图
+    map = new window
+        .d2c
+        .map(option);
+        
     // 不参与点击查询的layerid
     if (window.vecterClickExceptLayer) {
         vecterClickExceptLayerArray = window
@@ -163,11 +168,6 @@ const initMap = function (option) {
                 }
             }
         })
-
-    // 初始化地图
-    map = new window
-        .d2c
-        .map(option);
 
     //绑定右键拖动事件 2D 3D 图层显示用
     map.on('pitch', _onPitch);

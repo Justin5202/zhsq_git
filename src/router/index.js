@@ -27,10 +27,7 @@ export default new Router({
           path: '/zhsq_d2c',
           name: 'zhsq_d2c',
           meta: {keepAlive: true},
-          component: mapTest,
-          children: [
-            ...toolbar
-          ]
+          component: mapTest
         }
       ]
     },

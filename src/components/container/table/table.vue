@@ -57,13 +57,15 @@
 	.table {
 		max-height: 800px;
 		overflow: hidden;
+		border-radius: 4px;
 		.table-header {
-			width: 1024px;
+			width: 800px;
 			height: 120px;
 			background:transparent url('../../../assets/images/catalog/综合市情系统.jpg') no-repeat;
-			background-size: 100%;
+			background-size: 100% 100%;
 			position: relative;
 			h2 {
+				width:100%;
 				margin: 0;
 				padding-top: 45px;
 				color: #fff;
@@ -116,6 +118,7 @@
 						float: left;
 						width: 80%;
 						span {
+							font-size: 14px;
 							width: 22%;
 							display: block;
 							float: left;
@@ -130,6 +133,7 @@
 						}
 					}
 					.list-group-item-title {
+						font-size: 15px;
 						float: left;
 						display: block;
 						width: 20%;

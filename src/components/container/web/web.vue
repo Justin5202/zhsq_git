@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import {getProvertyInfo} from '@/api/datasheets'
 import {mapGetters} from 'vuex'
 
 export default {
@@ -20,11 +19,11 @@ export default {
         ])
     },
     created() {
-        let areacode = this.$route.params.code
-        let dataId = this.$route.params.id
-        if(areacode !== dataId) {
-            this._getProvertyInfo(areacode, dataId)
-        }
+        // let areacode = this.$route.params.code
+        // let dataId = this.$route.params.id
+        // if(areacode !== dataId) {
+        //     this._getProvertyInfo(areacode, dataId)
+        // }
     },
     methods: {
         _getProvertyInfo(code, id) {

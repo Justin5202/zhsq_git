@@ -58,9 +58,9 @@ export default {
       })
     },
     goToPage() {
-      this.$router.push({
-        path: `/web/${this.areacode}/${this.mapguid}`
-        // path: `/720picture/${this.result.path}/${this.areacode}`
+      getProvertyInfo(this.areacode, this.mapguid).then(res => {
+        this.path = res.data.path
+        window.open(this.path)
       })
     },
     checkDetail() {

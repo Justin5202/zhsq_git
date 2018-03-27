@@ -19,17 +19,10 @@
           </p>
           <div class="list-box">
             <ul class="list">
-              <li class="list-item" v-for="index in 6" >
-                <p class="list-item-title" :style="{color: colors[index]}">交通设施</p>
+              <li class="list-item" v-for="(item, index) in list" >
+                <p class="list-item-title" :style="{color: colors[index]}">{{item.name}}</p>
                 <ul class="sublist">
-                  <li>机场</li>
-                  <li>医院</li>
-                  <li>文化</li>
-                  <li>教育</li>
-                  <li>福利</li>
-                  <li>殡葬</li>
-                  <li>宗教</li>
-                  <li>应急避难</li>
+                  <li v-for="i in item.children" @click="getSearch(i)">{{i.name}}</li>
                 </ul>
               </li>
             </ul>
@@ -41,21 +34,58 @@
 </template>
 <script>
   import {mapActions} from 'vuex'
+  import {getHotAround} from '@/api/datasheets'
 
   export default {
     name: 'search-around',
     data() {
       return {
+        list: [],
         searchContent: '',
         colors: ['#FF9999','#FF6666','#993333','#999933','#99CC00','#FF9900','#336699']
       }
+    },
+    mounted() {
+      this._getHotAround()
     },
     methods: {
       goback() {
         this.setAroundSearchShow(false)
       },
+      search() {
+        if(this.searchContent === '') {
+					return
+				}
+				const params = {
+					name: this.searchContent,
+					start: 0,
+					rows: 10,
+					type: 1,
+					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
+				}
+				this.getSearchParams({'typeParams': {}, 'params': params})
+      },
+      getSearch(item) {
+        if(this.searchContent === '') {
+					return
+				}
+				const params = {
+					name: item.name,
+					start: 0,
+					rows: 10,
+					type: 1,
+					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
+				}
+				this.getSearchParams({'typeParams': {}, 'params': params})
+      },
+      _getHotAround() {
+        getHotAround().then(res => {
+          this.list = res.data
+        })
+      },
       ...mapActions([
-        'setAroundSearchShow'
+        'setAroundSearchShow',
+        'getSearchParams'
       ])
     }
   }
@@ -186,8 +216,8 @@
                 margin-bottom: 40px;
                 display: flex;
                 p {
-                  width: 66px;
-                  margin-right: 40px;
+                  width: 77px;
+                  margin-right: 30px;
                 }
                 .sublist {
                   display: flex;
@@ -197,7 +227,7 @@
                     cursor: pointer;
                     width: 20%;
                     text-align: left;
-                    margin: 0 5px 30px 0;
+                    margin: 0 5px 10px 0;
                   }
                 }
               }

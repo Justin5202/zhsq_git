@@ -16,7 +16,7 @@
           <p v-if="areaInfoList[0].target.length!==0">{{areaInfoList[0].target[0].areaname}} {{areaInfoList[0].target[0].year}}</p>
           <p v-if="areaInfoList[0].target.length!==0">{{areaInfoList[0].target[0].cityTarget}}</p>
         </div>
-        <div class="detail" v-if="areaInfoList[0].target.length!==0 || parseInt(areaInfoList[0].type)%10 == 4" @click.stop="getDetails(areaInfoList[0].isActive, areaInfoList[0].id,areaInfoList[0].type)">
+        <div class="detail" v-if="areaInfoList[0].target.length!==0 || parseInt(areaInfoList[0].type)%10 == 4" @click.stop="getDetails(areaInfoList[0])">
           <i class="detail-icon" :class="{avtiveDetailIcon: !areaInfoList[0].isActive}"></i>
           <span :class="{activeColor: !areaInfoList[0].isActive}">详情</span>
         </div>
@@ -46,7 +46,7 @@
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
             </div>
-            <div class="detail" v-if="childItem.target.length!==0" @click.stop="getDetails(childItem.isActive, childItem.id,childItem.type)">
+            <div class="detail" v-if="childItem.target.length!==0" @click.stop="getDetails(childItem)">
               <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
               <span :class="{activeColor: !childItem.isActive}">详情</span>
             </div>
@@ -67,7 +67,7 @@
                 <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].areaname}} {{thirdChild.target[0].year}}</p>
                 <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].cityTarget}}</p>
               </div>
-              <div class="detail" v-if="thirdChild.target.length!==0" @click.stop="getDetails(thirdChild.isActive, thirdChild.id,thirdChild.type)">
+              <div class="detail" v-if="thirdChild.target.length!==0" @click.stop="getDetails(thirdChild)">
                 <i class="detail-icon" :class="{avtiveDetailIcon: !thirdChild.isActive}"></i>
                 <span :class="{activeColor: !thirdChild.isActive}">详情</span>
               </div>
@@ -117,14 +117,10 @@ export default {
       this.setAreaList(item);
     },
     //点击详情按钮
-    getDetails(bol, id, type) {
-      console.log(123);
-      console.log(type)
-      this.setAreaList({
-        bol: true,
-        id: id
-      });
-      var dataType = parseInt(type) % 10;
+    getDetails(item) {
+      item.isActive = true
+      this.setAreaList(item);
+      var dataType = parseInt(item.type) % 10;
       if (dataType == 2 || dataType == 3) {
         this.getAreaCodeAndDataId({
           areaCode: this.areaList,
@@ -139,7 +135,7 @@ export default {
       } else if (dataType == 4 || dataType == 5) {
         this.getDataFileByCodeAndId({
           areaCode: this.areaList,
-          dataId: id
+          dataId: item.id
         });
         this.setReportFormShow(false);
         this.setAreaReportFormShow(true);

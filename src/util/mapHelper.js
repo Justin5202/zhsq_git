@@ -1375,7 +1375,7 @@ const setPopupToMap = function (_geoPoint, _mapguid) {
         el: '#infoPopup',
         store,
         router,
-        template: '<v-infoPopup :mapguid="mapguid :geoPoint="geoPoint"/>',
+        template: '<v-infoPopup :mapguid="mapguid" :geoPoint="geoPoint"/>',
         data: function () {
             return {mapguid: _mapguid,geoPoint:_geoPoint}
         },

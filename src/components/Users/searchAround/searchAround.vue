@@ -63,12 +63,13 @@
 					type: 1,
 					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
 				}
-				this.getSearchParams({'typeParams': {}, 'params': params})
+        this.getSearchParams({'typeParams': {}, 'params': params})
+        this.searchPaneShow(true)
+				this.tablePaneShow(false)
+        this.setTopicShow(false)
+        this.setAroundSearchShow(false)
       },
       getSearch(item) {
-        if(this.searchContent === '') {
-					return
-				}
 				const params = {
 					name: item.name,
 					start: 0,
@@ -76,7 +77,11 @@
 					type: 1,
 					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
 				}
-				this.getSearchParams({'typeParams': {}, 'params': params})
+        this.getSearchParams({'typeParams': {}, 'params': params})
+        this.searchPaneShow(true)
+				this.tablePaneShow(false)
+        this.setTopicShow(false)
+        this.setAroundSearchShow(false)
       },
       _getHotAround() {
         getHotAround().then(res => {
@@ -85,7 +90,10 @@
       },
       ...mapActions([
         'setAroundSearchShow',
-        'getSearchParams'
+        'getSearchParams',
+        'searchPaneShow',
+        'tablePaneShow',
+        'setTopicShow'
       ])
     }
   }

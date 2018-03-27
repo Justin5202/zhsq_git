@@ -56,6 +56,17 @@ export default {
     mapguid: {
       type: String,
       default: ""
+    },
+    geoPoint: {
+
+    }
+  },
+  watch: {
+    geoPoint(newV) {
+      let data = {
+        point: JSON.stringify(geoPoint)
+      }
+      this.$store.commit(TYPE.SEARCH_PARAMS, data)
     }
   },
   computed: {

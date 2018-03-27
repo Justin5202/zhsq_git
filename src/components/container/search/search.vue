@@ -112,8 +112,14 @@
 		computed: {
 			...mapGetters([
 				'areaList',
-				'areaInfo'
+				'areaInfo',
+				'searchParams'
 			])
+		},
+		watch: {
+			searchParams(newV, oldV) {
+				this.searchContent = newV.name
+			}
 		},
 		methods: {
 			select() {

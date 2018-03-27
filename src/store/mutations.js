@@ -122,24 +122,32 @@ const mutations = {
                 }
             })
         }
-        let list = state.areaInfoList[0]
+        let list = state.areaInfoList.length>0 ? state.areaInfoList[0] : state.areaInfoList
+        let search = state.searchList
         temp.map(n => {
-            if (list.id === n.id) {
-                list.isActive = n.isActive
+            if(list.length>0) {
+                if (list.id === n.id) {
+                    list.isActive = n.isActive
+                }
+                if (list.children.length > 0) {
+                    list.children.map(v => {
+                        if (v.id === n.id) {
+                            v.isActive = n.isActive
+                        } else if (v.children.length > 0) {
+                            v.children.map(i => {
+                                if (i.id === n.id) {
+                                    i.isActive = n.isActive
+                                }
+                            })
+                        }
+                    })
+                }
             }
-            if (list.children.length > 0) {
-                list.children.map(v => {
-                    if (v.id === n.id) {
-                        v.isActive = n.isActive
-                    } else if (v.children.length > 0) {
-                        v.children.map(i => {
-                            if (i.id === n.id) {
-                                i.isActive = n.isActive
-                            }
-                        })
-                    }
-                })
-            }
+            search.map(v => {
+                if(v.id === n.id) {
+                    v.isActive = n.isActive
+                }
+            })
         })
     },
     [TYPE.ADD_LAYER_ID_LIST](state, id) {

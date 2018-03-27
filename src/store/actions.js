@@ -130,6 +130,7 @@ function checkData(data, commit, first) {
  */
 function checkClickedDataType({ dispatch, data, commit, first }) {
     let cur = Object.assign({}, data)
+    console.log(cur)
     let type = parseInt(Number(cur.type) / 10)
     let yu = Number(cur.type) % 10
     let temp

@@ -31,9 +31,9 @@ function addLayer(datapath, id) {
                 // 地图飞点
                 mapHelper.flyByBounds(handleArray(res.data.points))
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(
-                            1, handleArray(res.data.points).length - 1), res.data.mapguid,
-                        'TS_定位1', 0.8, result.minzoom)
-                    /*图层过滤*/
+                    1, handleArray(res.data.points).length - 1), res.data.mapguid,
+                    'TS_定位1', 0.8, result.minzoom)
+                /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList,
                     state.areaCodeList)
             }
@@ -112,6 +112,7 @@ const mutations = {
         }
     },
     [TYPE.MODIFY_AREA_INFO_LIST](state, item) {
+        console.log(item)
         let temp = []
         temp.push(item)
         if (item.children && item.children.length > 0) {
@@ -122,30 +123,30 @@ const mutations = {
                 }
             })
         }
-        let list = state.areaInfoList.length>0 ? state.areaInfoList[0] : state.areaInfoList
+        let list = state.areaInfoList.length > 0 ? state.areaInfoList[0] : state.areaInfoList
         let search = state.searchList
         temp.map(n => {
-            if(list.length>0) {
-                if (list.id === n.id) {
-                    list.isActive = n.isActive
-                }
-                if (list.children.length > 0) {
-                    list.children.map(v => {
-                        if (v.id === n.id) {
-                            v.isActive = n.isActive
-                        } else if (v.children.length > 0) {
-                            v.children.map(i => {
-                                if (i.id === n.id) {
-                                    i.isActive = n.isActive
-                                }
-                            })
-                        }
-                    })
-                }
+            if (list.id === n.id) {
+                list.isActive = n.isActive
+            }
+            if (list.children.length > 0) {
+                list.children.map(v => {
+                    if (v.id === n.id) {
+                        v.isActive = n.isActive
+                    } else if (v.children.length > 0) {
+                        v.children.map(i => {
+                            if (i.id === n.id) {
+                                i.isActive = n.isActive
+                            }
+                        })
+                    }
+                })
             }
             search.map(v => {
-                if(v.id === n.id) {
-                    v.isActive = n.isActive
+                if (v.macro) {
+                    if (v.macro.dataId === n.id) {
+                        v.isActive = n.isActive
+                    }
                 }
             })
         })
@@ -223,15 +224,22 @@ const mutations = {
                 temp.splice(index, 1)
                 let codeIndex = state.areaCodeList.findIndex(v => v === areainfo.areacode)
                 state.areaCodeList.splice(codeIndex, 1)
-                    /*删除行政区划线*/
+                /* 判断arealist是否为空，空的话，初始化areainfo */
+                if (state.areaList.length === 0) {
+                    state.areaInfo = {
+                        areacode: 500000,
+                        areaname: '重庆市'
+                    }
+                }
+                /*删除行政区划线*/
                 let areaIndex = state.secAreaList.findIndex(v => v.areacode ===
                     areainfo.areacode)
                 mapHelper.removeLayerById(areainfo.areacode.toString())
-                    /*图层过滤*/
+                /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             } else {
                 temp.push(areainfo)
-                    /*更新选中区域areacode列表*/
+                /*更新选中区域areacode列表*/
                 if (areainfo.areacode !== '501002') {
                     state.areaCodeList.push(areainfo.areacode)
                 }
@@ -242,7 +250,7 @@ const mutations = {
                         .geojson)
                     mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
                     mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid)
-                        /*图层过滤*/
+                    /*图层过滤*/
                     console.log(state.layerIdList, state.areaCodeList)
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 }
@@ -250,9 +258,9 @@ const mutations = {
         } else {
             /*删除全部行政区划线*/
             state.areaList.map(v => {
-                    mapHelper.removeLayerById(v.areacode.toString())
-                })
-                /*图层过滤*/
+                mapHelper.removeLayerById(v.areacode.toString())
+            })
+            /*图层过滤*/
             mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             state.areaList = []
             state.areaInfo = {

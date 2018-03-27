@@ -29,7 +29,8 @@ axios.interceptors.response.use(function (response) {
   }
   return response
 }, function (err) {
-  console.log(err)
+  let loading = Loading.service({})
+  loading.close()
   return Promise.reject(err)
 })
 

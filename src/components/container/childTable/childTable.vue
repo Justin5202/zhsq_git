@@ -242,8 +242,7 @@ export default {
         display: block;
         width: 44px;
         height: 44px;
-        background: url("../../../assets/images/catalog/不收藏@2x.png")
-          no-repeat;
+        // background: url("../../../assets/images/catalog/不收藏@2x.png") no-repeat;
         background-size: 100%;
       }
     }

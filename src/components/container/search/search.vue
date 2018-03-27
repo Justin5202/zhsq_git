@@ -174,7 +174,7 @@
 			removeSelectedArea() {
 				this.setAreaInfo({'areainfo': '', 'isRemoveAll': true})
 				this.activeIndex = 0
-				this.showSubmenu = this.showThreeLevelMenu = false
+				this.showSubmenu = this.showThreeLevelMenu = this.showFourthLevelMenu = false
 			},
 			handleClick(index, areaname, areacode) { // 一级菜单点击时触发的事件
 				this.setActive(index)

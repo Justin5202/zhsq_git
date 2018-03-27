@@ -93,11 +93,12 @@ export default {
     },
     handleCheckedItemsChange(value) {
       let checkedCount = value.length
-      this.checked = checkedCount === this.checkedItem.length
+      this.checked = checkedCount === this.checkedList.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedList.length
     },
     removeAll() {
       this.removeAllAreaList()
+      this.$store.commit('SET_LAYER_CONTROL_SHOW', false)
     },
     removeItem(item) {
       this.setAreaList(item)
@@ -174,8 +175,8 @@ export default {
             }
           }
           .slider-box {
-            padding: 0 10px;
-            padding-left: 17px;
+            padding: 0 20px;
+            padding-left: 10px;
             .el-slider__button{
               width: 10px;
               height: 10px;

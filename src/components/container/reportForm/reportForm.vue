@@ -25,7 +25,7 @@
                   <div class="table-title">
                     <div class="title-item">{{item.name}}</div>
                     <div class="table-item">
-                      <img src="../../../assets/images/catalog/关闭搜索.png" width="40" height="40" @click="clearItem(index)">
+                      <img src="../../../assets/images/catalog/关闭搜索.png" width="40" height="40" @click="clearItem(index,item)">
                     </div>
                   </div>
                 </div>
@@ -119,13 +119,22 @@ export default {
       this.activeTab = 0
       this.tabContext = this.reportFormData.data[0]
     },
-    clearItem(index) {
-      this.areaCodeAndDataId[2][index].isActive = false
-      this.setAreaList(this.areaCodeAndDataId[2][index])
+    clearItem(index,item) {
+      console.log(item)
+      let obj = Object.assign({}, this.areaCodeAndDataId[2][index])
+      obj.isActive = false
+      for(var i in this.areaCodeAndDataId[2]){
+        if(item.id == this.areaCodeAndDataId[2][i].id){
+          this.isActiveItem(this.areaCodeAndDataId[2][i])
+        }
+      }
       this.clearReport({
         "key": index,
         "data": this.reportFormData.data
       })
+    },
+    isActiveItem(item) {
+      this.setAreaList(item);
     },
     //tab 点击
     showContent(index,code){
@@ -189,7 +198,8 @@ export default {
                 font-size: 16px;
                 width: 50px;
                 height: 35px;
-                line-height: 35px;
+                display: flex;
+                align-items: center;
                 text-align: center;
                 border: 1px solid #fff;
                 background-color: #eee;
@@ -236,7 +246,10 @@ export default {
                             width: 90px;
                             text-align: center;
                             height: 40px;
-                            line-height: 40px;
+                            display: flex;
+                            align-items: center;
+                            justify-content:center;
+                            text-align: center;
                             img {
                               cursor: pointer;
                             }

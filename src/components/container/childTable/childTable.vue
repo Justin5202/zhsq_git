@@ -118,8 +118,9 @@ export default {
     },
     //点击详情按钮
     getDetails(item) {
-      item.isActive = true
-      this.setAreaList(item);
+      let obj = Object.assign({}, item)
+      obj.isActive = true
+      this.isActiveItem(item)
       var dataType = parseInt(item.type) % 10;
       if (dataType == 2 || dataType == 3) {
         this.getAreaCodeAndDataId({

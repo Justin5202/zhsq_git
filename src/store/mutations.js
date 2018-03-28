@@ -128,7 +128,7 @@ const mutations = {
             if (list.id === n.id) {
                 list.isActive = n.isActive
             }
-            if (list.children.length > 0) {
+            if (list.children && list.children.length > 0) {
                 list.children.map(v => {
                     if (v.id === n.id) {
                         v.isActive = n.isActive

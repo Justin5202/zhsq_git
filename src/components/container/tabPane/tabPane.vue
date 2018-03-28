@@ -290,30 +290,27 @@ export default {
       const params = {
         areacode: 500000,
         id: code
-      };
-      this.getAreaDetail(params);
-      this.setTopicShow(false);
+      }
+      this.getAreaDetail(params)
+      this.setTopicShow(false)
       this.setLayerControlShow(false)
     },
     isActiveItem(item, index) {
       this.searchPaneIndex = index
-      let type = item.macro.data.type;
-      let i = Number(type.substring(0, 1));
-      const params = {
-        id: item.macro.data.id
-      }
+      let type = item.macro.data.type
+      let i = Number(type.substring(0, 1))
       if (i === 1) {
         /*存在第二级目录*/
-        this.getAreaDetail(params)
+        this.getAreaDetail(item)
       } else if (i === 2) {
         /*加载空间数据，加入数据table*/
         item.isActive = !item.isActive
-        this.setAreaList(item)
+        this.setAreaList({'param': item})
       }
     },
     setAreaInfo(item, index) {
       item.isActive = !item.isActive
-      this.setAreaList(item)
+      this.setAreaList({'param': item})
       if(item.isActive) {
         this.searchPaneIndex = index
       } else {
@@ -413,8 +410,8 @@ export default {
     }
   }
   .search-pane-content {
-    padding-top: 10px;
     .search-type-button {
+      padding: 10px 0;
       .type-button {
         margin: 0 5px;
         font-size: 12px;
@@ -438,8 +435,8 @@ export default {
     }
     ul {
       margin: 0;
-      // max-height: 526px;
-      overflow-y: scroll;
+      margin-bottom: 10px;
+      overflow-y: auto;
       .search-pane-li {
         list-style: none;
         border-bottom: 1px solid #dcdfe6;

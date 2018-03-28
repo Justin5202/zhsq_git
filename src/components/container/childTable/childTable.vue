@@ -114,7 +114,7 @@ export default {
       this.nowIndex = index;
     },
     isActiveItem(item) {
-      this.setAreaList(item);
+      this.setAreaList({'param': item})
     },
     //点击详情按钮
     getDetails(item) {

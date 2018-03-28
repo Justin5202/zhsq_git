@@ -70,20 +70,19 @@ function addLayer(datapath, id) {
  *判断当前图层列表是否存在，存在删除，并移除地图图层
  *不存在，push进图层列表，并加载地图图层
  */
-function checkData(data, commit, first) {
+function checkData(data, commit, first, type) {
     let cur = Object.assign({}, data)
     let temp = state.activeAreaInfoList.slice()
     let layerIdList = state.layerIdList.slice()
     let falseLength = 0
     let isGo = true
-    console.log(cur.isActive)
     if(cur.isActive && cur.children.length > 0) {
         cur.children.map(v => {
             if(!v.isActive) {
                 falseLength += 1
             }
         })
-        if(falseLength === cur.children.length) {
+        if(falseLength === cur.children.length || type === 'report') {
             cur.isActive = false
             isGo = false
             commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
@@ -147,7 +146,7 @@ function checkData(data, commit, first) {
 /*
  *判断数据type类型，做相应操作
  */
-function checkClickedDataType({ dispatch, data, commit, first }) {
+function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
     let cur = Object.assign({}, data)
     let type = parseInt(Number(cur.type) / 10)
     let yu = Number(cur.type) % 10
@@ -164,7 +163,7 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
             cur.isActive = false
             temp = cur
         } else if (yu === 1) { // yu为1，仅有空间数据，即加载空间数据
-            temp = checkData(cur, commit, first)
+            temp = checkData(cur, commit, first, reportType)
         } else if (yu === 2) { // yu为2，仅有统计数据，加载统计数据
             console.log('仅有统计数据，加载统计数据')
             if (first) {
@@ -178,7 +177,7 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
             temp = cur
         } else if (yu === 3) { // yu为3，有空间数据和统计数据，优先加载空间数据
             console.log('有空间数据和统计数据，优先加载空间数据')
-            temp = checkData(cur, commit, first)
+            temp = checkData(cur, commit, first, reportType)
         } else if (yu === 4) { // yu为4，仅有文本数据，即加载文本数据
             console.log('仅有文本数据，即加载文本数据')
             if (first) {
@@ -197,11 +196,11 @@ function checkClickedDataType({ dispatch, data, commit, first }) {
             temp = cur
         } else if (yu === 5) { // yu为5，有文本数据和空间数据，优先加载空间数据
             console.log('有文本数据和空间数据，优先加载空间数据')
-            temp = checkData(cur, commit, first)
+            temp = checkData(cur, commit, first, reportType)
         }
     } else if (type === 2) { // type为2，即为图层，加载图层
         console.log('即为图层，加载图层')
-        temp = checkData(cur, commit, first)
+        temp = checkData(cur, commit, first, reportType)
     } else if (type === 3) { // type为3，即为网页，记载网页
         console.log('即为网页，加载网页')
         commit(TYPE.SET_URL_PATH, cur.datapath)
@@ -272,6 +271,22 @@ export const getSearchParams = function ({ dispatch, commit, state }, { typePara
     })
 }
 export const getAreaDetail = function ({ dispatch, commit, state }, params) {
+    if(params.searchType && params.searchType===4) {
+        let obj1 = {
+            id: params.macro.data.id
+        }
+        getDetailInfo(Object.assign({}, obj1)).then(res => {
+            let data = addIsActive(res.data[0])
+            if(data.children.length > 0) {
+                commit(TYPE.GET_AREA_DATA, data)
+                // 隐藏目录列表、搜索列表
+                commit(TYPE.SEARCH_PANE_IS_SHOW, false)
+                commit(TYPE.TABLE_PANE_SHOW, false)
+            }
+            checkClickedDataType({ dispatch, data, commit, "first": true })
+        })
+        return
+    }
     getDetailInfo(Object.assign({}, params)).then(res => {
         let data = addIsActive(res.data[0])
         commit(TYPE.GET_AREA_DATA, data)
@@ -301,11 +316,11 @@ export const deleteAreaInfo = function ({ commit, state }, { areainfo, isRemoveA
 export const setSecAreaList = function ({ commit, state }, list) {
     commit(TYPE.SET_SEC_AREA_LIST, list)
 }
-export const setAreaList = function ({ dispatch, commit, state }, param) {
+export const setAreaList = function ({ dispatch, commit, state }, {param, type}) {
     let data = param
     if (data.searchType) {
         if (data.searchType === 4) {
-            checkClickedDataType({ dispatch, 'data': data.macro.data, commit, 'first': false })
+            checkClickedDataType({ dispatch, 'data': data.macro.data, commit, 'first': false, type})
             let areainfo = {
                 areacode: data.macro.areaCode,
                 areaname: data.macro.areaName
@@ -319,7 +334,7 @@ export const setAreaList = function ({ dispatch, commit, state }, param) {
             dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
         }
     } else {
-        checkClickedDataType({ dispatch, data, commit, 'first': false })
+        checkClickedDataType({ dispatch, data, commit, 'first': false, type })
     }
 }
 // 区县区域下一级详细信息

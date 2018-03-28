@@ -58,15 +58,15 @@
               <td class="table-tab-item" v-for="(item,index) in reportFormData.name" @click="showContent(index,'exist')" :class="{active:activeTab == index}">{{item}}</td>
           </tr>
       </table>
-      <div class="table-tab-context" v-if="areaReportFormShow">
+      <div class="table-tab-context" v-if="areaReportFormShow" :style="{height:contentHeight}">
           <!-- 展示html字符串 -->
-          <div v-html="item" v-show="reportFormData.data.dataType[index] == 'string'&& activeContent == index" class="html-string" v-for="(item,index) in reportFormData.data.dataContex"></div>
+          <div v-html="item" v-show="reportFormData.data.dataType[index] == 'string'&& activeContent == index" class="html-string" v-for="(item,index) in reportFormData.data.dataContex"  :style="{height:contentHeight}"></div>
           <!-- 展示html页面 -->
-          <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'html'&& activeContent == index" v-for="(item,index) in reportFormData.data.dataContex"></iframe>
+          <iframe :src="'data:text/html;base64,' + item" class="html-doc" v-show="reportFormData.data.dataType[index] == 'html'&& activeContent == index" v-for="(item,index) in reportFormData.data.dataContex"  :style="{height:contentHeight}"></iframe>
           <!-- 展示pdf -->
-          <embed  class="html-pdf" :src="'data'+':application/pdf;base64,' + item" type="application/pdf" v-show="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex">
+          <embed  class="html-pdf" :src="'data'+':application/pdf;base64,' + item" type="application/pdf" v-show="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"  :style="{height:contentHeight}">
           <!-- 无数据提示 -->
-          <div class="html-string" v-show="reportFormData.data.dataType[index] == 'noData'&& activeContent == index" v-for="(item,index) in reportFormData.data.dataContex">{{item}}</div>
+          <div class="html-nodata" v-show="reportFormData.data.dataType[index] == 'noData'&& activeContent == index" v-for="(item,index) in reportFormData.data.dataContex"  :style="{height:contentHeight}">{{item}}</div>
           <div class="table-tab-context-special" v-show="!reportFormData.data.dataType">
              <div v-for="(item,index) in reportFormData.data" class="context-special-item" :class="{itemColor:index%2 != 0}">
                 <span style="margin-left:15px;">{{item.name + ':'}}</span>
@@ -75,6 +75,7 @@
           </div>
       </div>
     </div>
+    <div class="mask"></div>
   </div>
 </div>
 </template>
@@ -92,9 +93,19 @@ export default {
       activeTab:0,
       activeContent:0,
       reportFormSize:{
-        maxWidth:window.innerWidth*0.55 +'px',
-        minWidth:window.innerWidth*0.5 +'px'
-      }
+        width:(window.innerWidth - 60 - 350 - 200) +'px',
+        height:(window.innerHeight - 50)+'px'
+      },
+      contentHeight:(window.innerHeight - 50 - 80)+'px'
+    }
+  },
+  mounted () {
+    window.onresize = () => {
+    return (() => {
+      this.reportFormSize.width = (window.innerWidth - 60 - 350 - 200) +'px',
+      this.reportFormSize.height = (window.innerHeight - 50)+'px',
+      this.contentHeight = (window.innerHeight - 50 - 80)+'px'
+      })()
     }
   },
   watch:{
@@ -123,10 +134,9 @@ export default {
     },
     clearItem(index,item) {
       console.log(item)
-      let obj = Object.assign({}, this.areaCodeAndDataId[2][index])
-      obj.isActive = false
       for(var i in this.areaCodeAndDataId[2]){
         if(item.id == this.areaCodeAndDataId[2][i].id){
+          this.areaCodeAndDataId[2][i].isActive = false
           this.isActiveItem(this.areaCodeAndDataId[2][i])
         }
       }
@@ -175,8 +185,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .report-form-detail {
-    // min-width: 800px;
-    // max-width: 1100px;
     background-color: #fff;
     .report-form-header {
         width: 100%;
@@ -233,7 +241,7 @@ export default {
             }
             .form-content-box {
                 width: 100%;
-                height: 500px;
+                // height: 500px;
                 overflow-y: auto;
                 .table-form-content {
                     width: 100%;
@@ -309,9 +317,9 @@ export default {
         }
         .table-tab-context{
           width: 100%;
-          height: 500px;
+          // height: 500px;
           .table-tab-context-special{
-            height: 500px;
+            // height: 500px;
             overflow-y: auto;
             .context-special-item{
               width: 100%;
@@ -328,22 +336,37 @@ export default {
         }
         .html-string{
           width: 100%;
-          height: 500px;
+          // height: 500px;
           overflow-y: auto;
         }
         .html-doc{
           width: 100%;
-          height: 500px;
+          // height: 500px;
         }
         .html-pdf{
           display:inline-block;
           width: 100%;
-          height: 500px;
+          // height: 500px;
           overflow-y: auto;
+        }
+        .html-nodata{
+          width: 100%;
+          // height: 500px;
+          text-align: left;
+          padding: 10px 10px;
         }
         .font-blue{
           color: #409eff;
         }
     }
+    .mask{
+          width: 98.2%;
+          height: 59px;
+          background-color: #323639;
+          position: absolute;
+          top:86px;
+          left: 0px;
+          z-index: 10000;
+        }
 }
 </style>

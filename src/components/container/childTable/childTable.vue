@@ -120,7 +120,7 @@ export default {
     getDetails(item) {
       let obj = Object.assign({}, item)
       obj.isActive = true
-      this.isActiveItem(item)
+      this.isActiveItem(obj)
       var dataType = parseInt(item.type) % 10;
       if (dataType == 2 || dataType == 3) {
         this.getAreaCodeAndDataId({

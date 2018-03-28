@@ -118,9 +118,7 @@ export default {
     },
     //点击详情按钮
     getDetails(item) {
-      let obj = Object.assign({}, item)
-      obj.isActive = true
-      this.isActiveItem(item)
+      this.setAreaList({'param': item, 'type': 'report'})
       var dataType = parseInt(item.type) % 10;
       if (dataType == 2 || dataType == 3) {
         this.getAreaCodeAndDataId({

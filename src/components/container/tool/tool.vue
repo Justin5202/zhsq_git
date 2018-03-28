@@ -2,15 +2,23 @@
 <div class="tool" :style="{height:toolHeight +'px'}">
   <div class="tool-top">
     <div class="tool-box">
-      <span class="tool-item" @click="openLayerTool()" v-show="isInArray(2, this.userinfo.autuority)">
-  				          <img src="../../../assets/images/map/图层.png" alt="">
-  			      </span>
+      <span 
+        class="tool-item" 
+        @click="openLayerTool()" 
+        v-if="isInArray(2, this.userinfo.autuority)"
+      >
+  			<img src="../../../assets/images/map/图层.png" alt="">
+  		</span>
       <span class="circle" v-if="areaLayerLength > 0">{{areaLayerLength}}</span>
     </div>
     <div class="tool-box">
-      <span class="tool-item" @click="showAreaBox()" v-show="isInArray(9, this.userinfo.autuority)">
-        				<img src="../../../assets/images/map/区域.png" alt="">
-        			</span>
+      <span 
+        class="tool-item" 
+        @click="showAreaBox()" 
+        v-show="isInArray(9, this.userinfo.autuority)"
+      >
+        <img src="../../../assets/images/map/区域.png" alt="">
+      </span>
       <span class="circle" v-if="areaList.length > 0">{{areaList.length}}</span>
     </div>
     <div class="tool-box">
@@ -19,15 +27,15 @@
       </span>
       <span class="circle" v-if="reportFormLength > 0">{{reportFormLength}}</span>
     </div>
-    <span class="tool-item" v-show="isInArray(3, this.userinfo.autuority)">
+    <span class="tool-item" v-if="isInArray(3, this.userinfo.autuority)">
 				<v-measure/>
 			</span>
-    <span class="tool-item" v-show="isInArray(3, this.userinfo.autuority)">
-                <v-statistics/>
-			</span>
+    <span class="tool-item" v-if="isInArray(3, this.userinfo.autuority)">
+      <v-statistics/>
+		</span>
     <span class="tool-item ">
-				<img src="../../../assets/images/map/用户.png" alt="" @click="showUserCenter">
-			</span>
+			<img src="../../../assets/images/map/用户.png" alt="" @click="showUserCenter">
+		</span>
   </div>
   <div class="tool-compass" @click="resetNorth" v-show="toolCompassVisible"></div>
   <div class="tool-bottom">
@@ -61,15 +69,12 @@
 </div>
 </template>
 <script>
-import vStatistics from '../statistics/statistics.vue'
+import vStatistics from '../statistics/statistics'
 import LayerControl from '@/components/container/layerControl/layerControl'
 import AreaControl from '@/components/container/areaControl/areaControl'
 import vMeasure from '@/components/container/measure/measure'
-
 import vUserCenter from '@/components/Users/userCenter/userCenter'
-import {
-  mapGetters, mapActions
-} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   components: {

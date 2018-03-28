@@ -284,6 +284,7 @@ export default {
         this.getAreaDetail(params);
       } else if (i === 2) {
         /*加载空间数据，加入数据table*/
+        item.isActive = !item.isActive
         this.setAreaList(item);
       }
     },

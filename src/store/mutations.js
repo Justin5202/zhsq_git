@@ -31,9 +31,9 @@ function addLayer(datapath, id) {
                 // 地图飞点
                 mapHelper.flyByBounds(handleArray(res.data.points))
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(
-                            1, handleArray(res.data.points).length - 1), res.data.mapguid,
-                        'TS_定位1', 0.8, result.minzoom)
-                    /*图层过滤*/
+                    1, handleArray(res.data.points).length - 1), res.data.mapguid,
+                    'TS_定位1', 0.8, result.minzoom)
+                /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList,
                     state.areaCodeList)
             }
@@ -122,7 +122,8 @@ const mutations = {
                 }
             })
         }
-        let list = state.areaInfoList[0]
+        let list = state.areaInfoList.length > 0 ? state.areaInfoList[0] : state.areaInfoList
+        let search = state.searchList
         temp.map(n => {
             if (list.id === n.id) {
                 list.isActive = n.isActive
@@ -140,6 +141,13 @@ const mutations = {
                     }
                 })
             }
+            search.map(v => {
+                if (v.macro) {
+                    if (v.macro.dataId === n.id) {
+                        v.isActive = n.isActive
+                    }
+                }
+            })
         })
     },
     [TYPE.ADD_LAYER_ID_LIST](state, id) {
@@ -215,41 +223,60 @@ const mutations = {
                 temp.splice(index, 1)
                 let codeIndex = state.areaCodeList.findIndex(v => v === areainfo.areacode)
                 state.areaCodeList.splice(codeIndex, 1)
-                    /*删除行政区划线*/
-                let areaIndex = state.secAreaList.findIndex(v => v.areacode ===
-                    areainfo.areacode)
+                /* 判断arealist是否为空，空的话，初始化areainfo */
+                if (state.areaList.length === 0) {
+                    state.areaInfo = {
+                        areacode: 500000,
+                        areaname: '重庆市',
+                        parentid: ''
+                    }
+                }
+                /*删除行政区划线*/
                 mapHelper.removeLayerById(areainfo.areacode.toString())
-                    /*图层过滤*/
+                mapHelper.closePopup()
+                /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             } else {
-                temp.push(areainfo)
-                    /*更新选中区域areacode列表*/
+                /*更新选中区域areacode列表*/
                 if (areainfo.areacode !== '501002') {
                     state.areaCodeList.push(areainfo.areacode)
+                }
+                state.areaList.push(areainfo)
+                var i = state.areaList.length
+                while (i--) {
+                    if (state.areaList[i].areacode.length !== areainfo.areacode.length) {
+                        // 发现父级，清除父级行政区划
+                        mapHelper.removeLayerById(state.areaList[i].areacode.toString())
+                        mapHelper.closePopup()
+                        // 存在父级区域，删除父级区域
+                        state.areaList.splice(i, 1)
+                    }
                 }
                 /*画行政区划线*/
                 /*选中区域所在详细信息列表的位置,图层id为当前区域所在列表的下标*/
                 if (state.areaDetailInfo) {
+                    // 加载自身
                     mapHelper.addLayerByIdAndGeojson(state.areaDetailInfo.areacode.toString(), state.areaDetailInfo
                         .geojson)
-                    mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
+                    mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 12)
                     mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid)
-                        /*图层过滤*/
-                    console.log(state.layerIdList, state.areaCodeList)
+                    /*图层过滤*/
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 }
             }
         } else {
             /*删除全部行政区划线*/
             state.areaList.map(v => {
-                    mapHelper.removeLayerById(v.areacode.toString())
-                })
-                /*图层过滤*/
+                mapHelper.removeLayerById(v.areacode.toString())
+            })
+            mapHelper.closePopup()
+            /*图层过滤*/
             mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             state.areaList = []
             state.areaInfo = {
                 areacode: 500000,
-                areaname: '重庆市'
+                areaname: '重庆市',
+                parentid: ''
             }
         }
     },

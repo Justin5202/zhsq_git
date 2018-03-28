@@ -1,7 +1,7 @@
 <template>
   <div class="pic-pop">
     <div v-if="mapguid && !areacode">
-      <img :src="thumb1" alt="">
+      <img :src="thumb1" alt="" @click="checkMorePic()">
       <p @click="checkMorePic()">查看图片</p>
     </div>
     <div v-if="mapguid && areacode">

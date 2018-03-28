@@ -19,7 +19,11 @@ axios.interceptors.request.use(function (config) {
 
 // 拦截响应
 axios.interceptors.response.use(function (response) {
-  let loading = Loading.service({})
+  let loading = Loading.service({
+    fullscreen: true,
+    background: 'rgba(0, 0, 0, .6)',
+    spinner: 'icon-loading'
+  })
   loading.close()
   if (response.data.code == '-3') {
     router.replace('/login')
@@ -29,7 +33,8 @@ axios.interceptors.response.use(function (response) {
   }
   return response
 }, function (err) {
-  console.log(err)
+  let loading = Loading.service({})
+  loading.close()
   return Promise.reject(err)
 })
 

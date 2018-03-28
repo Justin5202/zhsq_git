@@ -133,20 +133,16 @@ export default {
       this.tabContext = this.reportFormData.data[0]
     },
     clearItem(index,item) {
-      console.log(item)
       for(var i in this.areaCodeAndDataId[2]){
         if(item.id == this.areaCodeAndDataId[2][i].id){
           this.areaCodeAndDataId[2][i].isActive = false
-          this.isActiveItem(this.areaCodeAndDataId[2][i])
+          this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
         }
       }
       this.clearReport({
         "key": index,
         "data": this.reportFormData.data
       })
-    },
-    isActiveItem(item) {
-      this.setAreaList(item);
     },
     //tab 点击
     showContent(index,code){

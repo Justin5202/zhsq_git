@@ -52,8 +52,8 @@ function addLayer(datapath, id) {
                 // 地图飞点
                 if(res.data.flag === 2) {
                     mapHelper.flyByBounds(handleArray(res.data.points))
-                }
-                mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length - 1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
+                }   
+                mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length - 1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)           
                     /*删除地图mark */
                 for (let i = 0; i < 10; i++) {
                     mapHelper.removeLayerById((state.searchParams.start + i).toString())

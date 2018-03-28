@@ -250,7 +250,7 @@ input[type="checkbox"]:checked:after {
   display: block !important;
   width: 50px !important;
   height: 50px !important;
-  background: url('../../src/assets/images/loading.gif') no-repeat !important;
+  background: url('../img/loading.gif') no-repeat !important;
   background-size: 100% 100% !important;
   position: absolute;
   left: 50%;

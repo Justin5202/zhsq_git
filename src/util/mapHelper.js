@@ -331,6 +331,7 @@ const _onClick = function (e) {
                         highlightOption["paint"] = {
                             "circle-color": "rgba(85,164,241,0.6)"
                         }
+                        map.addLayer(highlightOption);
                         break;
                     case "line":
                         highlightOption["type"] = feature.layer.type
@@ -338,25 +339,28 @@ const _onClick = function (e) {
                             "line-color": "rgba(85,164,241,0.6)",
                             "line-width": 2
                         }
+                        map.addLayer(highlightOption);
                         break;
                     case "fill":
                         highlightOption["type"] = feature.layer.type
                         highlightOption["paint"] = {
                             "fill-color": "rgba(85,164,241,0.6)"
                         }
+                        map.addLayer(highlightOption);
                         break;
                     case "symbol":
                         highlightOption["type"] = "circle"
                         highlightOption["paint"] = {
                             "circle-color": "rgba(85,164,241,0.6)"
                         }
+                        map.addLayer(highlightOption);
                         break;
 
                     default:
                         console.log("非点、线、面、symbol、3d类型-点击高亮");
                         break;
                 }
-                map.addLayer(highlightOption);
+                
                 // 不在排除的图层中-end
             }
 

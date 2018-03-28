@@ -31,22 +31,33 @@
 						class="search-pane-li" 
 						v-else v-for="(item, index) in searchList"
 					>
-						<div class="search-pane-box" v-if="item.searchType === 1">
+						<div 
+              class="search-pane-box" 
+              v-if="item.searchType === 1"
+              :class="{active: searchIndex === index}"
+            >
 							<div class="icon-box">
 								<i class="poi-icon"></i>
 							</div>
-							<div class="area-content">
+							<div class="area-content" @click="flyToPoi(item, index)">
 								<h2>{{(page-1)*10+index+1}}.{{item.poi.name}}</h2>
 								<p>{{item.poi.address}}</p>
 							</div>
 							<div class="detail">
 							</div>
 						</div>
-						<div class="search-pane-box" v-else-if="item.searchType === 2">
+						<div 
+              class="search-pane-box"
+              :class="{active: searchIndex === index}"
+              v-else-if="item.searchType === 2"
+            >
 							<div class="icon-box">
 								<i class="area-icon"></i>
 							</div>
-							<div class="area-content">
+							<div 
+                class="area-content" 
+                @click="setAreaInfo(item, index)"
+              >
 								<h2>{{item.area.areaname}}</h2>
 								<p>{{item.area.address}}</p>
 								<div v-if="item.area.areaTarget.length>0">
@@ -68,7 +79,7 @@
 							<div class="icon-box">
 								<i class="data-icon"></i>
 							</div>
-							<div class="area-content" @click="isActiveItem(item)">
+							<div class="area-content" @click="isActiveItem(item, index)">
 								<h2>{{item.macro.name}}</h2>
 								<p>{{item.macro.address}}</p>
 								<p>{{item.macro.year}}</p>
@@ -96,7 +107,7 @@
 							<div class="icon-box">
 								<i class="unit-icon"></i>
 							</div>
-							<div class="area-content" >
+							<div class="area-content">
 								<h2>{{item.area.areaname}}</h2>
 								<p>{{item.area.address}}</p>
 							</div>
@@ -223,24 +234,35 @@ export default {
   },
   methods: {
     getType(index) {
-      this.type = index || this.type;
+      this.type = index || this.type
       const params = {
         type: index || this.type,
         start: (this.page - 1) * 10,
         rows: 10
-      };
-      this.buttonType = "info";
-      this.nowIndex = index - 1;
-      this.getSearchParams({ typeParams: params, params: {} });
+      }
+      this.buttonType = "info"
+      this.nowIndex = index - 1
+      this.topicIndex =  -1
+      this.searchIndex =  -1
+      this.getSearchParams({ typeParams: params, params: {} })
     },
     getTourismType(index) {
       this.nowIndex = index;
       this.addTourismLayer(index);
     },
     flyToPoi(item, index) {
-      this.searchIndex = index;
-      this.$mapHelper.flyByPointAndZoom(item.element.geopoint, 16);
-      this.$mapHelper.setPopupToMap(item.element.geopoint, item.element.uuid);
+      this.searchIndex = index
+      let gp, uuid
+      if(item.element) {
+        gp = item.element.geopoint
+        uuid = item.element.uuid
+      }
+      if(item.poi) {
+        gp = item.poi.geopoint
+        uuid = item.poi.uuid
+      }
+      this.$mapHelper.flyByPointAndZoom(gp, 16)
+      this.$mapHelper.setPopupToMap(gp, uuid)
     },
     flyToPoint(point, id, index) {
       let p;
@@ -273,19 +295,29 @@ export default {
       this.setTopicShow(false);
       this.setLayerControlShow(false)
     },
-    isActiveItem(item) {
+    isActiveItem(item, index) {
+      this.searchPaneIndex = index
       let type = item.macro.data.type;
       let i = Number(type.substring(0, 1));
       const params = {
         id: item.macro.data.id
-      };
+      }
       if (i === 1) {
         /*存在第二级目录*/
-        this.getAreaDetail(params);
+        this.getAreaDetail(params)
       } else if (i === 2) {
         /*加载空间数据，加入数据table*/
         item.isActive = !item.isActive
-        this.setAreaList(item);
+        this.setAreaList(item)
+      }
+    },
+    setAreaInfo(item, index) {
+      item.isActive = !item.isActive
+      this.setAreaList(item)
+      if(item.isActive) {
+        this.searchPaneIndex = index
+      } else {
+        this.searchPaneIndex = -1
       }
     },
     toggleSlide() {
@@ -293,7 +325,6 @@ export default {
     },
     //点击详情按钮
     getDetails(item) {
-      console.log(item);
       if (item.searchType == 4) {
         this.isActiveItem(item);
         this.getAreaCodeAndDataId({

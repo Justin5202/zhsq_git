@@ -157,8 +157,13 @@
         }
 
         register(option).then(res => {
-          if (res.code === '1') {
-            this.$router.replace('/login')
+          if (res.code == '1') {
+            this.$router.push('/login')
+          } else if(res.code == '4') {
+            this.$message({
+              message: '手机号已被注册',
+              type: 'error'
+            })
           }
         })
       },

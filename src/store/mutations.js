@@ -337,6 +337,9 @@ const mutations = {
     },
     [TYPE.SET_LAYER_CONTROL_SHOW](state, flag) {
         state.layerControlShow = flag
+    },
+    [TYPE.SET_DRAW_PANEL_TYPE](state, type) {
+        state.drawPanelType = type
     }
 }
 

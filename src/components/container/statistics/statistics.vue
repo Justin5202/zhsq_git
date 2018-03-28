@@ -16,7 +16,7 @@
               <span class="statistics-operation-item operation-item-border" @click="startDrawArea()">确定</span>
           </div>
       </div>
-      <div class="statistics-draw" v-show="statisticsToolShow">
+      <div class="statistics-draw" v-if="drawPanelType == 'statistics'">
           <div class="statistics-draw-clear" @click="clearDrawResult()">
           </div>
           <div class="statistics-font statistics-draw-confirm" @click="statisticInfo()">
@@ -47,12 +47,12 @@
 </template>
 <script>
 import {getSelectTargetType,getStatisticsDetails} from '@/api/datasheets.js'
+import {mapGetters,mapActions} from 'Vuex'
 export default {
   data(){
       return{
          conditionList:[],
          statisticsConditionShow:false,
-         statisticsToolShow:false,
          displayStatistics:false,
          shape:"" ,
          dataId:"",
@@ -66,6 +66,20 @@ export default {
              right:window.innerWidth/2 - 190 +'px'
          },
          statisticsList:[]
+      }
+  },
+   computed:{
+    ...mapGetters([
+      'drawPanelType'
+    ])
+  },
+  watch:{
+      drawPanelType:function(val){
+        if(val !='statistics'){
+            this.clearDrawResult()
+            this.dataId = ""
+            this.statisticsConditionShow = false
+        }
       }
   },
   methods:{
@@ -90,6 +104,7 @@ export default {
         var sum = 0;
         this.dataId = '';
         d2cMap.getCanvas().style.cursor = 'crosshair';
+        this.$mapHelper.setIsMeasure(false)
         for(var i= 0; i < this.conditionList.length;i++){
             if(this.conditionList[i].isActive){
                 sum ++
@@ -98,7 +113,7 @@ export default {
         }
         if(sum > 0){
             this.dataId = this.dataId.substring(0,this.dataId.length - 1)
-            this.statisticsToolShow = true
+            this.setDrawPanelType('statistics')
             this.statisticsConditionShow = false
         }
         this.$mapHelper.setIsMeasure(true)
@@ -155,13 +170,17 @@ export default {
         this.clearDrawResult()
         this.dataId = ""
         this.statisticsConditionShow = false
-        this.statisticsToolShow=false
+        this.setDrawPanelType('unCheck')
+        this.$mapHelper.setIsMeasure(false)
         d2cMap.getCanvas().style.cursor = '';
       },
       //关闭统计面板
       dailogClose(){
           this.displayStatistics = false
-      }
+      },
+    ...mapActions([
+        'setDrawPanelType'
+    ])
   }
 }
 </script>

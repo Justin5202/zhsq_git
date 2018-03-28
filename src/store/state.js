@@ -46,7 +46,9 @@ const state = {
     //报表类型（1.统计数据,2.文本数据）
     reportFormtype: '',
     urlpath: '',
-    layerControlShow: false
+    layerControlShow: false,
+    //绘制面板type,1.量算面板,2.统计面板
+    drawPanelType: ''
 }
 
 export default state

@@ -24,3 +24,4 @@
   export const layerIdList = state => state.layerIdList
   export const urlpath = state => state.urlpath
   export const layerControlShow = state => state.layerControlShow
+  export const drawPanelType = state => state.drawPanelType

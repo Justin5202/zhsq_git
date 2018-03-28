@@ -101,7 +101,7 @@ export default {
       this.$store.commit('SET_LAYER_CONTROL_SHOW', false)
     },
     removeItem(item) {
-      this.setAreaList(item)
+      this.setAreaList({'param': item})
     },
     removeSearchItem(item) {
       this.removeSearchItem(item)

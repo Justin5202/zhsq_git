@@ -86,7 +86,7 @@ export default {
     },
     checkDataType(data) {
       this.notPoi = false
-      if (!data._source.ztmc) {
+      if (!data._source.ztmc || data._source.ztmc=='社区村驻地(未移动版)') {
         this.uuidClickedInfo = data
         getThematicMap(data._type).then(res => {
           if (res.data !== "[]") {

@@ -19,7 +19,7 @@ export default {
 		}
 	},
 	mounted(){
-		this.getMapJsonAndImg()
+		// this.getMapJsonAndImg()
 	},
 
 	methods: {

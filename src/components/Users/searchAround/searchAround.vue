@@ -225,7 +225,7 @@
               justify-content: space-between;
               .list-item {
                 width: 49%;
-                margin-bottom: 40px;
+                margin-bottom: 20px;
                 display: flex;
                 justify-content: flex-start;
                 p {
@@ -241,7 +241,7 @@
                   li {
                     font-size: 14px;
                     cursor: pointer;
-                    width: 25%;
+                    width: 33%;
                     text-align: left;
                     margin: 0 0 10px 0;
                   }

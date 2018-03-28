@@ -50,7 +50,9 @@ function addLayer(datapath, id) {
         getQueryElementByPoint(result).then(res => {
             if (res.data && res.data.flag !== 3) {
                 // 地图飞点
-                mapHelper.flyByBounds(handleArray(res.data.points))
+                if(res.data.flag === 2) {
+                    mapHelper.flyByBounds(handleArray(res.data.points))
+                }
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length - 1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
                     /*删除地图mark */
                 for (let i = 0; i < 10; i++) {

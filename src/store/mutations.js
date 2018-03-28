@@ -112,7 +112,6 @@ const mutations = {
         }
     },
     [TYPE.MODIFY_AREA_INFO_LIST](state, item) {
-        console.log(item)
         let temp = []
         temp.push(item)
         if (item.children && item.children.length > 0) {
@@ -234,6 +233,7 @@ const mutations = {
                 }
                 /*删除行政区划线*/
                 mapHelper.removeLayerById(areainfo.areacode.toString())
+                mapHelper.closePopup()
                 /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             } else {
@@ -247,6 +247,7 @@ const mutations = {
                     if (state.areaList[i].areacode.length !== areainfo.areacode.length) {
                         // 发现父级，清除父级行政区划
                         mapHelper.removeLayerById(state.areaList[i].areacode.toString())
+                        mapHelper.closePopup()
                         // 存在父级区域，删除父级区域
                         state.areaList.splice(i, 1)
                     }
@@ -268,6 +269,7 @@ const mutations = {
             state.areaList.map(v => {
                 mapHelper.removeLayerById(v.areacode.toString())
             })
+            mapHelper.closePopup()
             /*图层过滤*/
             mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             state.areaList = []

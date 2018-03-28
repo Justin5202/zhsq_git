@@ -82,11 +82,15 @@ function checkData(data, commit, first, type) {
                 falseLength += 1
             }
         })
-        if(falseLength === cur.children.length || type === 'report') {
+        if(falseLength === cur.children.length) {
             cur.isActive = false
             isGo = false
             commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
         }
+    }
+    console.log(type)
+    if(type == 'report') {
+        isGo = false
     }
     if(!isGo) {
         return
@@ -112,6 +116,7 @@ function checkData(data, commit, first, type) {
                     v.isActive = false
                     cur.isActive = false
                     mapHelper.removeLayerByCode(v.id)
+                    mapHelper.removeLayerById(v.id)
                 }
                 commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
                 commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
@@ -134,6 +139,7 @@ function checkData(data, commit, first, type) {
             } else if (!first) {
                 cur.isActive = false
                 mapHelper.removeLayerByCode(cur.id)
+                mapHelper.removeLayerById(cur.id)
             }
             commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
             commit(TYPE.MODIFY_AREA_INFO_LIST, cur)

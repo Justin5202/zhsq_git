@@ -238,7 +238,6 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
-      cursor: pointer;
       .collection-icon {
         display: block;
         width: 44px;

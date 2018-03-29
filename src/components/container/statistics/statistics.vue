@@ -188,7 +188,7 @@ export default {
           if(this.draw.drawPlane){
             this.draw.drawPlane.remove()
             this.draw = {}
-            this.draw.drawPlane = new d2c.distanceLayer(d2cMap)
+            this.draw.drawPlane = new d2c.areaLayer(d2cMap)
           }
           this.pointNum = 0
       },

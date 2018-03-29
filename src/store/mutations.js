@@ -166,9 +166,6 @@ const mutations = {
             })
         })
     },
-    [TYPE.ADD_LAYER_ID_LIST](state, id) {
-        state.layerIdList.push(id)
-    },
     [TYPE.SET_ACTIVE_AREA_LIST](state, { item, isRemoveAll }) {
         if (isRemoveAll) {
             mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
@@ -200,6 +197,10 @@ const mutations = {
                 state.activeAreaInfoList.splice(index, 1)
             }
         }
+        // 更新layerIdList
+        let temp = []
+        state.activeAreaInfoList.map(v => temp.push(v.id))
+        state.layerIdList = temp
     },
     [TYPE.SET_SEC_AREA_LIST](state, secAreaList) {
         state.secAreaList = secAreaList
@@ -242,8 +243,6 @@ const mutations = {
             if (bol) {
                 let index = temp.findIndex(v => v.areacode === areainfo.areacode)
                 temp.splice(index, 1)
-                let codeIndex = state.areaCodeList.findIndex(v => v === areainfo.areacode)
-                state.areaCodeList.splice(codeIndex, 1)
                 /* 判断arealist是否为空，空的话，初始化areainfo */
                 if (state.areaList.length === 0) {
                     state.areaInfo = {
@@ -258,10 +257,6 @@ const mutations = {
                 mapHelper.removeLayerById(areainfo.areacode.toString())
                 mapHelper.closePopup()
             } else {
-                /*更新选中区域areacode列表*/
-                if (areainfo.areacode !== '501002') {
-                    state.areaCodeList.push(areainfo.areacode)
-                }
                 state.areaList.push(areainfo)
                 var i = state.areaList.length
                 while (i--) {
@@ -300,6 +295,10 @@ const mutations = {
                 parentid: ''
             }
         }
+        // update areaCodeList
+        let temp = []
+        state.areaList.map(v => temp.push(v.areacode))
+        state.areaCodeList = temp
     },
     [TYPE.SET_UUID_INFO](state, uuidClickedInfo) {
         state.uuidClickedInfo = uuidClickedInfo

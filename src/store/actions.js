@@ -101,7 +101,6 @@ function checkData(data, commit, first, type) {
                     cur.isActive = true
                     commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
                     commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
-                    commit(TYPE.ADD_LAYER_ID_LIST, v.id)
                 }
             } else {
                 if (index < 0) {
@@ -117,7 +116,6 @@ function checkData(data, commit, first, type) {
                 }
                 commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
                 commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
-                commit(TYPE.ADD_LAYER_ID_LIST, v.id)
             }
         })
     } else {
@@ -141,7 +139,6 @@ function checkData(data, commit, first, type) {
             }
             commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
             commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
-            commit(TYPE.ADD_LAYER_ID_LIST, cur.id)
         }
     }
     return cur

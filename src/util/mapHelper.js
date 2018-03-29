@@ -167,26 +167,6 @@ const initMap = function (option) {
             }
         });
 
-    // 缩放结束 判断当前边界是否在 重庆市域内
-    map.on('zoomend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 拖拽结束 判断当前边界是否在 重庆市域内
-    map.on('dragend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 倾斜结束 判断当前边界是否在 重庆市域内
-    map.on('pitchend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 转角结束 判断当前边界是否在 重庆市域内
-    map.on('rotateend', (e) => {
-        _containRelationshipCallback();
-    });
-
     return map;
 };
 
@@ -555,6 +535,26 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                 map.addLayer(element);
             })
         /* 判断是否要 加载天地图 */
+
+        // 缩放结束 判断当前边界是否在 重庆市域内
+        map.on('zoomend', (e) => {
+            _containRelationshipCallback();
+        });
+
+        // 拖拽结束 判断当前边界是否在 重庆市域内
+        map.on('dragend', (e) => {
+            _containRelationshipCallback();
+        });
+
+        // 倾斜结束 判断当前边界是否在 重庆市域内
+        map.on('pitchend', (e) => {
+            _containRelationshipCallback();
+        });
+
+        // 转角结束 判断当前边界是否在 重庆市域内
+        map.on('rotateend', (e) => {
+            _containRelationshipCallback();
+        });
         // 绑定右键拖动事件 2D 3D 图层显示用
         map.on('pitch', _onPitch);
 
@@ -633,7 +633,25 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                         map.addLayer(element);
                     })
                 /* 判断是否要 加载天地图 */
+                // 缩放结束 判断当前边界是否在 重庆市域内
+                map.on('zoomend', (e) => {
+                    _containRelationshipCallback();
+                });
 
+                // 拖拽结束 判断当前边界是否在 重庆市域内
+                map.on('dragend', (e) => {
+                    _containRelationshipCallback();
+                });
+
+                // 倾斜结束 判断当前边界是否在 重庆市域内
+                map.on('pitchend', (e) => {
+                    _containRelationshipCallback();
+                });
+
+                // 转角结束 判断当前边界是否在 重庆市域内
+                map.on('rotateend', (e) => {
+                    _containRelationshipCallback();
+                });
                 // 绑定右键拖动事件 2D 3D 图层显示用
                 map.on('pitch', _onPitch);
 
@@ -879,7 +897,7 @@ const _containRelationshipCallback = function () {
  * @returns null
  */
 const _setMBVisibility = function () {
-    
+
     let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", "visibility");
     let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
     let imgHQ_visibility = map.getLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
@@ -926,20 +944,21 @@ const _setMBVisibility = function () {
 const _setVecterDemMapVisibility = function (value) {
     try {
         let visibility = map.getLayoutProperty("gjtdt_global-vecter-layer", "visibility");
+        if (value) {
+            if (visibility != "visible") {
+                map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'visible');
+                map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'visible');
+            }
+        } else {
+            if (visibility != "none") {
+                map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'none');
+                map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'none');
+            }
+        }
     } catch (error) {
         console.log('gjtdt_global-vecter-layer 图层不存在');
     }
-    if (value) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'visible');
-            map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'visible');
-        }
-    } else {
-        if (visibility != "none") {
-            map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'none');
-            map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'none');
-        }
-    }
+
 };
 
 /**
@@ -950,21 +969,21 @@ const _setVecterDemMapVisibility = function (value) {
 const _setTdtImageMapVisibility = function (value) {
     try {
         let visibility = map.getLayoutProperty("gjtdt_remote-scense-layer", "visibility");
+        if (value) {
+            if (visibility != "visible") {
+                map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'visible');
+                map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'visible');
+            }
+        } else {
+            if (visibility != "none") {
+                map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'none');
+                map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'none');
+            }
+        }
     } catch (error) {
         console.log('gjtdt_remote-scense-layer 图层不存在');
     }
 
-    if (value) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'visible');
-            map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'visible');
-        }
-    } else {
-        if (visibility != "none") {
-            map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'none');
-            map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'none');
-        }
-    }
 };
 
 /**
@@ -975,20 +994,21 @@ const _setTdtImageMapVisibility = function (value) {
 const _setTdtHQImageMapVisibility = function (value) {
     try {
         let visibility = map.getLayoutProperty("gjtdt_HQ_remote-scense-layer", "visibility");
+        if (value) {
+            if (visibility != "visible") {
+                map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'visible');
+                map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'visible');
+            }
+        } else {
+            if (visibility != "none") {
+                map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'none');
+                map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'none');
+            }
+        }
     } catch (error) {
         console.log('gjtdt_HQ_remote-scense-layer 图层不存在');
     }
-    if (value) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'visible');
-            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'visible');
-        }
-    } else {
-        if (visibility != "none") {
-            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'none');
-            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'none');
-        }
-    }
+
 };
 
 /**
@@ -997,18 +1017,23 @@ const _setTdtHQImageMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtDemMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_dem-layer", "visibility");
-    if (value) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'visible');
-            map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'visible');
+    try {
+        let visibility = map.getLayoutProperty("gjtdt_dem-layer", "visibility");
+        if (value) {
+            if (visibility != "visible") {
+                map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'visible');
+                map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'visible');
+            }
+        } else {
+            if (visibility != "none") {
+                map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'none');
+                map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'none');
+            }
         }
-    } else {
-        if (visibility != "none") {
-            map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'none');
-            map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'none');
-        }
+    } catch (error) {
+        console.log('gjtdt_dem-layer 图层不存在');
     }
+
 };
 
 /**

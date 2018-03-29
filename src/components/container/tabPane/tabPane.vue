@@ -257,12 +257,11 @@ export default {
     flyToPoi(item, index) {
       console.log(JSON.parse(item.element.geojson))
       this.searchIndex = index
-      let gp, uuid
+      let gp, uuid, geojson
       if(item.element) {
         uuid = item.element.uuid
         if(item.element.geojson) {
-          this.$mapHelper.removeHighLight()
-          this.$mapHelper.setHighLight(JSON.parse(item.element.geojson))
+          geojson = JSON.parse(item.element.geojson)
         }
         if(item.element.geopoint) {
           gp = item.element.geopoint
@@ -273,6 +272,8 @@ export default {
       }
       this.$mapHelper.flyByPointAndZoom(gp, 16)
       this.$mapHelper.setPopupToMap(gp, uuid)
+      this.$mapHelper.removeHighLight()
+      this.$mapHelper.setHighLight(geojson)
     },
     flyToPoint(point, id, index) {
       let p;

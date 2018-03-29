@@ -99,7 +99,7 @@
 		data() {
 			return {
         nowIndex: 0,
-				areaIndex: '',
+				areaIndex: -1,
 				nextListIndex: '',
 				page: 1,
         nextList: [],
@@ -121,11 +121,13 @@
 					this.nextList = []
 					this.areaList= []
 					let type = 'fp'
-					let start = this.page * 10
+					let start = this.page * 10 - 10
 					this.getProvertyData({'type': type, 'start': start})
 				} else {
 					this.rightShow = true
-					this._getRightProvertyData()
+					this.areaIndex = -1
+					let start = this.page * 10 - 10
+					this._getRightProvertyData(start)
 				}
 			},
 			flyToPoint(item, index) {
@@ -143,17 +145,17 @@
 			},
 			next() {
 				this.page += 1
-				this.getProvertyType(0)
+				this.getProvertyType(this.nowIndex)
 			},
 			prev() {
 				if(this.page === 1) {
 					return
 				}
 				this.page -= 1
-				this.getProvertyType(0)
+				this.getProvertyType(this.nowIndex)
 			},
-			_getRightProvertyData() {
-				getRightProvertyData().then(res => {
+			_getRightProvertyData(start) {
+				getRightProvertyData(start).then(res => {
 					this.areaList = res.data
 				})
 			},

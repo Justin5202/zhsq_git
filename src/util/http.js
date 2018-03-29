@@ -2,7 +2,7 @@ import axios from 'axios'
 import router from '../router'
 import { Loading } from 'element-ui'
 
-axios.defaults.timeout = 6000
+axios.defaults.timeout = 30000
 // 拦截请求
 axios.interceptors.request.use(function (config) {
   let loading = Loading.service({

@@ -47,6 +47,8 @@ function handleArray(array) {
 function addLayer(datapath, id) {
     getJson(datapath).then(res => {
         const result = mapHelper.addLayerByCodeAndJson(id, res)
+            /*图层过滤*/
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
         getQueryElementByPoint(result).then(res => {
             if (res.data && res.data.flag !== 3) {
                 // 地图飞点
@@ -56,10 +58,8 @@ function addLayer(datapath, id) {
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length - 1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
                     /*删除地图mark */
                 for (let i = 0; i < 10; i++) {
-                    mapHelper.removeLayerById((state.searchParams.start + i).toString())
+                    mapHelper.removeLayerById((i + 1).toString())
                 }
-                /*图层过滤*/
-                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 mapHelper.closePopup()
                 mapHelper.closePicPopup()
             }
@@ -111,6 +111,7 @@ function checkData(data, commit, first, type) {
                 } else if (!first) {
                     v.isActive = false
                     cur.isActive = false
+                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                     mapHelper.removeLayerByCode(v.id)
                     mapHelper.removeLayerById(v.id)
                 }
@@ -134,6 +135,7 @@ function checkData(data, commit, first, type) {
                 cur.isActive = true
             } else if (!first) {
                 cur.isActive = false
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 mapHelper.removeLayerByCode(cur.id)
                 mapHelper.removeLayerById(cur.id)
             }
@@ -255,6 +257,7 @@ export const getSearchParams = function({ dispatch, commit, state }, { typeParam
             /*地点数据标点*/
             res.data.map((v, index) => {
                 if (v.element || v.poi) {
+                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                     mapHelper.removeLayerById((index + 1).toString())
                     if (v.element) {
                         if (v.element.geopoint) {
@@ -366,7 +369,7 @@ export const setAreaList = function({ dispatch, commit, state }, { param, type }
         if (data.searchType) {
             if (data.searchType === 4) {
                 checkClickedDataType({ dispatch, 'data': data.macro.data, commit, 'first': false, 'reportType': type })
-                if (data.macro.areaCode !== 500000) {
+                if (data.macro.areaCode !== '500000') {
                     let areainfo = {
                         areacode: data.macro.areaCode,
                         areaname: data.macro.areaName
@@ -374,7 +377,7 @@ export const setAreaList = function({ dispatch, commit, state }, { param, type }
                     dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
                 }
             } else if (data.searchType === 2) {
-                if (data.area.areacode !== 500000) {
+                if (data.area.areacode !== '500000') {
                     let areainfo = {
                         areacode: data.area.areacode,
                         areaname: data.area.areaname
@@ -382,16 +385,15 @@ export const setAreaList = function({ dispatch, commit, state }, { param, type }
                     dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
                 }
             } else if (data.searchType === 6) {
-                if (data.area.areacode !== 500000) {
+                if (data.area.areacode !== '500000') {
                     let areainfo = {
                         areacode: data.area.areacode,
                         areaname: data.area.areaname
                     }
-                    dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
                 }
+            } else {
+                checkClickedDataType({ dispatch, data, commit, 'first': false, 'reportType': type })
             }
-        } else {
-            checkClickedDataType({ dispatch, data, commit, 'first': false, 'reportType': type })
         }
     }
     // 区县区域下一级详细信息

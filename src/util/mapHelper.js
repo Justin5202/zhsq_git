@@ -64,6 +64,9 @@ var rotateCallback = null;
 // 中转详情用 callback onDbClickCallback 用
 var dbClickCallback = null;
 
+// 地图交互时判断是否要关各种工具栏
+var interactiveCallback = null;
+
 // 量算标志位
 var isMeasure = false;
 
@@ -108,27 +111,7 @@ const initMap = function (option) {
         .d2c
         .map(option);
 
-    // 缩放结束 判断当前边界是否在 重庆市域内
-    map.on('zoomend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 拖拽结束 判断当前边界是否在 重庆市域内
-    map.on('dragend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 倾斜结束 判断当前边界是否在 重庆市域内
-    map.on('pitchend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 转角结束 判断当前边界是否在 重庆市域内
-    map.on('rotateend', (e) => {
-        _containRelationshipCallback();
-    });
-
-     // // 不参与点击查询的layerid
+    // // 不参与点击查询的layerid
     if (window.vecterClickExceptLayer) {
         vecterClickExceptLayerArray = window
             .vecterClickExceptLayer
@@ -182,7 +165,7 @@ const initMap = function (option) {
                     layersId_3d.push(element.id);
                 }
             }
-        })
+        });
 
     return map;
 };
@@ -337,7 +320,7 @@ const _onClick = function (e) {
  * @param featrue/geojson
  * @returns null
  */
-const setHighLight = function(geojson){
+const setHighLight = function (geojson) {
     let highlightOption = {
         "id": "highlightLayer",
         "source": {
@@ -412,10 +395,10 @@ const setHighLight = function(geojson){
 
 /**
  * @function 删除高亮层
- * @param 
+ * @param
  * @returns null
  */
-const removeHighLight = function(){
+const removeHighLight = function () {
     removeLayerById("highlightLayer");
 };
 
@@ -474,6 +457,15 @@ const onDbClickCallback = function (_callback) {
  */
 const onRotateCallback = function (_callback) {
     rotateCallback = _callback;
+};
+
+/**
+ * @function 设置地图交互时回调函数
+ * @param callback
+ * @returns null
+ */
+const onInteractiveCallback = function (_callback) {
+    interactiveCallback = _callback;
 };
 
 /**
@@ -542,16 +534,32 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
             .forEach(element => {
                 map.addLayer(element);
             })
-        // 判断是否要 加载天地图
-        _containRelationshipCallback();
-        _setMBVisibility();
+        /* 判断是否要 加载天地图 */
 
-        //绑定右键拖动事件 2D 3D 图层显示用
+        // 缩放结束 判断当前边界是否在 重庆市域内
+        map.on('zoomend', (e) => {
+            _containRelationshipCallback();
+        });
+
+        // 拖拽结束 判断当前边界是否在 重庆市域内
+        map.on('dragend', (e) => {
+            _containRelationshipCallback();
+        });
+
+        // 倾斜结束 判断当前边界是否在 重庆市域内
+        map.on('pitchend', (e) => {
+            _containRelationshipCallback();
+        });
+
+        // 转角结束 判断当前边界是否在 重庆市域内
+        map.on('rotateend', (e) => {
+            _containRelationshipCallback();
+        });
+        // 绑定右键拖动事件 2D 3D 图层显示用
         map.on('pitch', _onPitch);
 
         //绑定右键拖动事件 是否显示 指北针
         map.on('rotate', _onRotate);
-
 
         // 绑定点击事件返回 mapguid
         map.on('click', _onClick);
@@ -565,6 +573,19 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                 doFilterByCodeArrayAndAreacodeArray(codeArray, areacodeArray);
             }
         });
+        // 有鼠标和地图操作时 关工具栏用的
+        map.on('mousedown', () => {
+            if (interactiveCallback) {
+                interactiveCallback();
+            }
+        });
+        map.on('zoomstart', () => {
+            if (interactiveCallback) {
+                interactiveCallback();
+            }
+        });
+
+        // 为了有地图
 
     } else {
         map
@@ -611,16 +632,7 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                     .forEach(element => {
                         map.addLayer(element);
                     })
-                // 判断是否要 加载天地图
-                _containRelationshipCallback();
-                _setMBVisibility();
-
-                //绑定右键拖动事件 2D 3D 图层显示用
-                map.on('pitch', _onPitch);
-
-                //绑定右键拖动事件 是否显示 指北针
-                map.on('rotate', _onRotate);
-
+                /* 判断是否要 加载天地图 */
                 // 缩放结束 判断当前边界是否在 重庆市域内
                 map.on('zoomend', (e) => {
                     _containRelationshipCallback();
@@ -640,6 +652,11 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                 map.on('rotateend', (e) => {
                     _containRelationshipCallback();
                 });
+                // 绑定右键拖动事件 2D 3D 图层显示用
+                map.on('pitch', _onPitch);
+
+                //绑定右键拖动事件 是否显示 指北针
+                map.on('rotate', _onRotate);
 
                 // 绑定点击事件返回 mapguid
                 map.on('click', _onClick);
@@ -651,6 +668,18 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                 map.on('styledata', () => {
                     if (codeArray.length > 0) {
                         doFilterByCodeArrayAndAreacodeArray(codeArray, areacodeArray);
+                    }
+                });
+
+                // 有鼠标和地图操作时 关工具栏用的
+                map.on('mousedown', () => {
+                    if (interactiveCallback) {
+                        interactiveCallback();
+                    }
+                });
+                map.on('zoomstart', () => {
+                    if (interactiveCallback) {
+                        interactiveCallback();
                     }
                 });
 
@@ -868,6 +897,7 @@ const _containRelationshipCallback = function () {
  * @returns null
  */
 const _setMBVisibility = function () {
+
     let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", "visibility");
     let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
     let imgHQ_visibility = map.getLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
@@ -912,18 +942,23 @@ const _setMBVisibility = function () {
  * @returns null
  */
 const _setVecterDemMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_global-vecter-layer", "visibility");
-    if (value) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'visible');
-            map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'visible');
+    try {
+        let visibility = map.getLayoutProperty("gjtdt_global-vecter-layer", "visibility");
+        if (value) {
+            if (visibility != "visible") {
+                map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'visible');
+                map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'visible');
+            }
+        } else {
+            if (visibility != "none") {
+                map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'none');
+                map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'none');
+            }
         }
-    } else {
-        if (visibility != "none") {
-            map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'none');
-            map.setLayoutProperty("gjtdt_global-vecter-layer-symbol", 'visibility', 'none');
-        }
+    } catch (error) {
+        console.log('gjtdt_global-vecter-layer 图层不存在');
     }
+
 };
 
 /**
@@ -932,18 +967,23 @@ const _setVecterDemMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtImageMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_remote-scense-layer", "visibility");
-    if (value) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'visible');
-            map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'visible');
+    try {
+        let visibility = map.getLayoutProperty("gjtdt_remote-scense-layer", "visibility");
+        if (value) {
+            if (visibility != "visible") {
+                map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'visible');
+                map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'visible');
+            }
+        } else {
+            if (visibility != "none") {
+                map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'none');
+                map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'none');
+            }
         }
-    } else {
-        if (visibility != "none") {
-            map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'none');
-            map.setLayoutProperty("gjtdt_remote-scense-layer-symbol", 'visibility', 'none');
-        }
+    } catch (error) {
+        console.log('gjtdt_remote-scense-layer 图层不存在');
     }
+
 };
 
 /**
@@ -952,18 +992,23 @@ const _setTdtImageMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtHQImageMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_HQ_remote-scense-layer", "visibility");
-    if (value) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'visible');
-            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'visible');
+    try {
+        let visibility = map.getLayoutProperty("gjtdt_HQ_remote-scense-layer", "visibility");
+        if (value) {
+            if (visibility != "visible") {
+                map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'visible');
+                map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'visible');
+            }
+        } else {
+            if (visibility != "none") {
+                map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'none');
+                map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'none');
+            }
         }
-    } else {
-        if (visibility != "none") {
-            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'none');
-            map.setLayoutProperty("gjtdt_HQ_remote-scense-layer-symbol", 'visibility', 'none');
-        }
+    } catch (error) {
+        console.log('gjtdt_HQ_remote-scense-layer 图层不存在');
     }
+
 };
 
 /**
@@ -972,18 +1017,23 @@ const _setTdtHQImageMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtDemMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_dem-layer", "visibility");
-    if (value) {
-        if (visibility != "visible") {
-            map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'visible');
-            map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'visible');
+    try {
+        let visibility = map.getLayoutProperty("gjtdt_dem-layer", "visibility");
+        if (value) {
+            if (visibility != "visible") {
+                map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'visible');
+                map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'visible');
+            }
+        } else {
+            if (visibility != "none") {
+                map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'none');
+                map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'none');
+            }
         }
-    } else {
-        if (visibility != "none") {
-            map.setLayoutProperty("gjtdt_dem-layer", 'visibility', 'none');
-            map.setLayoutProperty("gjtdt_dem-layer-symbol", 'visibility', 'none');
-        }
+    } catch (error) {
+        console.log('gjtdt_dem-layer 图层不存在');
     }
+
 };
 
 /**
@@ -1671,6 +1721,7 @@ export default {
     measureOnClickCallback,
     onDbClickCallback,
     onRotateCallback,
+    onInteractiveCallback,
     setHighLight,
     removeHighLight
 

@@ -277,7 +277,6 @@ const mutations = {
                     mapHelper.addLayerByIdAndGeojson(state.areaDetailInfo.areacode.toString(), state.areaDetailInfo
                         .geojson)
                     mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
-                    console.log(type)
                     if(!type) {
                         mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid, true)
                     }

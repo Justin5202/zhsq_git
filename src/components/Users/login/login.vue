@@ -89,15 +89,17 @@ export default {
   .login {
     width: 100%;
     height: 100%;
+    min-width: 1200px;
     background: url('../../../assets/images/Login/logbg@2x.png') no-repeat;
     background-size: 100% 100%;
     color: #fff;
     .wrap {
       width: 1200px;
       height: 100%;
-      min-height: 800px;
       margin: 0 auto;
       position: relative;
+      display: flex;
+      flex-direction: column;
       h1 {
         padding-top: 10%;
         font-size: 45px;
@@ -107,11 +109,11 @@ export default {
       .form {
         width: 100%;
         position: relative;
+        display: flex;
+        justify-content: flex-end;
+        flex: 2;
+        align-items: center;
         .el-form {
-          width: 512px;
-          position: absolute;
-          right: 0;
-          top: 120px;
           .el-form-item {
             display: flex;
             justify-content: center;
@@ -150,10 +152,7 @@ export default {
         }
       }
       .info {
-        position: absolute;
-        left:50%;
-        bottom: 5%;
-        transform: translateX(-50%);
+        margin-bottom: 2%;
         p {
           letter-spacing: 1px;
           padding-bottom: 5px;

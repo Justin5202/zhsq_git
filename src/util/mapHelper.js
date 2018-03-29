@@ -108,6 +108,26 @@ const initMap = function (option) {
         .d2c
         .map(option);
 
+    // 缩放结束 判断当前边界是否在 重庆市域内
+    map.on('zoomend', (e) => {
+        _containRelationshipCallback();
+    });
+
+    // 拖拽结束 判断当前边界是否在 重庆市域内
+    map.on('dragend', (e) => {
+        _containRelationshipCallback();
+    });
+
+    // 倾斜结束 判断当前边界是否在 重庆市域内
+    map.on('pitchend', (e) => {
+        _containRelationshipCallback();
+    });
+
+    // 转角结束 判断当前边界是否在 重庆市域内
+    map.on('rotateend', (e) => {
+        _containRelationshipCallback();
+    });
+
      // // 不参与点击查询的layerid
     if (window.vecterClickExceptLayer) {
         vecterClickExceptLayerArray = window
@@ -153,12 +173,7 @@ const initMap = function (option) {
         .forEach(element => {
             // 底图中的id
             layersId_dt.push(element.id);
-            if (element.id == "gjtdt_global-vecter-layer") {
-                element["layout"]["visibility"] = "none";
-            }
-            if (element.id == "gjtdt_global-vecter-layer-symbol") {
-                element["layout"]["visibility"] = "none";
-            }
+
             if (element.metadata) {
                 if (element.metadata["mapbox:group"] == groupUUID_2d) {
                     layersId_2d.push(element.id);
@@ -318,7 +333,7 @@ const _onClick = function (e) {
 };
 
 /**
- * @function 添加高亮层
+ * @function 添加高亮层(加popup的话，一定要在加popup之后加高亮)
  * @param featrue/geojson
  * @returns null
  */
@@ -537,25 +552,6 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
         //绑定右键拖动事件 是否显示 指北针
         map.on('rotate', _onRotate);
 
-        // 缩放结束 判断当前边界是否在 重庆市域内
-        map.on('zoomend', (e) => {
-            _containRelationshipCallback();
-        });
-
-        // 拖拽结束 判断当前边界是否在 重庆市域内
-        map.on('dragend', (e) => {
-            _containRelationshipCallback();
-        });
-
-        // 倾斜结束 判断当前边界是否在 重庆市域内
-        map.on('pitchend', (e) => {
-            _containRelationshipCallback();
-        });
-
-        // 转角结束 判断当前边界是否在 重庆市域内
-        map.on('rotateend', (e) => {
-            _containRelationshipCallback();
-        });
 
         // 绑定点击事件返回 mapguid
         map.on('click', _onClick);

@@ -306,67 +306,102 @@ const _onClick = function (e) {
                 }
 
                 // 设置高亮
-                removeLayerById("highlightLayer");
-                let highlightOption = {
-                    "id": "highlightLayer",
-                    "source": {
-                        "type": "geojson",
-                        "data": {
-                            "type": "FeatureCollection",
-                            "features": [
-                                {
-                                    "type": "Feature",
-                                    "geometry": feature.geometry
-                                }
-                            ]
-                        }
-                    },
-                    "layout": {}
-                };
+                removeHighLight();
 
-                // 判断点线面symbol
-                switch (feature.layer.type) {
-                    case "circle":
-                        highlightOption["type"] = feature.layer.type
-                        highlightOption["paint"] = {
-                            "circle-color": "rgba(85,164,241,0.6)"
-                        }
-                        map.addLayer(highlightOption);
-                        break;
-                    case "line":
-                        highlightOption["type"] = feature.layer.type
-                        highlightOption["paint"] = {
-                            "line-color": "rgba(85,164,241,0.6)",
-                            "line-width": 2
-                        }
-                        map.addLayer(highlightOption);
-                        break;
-                    case "fill":
-                        highlightOption["type"] = feature.layer.type
-                        highlightOption["paint"] = {
-                            "fill-color": "rgba(85,164,241,0.6)"
-                        }
-                        map.addLayer(highlightOption);
-                        break;
-                    case "symbol":
-                        highlightOption["type"] = "circle"
-                        highlightOption["paint"] = {
-                            "circle-color": "rgba(85,164,241,0.6)"
-                        }
-                        map.addLayer(highlightOption);
-                        break;
-
-                    default:
-                        console.log("非点、线、面、symbol、3d类型-点击高亮");
-                        break;
-                }
-                
+                setHighLight(feature.geometry);
                 // 不在排除的图层中-end
             }
 
         }
     }
 
+};
+
+/**
+ * @function 添加高亮层
+ * @param featrue/geojson
+ * @returns null
+ */
+const setHighLight = function(geojson){
+    let highlightOption = {
+        "id": "highlightLayer",
+        "source": {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "geometry": geojson
+                    }
+                ]
+            }
+        },
+        "layout": {}
+    };
+
+    // 判断点线面symbol
+    switch (geojson.type) {
+        case "Point":
+            highlightOption["type"] = "circle"
+            highlightOption["paint"] = {
+                "circle-color": "rgba(85,164,241,0.6)"
+            }
+            map.addLayer(highlightOption);
+            break;
+        case "MultiPoint":
+            highlightOption["type"] = "circle"
+            highlightOption["paint"] = {
+                "circle-color": "rgba(85,164,241,0.6)"
+            }
+            map.addLayer(highlightOption);
+            break;
+
+        case "LineString":
+            highlightOption["type"] = "line"
+            highlightOption["paint"] = {
+                "line-color": "rgba(85,164,241,0.6)",
+                "line-width": 2
+            }
+            map.addLayer(highlightOption);
+            break;
+        case "MultiLineString":
+            highlightOption["type"] = "line"
+            highlightOption["paint"] = {
+                "line-color": "rgba(85,164,241,0.6)",
+                "line-width": 2
+            }
+            map.addLayer(highlightOption);
+            break;
+
+        case "Polygon":
+            highlightOption["type"] = "fill"
+            highlightOption["paint"] = {
+                "fill-color": "rgba(85,164,241,0.6)"
+            }
+            map.addLayer(highlightOption);
+            break;
+        case "MultiPolygon":
+            highlightOption["type"] = "fill"
+            highlightOption["paint"] = {
+                "fill-color": "rgba(85,164,241,0.6)"
+            }
+            map.addLayer(highlightOption);
+            break;
+
+        default:
+            console.log("非点、线、面、symbol、3d类型-点击高亮");
+            break;
+    }
+};
+
+/**
+ * @function 删除高亮层
+ * @param 
+ * @returns null
+ */
+const removeHighLight = function(){
+    removeLayerById("highlightLayer");
 };
 
 /**
@@ -1638,6 +1673,8 @@ export default {
     setIsMeasure,
     measureOnClickCallback,
     onDbClickCallback,
-    onRotateCallback
+    onRotateCallback,
+    setHighLight,
+    removeHighLight
 
 }

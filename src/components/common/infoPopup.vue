@@ -221,7 +221,6 @@ export default {
   }
   .button-box {
     display: flex;
-    margin-top: 30px;
     padding: 5px 0;
     background-color: rgba(0, 0, 0, 0.4);
     .button-item {

@@ -82,15 +82,11 @@ function checkData(data, commit, first, type) {
                 falseLength += 1
             }
         })
-        if (falseLength === cur.children.length) {
+        if (falseLength === cur.children.length || type == 'report') {
             cur.isActive = false
             isGo = false
             commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
         }
-    }
-    console.log(type)
-    if (type == 'report') {
-        isGo = false
     }
     if (!isGo) {
         return
@@ -253,20 +249,46 @@ export const getSearchParams = function({ dispatch, commit, state }, { typeParam
     let data = Object.assign({}, state.searchParams, params, typeParams, state.areaInfo)
     getSearch(data).then(res => {
         if (res.code == '1') {
-            commit(TYPE.GET_SEARCH_RESULT, res.data)
-                /*地点数据标点*/
+            /*地点数据标点*/
             res.data.map((v, index) => {
                 if (v.element || v.poi) {
-                    if (state.searchParams.start && typeParams.start > state.searchParams.start) {
-                        mapHelper.removeLayerById((state.searchParams.start + index - 10).toString())
-                    } else {
-                        mapHelper.removeLayerById((state.searchParams.start + index).toString())
-                    }
+                    mapHelper.removeLayerById((index + 1).toString())
                     if (v.element) {
-                        mapHelper.setMarkToMap((typeParams.start + index).toString(), v.element.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+                        if (v.element.geopoint) {
+                            mapHelper.setMarkToMap((index + 1).toString(), v.element.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+                        } else if (v.element.geojson) {
+                            let json = JSON.parse(v.element.geojson)
+                            if (json.type === 'MultiPolygon') {
+                                // 多面
+                                let temp = json.coordinates[0][0] ? json.coordinates[0][0] : []
+                                let sumX = 0, sumY = 0
+                                temp.map(v => {
+                                    sumX += v[0]
+                                    sumY += v[1]
+                                })
+                                v.element.geopoint = [sumX / temp.length, sumY / temp.length]
+                            } else if (json.type === 'Polygon') {
+                                let temp = json.coordinates[0] ? json.coordinates[0] : []
+                                let sumX = 0, sumY = 0
+                                temp.map(v => {
+                                    sumX += v[0]
+                                    sumY += v[1]
+                                })
+                                v.element.geopoint = [sumX / temp.length, sumY / temp.length]
+                            } else if (json.type === 'MultiPolyline') {
+                                v.element.geopoint = json.coordinates[json.coordinates[0].length / 2]
+                            } else if (json.type === 'Polyline') {
+                                v.element.geopoint = json.coordinates[json.coordinates[0].length / 2]
+                            } else if (json.type === 'PointCollection') {
+                                v.element.geopoint = json.coordinates[json.coordinates[0].length / 2]
+                            } else if (json.type === 'Point') {
+                                v.element.geopoint = json.coordinates[0]
+                            }
+                            mapHelper.setMarkToMap((index+1).toString(), v.element.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+                        }
                     }
                     if (v.poi) {
-                        mapHelper.setMarkToMap((typeParams.start + index).toString(), v.poi.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+                        mapHelper.setMarkToMap((index+1).toString(), v.poi.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
                     }
                 }
                 /*如果存在县市级行政区域，画线*/
@@ -279,11 +301,12 @@ export const getSearchParams = function({ dispatch, commit, state }, { typeParam
                     mapHelper.setPopupToMap(v.area.geopoint)
                 }
             })
+            commit(TYPE.GET_SEARCH_RESULT, res.data)
             commit(TYPE.SEARCH_PARAMS, data)
         }
     })
 }
-export const getAreaDetail = function({ dispatch, commit, state }, params) {
+export const getAreaDetail = function ({ dispatch, commit, state }, params) {
     if (params.searchType && params.searchType === 4) {
         let obj1 = {
             id: params.macro.data.id
@@ -333,27 +356,39 @@ export const deleteAreaInfo = function({ commit, state }, { areainfo, isRemoveAl
 export const setSecAreaList = function({ commit, state }, list) {
     commit(TYPE.SET_SEC_AREA_LIST, list)
 }
-export const setAreaList = function({ dispatch, commit, state }, { param, type }) {
-        let data = param
-        if (data.searchType) {
-            if (data.searchType === 4) {
-                checkClickedDataType({ dispatch, 'data': data.macro.data, commit, 'first': false, type })
+export const setAreaList = function ({ dispatch, commit, state }, { param, type }) {
+    let data = param
+    if (data.searchType) {
+        if (data.searchType === 4) {
+            checkClickedDataType({ dispatch, 'data': data.macro.data, commit, 'first': false, 'reportType': type })
+            if (data.macro.areaCode !== 500000) {
                 let areainfo = {
                     areacode: data.macro.areaCode,
                     areaname: data.macro.areaName
                 }
                 dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
-            } else if (data.searchType === 2) {
+            }
+        } else if (data.searchType === 2) {
+            if (data.area.areacode !== 500000) {
                 let areainfo = {
                     areacode: data.area.areacode,
                     areaname: data.area.areaname
                 }
                 dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
             }
-        } else {
-            checkClickedDataType({ dispatch, data, commit, 'first': false, type })
+        } else if (data.searchType === 6) {
+            if (data.area.areacode !== 500000) {
+                let areainfo = {
+                    areacode: data.area.areacode,
+                    areaname: data.area.areaname
+                }
+                dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
+            }
         }
+    } else {
+        checkClickedDataType({ dispatch, data, commit, 'first': false, 'reportType': type })
     }
+}
     // 区县区域下一级详细信息
 export const getNextAreaInfo = function({ commit, state }) {
     getNextAreaDetailInfo(state.areaInfo.areacode).then(res => {

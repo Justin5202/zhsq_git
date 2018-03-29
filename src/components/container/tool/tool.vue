@@ -242,7 +242,9 @@ export default {
     },
     //监听地图改变
     mapChange(){
-      this.$store.commit('SET_LAYER_CONTROL_SHOW', false)
+      if(this.layerControlShow){
+        this.$store.commit('SET_LAYER_CONTROL_SHOW', false)
+      }
       this.layerToolVisible = false
       this.areaBoxIsShow = false
     },

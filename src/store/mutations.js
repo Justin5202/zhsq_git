@@ -170,6 +170,7 @@ const mutations = {
                 mapHelper.removeLayerByCode(v.id)
                 mapHelper.removeLayerById(v.id)
             })
+            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             state.activeAreaInfoList.splice(0, state.activeAreaInfoList.length)
             state.areaInfoList.map(v => {
                 v.isActive = false
@@ -350,6 +351,7 @@ const mutations = {
         } else if (flag == 4) {
             addLayer('/ZT_ZTZT_FPZT/ZT_ZTZT_FPZT.json', 'Z10003')
         }
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
     },
     [TYPE.SET_USER_INFO](state, userinfo) {
         state.userinfo = userinfo

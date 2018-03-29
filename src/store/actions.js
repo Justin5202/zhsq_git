@@ -113,6 +113,7 @@ function checkData(data, commit, first, type) {
                     cur.isActive = false
                     mapHelper.removeLayerByCode(v.id)
                     mapHelper.removeLayerById(v.id)
+                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 }
                 commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
                 commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
@@ -136,6 +137,7 @@ function checkData(data, commit, first, type) {
                 cur.isActive = false
                 mapHelper.removeLayerByCode(cur.id)
                 mapHelper.removeLayerById(cur.id)
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             }
             commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
             commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
@@ -253,6 +255,7 @@ export const getSearchParams = function({ dispatch, commit, state }, { typeParam
             res.data.map((v, index) => {
                 if (v.element || v.poi) {
                     mapHelper.removeLayerById((index + 1).toString())
+                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                     if (v.element) {
                         if (v.element.geopoint) {
                             mapHelper.setMarkToMap((index + 1).toString(), v.element.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')

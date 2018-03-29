@@ -141,6 +141,8 @@ export default {
             height: 56px;
             width: 232px;
             font-size: 16px;
+            font-size: 24px;
+            letter-spacing: 15px;
             border: 0;
             border-radius: 0;
             background-color: #002a4f;

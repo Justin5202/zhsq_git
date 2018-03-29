@@ -92,17 +92,16 @@ export default {
     background: url('../../../assets/images/Login/logbg@2x.png') no-repeat;
     background-size: 100% 100%;
     color: #fff;
-    position: fixed;
     .wrap {
       width: 1200px;
       height: 100%;
-      // min-height: 1000px;
+      min-height: 800px;
       margin: 0 auto;
       position: relative;
       h1 {
         padding-top: 10%;
         font-size: 45px;
-        margin-bottom: 20px;
+        margin: 0;
         letter-spacing: 3px;
       }
       .form {
@@ -131,6 +130,7 @@ export default {
               outline: none;
               padding: 0 5px;
               box-sizing: border-box;
+              font-size: 18px;
             }
           }
           .btn-box {
@@ -152,7 +152,7 @@ export default {
       .info {
         position: absolute;
         left:50%;
-        bottom: 10%;
+        bottom: 5%;
         transform: translateX(-50%);
         p {
           letter-spacing: 1px;

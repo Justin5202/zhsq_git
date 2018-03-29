@@ -64,6 +64,9 @@ var rotateCallback = null;
 // 中转详情用 callback onDbClickCallback 用
 var dbClickCallback = null;
 
+// 地图交互时判断是否要关各种工具栏
+var interactiveCallback = null;
+
 // 量算标志位
 var isMeasure = false;
 
@@ -477,6 +480,15 @@ const onRotateCallback = function (_callback) {
 };
 
 /**
+ * @function 设置地图交互时回调函数
+ * @param callback
+ * @returns null
+ */
+const onInteractiveCallback = function (_callback) {
+    interactiveCallback = _callback;
+};
+
+/**
  * @function 绑定影像和晕染服务
  * @param 影像的图层和源 , 濡染的图层和源
  * @returns null
@@ -566,6 +578,8 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
             }
         });
 
+        // 为了有地图
+
     } else {
         map
             .on('load', function () {
@@ -621,26 +635,6 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                 //绑定右键拖动事件 是否显示 指北针
                 map.on('rotate', _onRotate);
 
-                // 缩放结束 判断当前边界是否在 重庆市域内
-                map.on('zoomend', (e) => {
-                    _containRelationshipCallback();
-                });
-
-                // 拖拽结束 判断当前边界是否在 重庆市域内
-                map.on('dragend', (e) => {
-                    _containRelationshipCallback();
-                });
-
-                // 倾斜结束 判断当前边界是否在 重庆市域内
-                map.on('pitchend', (e) => {
-                    _containRelationshipCallback();
-                });
-
-                // 转角结束 判断当前边界是否在 重庆市域内
-                map.on('rotateend', (e) => {
-                    _containRelationshipCallback();
-                });
-
                 // 绑定点击事件返回 mapguid
                 map.on('click', _onClick);
 
@@ -651,6 +645,18 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                 map.on('styledata', () => {
                     if (codeArray.length > 0) {
                         doFilterByCodeArrayAndAreacodeArray(codeArray, areacodeArray);
+                    }
+                });
+
+                // 有鼠标和地图操作时 关工具栏用的
+                map.on('mousedown',()=>{
+                    if (interactiveCallback) {
+                        interactiveCallback();
+                    }
+                });
+                map.on('zoomstart',()=>{
+                    if (interactiveCallback) {
+                        interactiveCallback();
                     }
                 });
 
@@ -1262,6 +1268,7 @@ const setFilterByCodeArrayAndAreacodeArray = function (_codeArray, _areacodeArra
     // 记录 目录和区域 在styledata 事件触发时 过滤
     codeArray = _codeArray;
     areacodeArray = _areacodeArray;
+    _setMBVisibility();
 };
 
 /**
@@ -1670,6 +1677,7 @@ export default {
     measureOnClickCallback,
     onDbClickCallback,
     onRotateCallback,
+    onInteractiveCallback,
     setHighLight,
     removeHighLight
 

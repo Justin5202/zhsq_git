@@ -188,9 +188,9 @@ export default {
       font-size: 15px;
       line-height: 40px;
       padding-left: 10px;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 1;
+      width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
       overflow: hidden;
     }
     .cross-icon {

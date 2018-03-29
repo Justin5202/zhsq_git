@@ -21,7 +21,6 @@ export default {
 	mounted(){
 		this.getMapJsonAndImg()
 	},
-
 	methods: {
 		resize() {
 			window.d2cMap.resize()

@@ -261,6 +261,10 @@ export default {
       let gp, uuid
       if(item.element) {
         uuid = item.element.uuid
+        if(item.element.geojson) {
+          this.$mapHelper.removeHighLight()
+          this.$mapHelper.setHighLight(JSON.parse(item.element.geojson))
+        }
         if(item.element.geopoint) {
           gp = item.element.geopoint
         }

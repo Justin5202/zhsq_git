@@ -207,7 +207,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    background: url('../../../assets/images/Login/logbg@2x.png') no-repeat;
+    background: url('../../../assets/images/Login/PCzc.jpg') no-repeat;
     background-size: 100% 100%;
     color: #fff;
     .wrap {

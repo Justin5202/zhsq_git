@@ -88,6 +88,7 @@ export default {
   .login {
     position: relative;
     width: 100%;
+    min-height: 768px;
     height: 100%;
     background: url('../../../assets/images/Login/logbg@2x.png') no-repeat;
     background-size: 100% 100%;
@@ -140,6 +141,8 @@ export default {
             height: 56px;
             width: 232px;
             font-size: 16px;
+            font-size: 24px;
+            letter-spacing: 15px;
             border: 0;
             border-radius: 0;
             background-color: #002a4f;
@@ -150,7 +153,7 @@ export default {
     .info {
       position: absolute;
       left:50%;
-      bottom: 10%;
+      bottom: 5%;
       transform: translateX(-50%);
       p {
         letter-spacing: 1px;

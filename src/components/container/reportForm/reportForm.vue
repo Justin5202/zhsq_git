@@ -17,7 +17,7 @@
           <div class="table-form-item">区域</div>
           <div class="table-form-item" v-for="year in reportFormData.year">{{year}}</div>
         </div>
-        <div class="form-content-box">
+        <div class="form-content-box" :style="{height:contentHeight}">
           <div v-for="(item,index) in reportFormData.data" :key="item.id" class="table-form-content">
             <div style="width:100%">
               <div class="table-form-table">
@@ -75,7 +75,7 @@
           </div>
       </div>
     </div>
-    <div class="mask"></div>
+    <div class="mask" v-show="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></div>
   </div>
 </div>
 </template>
@@ -96,7 +96,7 @@ export default {
         width:(window.innerWidth - 60 - 350 - 200) +'px',
         height:(window.innerHeight - 50)+'px'
       },
-      contentHeight:(window.innerHeight - 50 - 80)+'px'
+      contentHeight:(window.innerHeight - 50 - 90 -20)+'px'
     }
   },
   mounted () {
@@ -104,7 +104,7 @@ export default {
     return (() => {
       this.reportFormSize.width = (window.innerWidth - 60 - 350 - 200) +'px',
       this.reportFormSize.height = (window.innerHeight - 50)+'px',
-      this.contentHeight = (window.innerHeight - 50 - 80)+'px'
+      this.contentHeight = (window.innerHeight - 50 - 90 -5)+'px'
       })()
     }
   },
@@ -130,6 +130,7 @@ export default {
       this.setReportFormShow(false)
       this.setAreaReportFormShow(false)
       this.activeTab = 0
+      this.activeContent = 0
       this.tabContext = this.reportFormData.data[0]
     },
     clearItem(index,item) {
@@ -190,14 +191,14 @@ export default {
         .report-form-title {
             width: 80%;
             text-align: left;
-            line-height: 40px;
-            font-size: 16px;
+            line-height: 50px;
+            font-size: 18px;
             padding-left: 15px;
         }
         .report-form-close {
             width: 20%;
             text-align: right;
-            line-height: 40px;
+            line-height: 50px;
             padding-right: 20px;
             span {
                 display: inline-block;
@@ -244,7 +245,7 @@ export default {
                     .table-form-table {
                         width: 100%;
                         .table-title {
-                            font-size: 14px;
+                            font-size: 16px;
                             display: flex;
                             font-weight: bold;
                         }
@@ -272,7 +273,7 @@ export default {
                         }
                         .table-item-box {
                             display: flex;
-                            font-size: 12px;
+                            font-size: 14px;
                         }
                     }
                 }
@@ -337,6 +338,7 @@ export default {
         }
         .html-doc{
           width: 100%;
+          border: 0;
           // height: 500px;
         }
         .html-pdf{
@@ -360,7 +362,7 @@ export default {
           height: 59px;
           background-color: #323639;
           position: absolute;
-          top:86px;
+          top:96px;
           left: 0px;
           z-index: 10000;
         }

@@ -88,10 +88,10 @@ export default {
 <style lang="scss" scoped>
 .pic-pop {
   width: 100px;
-  margin: -10px -10px -15px;
   padding: 5px;
   text-align: center;
   border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.4);
   img {
     display: block;
     margin: 0 auto;
@@ -100,6 +100,7 @@ export default {
   }
   p {
     cursor: pointer;
+    color: #fff;
   }
 }
 </style>

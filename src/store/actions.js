@@ -166,6 +166,9 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
             temp = cur
         } else if (yu === 1) { // yu为1，仅有空间数据，即加载空间数据
             temp = checkData(cur, commit, first, reportType)
+            if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
+                dispatch('setReportFormShow', true)
+            }
         } else if (yu === 2) { // yu为2，仅有统计数据，加载统计数据
             console.log('仅有统计数据，加载统计数据')
             if (first) {
@@ -261,7 +264,8 @@ export const getSearchParams = function({ dispatch, commit, state }, { typeParam
                             if (json.type === 'MultiPolygon') {
                                 // 多面
                                 let temp = json.coordinates[0][0] ? json.coordinates[0][0] : []
-                                let sumX = 0, sumY = 0
+                                let sumX = 0,
+                                    sumY = 0
                                 temp.map(v => {
                                     sumX += v[0]
                                     sumY += v[1]
@@ -269,7 +273,8 @@ export const getSearchParams = function({ dispatch, commit, state }, { typeParam
                                 v.element.geopoint = [sumX / temp.length, sumY / temp.length]
                             } else if (json.type === 'Polygon') {
                                 let temp = json.coordinates[0] ? json.coordinates[0] : []
-                                let sumX = 0, sumY = 0
+                                let sumX = 0,
+                                    sumY = 0
                                 temp.map(v => {
                                     sumX += v[0]
                                     sumY += v[1]
@@ -284,11 +289,11 @@ export const getSearchParams = function({ dispatch, commit, state }, { typeParam
                             } else if (json.type === 'Point') {
                                 v.element.geopoint = json.coordinates[0]
                             }
-                            mapHelper.setMarkToMap((index+1).toString(), v.element.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+                            mapHelper.setMarkToMap((index + 1).toString(), v.element.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
                         }
                     }
                     if (v.poi) {
-                        mapHelper.setMarkToMap((index+1).toString(), v.poi.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
+                        mapHelper.setMarkToMap((index + 1).toString(), v.poi.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')
                     }
                 }
                 /*如果存在县市级行政区域，画线*/
@@ -306,7 +311,7 @@ export const getSearchParams = function({ dispatch, commit, state }, { typeParam
         }
     })
 }
-export const getAreaDetail = function ({ dispatch, commit, state }, params) {
+export const getAreaDetail = function({ dispatch, commit, state }, params) {
     if (params.searchType && params.searchType === 4) {
         let obj1 = {
             id: params.macro.data.id
@@ -356,39 +361,39 @@ export const deleteAreaInfo = function({ commit, state }, { areainfo, isRemoveAl
 export const setSecAreaList = function({ commit, state }, list) {
     commit(TYPE.SET_SEC_AREA_LIST, list)
 }
-export const setAreaList = function ({ dispatch, commit, state }, { param, type }) {
-    let data = param
-    if (data.searchType) {
-        if (data.searchType === 4) {
-            checkClickedDataType({ dispatch, 'data': data.macro.data, commit, 'first': false, 'reportType': type })
-            if (data.macro.areaCode !== 500000) {
-                let areainfo = {
-                    areacode: data.macro.areaCode,
-                    areaname: data.macro.areaName
+export const setAreaList = function({ dispatch, commit, state }, { param, type }) {
+        let data = param
+        if (data.searchType) {
+            if (data.searchType === 4) {
+                checkClickedDataType({ dispatch, 'data': data.macro.data, commit, 'first': false, 'reportType': type })
+                if (data.macro.areaCode !== 500000) {
+                    let areainfo = {
+                        areacode: data.macro.areaCode,
+                        areaname: data.macro.areaName
+                    }
+                    dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
                 }
-                dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
-            }
-        } else if (data.searchType === 2) {
-            if (data.area.areacode !== 500000) {
-                let areainfo = {
-                    areacode: data.area.areacode,
-                    areaname: data.area.areaname
+            } else if (data.searchType === 2) {
+                if (data.area.areacode !== 500000) {
+                    let areainfo = {
+                        areacode: data.area.areacode,
+                        areaname: data.area.areaname
+                    }
+                    dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
                 }
-                dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
-            }
-        } else if (data.searchType === 6) {
-            if (data.area.areacode !== 500000) {
-                let areainfo = {
-                    areacode: data.area.areacode,
-                    areaname: data.area.areaname
+            } else if (data.searchType === 6) {
+                if (data.area.areacode !== 500000) {
+                    let areainfo = {
+                        areacode: data.area.areacode,
+                        areaname: data.area.areaname
+                    }
+                    dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
                 }
-                dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
             }
+        } else {
+            checkClickedDataType({ dispatch, data, commit, 'first': false, 'reportType': type })
         }
-    } else {
-        checkClickedDataType({ dispatch, data, commit, 'first': false, 'reportType': type })
     }
-}
     // 区县区域下一级详细信息
 export const getNextAreaInfo = function({ commit, state }) {
     getNextAreaDetailInfo(state.areaInfo.areacode).then(res => {

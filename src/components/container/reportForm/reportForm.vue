@@ -135,9 +135,15 @@ export default {
     },
     clearItem(index,item) {
       for(var i in this.areaCodeAndDataId[2]){
-        if(item.id == this.areaCodeAndDataId[2][i].id || item.id == this.areaCodeAndDataId[2][i].macro.id){
-          console.log(this.areaCodeAndDataId[2][i])
-          this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
+        if(this.areaCodeAndDataId[2][i].id ){
+          if(item.id == this.areaCodeAndDataId[2][i].id){
+            this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
+          }
+        }
+        if(this.areaCodeAndDataId[2][i].macro.dataId){
+          if(item.id == this.areaCodeAndDataId[2][i].macro.dataId){
+            this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
+          }
         }
       }
       this.clearReport({

@@ -14,11 +14,13 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         var type = 0
         var codeList = ""
         var itemList = []
+        var idArray = []
         for (let i in dataId[0]) {
             type = parseInt(dataId[0][i].type) % 10
             if ((type == 2 || type == 3) && dataId[0][i].isActive) {
                 idList += ',' + dataId[0][i].id
                 itemList.push(dataId[0][i])
+                idArray.push(dataId[0][i].id)
             }
             if (dataId[0][i].children.length > 0) {
                 for (let j in dataId[0][i].children) {
@@ -26,6 +28,7 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
                     if ((type == 2 || type == 3) && dataId[0][i].children[j].isActive) {
                         idList += ',' + dataId[0][i].children[j].id
                         itemList.push(dataId[0][i].children[j])
+                        idArray.push(dataId[0][i].children[j].id)
                     }
                     if (dataId[0][i].children[j].children.length > 0) {
                         for (let k in dataId[0][i].children[j].children) {
@@ -33,6 +36,7 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
                             if ((type == 2 || type == 3) && dataId[0][i].children[j].children[k].isActive) {
                                 idList += ',' + dataId[0][i].children[j].children[k].id
                                 itemList.push(dataId[0][i].children[j].children[k])
+                                idArray.push(dataId[0][i].children[j].children[k].id)
                             }
                         }
                     }
@@ -41,8 +45,10 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         }
         for (let i in dataId[1]) {
             if (dataId[1][i].macro.filedsData && dataId[1][i].isActive) {
-                idList += ',' + dataId[1][i].macro.dataId
-                itemList.push(dataId[1][i])
+                if (idArray.indexOf(dataId[1][i].macro.dataId)) {
+                    idList += ',' + dataId[1][i].macro.dataId
+                    itemList.push(dataId[1][i])
+                }
             }
         }
         if (areaCode.length > 0) {
@@ -52,7 +58,6 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         } else {
             codeList = ',500000'
         }
-        console.log(itemList)
         AreaCodeAndDataId.push(codeList.substring(1))
         AreaCodeAndDataId.push(idList.substring(1))
         AreaCodeAndDataId.push(itemList)

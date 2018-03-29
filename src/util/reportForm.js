@@ -42,6 +42,7 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         for (let i in dataId[1]) {
             if (dataId[1][i].macro.filedsData && dataId[1][i].isActive) {
                 idList += ',' + dataId[1][i].macro.dataId
+                itemList.push(dataId[1][i])
             }
         }
         if (areaCode.length > 0) {
@@ -51,6 +52,7 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         } else {
             codeList = ',500000'
         }
+        console.log(itemList)
         AreaCodeAndDataId.push(codeList.substring(1))
         AreaCodeAndDataId.push(idList.substring(1))
         AreaCodeAndDataId.push(itemList)

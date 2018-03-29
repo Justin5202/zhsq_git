@@ -554,11 +554,8 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
             .forEach(element => {
                 map.addLayer(element);
             })
-        // 判断是否要 加载天地图
-        _containRelationshipCallback();
-        _setMBVisibility();
-
-        //绑定右键拖动事件 2D 3D 图层显示用
+        /* 判断是否要 加载天地图 */
+        // 绑定右键拖动事件 2D 3D 图层显示用
         map.on('pitch', _onPitch);
 
         //绑定右键拖动事件 是否显示 指北针
@@ -635,11 +632,9 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                     .forEach(element => {
                         map.addLayer(element);
                     })
-                // 判断是否要 加载天地图
-                _containRelationshipCallback();
-                _setMBVisibility();
+                /* 判断是否要 加载天地图 */
 
-                //绑定右键拖动事件 2D 3D 图层显示用
+                // 绑定右键拖动事件 2D 3D 图层显示用
                 map.on('pitch', _onPitch);
 
                 //绑定右键拖动事件 是否显示 指北针
@@ -884,6 +879,7 @@ const _containRelationshipCallback = function () {
  * @returns null
  */
 const _setMBVisibility = function () {
+    
     let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", "visibility");
     let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
     let imgHQ_visibility = map.getLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", "visibility");

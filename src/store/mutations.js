@@ -172,6 +172,8 @@ const mutations = {
     [TYPE.SET_ACTIVE_AREA_LIST](state, { item, isRemoveAll }) {
         if (isRemoveAll) {
             mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
+            mapHelper.closePopup()
+            mapHelper.closePicPopup()
             state.activeAreaInfoList.map(v => {
                 /*清空所有图层*/
                 mapHelper.removeLayerByCode(v.id)

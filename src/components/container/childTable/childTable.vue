@@ -16,7 +16,7 @@
           <p v-if="areaInfoList[0].target.length!==0">{{areaInfoList[0].target[0].areaname}} {{areaInfoList[0].target[0].year}}</p>
           <p v-if="areaInfoList[0].target.length!==0">{{areaInfoList[0].target[0].cityTarget}}</p>
         </div>
-        <div class="detail" v-if="areaInfoList[0].target.length!==0 || parseInt(areaInfoList[0].type)%10 == 4" @click.stop="getDetails(areaInfoList[0])">
+        <div class="detail" v-if="areaInfoList[0].target.length!==0 || parseInt(areaInfoList[0].type)%10 == 4" @click="isActiveItem(areaInfoList[0],'details')">
           <i class="detail-icon" :class="{avtiveDetailIcon: !areaInfoList[0].isActive}"></i>
           <span :class="{activeColor: !areaInfoList[0].isActive}">详情</span>
         </div>
@@ -46,7 +46,7 @@
               <p v-if="childItem.target.length!==0">{{childItem.target[0].areaname}} {{childItem.target[0].year}}</p>
               <p v-if="childItem.target.length!==0">{{childItem.target[0].cityTarget}}</p>
             </div>
-            <div class="detail" v-if="childItem.target.length!==0" @click.stop="getDetails(childItem)">
+            <div class="detail" v-if="childItem.target.length!==0" @click="isActiveItem(childItem,'details')">
               <i class="detail-icon" :class="{avtiveDetailIcon: !childItem.isActive}"></i>
               <span :class="{activeColor: !childItem.isActive}">详情</span>
             </div>
@@ -67,7 +67,7 @@
                 <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].areaname}} {{thirdChild.target[0].year}}</p>
                 <p v-if="thirdChild.target.length!==0">{{thirdChild.target[0].cityTarget}}</p>
               </div>
-              <div class="detail" v-if="thirdChild.target.length!==0" @click.stop="getDetails(thirdChild)">
+              <div class="detail" v-if="thirdChild.target.length!==0" @click="isActiveItem(thirdChild,'details')">
                 <i class="detail-icon" :class="{avtiveDetailIcon: !thirdChild.isActive}"></i>
                 <span :class="{activeColor: !thirdChild.isActive}">详情</span>
               </div>
@@ -102,7 +102,8 @@ export default {
       "areaCodeAndDataId",
       "reportFormData",
       "areaList",
-      "searchItemMacroList"
+      "searchItemMacroList",
+      "reportFormShow"
     ])
   },
   methods: {
@@ -113,40 +114,13 @@ export default {
       this.thirdChildIsShow = !this.thirdChildIsShow;
       this.nowIndex = index;
     },
-    isActiveItem(item) {
+    isActiveItem(item,type) {
+      item.reportShow = this.reportFormShow
+      item.clickType = type
       this.setAreaList({'param': item})
     },
-    //点击详情按钮
-    getDetails(item) {
-      this.setAreaList({'param': item, 'type': 'report'})
-      var dataType = parseInt(item.type) % 10;
-      if (dataType == 2 || dataType == 3) {
-        this.getAreaCodeAndDataId({
-          areaCode: this.areaList,
-          dataId: [this.areaInfoList, this.searchItemMacroList]
-        });
-        this.getReportData({
-          areaCode: this.areaCodeAndDataId[0],
-          dataId: this.areaCodeAndDataId[1]
-        });
-        this.setReportFormShow(true);
-        this.setAreaReportFormShow(false);
-      } else if (dataType == 4 || dataType == 5) {
-        this.getDataFileByCodeAndId({
-          areaCode: this.areaList,
-          dataId: item.id
-        });
-        this.setReportFormShow(false);
-        this.setAreaReportFormShow(true);
-      }
-    },
     ...mapActions([
-      "setAreaList",
-      "setReportFormShow",
-      "getReportData",
-      "getAreaCodeAndDataId",
-      "getDataFileByCodeAndId",
-      "setAreaReportFormShow"
+      "setAreaList"
     ])
   }
 };

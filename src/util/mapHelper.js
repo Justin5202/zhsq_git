@@ -111,27 +111,7 @@ const initMap = function (option) {
         .d2c
         .map(option);
 
-    // 缩放结束 判断当前边界是否在 重庆市域内
-    map.on('zoomend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 拖拽结束 判断当前边界是否在 重庆市域内
-    map.on('dragend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 倾斜结束 判断当前边界是否在 重庆市域内
-    map.on('pitchend', (e) => {
-        _containRelationshipCallback();
-    });
-
-    // 转角结束 判断当前边界是否在 重庆市域内
-    map.on('rotateend', (e) => {
-        _containRelationshipCallback();
-    });
-
-     // // 不参与点击查询的layerid
+    // // 不参与点击查询的layerid
     if (window.vecterClickExceptLayer) {
         vecterClickExceptLayerArray = window
             .vecterClickExceptLayer
@@ -185,7 +165,27 @@ const initMap = function (option) {
                     layersId_3d.push(element.id);
                 }
             }
-        })
+        });
+
+    // 缩放结束 判断当前边界是否在 重庆市域内
+    map.on('zoomend', (e) => {
+        _containRelationshipCallback();
+    });
+
+    // 拖拽结束 判断当前边界是否在 重庆市域内
+    map.on('dragend', (e) => {
+        _containRelationshipCallback();
+    });
+
+    // 倾斜结束 判断当前边界是否在 重庆市域内
+    map.on('pitchend', (e) => {
+        _containRelationshipCallback();
+    });
+
+    // 转角结束 判断当前边界是否在 重庆市域内
+    map.on('rotateend', (e) => {
+        _containRelationshipCallback();
+    });
 
     return map;
 };
@@ -340,7 +340,7 @@ const _onClick = function (e) {
  * @param featrue/geojson
  * @returns null
  */
-const setHighLight = function(geojson){
+const setHighLight = function (geojson) {
     let highlightOption = {
         "id": "highlightLayer",
         "source": {
@@ -415,10 +415,10 @@ const setHighLight = function(geojson){
 
 /**
  * @function 删除高亮层
- * @param 
+ * @param
  * @returns null
  */
-const removeHighLight = function(){
+const removeHighLight = function () {
     removeLayerById("highlightLayer");
 };
 
@@ -564,7 +564,6 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
         //绑定右键拖动事件 是否显示 指北针
         map.on('rotate', _onRotate);
 
-
         // 绑定点击事件返回 mapguid
         map.on('click', _onClick);
 
@@ -575,6 +574,17 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
         map.on('styledata', () => {
             if (codeArray.length > 0) {
                 doFilterByCodeArrayAndAreacodeArray(codeArray, areacodeArray);
+            }
+        });
+        // 有鼠标和地图操作时 关工具栏用的
+        map.on('mousedown', () => {
+            if (interactiveCallback) {
+                interactiveCallback();
+            }
+        });
+        map.on('zoomstart', () => {
+            if (interactiveCallback) {
+                interactiveCallback();
             }
         });
 
@@ -649,12 +659,12 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                 });
 
                 // 有鼠标和地图操作时 关工具栏用的
-                map.on('mousedown',()=>{
+                map.on('mousedown', () => {
                     if (interactiveCallback) {
                         interactiveCallback();
                     }
                 });
-                map.on('zoomstart',()=>{
+                map.on('zoomstart', () => {
                     if (interactiveCallback) {
                         interactiveCallback();
                     }
@@ -918,7 +928,11 @@ const _setMBVisibility = function () {
  * @returns null
  */
 const _setVecterDemMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_global-vecter-layer", "visibility");
+    try {
+        let visibility = map.getLayoutProperty("gjtdt_global-vecter-layer", "visibility");
+    } catch (error) {
+        console.log('gjtdt_global-vecter-layer 图层不存在');
+    }
     if (value) {
         if (visibility != "visible") {
             map.setLayoutProperty("gjtdt_global-vecter-layer", 'visibility', 'visible');
@@ -938,7 +952,12 @@ const _setVecterDemMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtImageMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_remote-scense-layer", "visibility");
+    try {
+        let visibility = map.getLayoutProperty("gjtdt_remote-scense-layer", "visibility");
+    } catch (error) {
+        console.log('gjtdt_remote-scense-layer 图层不存在');
+    }
+
     if (value) {
         if (visibility != "visible") {
             map.setLayoutProperty("gjtdt_remote-scense-layer", 'visibility', 'visible');
@@ -958,7 +977,11 @@ const _setTdtImageMapVisibility = function (value) {
  * @returns null
  */
 const _setTdtHQImageMapVisibility = function (value) {
-    let visibility = map.getLayoutProperty("gjtdt_HQ_remote-scense-layer", "visibility");
+    try {
+        let visibility = map.getLayoutProperty("gjtdt_HQ_remote-scense-layer", "visibility");
+    } catch (error) {
+        console.log('gjtdt_HQ_remote-scense-layer 图层不存在');
+    }
     if (value) {
         if (visibility != "visible") {
             map.setLayoutProperty("gjtdt_HQ_remote-scense-layer", 'visibility', 'visible');

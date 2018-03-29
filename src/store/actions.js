@@ -47,8 +47,6 @@ function handleArray(array) {
 function addLayer(datapath, id) {
     getJson(datapath).then(res => {
         const result = mapHelper.addLayerByCodeAndJson(id, res)
-        /*图层过滤*/
-        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
         getQueryElementByPoint(result).then(res => {
             if (res.data && res.data.flag !== 3) {
                 // 地图飞点

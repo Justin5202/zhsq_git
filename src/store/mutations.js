@@ -201,6 +201,8 @@ const mutations = {
         let temp = []
         state.activeAreaInfoList.map(v => temp.push(v.id))
         state.layerIdList = temp
+        /*图层过滤*/
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
     },
     [TYPE.SET_SEC_AREA_LIST](state, secAreaList) {
         state.secAreaList = secAreaList
@@ -299,6 +301,8 @@ const mutations = {
         let temp = []
         state.areaList.map(v => temp.push(v.areacode))
         state.areaCodeList = temp
+        /*图层过滤*/
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
     },
     [TYPE.SET_UUID_INFO](state, uuidClickedInfo) {
         state.uuidClickedInfo = uuidClickedInfo

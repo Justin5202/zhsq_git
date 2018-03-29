@@ -106,7 +106,8 @@ export default {
       'searchItemMacroList',
       'userinfo',
       'mapJsonAndImg',
-      'layerControlShow'
+      'layerControlShow',
+      'searchList'
     ]),
     areaLayerLength() {
       let len = 0
@@ -125,21 +126,25 @@ export default {
     reportFormLength() {
       let len = 0
       let type = 0
+      let idArray = []
       for (var i in this.areaInfoList) {
         type = parseInt(this.areaInfoList[i].type)%10
         if ((type == 2 || type == 3)&& this.areaInfoList[i].isActive) {
+          idArray.push(this.areaInfoList[i].id)
           len++
         }
         if (this.areaInfoList[i].children.length > 0) {
           for (var j in this.areaInfoList[i].children) {
             type = parseInt(this.areaInfoList[i].children[j].type)%10
             if ((type == 2 || type == 3) && this.areaInfoList[i].children[j].isActive) {
+              idArray.push(this.areaInfoList[i].children[j].id)
               len++
             }
             if (this.areaInfoList[i].children[j].children.length > 0) {
               for (var k in this.areaInfoList[i].children[j].children) {
                 type = parseInt(this.areaInfoList[i].children[j].children[k].type)%10
                 if ((type == 2 || type == 3) && this.areaInfoList[i].children[j].children[k].isActive) {
+                  idArray.push(this.areaInfoList[i].children[j].children[k].id)
                   len++
                 }
               }
@@ -147,10 +152,12 @@ export default {
           }
         }
       }
-      this.searchItemMacroList.map(v => {
+      this.searchList.map(v => {
         type = parseInt(v.macro.data.type)%10
         if (v.isActive && (type == 2 || type == 3)) {
-          len += 1
+          if(idArray.indexOf(v.macro.dataId) == -1){
+            len += 1
+          }
         }
       })
       return len

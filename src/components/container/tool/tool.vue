@@ -97,6 +97,7 @@ export default {
   },
   created: function() {
     this.listenMapRotate()
+    this.listenMapChange()
   },
   computed: {
     ...mapGetters([
@@ -227,6 +228,9 @@ export default {
     listenMapRotate() {
       this.$mapHelper.onRotateCallback(this.changeAngle)
     },
+    listenMapChange(){
+      this.$mapHelper.onInteractiveCallback(this.mapChange)  
+    },
     //获取旋转角度值
     changeAngle(angle) {
       document.getElementsByClassName("tool-compass")[0].style.transform = "rotate(" + -angle + "deg)"
@@ -235,6 +239,12 @@ export default {
       } else if (angle == 0) {
         this.toolCompassVisible = false
       }
+    },
+    //监听地图改变
+    mapChange(){
+      this.$store.commit('SET_LAYER_CONTROL_SHOW', false)
+      this.layerToolVisible = false
+      this.areaBoxIsShow = false
     },
     resetNorth() {
       d2cMap.resetNorth()

@@ -466,7 +466,7 @@ export const setReportFormShow = function({ dispatch, commit, state }, isShow) {
         if (isShow) {
             dispatch('getAreaCodeAndDataId', {
                 'areaCode': state.areaList,
-                'dataId': [state.areaInfoList, state.searchItemMacroList]
+                'dataId': [state.areaInfoList, state.searchList]
             })
             dispatch('getReportData', {
                 'areaCode': state.areaCodeAndDataId[0],

@@ -232,7 +232,6 @@ export default {
       "areaCodeAndDataId",
       "reportFormData",
       "areaList",
-      "searchItemMacroList",
       "topicList",
       "topicListShow"
     ])
@@ -311,6 +310,7 @@ export default {
       this.searchIndex = index
       let type = item.macro.data.type
       let i = Number(type.substring(0, 1))
+      console.log(1)
       if (i === 1) {
         /*存在第二级目录*/
         this.getAreaDetail(item)
@@ -333,7 +333,7 @@ export default {
         this.isActiveItem(item);
         this.getAreaCodeAndDataId({
           areaCode: this.areaList,
-          dataId: [this.areaInfoList, this.searchItemMacroList]
+          dataId: [this.areaInfoList, this.searchList]
         });
         this.getReportData({
           areaCode: this.areaCodeAndDataId[0],

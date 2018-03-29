@@ -58,7 +58,7 @@
               <td class="table-tab-item" v-for="(item,index) in reportFormData.name" @click="showContent(index,'exist')" :class="{active:activeTab == index}">{{item}}</td>
           </tr>
       </table>
-      <div class="table-tab-context" v-if="areaReportFormShow" :style="{height:contentHeight}">
+      <div class="table-tab-context" v-if="areaReportFormShow && reportFormData.data" :style="{height:contentHeight}">
           <!-- 展示html字符串 -->
           <div 
             v-html="item" 
@@ -93,12 +93,8 @@
                 <span class="font-blue">{{item.context}}</span>
               </div>
           </div>
+          <div class="mask" v-if="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></div>
       </div>
-    </div>
-    <div 
-      class="mask" 
-      v-show="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" 
-      v-for="(item,index) in reportFormData.data.dataContex">
     </div>
   </div>
 </div>
@@ -156,13 +152,11 @@ export default {
       this.activeContent = 0;
       this.tabContext = this.reportFormData.data[0];
     },
-    clearItem(index, item) {
-      for (var i in this.areaCodeAndDataId[2]) {
-        if (item.id == this.areaCodeAndDataId[2][i].id) {
-          this.setAreaList({
-            param: this.areaCodeAndDataId[2][i],
-            type: "report"
-          });
+    clearItem(index,item) {
+      for(var i in this.areaCodeAndDataId[2]){
+        if(item.id == this.areaCodeAndDataId[2][i].id || item.id == this.areaCodeAndDataId[2][i].macro.id){
+          console.log(this.areaCodeAndDataId[2][i])
+          this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
         }
       }
       this.clearReport({

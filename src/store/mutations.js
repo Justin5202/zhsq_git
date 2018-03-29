@@ -147,6 +147,16 @@ const mutations = {
                         v.isActive = n.isActive
                     }
                 }
+                if (v.element) {
+                    if (v.element.dataId === n.id) {
+                        v.isActive = n.isActive
+                    }
+                }
+                if (v.macro) {
+                    if (v.macro.dataId === n.id) {
+                        v.isActive = n.isActive
+                    }
+                }
             })
         })
     },
@@ -158,6 +168,7 @@ const mutations = {
             state.activeAreaInfoList.map(v => {
                 /*清空所有图层*/
                 mapHelper.removeLayerByCode(v.id)
+                mapHelper.removeLayerById(v.id)
             })
             state.activeAreaInfoList.splice(0, state.activeAreaInfoList.length)
             state.areaInfoList.map(v => {
@@ -171,6 +182,7 @@ const mutations = {
                     })
                 }
             })
+            state.searchList.map(v => v.isActive = false)
         } else {
             let index = state.activeAreaInfoList.findIndex(v => v.id === item.id)
             if (index < 0) {

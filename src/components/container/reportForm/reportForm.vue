@@ -101,10 +101,10 @@ export default {
   },
   mounted () {
     window.onresize = () => {
-    return (() => {
-      this.reportFormSize.width = (window.innerWidth - 60 - 350 - 200) +'px',
-      this.reportFormSize.height = (window.innerHeight - 50)+'px',
-      this.contentHeight = (window.innerHeight - 50 - 80)+'px'
+      return (() => {
+        this.reportFormSize.width = (window.innerWidth - 60 - 350 - 200) +'px',
+        this.reportFormSize.height = (window.innerHeight - 50)+'px',
+        this.contentHeight = (window.innerHeight - 50 - 80)+'px'
       })()
     }
   },
@@ -135,7 +135,6 @@ export default {
     clearItem(index,item) {
       for(var i in this.areaCodeAndDataId[2]){
         if(item.id == this.areaCodeAndDataId[2][i].id){
-          this.areaCodeAndDataId[2][i].isActive = false
           this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
         }
       }

@@ -193,7 +193,7 @@ export const getReportDataByAreaCodeInJS = function(data) {
                 var dataArray = { 'title': title, 'name': [], 'data': { dataContex: [], dataType: [] } }
                 for (var i in res.data) {
                     dataArray.name.push(res.data[i].title)
-                    if (res.data.html) {
+                    if (res.data[i].html) {
                         dataArray.data.dataContex.push(res.data[i].html)
                         dataArray.data.dataType.push('string')
                     } else {

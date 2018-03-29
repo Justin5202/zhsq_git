@@ -56,7 +56,7 @@ function addLayer(datapath, id) {
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length - 1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
                     /*删除地图mark */
                 for (let i = 0; i < 10; i++) {
-                    mapHelper.removeLayerById((state.searchParams.start + i).toString())
+                    mapHelper.removeLayerById((i + 1).toString())
                 }
                 /*图层过滤*/
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
@@ -361,8 +361,7 @@ export const setAreaList = function ({ dispatch, commit, state }, { param, type 
     if (data.searchType) {
         if (data.searchType === 4) {
             checkClickedDataType({ dispatch, 'data': data.macro.data, commit, 'first': false, 'reportType': type })
-            console.log(data.macro.areaCode !== 500000)
-            if (data.macro.areaCode !== 500000) {
+            if (data.macro.areaCode !== '500000') {
                 let areainfo = {
                     areacode: data.macro.areaCode,
                     areaname: data.macro.areaName
@@ -370,7 +369,7 @@ export const setAreaList = function ({ dispatch, commit, state }, { param, type 
                 dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
             }
         } else if (data.searchType === 2) {
-            if (data.area.areacode !== 500000) {
+            if (data.area.areacode !== '500000') {
                 let areainfo = {
                     areacode: data.area.areacode,
                     areaname: data.area.areaname
@@ -378,7 +377,7 @@ export const setAreaList = function ({ dispatch, commit, state }, { param, type 
                 dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
             }
         } else if (data.searchType === 6) {
-            if (data.area.areacode !== 500000) {
+            if (data.area.areacode !== '500000') {
                 let areainfo = {
                     areacode: data.area.areacode,
                     areaname: data.area.areaname

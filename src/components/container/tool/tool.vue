@@ -153,10 +153,12 @@ export default {
         }
       }
       this.searchList.map(v => {
-        type = parseInt(v.macro.data.type)%10
-        if (v.isActive && (type == 2 || type == 3)) {
-          if(idArray.indexOf(v.macro.dataId) == -1){
-            len += 1
+        if(v.macro) {
+          type = parseInt(v.macro.data.type)%10
+          if (v.isActive && (type == 2 || type == 3)) {
+            if(idArray.indexOf(v.macro.dataId) == -1){
+              len += 1
+            }
           }
         }
       })

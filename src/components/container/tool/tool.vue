@@ -170,9 +170,9 @@ export default {
     toggleShowData() {
       this.IsAll = !this.IsAll
       if(this.IsAll) {
-        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, [])
+        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(this.$store.state.layerIdList, [])
       } else {
-        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(this.$store.state.idList, this.$store.state.areaCodeList)
+        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(this.$store.state.layerIdList, this.$store.state.areaCodeList)
       }
     },
     //2D 3D切换

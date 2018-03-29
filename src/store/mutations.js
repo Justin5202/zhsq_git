@@ -276,7 +276,7 @@ const mutations = {
                     // 加载自身
                     mapHelper.addLayerByIdAndGeojson(state.areaDetailInfo.areacode.toString(), state.areaDetailInfo
                         .geojson)
-                    mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 12)
+                    mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
                     mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid)
                     /*图层过滤*/
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)

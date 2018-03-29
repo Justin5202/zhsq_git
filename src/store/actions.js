@@ -361,6 +361,7 @@ export const setAreaList = function ({ dispatch, commit, state }, { param, type 
     if (data.searchType) {
         if (data.searchType === 4) {
             checkClickedDataType({ dispatch, 'data': data.macro.data, commit, 'first': false, 'reportType': type })
+            console.log(data.macro.areaCode !== 500000)
             if (data.macro.areaCode !== 500000) {
                 let areainfo = {
                     areacode: data.macro.areaCode,

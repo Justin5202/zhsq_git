@@ -177,11 +177,10 @@ export function getNextProvertyData(areacode) {
 }
 
 // 获得脱贫攻坚数据
-export function getRightProvertyData() {
+export function getRightProvertyData(start) {
     const data = Object.assign({}, {
         method: 'getPovertyAlleviationData',
-        // areacode: areacode,
-        start: 0,
+        start: start,
         rows: 10
     })
     return axios.post(url, qs.stringify(data)).then(res => {

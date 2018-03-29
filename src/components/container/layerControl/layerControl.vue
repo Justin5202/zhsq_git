@@ -111,7 +111,10 @@ export default {
       'removeAllAreaList',
       'removeSearchItem'
     ])
-  }
+  },
+  destroyed() {
+    this.checkedList.map(v => this.$mapHelper.setOpacityByCode(v, 1))
+  } 
 }
 </script>
 

@@ -20,7 +20,7 @@
 						v-for="(item, index) in ['全部', '数据', '地名点']"
 						:key="index"
 						@click="getType(index+1)"
-						:class="{clicked: nowIndex === index}"
+						:class="{clicked: typeIndex === index}"
 					>{{item}}</button>
 				</div>
 				<ul :style="{maxHeight:tabPaneHeight}">
@@ -103,11 +103,15 @@
 								<p>{{item.element.desc}}</p>
 							</div>
 						</div>
-						<div class="search-pane-box" v-else-if="item.searchType === 6">
+						<div 
+              class="search-pane-box" 
+              :class="{active: searchIndex === index}"
+              v-else-if="item.searchType === 6"
+            >
 							<div class="icon-box">
 								<i class="unit-icon"></i>
 							</div>
-							<div class="area-content">
+							<div class="area-content" @click="setAreaInfo(item, index)">
 								<h2>{{item.area.areaname}}</h2>
 								<p>{{item.area.address}}</p>
 							</div>
@@ -210,6 +214,7 @@ export default {
       page: 1,
       topicPage: 1,
       buttonType: "",
+      typeIndex: 0,
       nowIndex: 0,
       topicIndex: -1,
       searchIndex: -1,
@@ -241,23 +246,29 @@ export default {
         rows: 10
       }
       this.buttonType = "info"
-      this.nowIndex = index - 1
+      this.typeIndex = this.type - 1
       this.topicIndex =  -1
       this.searchIndex =  -1
       this.getSearchParams({ typeParams: params, params: {} })
     },
     getTourismType(index) {
-      this.nowIndex = index;
-      this.addTourismLayer(index);
+      this.nowIndex = index
+      this.addTourismLayer(index)
     },
     flyToPoi(item, index) {
+      console.log(JSON.parse(item.element.geojson))
       this.searchIndex = index
       let gp, uuid
       if(item.element) {
-        gp = item.element.geopoint
         uuid = item.element.uuid
-      }
-      if(item.poi) {
+        if(item.element.geojson) {
+          this.$mapHelper.removeHighLight()
+          this.$mapHelper.setHighLight(JSON.parse(item.element.geojson))
+        }
+        if(item.element.geopoint) {
+          gp = item.element.geopoint
+        }
+      } else if(item.poi) {
         gp = item.poi.geopoint
         uuid = item.poi.uuid
       }
@@ -296,7 +307,7 @@ export default {
       this.setLayerControlShow(false)
     },
     isActiveItem(item, index) {
-      this.searchPaneIndex = index
+      this.searchIndex = index
       let type = item.macro.data.type
       let i = Number(type.substring(0, 1))
       if (i === 1) {
@@ -304,18 +315,13 @@ export default {
         this.getAreaDetail(item)
       } else if (i === 2) {
         /*加载空间数据，加入数据table*/
-        item.isActive = !item.isActive
         this.setAreaList({'param': item})
       }
     },
     setAreaInfo(item, index) {
+      this.searchIndex = index
       item.isActive = !item.isActive
       this.setAreaList({'param': item})
-      if(item.isActive) {
-        this.searchPaneIndex = index
-      } else {
-        this.searchPaneIndex = -1
-      }
     },
     toggleSlide() {
       this.upOrDown = !this.upOrDown;

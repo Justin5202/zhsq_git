@@ -233,7 +233,7 @@ const mutations = {
     [TYPE.SET_AREA_INFO](state, areaInfo) {
         state.areaInfo = areaInfo
     },
-    [TYPE.SET_SELECTED_AREA_LIST](state, { areainfo, isRemoveAll }) {
+    [TYPE.SET_SELECTED_AREA_LIST](state, { areainfo, isRemoveAll, type }) {
         if (!isRemoveAll) {
             let temp = state.areaList
             let bol = false
@@ -277,7 +277,10 @@ const mutations = {
                     mapHelper.addLayerByIdAndGeojson(state.areaDetailInfo.areacode.toString(), state.areaDetailInfo
                         .geojson)
                     mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
-                    mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid)
+                    console.log(type)
+                    if(!type) {
+                        mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid, true)
+                    }
                     /*图层过滤*/
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 }

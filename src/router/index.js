@@ -22,10 +22,10 @@ export default new Router({
         {
           path: '',
           name: 'index',
-          redirect: 'zhsq_d2c',
+          redirect: 'map',
         }, {
-          path: '/zhsq_d2c',
-          name: 'zhsq_d2c',
+          path: '/map',
+          name: 'map',
           meta: {keepAlive: true},
           component: mapTest
         }

@@ -339,13 +339,13 @@ export const getAreaDetail = function ({ dispatch, commit, state }, params) {
         commit(TYPE.TABLE_PANE_SHOW, false)
     })
 }
-export const setAreaInfo = function ({ commit, state }, { areainfo, isRemoveAll }) {
+export const setAreaInfo = function ({ commit, state }, { areainfo, isRemoveAll, type }) {
     if (!isRemoveAll) {
         getNextAreaDetailInfo(areainfo.areacode).then(res => {
             if (res.code == '1') {
                 areainfo.areaname = JSON.parse(res.data).areaname
                 commit(TYPE.SET_AREA_DETAIL_INFO, JSON.parse(res.data))
-                commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll })
+                commit(TYPE.SET_SELECTED_AREA_LIST, { areainfo, isRemoveAll, type })
                 commit(TYPE.SET_AREA_INFO, areainfo)
             }
         })

@@ -47,7 +47,7 @@ export default {
     }
   },
   destroyed() {
-    if (this.$route.name == 'zhsq_d2c') {
+    if (this.$route.name == 'map') {
       window.location.reload()
     }
   },

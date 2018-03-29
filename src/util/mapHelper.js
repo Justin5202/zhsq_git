@@ -307,7 +307,7 @@ const _onClick = function (e) {
                             default:
                                 setPopupToMap([
                                     e.lngLat.lng, e.lngLat.lat
-                                ], feature.properties.mapguid);
+                                ], feature.properties.mapguid,null);
                                 break;
                         }
                         break;
@@ -316,7 +316,7 @@ const _onClick = function (e) {
                         // 普通POI
                         setPopupToMap([
                             e.lngLat.lng, e.lngLat.lat
-                        ], feature.properties.mapguid);
+                        ], feature.properties.mapguid,null);
                         break;
                 }
 
@@ -1439,7 +1439,7 @@ const setMarksToMap = function (layerId, geoPointArray, _mapguidArray, icon, ico
  * @param 坐标 （数组）， _mapguid
  * @returns null
  */
-const setPopupToMap = function (_geoPoint, _mapguid) {
+const setPopupToMap = function (_geoPoint, _mapguid, _type) {
     closePopup();
     infoPopup = new window
         .d2c
@@ -1451,9 +1451,9 @@ const setPopupToMap = function (_geoPoint, _mapguid) {
         el: '#infoPopup',
         store,
         router,
-        template: '<v-infoPopup :mapguid="mapguid" :geoPoint="geoPoint"/>',
+        template: '<v-infoPopup :mapguid="mapguid" :geoPoint="geoPoint" :type="type"/>',
         data: function () {
-            return {mapguid: _mapguid, geoPoint: _geoPoint}
+            return {mapguid: _mapguid, geoPoint: _geoPoint, type: _type}
         },
         components: {
             'v-infoPopup': infoPopupVm

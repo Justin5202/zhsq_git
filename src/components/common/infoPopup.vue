@@ -1,27 +1,24 @@
 <template>
 <div>
-  <i class="el-icon-loading" v-if="!uuidClickedInfo && !showArray.length > 0"></i>
-  <div class="pop" v-if="uuidClickedInfo && showArray.length > 0">
-    <div v-if="!notPoi">
-      <div class="pop-title">
+  <div class="pop" v-if="uuidClickedInfo">
+    <div>
+      <div class="pop-title" v-if="!type">
         <h3 class="title" v-if="uuidClickedInfo._source.mc">{{uuidClickedInfo._source.mc}}</h3>
         <h3 class="title" v-else-if="uuidClickedInfo._source.name">{{uuidClickedInfo._source.name}}</h3>
         <h3 class="title" v-else-if="uuidClickedInfo._source.jc">{{uuidClickedInfo._source.jc}}</h3>
         <h3 class="title" v-else>{{uuidClickedInfo._source[showArray[0]._source.name]}}</h3>
         <i class="cross-icon" @click="isShowPop()"></i>
       </div>
-      <ul class="pop-ul">
-        <li class="pop-li" v-for="item in showArray">
+      <ul class="pop-ul" v-if="!notPoi && !type">
+        <li class="pop-li" v-if="showArray.length > 0" v-for="item in showArray">
           <p>{{item._source.name_a}}</p>
           <span>{{uuidClickedInfo._source[item._source.name]}}</span>
         </li>
       </ul>
     </div>
-    <div v-if="notPoi">
-      <div class="pop-title">
-        <h3 class="title">{{areaDetailInfo.areaname}}</h3>
-        <i class="cross-icon" @click="isShowPop()"></i>
-      </div>
+    <div class="pop-title" v-if="type">
+      <h3 class="title">{{areaDetailInfo.areaname}}</h3>
+      <i class="cross-icon" @click="isShowPop()"></i>
     </div>
     <div class="button-box">
       <div class="button-item left-button-item" @click="searchAroundShow()">
@@ -58,6 +55,10 @@ export default {
     },
     geoPoint: {
 
+    },
+    type: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -75,6 +76,7 @@ export default {
     ])
   },
   beforeMount() {
+    console.log(this.type)
     this._getQueryOnlineByUuid(this.mapguid)
   },
   methods: {
@@ -86,8 +88,9 @@ export default {
     },
     checkDataType(data) {
       this.notPoi = false
+      this.uuidClickedInfo = data
+      console.log(this.uuidClickedInfo)
       if (!data._source.ztmc || data._source.ztmc=='社区村驻地(未移动版)') {
-        this.uuidClickedInfo = data
         getThematicMap(data._type).then(res => {
           if (res.data !== "[]") {
             this.showArray = JSON.parse(res.data)
@@ -95,42 +98,42 @@ export default {
             this.$mapHelper.closePopup()
           }
         })
-        return
+      } else {
+        let info = data._source
+        let reg1 = RegExp(/市政府驻地\?政府机关/)
+        let reg2 = RegExp(/区县驻地\?政府机关/)
+        let reg3 = RegExp(/乡镇|街|驻地/)
+        let reg4 = RegExp(/社区村驻地/)
+        let code = ""
+        if (reg1.exec(info.ztmc)) {
+          code = info.qxdm
+          this.notPoi = true
+        } else if (reg2.exec(info.ztmc)) {
+          code = info.qxdm
+          this.notPoi = true
+        } else if (reg3.exec(info.ztmc)) {
+          code = info.xzjdm
+          this.notPoi = true
+        } else if (reg4.exec(info.ztmc)) {
+          code = info.sqcdm
+          this.notPoi = true
+        }
+        if (!this.notPoi) {
+          getThematicMap(data._type).then(res => {
+            if (res.data !== "[]") {
+              this.showArray = JSON.parse(res.data)
+            } else {
+              this.$mapHelper.closePopup()
+            }
+          })
+        }
+        console.log(this.notPoi)
+        let areaInfo = {
+          areacode: code,
+          areaname: ""
+        }
+        this.setAreaInfo({ areainfo: areaInfo, isRemoveAll: false, type: 'clickedMap' })
       }
-      let info = data._source
-      let reg1 = RegExp(/市政府驻地\?政府机关/)
-      let reg2 = RegExp(/区县驻地\?政府机关/)
-      let reg3 = RegExp(/乡镇|街|驻地/)
-      let reg4 = RegExp(/社区村驻地/)
-      let code = ""
-      if (reg1.exec(info.ztmc)) {
-        code = info.qxdm
-        this.notPoi = true
-      } else if (reg2.exec(info.ztmc)) {
-        code = info.qxdm
-        this.notPoi = true
-      } else if (reg3.exec(info.ztmc)) {
-        code = info.xzjdm
-        this.notPoi = true
-      } else if (reg4.exec(info.ztmc)) {
-        code = info.sqcdm
-        this.notPoi = true
-      }
-      if (!this.notPoi) {
-        this.uuidClickedInfo = data
-        getThematicMap(data._type).then(res => {
-          if (res.data !== "[]") {
-            this.showArray = JSON.parse(res.data)
-          } else {
-            this.$mapHelper.closePopup()
-          }
-        })
-      }
-      let areaInfo = {
-        areacode: code,
-        areaname: ""
-      }
-      this.setAreaInfo({ areainfo: areaInfo, isRemoveAll: false })
     },
     _getQueryOnlineByUuid(id) {
       getQueryOnlineByUuid(id).then(res => {

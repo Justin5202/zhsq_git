@@ -26,6 +26,9 @@ function handleArray(array) {
 function addLayer(datapath, id) {
     getJson(datapath).then(res => {
         const result = mapHelper.addLayerByCodeAndJson(id, res)
+        /*图层过滤*/
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList,
+            state.areaCodeList)
         getQueryElementByPoint(result).then(res => {
             if (res.data && res.data.flag !== 3) {
                 // 地图飞点
@@ -33,9 +36,12 @@ function addLayer(datapath, id) {
                 mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(
                     1, handleArray(res.data.points).length - 1), res.data.mapguid,
                     'TS_定位1', 0.8, result.minzoom)
-                /*图层过滤*/
-                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList,
-                    state.areaCodeList)
+                 /*删除地图mark */
+                 for (let i = 0; i < 10; i++) {
+                    mapHelper.removeLayerById((i + 1).toString())
+                }
+                mapHelper.closePopup()
+                mapHelper.closePicPopup()
             }
         })
     })
@@ -165,12 +171,12 @@ const mutations = {
     },
     [TYPE.SET_ACTIVE_AREA_LIST](state, { item, isRemoveAll }) {
         if (isRemoveAll) {
+            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             state.activeAreaInfoList.map(v => {
                 /*清空所有图层*/
                 mapHelper.removeLayerByCode(v.id)
                 mapHelper.removeLayerById(v.id)
             })
-            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             state.activeAreaInfoList.splice(0, state.activeAreaInfoList.length)
             state.areaInfoList.map(v => {
                 v.isActive = false
@@ -244,11 +250,11 @@ const mutations = {
                         parentid: ''
                     }
                 }
+                /*图层过滤*/
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 /*删除行政区划线*/
                 mapHelper.removeLayerById(areainfo.areacode.toString())
                 mapHelper.closePopup()
-                /*图层过滤*/
-                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             } else {
                 /*更新选中区域areacode列表*/
                 if (areainfo.areacode !== '501002') {
@@ -278,13 +284,13 @@ const mutations = {
                 }
             }
         } else {
+            /*图层过滤*/
+            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             /*删除全部行政区划线*/
             state.areaList.map(v => {
                 mapHelper.removeLayerById(v.areacode.toString())
             })
             mapHelper.closePopup()
-            /*图层过滤*/
-            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             state.areaList = []
             state.areaInfo = {
                 areacode: 500000,
@@ -329,6 +335,7 @@ const mutations = {
         state.topicListShow = flag
     },
     [TYPE.ADD_TOURSIM_LAYER](state, flag) {
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
         if (flag == 0) {
             addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_5A.json', 'Z10000')
             addLayer('/ZT_DBSJ_LSWH_SJYC/LSWH_3AJJYSJQ_4A.json', 'Z10001')
@@ -351,7 +358,6 @@ const mutations = {
         } else if (flag == 4) {
             addLayer('/ZT_ZTZT_FPZT/ZT_ZTZT_FPZT.json', 'Z10003')
         }
-        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
     },
     [TYPE.SET_USER_INFO](state, userinfo) {
         state.userinfo = userinfo

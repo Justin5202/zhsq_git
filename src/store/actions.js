@@ -47,6 +47,8 @@ function handleArray(array) {
 function addLayer(datapath, id) {
     getJson(datapath).then(res => {
         const result = mapHelper.addLayerByCodeAndJson(id, res)
+        /*图层过滤*/
+        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
         getQueryElementByPoint(result).then(res => {
             if (res.data && res.data.flag !== 3) {
                 // 地图飞点
@@ -58,8 +60,6 @@ function addLayer(datapath, id) {
                 for (let i = 0; i < 10; i++) {
                     mapHelper.removeLayerById((i + 1).toString())
                 }
-                /*图层过滤*/
-                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 mapHelper.closePopup()
                 mapHelper.closePicPopup()
             }
@@ -111,9 +111,9 @@ function checkData(data, commit, first, type) {
                 } else if (!first) {
                     v.isActive = false
                     cur.isActive = false
+                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                     mapHelper.removeLayerByCode(v.id)
                     mapHelper.removeLayerById(v.id)
-                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 }
                 commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
                 commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
@@ -135,9 +135,9 @@ function checkData(data, commit, first, type) {
                 cur.isActive = true
             } else if (!first) {
                 cur.isActive = false
+                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 mapHelper.removeLayerByCode(cur.id)
                 mapHelper.removeLayerById(cur.id)
-                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
             }
             commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
             commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
@@ -254,8 +254,8 @@ export const getSearchParams = function({ dispatch, commit, state }, { typeParam
             /*地点数据标点*/
             res.data.map((v, index) => {
                 if (v.element || v.poi) {
-                    mapHelper.removeLayerById((index + 1).toString())
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
+                    mapHelper.removeLayerById((index + 1).toString())
                     if (v.element) {
                         if (v.element.geopoint) {
                             mapHelper.setMarkToMap((index + 1).toString(), v.element.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')

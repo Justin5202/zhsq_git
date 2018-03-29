@@ -135,7 +135,7 @@ export function getStatisticsDetails(shape, dataId) {
         dataId: dataId,
         shape: shape
     })
-    return axios.post(url, qs.stringify(data)).then(res => {
+    return axios.post(url, qs.stringify(data), { timeout: 90000 }).then(res => {
         return Promise.resolve(res.data)
     })
 }

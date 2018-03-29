@@ -65,7 +65,8 @@ export default {
              top: window.innerHeight/2 - 250 +'px',
              right:window.innerWidth/2 - 190 +'px'
          },
-         statisticsList:[]
+         statisticsList:[],
+         pointNum:0
       }
   },
    computed:{
@@ -103,7 +104,6 @@ export default {
       startDrawArea(){
         var sum = 0;
         this.dataId = '';
-        d2cMap.getCanvas().style.cursor = 'crosshair';
         this.$mapHelper.setIsMeasure(false)
         for(var i= 0; i < this.conditionList.length;i++){
             if(this.conditionList[i].isActive){
@@ -115,13 +115,25 @@ export default {
             this.dataId = this.dataId.substring(0,this.dataId.length - 1)
             this.setDrawPanelType('statistics')
             this.statisticsConditionShow = false
-        }
-        this.$mapHelper.setIsMeasure(true)
-        if(this.draw.drawPlane){
+            this.$mapHelper.setIsMeasure(true)
+            d2cMap.getCanvas().style.cursor = 'crosshair';
+            if(this.draw.drawPlane){
 
+            }else{
+                this.draw.drawPlane = new d2c.areaLayer(d2cMap)
+                this.$mapHelper.measureOnClickCallback(this.getAreaPoint)
+            }
         }else{
-            this.draw.drawPlane = new d2c.areaLayer(d2cMap)
-            this.$mapHelper.measureOnClickCallback(this.getAreaPoint)
+            const h = this.$createElement;
+            this.$msgbox({
+                title:'',
+                message: 
+                h('span', {style:'font-size:16px'}, '未选择统计指标')
+                ,
+                showConfirmButton:false,
+                center:true,
+                showClose:true
+            });
         }
       },
       getAreaPoint(e){
@@ -130,6 +142,7 @@ export default {
           var coordinates =  this.draw.drawPlane.polygon.geometry.coordinates
           var params = '[['
           for(var i = 0; i < coordinates['0'].length;i++){
+              this.pointNum ++
               if(i == coordinates[0].length -1){
                 params += '[\"' + coordinates['0'][i][0] + '\"' + ',' + '\"' + coordinates['0'][i][1] + '\"]'
               }else{
@@ -141,21 +154,34 @@ export default {
       },
       //获取统计数据
       statisticInfo(){
-          getStatisticsDetails(this.shape,this.dataId).then(res =>{
-              this.statisticsList = [];
-              console.log(res.data)
-              for(var m in res.data){
-                for(var n = 0 ;n < res.data[m]['listorder'].length;n++){
-                   var title = res.data[m]['listorder'][n]+ '（' + '个数' + ':'+  res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'] +'）'
-                   var type = res.data[m][res.data[m]['listorder'][n]]['fields']
-                   var context = res.data[m][res.data[m]['listorder'][n]]['fieldsName'] + ':' + ' ' + res.data[m][res.data[m]['listorder'][n]]['data'][type]
-                   var contextNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data'][type])
-                   var titleNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'])
-                   this.statisticsList.push({'title':title,'context':context,'contextNum':contextNum,'titleNum':titleNum})
+          if(this.pointNum > 3){
+               getStatisticsDetails(this.shape,this.dataId).then(res =>{
+                this.statisticsList = [];
+                console.log(res.data)
+                for(var m in res.data){
+                    for(var n = 0 ;n < res.data[m]['listorder'].length;n++){
+                    var title = res.data[m]['listorder'][n]+ '（' + '个数' + ':'+  res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'] +'）'
+                    var type = res.data[m][res.data[m]['listorder'][n]]['fields']
+                    var context = res.data[m][res.data[m]['listorder'][n]]['fieldsName'] + ':' + ' ' + res.data[m][res.data[m]['listorder'][n]]['data'][type]
+                    var contextNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data'][type])
+                    var titleNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'])
+                    this.statisticsList.push({'title':title,'context':context,'contextNum':contextNum,'titleNum':titleNum})
+                    }
                 }
-              }
-              this.displayStatistics = true;
-          })
+                this.displayStatistics = true;
+            })
+          }else{
+            const h = this.$createElement;
+            this.$msgbox({
+                title:'',
+                message: 
+                h('span', {style:'font-size:16px'}, '请做图')
+                ,
+                showConfirmButton:false,
+                center:true,
+                showClose:true
+            });
+          }
       },
       //清除画板
       clearDrawResult(){
@@ -164,6 +190,7 @@ export default {
             this.draw = {}
             this.draw.drawPlane = new d2c.distanceLayer(d2cMap)
           }
+          this.pointNum = 0
       },
       //退出测量
       quitDraw(){
@@ -173,6 +200,7 @@ export default {
         this.setDrawPanelType('unCheck')
         this.$mapHelper.setIsMeasure(false)
         d2cMap.getCanvas().style.cursor = '';
+        this.pointNum = 0
       },
       //关闭统计面板
       dailogClose(){

@@ -158,8 +158,7 @@ export default {
           if(item.id == this.areaCodeAndDataId[2][i].id){
             this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
           }
-        }
-        if(this.areaCodeAndDataId[2][i].macro.dataId){
+        }else if(this.areaCodeAndDataId[2][i].macro.dataId){
           if(item.id == this.areaCodeAndDataId[2][i].macro.dataId){
             this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
           }

@@ -287,15 +287,19 @@ export default {
       this.$mapHelper.setPicPopupToMap(p, id);
     },
     next() {
-      this.page += 1;
-      this.getType();
+      this.page += 1
+      this.getType()
+      this.$mapHelper.closePopup()
+      this.$mapHelper.closePicPopup()
     },
     prev() {
       if (this.page === 1) {
-        return;
+        return
       }
-      this.page -= 1;
-      this.getType();
+      this.page -= 1
+      this.getType()
+      this.$mapHelper.closePopup()
+      this.$mapHelper.closePicPopup()
     },
     getAreaData(code) {
       const params = {
@@ -310,7 +314,6 @@ export default {
       this.searchIndex = index
       let type = item.macro.data.type
       let i = Number(type.substring(0, 1))
-      console.log(1)
       if (i === 1) {
         /*存在第二级目录*/
         this.getAreaDetail(item)
@@ -360,7 +363,6 @@ export default {
       "getSearchParams",
       "getAreaDetail",
       "tablePaneShow",
-      "loadSearchItemMacro",
       "setReportFormShow",
       "setAreaReportFormShow",
       "getReportData",

@@ -13,7 +13,6 @@ const state = {
         areaname: '重庆市',
         parentid: ''
     },
-    secAreaList: [],
     areaDetailInfo: '',
     areaList: [],
     searchParams: {},
@@ -23,14 +22,11 @@ const state = {
     reportFormShow: false,
     reportFormData: [],
     areaCodeAndDataId: [],
-    searchItemMacroList: [],
     /*搜索结果空间数据列表*/
     layerIdList: [],
     /*图层id列表*/
     areaCodeList: [],
     /*区域code列表*/
-    uuidClickedInfo: {},
-    /*点击地图uuid的详细信息*/
     measureNum: '',
     areaReportFormShow: false,
     /*searchAroundshow*/

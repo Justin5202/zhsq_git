@@ -104,7 +104,6 @@ export default {
       'areaList',
       'activeAreaInfoList',
       'areaInfoList',
-      'searchItemMacroList',
       'userinfo',
       'mapJsonAndImg',
       'layerControlShow',
@@ -113,11 +112,6 @@ export default {
     areaLayerLength() {
       let len = 0
       this.activeAreaInfoList.map(v => {
-        if (v.isActive) {
-          len += 1
-        }
-      })
-      this.searchItemMacroList.map(v => {
         if (v.isActive) {
           len += 1
         }

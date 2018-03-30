@@ -71,7 +71,6 @@ export default {
         // -3已登录， -2超时
         if(res.code === '1') {
           this.setUserinfo(res.data)
-          document.cookie = 'loginSession' + "=" + escape(res.data.sessionId)
           this.$router.replace('/')
         } else if (res.code === '4') {
           this.$message({

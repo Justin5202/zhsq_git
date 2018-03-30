@@ -178,7 +178,6 @@ export default {
       "getSearchParams",
       "getSearchResult",
       "setAreaInfo",
-      "setSecAreaList",
       "getNextAreaInfo",
       "setSelectedAreaList"
     ]),
@@ -212,7 +211,6 @@ export default {
         getSelect(areacode).then(res => {
           this.areaData1 = res.data.slice(0, 8);
           this.areaData2 = res.data.slice(8);
-          this.setSecAreaList(res.data);
         });
       } else {
         this.showSubmenuMore = false;

@@ -76,7 +76,6 @@ export default {
     ])
   },
   beforeMount() {
-    console.log(this.type)
     this._getQueryOnlineByUuid(this.mapguid)
   },
   methods: {
@@ -89,7 +88,6 @@ export default {
     checkDataType(data) {
       this.notPoi = false
       this.uuidClickedInfo = data
-      console.log(this.uuidClickedInfo)
       if (!data._source.ztmc || data._source.ztmc=='社区村驻地(未移动版)') {
         getThematicMap(data._type).then(res => {
           if (res.data !== "[]") {
@@ -127,7 +125,6 @@ export default {
             }
           })
         }
-        console.log(this.notPoi)
         let areaInfo = {
           areacode: code,
           areaname: ""

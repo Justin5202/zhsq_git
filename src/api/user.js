@@ -104,3 +104,17 @@ export function getCheckCode(phone) { // 获取验证码
     return Promise.resolve(res.data)
   })
 }
+
+export function logout() {
+  let data = Object.assign({}, commonParams, {
+    method: 'outLogin'
+  })
+  let params = ''
+  for (let key in data) {
+    params += `${key}=${data[key]}&`
+  }
+  params = params.substring(0, params.length - 1)
+  return axios.get(`${url}?${params}`).then(res => {
+    return Promise.resolve(res.data)
+  })
+}

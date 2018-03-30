@@ -116,6 +116,7 @@
 		methods: {
 			getProvertyType(index) {
 				this.nowIndex = index
+				this.page = 1
 				if(index ==0) {
 					this.rightShow = false
 					this.nextList = []
@@ -125,6 +126,7 @@
 					this.getProvertyData({'type': type, 'start': start})
 				} else {
 					this.rightShow = true
+					this.nextList = []
 					this.areaIndex = -1
 					let start = this.page * 10 - 10
 					this._getRightProvertyData(start)
@@ -204,7 +206,6 @@
 			}
 			ul {
 				margin: 0;
-				//max-height: 526px;
 				overflow-y: auto;
 				.search-pane-li {
 					list-style: none;

@@ -156,6 +156,15 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
         console.log('仅为目录')
         cur.isActive = false
         temp = cur
+        if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
+            dispatch('setAreaReportFormShow', true)
+            dispatch('setReportFormShow', false)
+            dispatch('getDataFileByCodeAndId', {
+                areaCode: state.areaList,
+                dataId: cur.id,
+                index: ''
+            })
+        }
     } else if (type === 1) { // type为1，无下一级目录
         if (yu === 0) { // yu为0，不做任何操作
             console.log('仅为目录')

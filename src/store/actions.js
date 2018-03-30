@@ -186,7 +186,7 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
             temp = checkData(cur, commit, first, reportType)
             if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
                 dispatch('setReportFormShow', true)
-                dispatch('setReportFormShow', false)
+                dispatch('setAreaReportFormShow', false)
             }
         } else if (yu === 4) { // yu为4，仅有文本数据，即加载文本数据
             console.log('仅有文本数据，即加载文本数据')

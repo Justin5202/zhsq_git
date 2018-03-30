@@ -148,8 +148,8 @@ export default {
     },
     getDetails(){
       var dataArray = []
-      if(this.uuidClickedInfo._source.areacode == this.areaInfo.areacode){
-        this.getReportDataByAreaCode([this.uuidClickedInfo._source.areacode,this.uuidClickedInfo._source.areaname,2])
+      if(this.notPoi || this.type){
+        this.getReportDataByAreaCode([this.areaInfo.areacode,this.areaInfo.areaname,2])
 				this.setReportFormShow(false)
 				this.setAreaReportFormShow(true)
       }else{

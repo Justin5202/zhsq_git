@@ -57,7 +57,7 @@
 </template>
 <script>
   import { register, getRegisterInfo, getCheckCode } from '../../../api/user'
-  import {Message} from 'element-ui'
+  import {Message, MessageBox} from 'element-ui'
   export default {
     name: 'register',
     data() {
@@ -158,7 +158,15 @@
 
         register(option).then(res => {
           if (res.code == '1') {
-            this.$router.push('/login')
+            this.$confirm('注册成功，前去登录？', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'success'
+            }).then(() => {
+              this.$router.push('/login')
+            }).catch(() => {
+
+            })
           } else if(res.code == '4') {
             this.$message({
               message: '手机号已被注册',

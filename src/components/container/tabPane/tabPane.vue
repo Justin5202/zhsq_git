@@ -122,7 +122,7 @@
 						</div>
 					</li>
 				</ul>
-				<p v-if="searchList.length > 0">
+				<p v-if="searchList.length >= 10">
 				  <el-button size="mini" icon="el-icon-arrow-left" @click="prev()">上一页</el-button>
 				  <el-button size="mini" @click="next()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 				</p>
@@ -418,9 +418,8 @@ export default {
   }
   .search-pane-content {
     .search-type-button {
-      padding: 10px 0;
       .type-button {
-        margin: 0 5px;
+        margin: 10px 5px;
         font-size: 12px;
         padding: 7px 36px;
         border-radius: 25px;

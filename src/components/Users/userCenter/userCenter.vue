@@ -14,7 +14,7 @@
         </el-main>
         <el-footer>
           <p class="back" @click="closeCenter">返回</p>        
-          <p class="out" @click="logout">退出登录</p>
+          <p class="out" @click="_logout">退出登录</p>
         </el-footer>
       </el-container>
       <transition name="move">
@@ -37,6 +37,8 @@ import vMyMessage from '@/components/users/userCenter/children/myMessage'
 import vFeedback from '@/components/users/userCenter/children/feedback'
 import vContact from '@/components/users/userCenter/children/contact'
 import {fetchData} from '../../../api/user'
+import { Message,MessageBox } from 'element-ui'
+import { logout } from '../../../api/user'
 export default {
   name: 'user-center',
   data() {
@@ -90,8 +92,21 @@ export default {
         confirmButtonText: '确定'}
       )
     },
-    logout() {
-      this.$router.push('/login')
+    _logout() {
+      this.$confirm('退出登录，是否继续？','提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        logout().then(res => {
+           this.$router.push('/login')
+        })
+      }).catch(() => {
+        this.$message({
+          message: '已取消退出登录',
+          type: 'info'
+        })
+      })
     }
   }
 }

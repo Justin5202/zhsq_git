@@ -33,9 +33,6 @@ function handleArray(array) {
         temp.push(v.split(','))
     })
     temp.push([mapHelper.getCenter().lng, mapHelper.getCenter().lat])
-    temp.map(v => {
-        v.map(v => v = Number(v))
-    })
     return temp
 }
 
@@ -50,11 +47,13 @@ function addLayer(datapath, id) {
         getQueryElementByPoint(result).then(res => {
             if (res.data && res.data.flag !== 3) {
                 // 地图飞点
+                let temp = handleArray(res.data.points)
                 if (res.data.flag === 2) {
-                    mapHelper.flyByBounds(handleArray(res.data.points))
+                    mapHelper.flyByBounds(temp)
                 }
-                mapHelper.setMarksToMap(id, handleArray(res.data.points).splice(1, handleArray(res.data.points).length - 1), res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
-                    /*删除地图mark */
+                temp.splice(-1, 1)
+                mapHelper.setMarksToMap(id, temp, res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
+                /*删除地图mark */
                 for (let i = 0; i < 10; i++) {
                     mapHelper.removeLayerById((i + 1).toString())
                 }

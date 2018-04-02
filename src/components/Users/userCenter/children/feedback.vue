@@ -126,6 +126,9 @@
         this._getSuggestList()
       },
       next() {
+        if(this.suggestList.length < 10) {
+          return
+        }
         this.page++
         this._getSuggestList()
       },

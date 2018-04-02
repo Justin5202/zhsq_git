@@ -269,7 +269,11 @@ const mutations = {
         })
         state.areaCodeList = temp.concat(areaTemp)
         /*图层过滤*/
-        mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
+        if(isRemoveAll) {
+            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, [])
+        } else {
+            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
+        }
     },
     [TYPE.SET_REPORT_FORM_SHOW](state, reportFormShow) {
         state.reportFormShow = reportFormShow

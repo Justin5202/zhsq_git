@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       isClose: true,
-      thirdChildIsShow: false,
+      thirdChildIsShow: true,
       nowIndex: "",
       childTableHeight: window.innerHeight * 0.6 + "px"
     };
@@ -111,7 +111,6 @@ export default {
       this.isClose = !this.isClose;
     },
     thirdChildSlide(index) {
-      this.thirdChildIsShow = !this.thirdChildIsShow;
       this.nowIndex = index;
     },
     isActiveItem(item,type) {

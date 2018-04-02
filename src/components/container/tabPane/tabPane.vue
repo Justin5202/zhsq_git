@@ -99,7 +99,7 @@
 								<i class="macro-icon"></i>
 							</div>
 							<div class="area-content" >
-								<h2>{{item.element.name}}</h2>
+								<h2>{{(page-1)*10+index+1}}.{{item.element.name}}</h2>
 								<p>{{item.element.desc}}</p>
 							</div>
 						</div>
@@ -255,7 +255,6 @@ export default {
       this.addTourismLayer(index)
     },
     flyToPoi(item, index) {
-      console.log(JSON.parse(item.element.geojson))
       this.searchIndex = index
       let gp, uuid, geojson
       if(item.element) {

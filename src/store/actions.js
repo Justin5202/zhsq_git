@@ -276,6 +276,8 @@ export const getSearchParams = function ({ dispatch, commit, state }, { typePara
                 if (v.element || v.poi) {
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                     mapHelper.removeLayerById((index + 1).toString())
+                    mapHelper.closePopup()
+                    mapHelper.closePicPopup()
                     if (v.element) {
                         if (v.element.geopoint) {
                             mapHelper.setMarkToMap((index + 1).toString(), v.element.geopoint, v.uuid, (index + 1).toString(), 16, 'TS_定位1', 0.8, '', '')

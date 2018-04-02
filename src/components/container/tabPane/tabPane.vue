@@ -122,7 +122,7 @@
 						</div>
 					</li>
 				</ul>
-				<p v-if="searchList.length >= 10">
+				<p>
 				  <el-button size="mini" icon="el-icon-arrow-left" @click="prev()">上一页</el-button>
 				  <el-button size="mini" @click="next()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 				</p>
@@ -288,6 +288,9 @@ export default {
       this.$mapHelper.setPicPopupToMap(p, id);
     },
     next() {
+      if(this.searchList.length < 10) {
+        return 
+      }
       this.page += 1
       this.getType()
       this.$mapHelper.closePopup()

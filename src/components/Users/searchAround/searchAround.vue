@@ -34,7 +34,7 @@
   </div>
 </template>
 <script>
-  import {mapActions} from 'vuex'
+  import {mapActions, mapMutations} from 'vuex'
   import {getHotAround} from '@/api/datasheets'
 
   export default {
@@ -89,12 +89,14 @@
           this.list = res.data
         })
       },
+      ...mapMutations({
+        setTopicShow: 'SET_TOPIC_LIST_SHOW'
+      }),
       ...mapActions([
         'setAroundSearchShow',
         'getSearchParams',
         'searchPaneShow',
-        'tablePaneShow',
-        'setTopicShow'
+        'tablePaneShow'
       ])
     }
   }

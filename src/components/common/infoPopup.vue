@@ -3,9 +3,9 @@
   <div class="pop" v-if="uuidClickedInfo">
     <div>
       <div class="pop-title" v-if="!type">
-        <h3 class="title" v-if="uuidClickedInfo._source.mc">{{uuidClickedInfo._source.mc}}</h3>
+        <h3 class="title" v-if="uuidClickedInfo._source.jc">{{uuidClickedInfo._source.jc}}</h3>
         <h3 class="title" v-else-if="uuidClickedInfo._source.name">{{uuidClickedInfo._source.name}}</h3>
-        <h3 class="title" v-else-if="uuidClickedInfo._source.jc">{{uuidClickedInfo._source.jc}}</h3>
+        <h3 class="title" v-else-if="uuidClickedInfo._source.mc">{{uuidClickedInfo._source.mc}}</h3>
         <h3 class="title" v-else>{{title}}</h3>
         <i class="cross-icon" @click="isShowPop()"></i>
       </div>

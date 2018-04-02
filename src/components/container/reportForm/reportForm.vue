@@ -1,7 +1,7 @@
 <template>
 <div>
   <!-- 普通报表 -->
-  <div class="report-form-detail" v-show="reportFormShow" :style="reportFormSize">
+  <div class="report-form-detail" v-if="reportFormShow" :style="reportFormSize">
     <div class="report-form-header">
       <div class="report-form-title">数据详情</div>
       <div class="report-form-close">

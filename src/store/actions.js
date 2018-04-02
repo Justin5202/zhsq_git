@@ -264,7 +264,7 @@ export const tablePaneShow = function ({ commit, state }, isShow) {
     commit(TYPE.TABLE_PANE_SHOW, isShow)
 }
 export const getSearchParams = function ({ dispatch, commit, state }, { typeParams, params }) {
-    let data = Object.assign({}, typeParams, params, state.searchParams, state.areaInfo)
+    let data = Object.assign({}, state.searchParams, typeParams, params, state.areaInfo)
     commit(TYPE.SEARCH_PARAMS, data)
     if(!params) {
         return
@@ -335,6 +335,10 @@ export const getAreaDetail = function ({ dispatch, commit, state }, params) {
         let obj1 = {
             id: params.macro.data.id
         }
+        let areainfo = {
+            areacode: params.macro.areaCode,
+            areaname: params.macro.areaName
+        }
         getDetailInfo(Object.assign({}, obj1)).then(res => {
             let data = addIsActive(res.data[0])
             if (data.children.length > 0) {
@@ -346,6 +350,7 @@ export const getAreaDetail = function ({ dispatch, commit, state }, params) {
             data.isOncilckGet = true
             data.reportShow = state.reportFormShow
             checkClickedDataType({ dispatch, data, commit, "first": true })
+            dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
         })
         return
     }

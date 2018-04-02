@@ -72,8 +72,6 @@ function checkData(data, commit, first, type) {
     let temp = state.activeAreaInfoList.slice()
     let layerIdList = state.layerIdList.slice()
     let clickType = data.clickType
-    let reportShow = state.reportFormShow
-    console.log(reportShow)
     let falseLength = 0
     let isGo = true
     if (cur.isActive && cur.children.length > 0) {
@@ -115,7 +113,7 @@ function checkData(data, commit, first, type) {
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                     mapHelper.removeLayerByCode(v.id)
                     mapHelper.removeLayerById(v.id)
-                    if(!clickType && !reportShow) {
+                    if(!clickType) {
                         commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
                         commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
                     }
@@ -142,7 +140,7 @@ function checkData(data, commit, first, type) {
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 mapHelper.removeLayerByCode(cur.id)
                 mapHelper.removeLayerById(cur.id)
-                if(!clickType && !reportShow) {
+                if(!clickType) {
                     commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
                     commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
                 }

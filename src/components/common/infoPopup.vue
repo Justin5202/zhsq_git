@@ -170,10 +170,12 @@ export default {
 				this.setReportFormShow(false)
 				this.setAreaReportFormShow(true)
       }else{
-        var title = this.uuidClickedInfo._source.name || this.uuidClickedInfo._source.mc || this.uuidClickedInfo._source.jc
+        var title = this.uuidClickedInfo._source.name || this.uuidClickedInfo._source.mc || this.uuidClickedInfo._source.jc || this.title
         var dataArray = { 'title': title, 'name': [], 'data': [] }
         for(var i in this.showArray){
-          dataArray.data.push({'name':this.showArray[i]._source.name_a,'context':this.uuidClickedInfo._source[this.showArray[i]._source.name]})
+          if(this.uuidClickedInfo._source[this.showArray[i]._source.name]){
+            dataArray.data.push({'name':this.showArray[i]._source.name_a,'context':this.uuidClickedInfo._source[this.showArray[i]._source.name]})
+          }
         }
         this.setReportFormDetails(dataArray)
         this.setReportFormShow(false)

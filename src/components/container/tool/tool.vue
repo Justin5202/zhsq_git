@@ -50,9 +50,9 @@
 				<img src="../../../assets/images/map/2D@2x.png" alt="" v-show="!is2Dmap">
                 <img src="../../../assets/images/map/3D@2x.png" alt="" v-show="is2Dmap">
 			</span>
-    <span class="tool-item " v-show="isInArray(8, this.userinfo.autuority)">
+    <!-- <span class="tool-item " v-show="isInArray(8, this.userinfo.autuority)">
 				<img src="../../../assets/images/map/定位.png" alt="">
-			</span>
+			</span> -->
   </div>
   <div class="layer-tool-box" v-if="layerControlShow">
     <div class="layer-tool-content">
@@ -221,8 +221,21 @@ export default {
       this.$store.commit('SET_LAYER_CONTROL_SHOW', !this.layerControlShow)
     },
     openReportForm() {
-      this.setReportFormShow(true)
-      this.setAreaReportFormShow(false)
+      if(this.reportFormLength>0){
+        this.setReportFormShow(true)
+        this.setAreaReportFormShow(false)
+      }else{
+        const h = this.$createElement;
+        this.$msgbox({
+          title:'',
+            message: 
+            h('span', {style:'font-size:16px'}, '暂未叠加指标数据...')
+            ,
+            showConfirmButton:false,
+            center:true,
+            showClose:true
+          });
+      }
     },
     showAreaBox() {
       this.layerToolVisible = false

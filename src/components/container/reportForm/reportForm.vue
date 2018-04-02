@@ -18,7 +18,7 @@
           <div class="table-form-item" v-for="year in reportFormData.year">{{year}}</div>
         </div>
         <div class="form-content-box" :style="{height:contentHeight}">
-          <div v-for="(item,index) in reportFormData.data" :key="item.id" class="table-form-content">
+          <div v-for="(item,index) in reportFormData.data"  class="table-form-content">
             <div style="width:100%">
               <div class="table-form-table">
                 <div class="title-color">
@@ -30,7 +30,7 @@
                   </div>
                 </div>
                 <div v-for="(data,index) in item.dataByYear" class="table-item-box" :class="{itemColor:index%2 != 0}">
-                  <div class="title-item">{{data.type}}</div>
+                  <div class="title-item">{{data.type||'暂无统计数据'}}</div>
                   <div class="table-item">{{data["areaName"]}}</div>
                   <div class="table-item num-color" v-for="year in reportFormData.year">{{data[year]||"--"}}</div>
                 </div>
@@ -87,7 +87,7 @@
             v-show="reportFormData.data.dataType[index] == 'noData'&& activeContent == index" 
             v-for="(item,index) in reportFormData.data.dataContex"  
             :style="{height:contentHeight}">{{item}}</div>
-          <div class="table-tab-context-special" v-show="!reportFormData.data.dataType">
+          <div class="table-tab-context-special" v-show="!reportFormData.data.dataType" :style="{height:contentHeight}">
              <div v-for="(item,index) in reportFormData.data" class="context-special-item" :class="{itemColor:index%2 != 0}">
                 <span style="margin-left:15px;">{{item.name + ':'}}</span>
                 <span class="font-blue">{{item.context}}</span>
@@ -154,7 +154,7 @@ export default {
     },
     clearItem(index,item) {
       for(var i in this.areaCodeAndDataId[2]){
-        if(this.areaCodeAndDataId[2][i].id ){
+        if(this.areaCodeAndDataId[2][i].id){
           if(item.id == this.areaCodeAndDataId[2][i].id){
             this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
           }
@@ -206,6 +206,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .report-form-detail {
+  min-width: 600px;
   .report-form-header {
     width: 100%;
     display: flex;

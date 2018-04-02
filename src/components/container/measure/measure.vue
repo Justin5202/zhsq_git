@@ -119,7 +119,7 @@ export default {
         background-color: #fff;
         display: flex;
         position: fixed;
-        top: 20px;
+        top: 30px;
         right: 120px;
         border-radius: 10px;
         background-color: #8B8878;

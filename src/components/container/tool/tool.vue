@@ -19,7 +19,7 @@
       >
         <img src="../../../assets/images/map/区域.png" alt="">
       </span>
-      <span class="circle" v-if="areaList.length > 0">{{areaList.length}}</span>
+      <span class="circle" v-if="areaListLength > 0">{{areaListLength}}</span>
     </div>
     <div class="tool-box">
       <span class="tool-item"  @click="openReportForm">
@@ -109,6 +109,15 @@ export default {
       'layerControlShow',
       'searchList'
     ]),
+    areaListLength() {
+      let len = 0
+      this.areaList.map(v => {
+        if(v.areacode !== 500000) {
+          len += 1
+        }
+      })
+      return len
+    },
     areaLayerLength() {
       let len = 0
       this.activeAreaInfoList.map(v => {

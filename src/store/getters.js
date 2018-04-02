@@ -21,3 +21,4 @@
   export const urlpath = state => state.urlpath
   export const layerControlShow = state => state.layerControlShow
   export const drawPanelType = state => state.drawPanelType
+  export const checkedList = state => state.checkedList

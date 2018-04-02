@@ -210,7 +210,6 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
             } else {
                 cur.isActive = !cur.isActive
             }
-            console.log(cur)
             if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
                 dispatch('setAreaReportFormShow', true)
                 dispatch('setReportFormShow', false)
@@ -265,11 +264,11 @@ export const tablePaneShow = function ({ commit, state }, isShow) {
     commit(TYPE.TABLE_PANE_SHOW, isShow)
 }
 export const getSearchParams = function ({ dispatch, commit, state }, { typeParams, params }) {
-    // 首先选择type时不做请求
-    if (params == {}) {
+    let data = Object.assign({}, typeParams, params, state.searchParams, state.areaInfo)
+    commit(TYPE.SEARCH_PARAMS, data)
+    if(!params) {
         return
     }
-    let data = Object.assign({}, state.searchParams, params, typeParams, state.areaInfo)
     getSearch(data).then(res => {
         if (res.code == '1') {
             /*地点数据标点*/
@@ -328,7 +327,6 @@ export const getSearchParams = function ({ dispatch, commit, state }, { typePara
                 }
             })
             commit(TYPE.GET_SEARCH_RESULT, res.data)
-            commit(TYPE.SEARCH_PARAMS, data)
         }
     })
 }

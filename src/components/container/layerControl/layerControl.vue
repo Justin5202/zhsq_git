@@ -33,13 +33,13 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex'
+import {mapGetters, mapActions, mapMutations} from 'vuex'
 
 export default {
   data() {
     return {
-      checked: true,
-      checkedItem: this.checkedList,
+      checked: '',
+      checkedItem: this.$store.state.checkedList,
       checkedTransparency: false,
       isIndeterminate: false,
       value1: '',
@@ -58,12 +58,22 @@ export default {
     }
   },
   created() {
-    this.handleCheckAllChange(true)
+    // 设置初始透明度100
+    let len1 = this.checkedItem.length
+    let len2 = this.checkedList.length
+    if(len1 === 0) {
+      this.checked = false
+    } else if(len1 < len2) {
+      this.isIndeterminate = false
+      this.checked = true
+    } else {
+      this.checked = true
+    }
+    this.checkedList.map(v => this.transparencyArray.push(100))
   },
   computed: {
     ...mapGetters([
       'activeAreaInfoList',
-      'searchItemMacroList'
     ]),
     checkedList() {
       let temp = []
@@ -81,20 +91,27 @@ export default {
       return len
     }
   },
+  destroyed() {
+    this.checkedList.map(v => this.$mapHelper.setOpacityByCode(v, 1))
+  },
   methods: {
     setLayerOpacity(index) {
       this.$mapHelper.setOpacityByCode(this.checkedList[index], this.transparencyArray[index]/100)
     },
     handleCheckAllChange(val) {
+      if(val) {
+        this.setCheckedList(this.checkedList)
+      } else {
+        this.setCheckedList([])
+      }
       this.checkedItem = val ? this.checkedList : []
-      // 设置初始透明度100
-      this.checkedItem.map(v => this.transparencyArray.push(100))
       this.isIndeterminate = false
     },
     handleCheckedItemsChange(value) {
       let checkedCount = value.length
       this.checked = checkedCount === this.checkedList.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedList.length
+      this.setCheckedList(value)
     },
     removeAll() {
       this.removeAllAreaList()
@@ -110,11 +127,11 @@ export default {
       'setAreaList',
       'removeAllAreaList',
       'removeSearchItem'
-    ])
-  },
-  destroyed() {
-    this.checkedList.map(v => this.$mapHelper.setOpacityByCode(v, 1))
-  } 
+    ]),
+    ...mapMutations({
+      setCheckedList: 'SET_CHECKED_LIST'
+    })
+  }
 }
 </script>
 
@@ -147,6 +164,8 @@ export default {
       background-color: #e4e7ed;
     }
     .check {
+      max-height: 328px;
+      overflow: auto;
       position: relative;
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;

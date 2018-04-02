@@ -22,6 +22,15 @@ const mutations = {
                 val.isActive = false
             }
         }
+        searchList.map(v => {
+            if(v.searchType === 4) {
+                state.activeAreaInfoList.map(h => {
+                    if(v.macro.data.id === h.id) {
+                        v.isActive = true
+                    }
+                })
+            }
+        })
         state.searchList = searchList
     },
     [TYPE.GET_AREA_DATA](state, list) {
@@ -45,6 +54,27 @@ const mutations = {
         } else {
             state.areaInfoList.push(list)
         }
+        state.activeAreaInfoList.map(v => {
+            state.areaInfoList.map(h => {
+                if(h.id === v.id) {
+                    h.isActive = true
+                }
+                if(h.children && h.children.length > 0) {
+                    h.children.map(n => {
+                        if(n.id === v.id) {
+                            n.isActive = true
+                        }
+                        if(n.children && n.children.length > 0) {
+                            n.children.map(f => {
+                                if(f.id === v.id) {
+                                    f.isActive = true
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        })
     },
     [TYPE.MODIFY_AREA_INFO_LIST](state, item) {
         let temp = []
@@ -118,12 +148,19 @@ const mutations = {
                 }
             })
             state.searchList.map(v => v.isActive = false)
+            state.checkedList = []
         } else {
             let index = state.activeAreaInfoList.findIndex(v => v.id === item.id)
             if (index < 0) {
                 state.activeAreaInfoList.push(item)
             } else {
                 state.activeAreaInfoList.splice(index, 1)
+            }
+            let checkedIndex = state.checkedList.findIndex(v => v == item.id)
+            if(checkedIndex < 0) {
+                state.checkedList.push(item.id)
+            } else {
+                state.checkedList.splice(checkedIndex, 1)
             }
         }
         // 更新layerIdList
@@ -132,6 +169,24 @@ const mutations = {
         state.layerIdList = temp
         /*图层过滤*/
         mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
+    },
+    [TYPE.SET_CHECKED_LIST](state, list) {
+        // 空数组即为全选，非空删除未选中图层
+        if(state.checkedList.length === 0) {
+            list.map(v => state.checkedList.push(v))
+        } else {
+            let lessArray = state.checkedList.filter(v => !list.includes(v))
+            if(lessArray.length === 0) {
+                state.checkedList = [].concat(state.layerIdList)
+                return
+            }
+            lessArray.map(v => {
+                let index = state.checkedList.findIndex(i => i == v)
+                if(index >= 0) {
+                    state.checkedList.splice(index, 1)
+                }
+            })
+        }
     },
     [TYPE.SET_AREA_DETAIL_INFO](state, areaDetailInfo) {
         state.areaDetailInfo = areaDetailInfo
@@ -158,9 +213,8 @@ const mutations = {
                         areaname: '重庆市',
                         parentid: ''
                     }
+                    state.areaList.push(state.areaInfo)
                 }
-                /*图层过滤*/
-                mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 /*删除行政区划线*/
                 mapHelper.removeLayerById(areainfo.areacode.toString())
                 mapHelper.closePopup()
@@ -186,13 +240,9 @@ const mutations = {
                     if(!type) {
                         mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid, true)
                     }
-                    /*图层过滤*/
-                    mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 }
             }
         } else {
-            /*图层过滤*/
-            mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList = [])
             /*删除全部行政区划线*/
             state.areaList.map(v => {
                 mapHelper.removeLayerById(v.areacode.toString())
@@ -204,11 +254,20 @@ const mutations = {
                 areaname: '重庆市',
                 parentid: ''
             }
+            state.areaList.push(state.areaInfo)
         }
         // update areaCodeList
         let temp = []
-        state.areaList.map(v => temp.push(v.areacode))
-        state.areaCodeList = temp
+        let array = ["500112", "500109", "500113", "500106", "500105", "500108", "500103", "500107", "500104"]
+        let areaTemp = []
+        state.areaList.map(v => {
+            if(v.areacode == 500002) {
+                areaTemp = areaTemp.concat(array)
+            } else {
+                temp.push(v.areacode)
+            }
+        })
+        state.areaCodeList = temp.concat(areaTemp)
         /*图层过滤*/
         mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
     },

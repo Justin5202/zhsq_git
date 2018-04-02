@@ -8,7 +8,7 @@
             v-for="(item, index) in pic"
             :key="index" v-show="currentIndex === index"
             >
-              <img :src="`http://zhsq.digitalcq.com/cqzhsqd2c_v2_test${item.filePath}${item.fileQuality}`" alt="图片">
+              <img :src="`http://zhsq.digitalcq.com/cqzhsqd2c_v2_test${item.filePath}${item.fileName}`" alt="图片">
             </li>
           </transition-group>
         </div>

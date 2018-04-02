@@ -99,7 +99,7 @@
 								<i class="macro-icon"></i>
 							</div>
 							<div class="area-content" >
-								<h2>{{item.element.name}}</h2>
+								<h2>{{(page-1)*10+index+1}}.{{item.element.name}}</h2>
 								<p>{{item.element.desc}}</p>
 							</div>
 						</div>
@@ -255,13 +255,12 @@ export default {
       this.addTourismLayer(index)
     },
     flyToPoi(item, index) {
-      console.log(JSON.parse(item.element.geojson))
       this.searchIndex = index
       let gp, uuid, geojson
       if(item.element) {
         uuid = item.element.uuid
         if(item.element.geojson) {
-          geojson = JSON.parse(item.element.geojson)
+          geojson = JSON.parse(item.element.geojson)      
         }
         if(item.element.geopoint) {
           gp = item.element.geopoint
@@ -272,8 +271,10 @@ export default {
       }
       this.$mapHelper.flyByPointAndZoom(gp, 16)
       this.$mapHelper.setPopupToMap(gp, uuid)
-      this.$mapHelper.removeHighLight()
-      this.$mapHelper.setHighLight(geojson)
+      if(geojson) {
+        this.$mapHelper.removeHighLight()
+        this.$mapHelper.setHighLight(geojson)
+      }
     },
     flyToPoint(point, id, index) {
       let p;
@@ -287,15 +288,19 @@ export default {
       this.$mapHelper.setPicPopupToMap(p, id);
     },
     next() {
-      this.page += 1;
-      this.getType();
+      this.page += 1
+      this.getType()
+      this.$mapHelper.closePopup()
+      this.$mapHelper.closePicPopup()
     },
     prev() {
       if (this.page === 1) {
-        return;
+        return
       }
-      this.page -= 1;
-      this.getType();
+      this.page -= 1
+      this.getType()
+      this.$mapHelper.closePopup()
+      this.$mapHelper.closePicPopup()
     },
     getAreaData(code) {
       const params = {
@@ -310,7 +315,6 @@ export default {
       this.searchIndex = index
       let type = item.macro.data.type
       let i = Number(type.substring(0, 1))
-      console.log(1)
       if (i === 1) {
         /*存在第二级目录*/
         this.getAreaDetail(item)
@@ -360,7 +364,6 @@ export default {
       "getSearchParams",
       "getAreaDetail",
       "tablePaneShow",
-      "loadSearchItemMacro",
       "setReportFormShow",
       "setAreaReportFormShow",
       "getReportData",

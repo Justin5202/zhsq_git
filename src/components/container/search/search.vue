@@ -159,7 +159,6 @@ export default {
         name: this.searchContent.toUpperCase(),
         start: 0,
         rows: 10,
-        type: 1,
         point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
       };
       this._getSearchParams(params);
@@ -178,7 +177,6 @@ export default {
       "getSearchParams",
       "getSearchResult",
       "setAreaInfo",
-      "setSecAreaList",
       "getNextAreaInfo",
       "setSelectedAreaList"
     ]),
@@ -212,7 +210,6 @@ export default {
         getSelect(areacode).then(res => {
           this.areaData1 = res.data.slice(0, 8);
           this.areaData2 = res.data.slice(8);
-          this.setSecAreaList(res.data);
         });
       } else {
         this.showSubmenuMore = false;

@@ -206,7 +206,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .report-form-detail {
-  background-color: #fff;
   min-width: 600px;
   .report-form-header {
     width: 100%;

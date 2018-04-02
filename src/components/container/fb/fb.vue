@@ -92,7 +92,7 @@
 
 <script>
   import {getNextProvertyData, getRightProvertyData} from '@/api/dataSheets'
-	import {mapGetters, mapMutations, mapActions} from 'vuex'
+	import {mapGetters, mapActions} from 'vuex'
 
 	export default {
 		name: 'tabPane',
@@ -114,9 +114,12 @@
 			])
 		},
 		methods: {
-			getProvertyType(index) {
+			getProvertyType(index, isPage) {
 				this.nowIndex = index
-				this.page = 1
+				let type = isPage || false
+				if(!type) {
+					this.page = 1
+				}
 				if(index ==0) {
 					this.rightShow = false
 					this.nextList = []
@@ -143,18 +146,18 @@
 			},
 			showAreaInMap(item, index) {
 				this.areaIndex = index
-				this.addAreaLayer(item)
+				this.addProvertyAreaLayer(item)
 			},
 			next() {
 				this.page += 1
-				this.getProvertyType(this.nowIndex)
+				this.getProvertyType(this.nowIndex, true)
 			},
 			prev() {
 				if(this.page === 1) {
 					return
 				}
 				this.page -= 1
-				this.getProvertyType(this.nowIndex)
+				this.getProvertyType(this.nowIndex, true)
 			},
 			_getRightProvertyData(start) {
 				getRightProvertyData(start).then(res => {
@@ -168,9 +171,9 @@
 				this.setReportFormShow(false)
 				this.setAreaReportFormShow(true)
 			},
-			...mapMutations({
-				addAreaLayer: 'ADD_PROVERTY_AREA_LAYER'
-			}),
+			...mapActions([
+				'addProvertyAreaLayer'
+			]),
 			...mapActions([
 			'getAreaPovertyAlleviationDetailByAreaCode',
 			'setReportFormShow',

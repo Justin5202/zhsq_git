@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapGetters,mapActions} from "vuex"
+import { mapGetters, mapActions} from "vuex"
 import { getMorePic, getMsMacroData, getProvertyInfo } from "@/api/datasheets"
 
 export default {

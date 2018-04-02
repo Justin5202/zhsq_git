@@ -44,10 +44,12 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
             }
         }
         for (let i in dataId[1]) {
-            if (dataId[1][i].macro.filedsData && dataId[1][i].isActive) {
-                if (idArray.indexOf(dataId[1][i].macro.dataId)) {
-                    idList += ',' + dataId[1][i].macro.dataId
-                    itemList.push(dataId[1][i])
+            if (dataId[1][i].macro && dataId[1][i].isActive) {
+                if (dataId[1][i].macro.filedsData) {
+                    if (idArray.indexOf(dataId[1][i].macro.dataId)) {
+                        idList += ',' + dataId[1][i].macro.dataId
+                        itemList.push(dataId[1][i])
+                    }
                 }
             }
         }
@@ -70,65 +72,71 @@ export const getReportDataInJS = function(areaCode, dataId) {
         var arrayList = []
         var yearListMax = [] //用于保存最大的年份数组长度
         var dataArray = {}
+        var dataList = []
         return new Promise(function(resolve) {
             getMsMacroData(areaCode, dataId).then(res => {
                 for (let i in res.data) {
-                    typeNum++
-                    areaNum = 0 //只取一次循环的数量
-                    for (let j in res.data[i]) {
-                        areaNum++
-                        var dataByYear = []; //用于保存每条数据
-                        for (let k = 0; k < res.data[i][j]['year'].length; k++) {
-                            var yearList = res.data[i][j]['year'][k]
-                            if (yearListMax.length < res.data[i][j]['year'].length) {
-                                yearListMax = res.data[i][j]['year']
-                            }
-                            var filedsData = res.data[i][j][yearList][0].filedsData.split('|ZX|')
-                            for (var p = 0; p < filedsData.length; p++) {
-                                if (dataByYear.length < filedsData.length) {
-                                    dataByYear.push({
-                                        "type": filedsData[p].split(':')[0],
-                                        "areaName": res.data[i][j][yearList][0].areaName,
-                                        "areaCode": j
+                    if (Object.keys(res.data[i]).length == 0) {
+                        dataList.push({ 'name': '', 'id': i, 'dataByYear': { 'type': '暂无统计数据' } })
+                    } else {
+                        typeNum++
+                        areaNum = 0 //只取一次循环的数量
+                        for (let j in res.data[i]) {
+                            areaNum++
+                            var dataByYear = []; //用于保存每条数据
+                            for (let k = 0; k < res.data[i][j]['year'].length; k++) {
+                                var yearList = res.data[i][j]['year'][k]
+                                if (yearListMax.length < res.data[i][j]['year'].length) {
+                                    yearListMax = res.data[i][j]['year']
+                                }
+                                var filedsData = res.data[i][j][yearList][0].filedsData.split('|ZX|')
+                                for (var p = 0; p < filedsData.length; p++) {
+                                    if (dataByYear.length < filedsData.length) {
+                                        dataByYear.push({
+                                            "type": filedsData[p].split(':')[0],
+                                            "areaName": res.data[i][j][yearList][0].areaName,
+                                            "areaCode": j
+                                        })
+                                    }
+                                    dataByYear[p][yearList] = filedsData[p].split(':')[1] || "--"
+                                }
+                                if (k == res.data[i][j]['year'].length - 1) {
+                                    arrayList.push({
+                                        "name": res.data[i][j][yearList][0].name,
+                                        "id": res.data[i][j][yearList][0].dataId,
+                                        "dataByYear": dataByYear
                                     })
                                 }
-                                dataByYear[p][yearList] = filedsData[p].split(':')[1] || "--"
-                            }
-                            if (k == res.data[i][j]['year'].length - 1) {
-                                arrayList.push({
-                                    "name": res.data[i][j][yearList][0].name,
-                                    "id": res.data[i][j][yearList][0].dataId,
-                                    "dataByYear": dataByYear
-                                })
                             }
                         }
                     }
                 }
                 //将返回数据拆分拼接
                 var result = []
-                var dataList = []
-                for (var i = 0; i < Math.ceil(arrayList.length / areaNum); i++) {
-                    var start = i * areaNum;
-                    var end = start + areaNum;
-                    result.push(arrayList.slice(start, end));
-                }
-                for (var m = 0; m < result.length; m++) {
-                    for (var n = 0; n < result[m].length; n += areaNum) {
-                        var temporary = [];
-                        for (var k = 0; k < result[m][n].dataByYear.length; k++) {
-                            for (var j = 0; j < areaNum; j++) {
-                                if ((n + j) > 0) {
-                                    result[m][n + j].dataByYear[k].type = ""
-                                }
-                                temporary.push(result[m][n + j].dataByYear[k])
-                            }
-                        }
-                        result[m][0].dataByYear = temporary
+                if (arrayList.length > 0) {
+                    for (var i = 0; i < Math.ceil(arrayList.length / areaNum); i++) {
+                        var start = i * areaNum;
+                        var end = start + areaNum;
+                        result.push(arrayList.slice(start, end));
                     }
-                    dataList.push(result[m][0])
+                    for (var m = 0; m < result.length; m++) {
+                        for (var n = 0; n < result[m].length; n += areaNum) {
+                            var temporary = [];
+                            for (var k = 0; k < result[m][n].dataByYear.length; k++) {
+                                for (var j = 0; j < areaNum; j++) {
+                                    if ((n + j) > 0) {
+                                        result[m][n + j].dataByYear[k].type = ""
+                                    }
+                                    temporary.push(result[m][n + j].dataByYear[k])
+                                }
+                            }
+                            result[m][0].dataByYear = temporary
+                        }
+                        dataList.push(result[m][0])
+                    }
+                    dataArray.year = yearListMax.reverse()
                 }
                 dataArray.data = dataList
-                dataArray.year = yearListMax.reverse()
                 resolve(dataArray)
             })
         })

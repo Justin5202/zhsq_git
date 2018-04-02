@@ -81,7 +81,7 @@ export default {
             this.dataId = ""
             this.statisticsConditionShow = false
         }
-      }
+      },
   },
   methods:{
       openStatisticsCondition(){
@@ -124,16 +124,7 @@ export default {
                 this.$mapHelper.measureOnClickCallback(this.getAreaPoint)
             }
         }else{
-            const h = this.$createElement;
-            this.$msgbox({
-                title:'',
-                message: 
-                h('span', {style:'font-size:16px'}, '未选择统计指标')
-                ,
-                showConfirmButton:false,
-                center:true,
-                showClose:true
-            });
+            this.setHintInfo('未选择统计指标')
         }
       },
       getAreaPoint(e){
@@ -157,30 +148,33 @@ export default {
           if(this.pointNum > 3){
                getStatisticsDetails(this.shape,this.dataId).then(res =>{
                 this.statisticsList = [];
-                console.log(res.data)
+                var dataLength = 0
+                var noDataLength = 0
                 for(var m in res.data){
+                    dataLength += res.data[m]['listorder'].length
                     for(var n = 0 ;n < res.data[m]['listorder'].length;n++){
-                    var title = res.data[m]['listorder'][n]+ '（' + '个数' + ':'+  res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'] +'）'
-                    var type = res.data[m][res.data[m]['listorder'][n]]['fields']
-                    var context = res.data[m][res.data[m]['listorder'][n]]['fieldsName'] + ':' + ' ' + res.data[m][res.data[m]['listorder'][n]]['data'][type]
-                    var contextNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data'][type])
-                    var titleNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'])
-                    this.statisticsList.push({'title':title,'context':context,'contextNum':contextNum,'titleNum':titleNum})
+                        if(res.data[m][res.data[m]['listorder'][n]]['fieldsName']){
+                            var title = res.data[m]['listorder'][n]+ '（' + '个数' + ':'+  res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'] +'）'
+                            var type = res.data[m][res.data[m]['listorder'][n]]['fields']
+                            var context = res.data[m][res.data[m]['listorder'][n]]['fieldsName'] + ':' + ' ' + res.data[m][res.data[m]['listorder'][n]]['data'][type]
+                            var contextNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data'][type])
+                            var titleNum = parseInt(res.data[m][res.data[m]['listorder'][n]]['data']['doc_count'])
+                            if(titleNum > 0){
+                                this.statisticsList.push({'title':title,'context':context,'contextNum':contextNum,'titleNum':titleNum})
+                            }
+                        }else{
+                            noDataLength++
+                        }
                     }
                 }
-                this.displayStatistics = true;
+                if(noDataLength == dataLength || this.statisticsList.length == 0){
+                    this.setHintInfo('当前范围无统计要素')
+                }else{
+                    this.displayStatistics = true;
+                }
             })
           }else{
-            const h = this.$createElement;
-            this.$msgbox({
-                title:'',
-                message: 
-                h('span', {style:'font-size:16px'}, '请做图')
-                ,
-                showConfirmButton:false,
-                center:true,
-                showClose:true
-            });
+            this.setHintInfo('请做图')
           }
       },
       //清除画板
@@ -199,17 +193,31 @@ export default {
         this.statisticsConditionShow = false
         this.setDrawPanelType('unCheck')
         this.$mapHelper.setIsMeasure(false)
-        d2cMap.getCanvas().style.cursor = '';
+        d2cMap.getCanvas().style.cursor = ''
         this.pointNum = 0
+        this.conditionList = []
       },
       //关闭统计面板
       dailogClose(){
           this.displayStatistics = false
       },
+      //提示信息
+      setHintInfo(info){
+          const h = this.$createElement;
+            this.$msgbox({
+                title:'',
+                message: 
+                h('span', {style:'font-size:16px'}, info)
+                ,
+                showConfirmButton:false,
+                center:true,
+                showClose:true
+            });
+      },
     ...mapActions([
         'setDrawPanelType'
     ])
-  }
+}
 }
 </script>
 <style lang="scss" scoped>
@@ -285,7 +293,7 @@ export default {
     background-color: #fff;
     display: flex;
     position: fixed;
-    top: 20px;
+    top: 30px;
     right: 120px;
     border-radius: 4px;
     background-color: #8B8878;

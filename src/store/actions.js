@@ -53,7 +53,7 @@ function addLayer(datapath, id) {
                 }
                 temp.splice(-1, 1)
                 mapHelper.setMarksToMap(id, temp, res.data.mapguid, 'TS_定位1', 0.8, result.minzoom)
-                /*删除地图mark */
+                    /*删除地图mark */
                 for (let i = 0; i < 10; i++) {
                     mapHelper.removeLayerById((i + 1).toString())
                 }

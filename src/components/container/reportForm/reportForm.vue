@@ -30,7 +30,7 @@
                   </div>
                 </div>
                 <div v-for="(data,index) in item.dataByYear" class="table-item-box" :class="{itemColor:index%2 != 0}">
-                  <div class="title-item">{{data.type||'暂无统计数据'}}</div>
+                  <div class="title-item">{{data.type}}</div>
                   <div class="table-item">{{data["areaName"]}}</div>
                   <div class="table-item num-color" v-for="year in reportFormData.year">{{data[year]||"--"}}</div>
                 </div>

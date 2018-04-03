@@ -156,13 +156,12 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
         cur.isActive = false
         temp = cur
         if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
-            dispatch('setAreaReportFormShow', true)
-            dispatch('setReportFormShow', false)
-            dispatch('getDataFileByCodeAndId', {
-                areaCode: state.areaList,
+            dispatch('setAreaReportFormShow', {
+                isShow: true,
                 dataId: cur.id,
                 index: ''
             })
+            dispatch('setReportFormShow', false)
         }
     } else if (type === 1) { // type为1，无下一级目录
         if (yu === 0) { // yu为0，不做任何操作
@@ -202,10 +201,9 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
             console.log('仅有文本数据，即加载文本数据')
             if (first) {
                 cur.isActive = false
-                dispatch('setAreaReportFormShow', true)
                 dispatch('setReportFormShow', false)
-                dispatch('getDataFileByCodeAndId', {
-                    areaCode: state.areaList,
+                dispatch('setAreaReportFormShow', {
+                    isShow: true,
                     dataId: cur.id,
                     index: ''
                 })
@@ -213,10 +211,9 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
                 cur.isActive = !cur.isActive
             }
             if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
-                dispatch('setAreaReportFormShow', true)
                 dispatch('setReportFormShow', false)
-                dispatch('getDataFileByCodeAndId', {
-                    areaCode: state.areaList,
+                dispatch('setAreaReportFormShow', {
+                    isShow: true,
                     dataId: cur.id,
                     index: ''
                 })
@@ -518,8 +515,15 @@ export const setReportFormShow = function({ dispatch, commit, state }, isShow) {
         }
     }
     //行政区划详情显示隐藏
-export const setAreaReportFormShow = function({ commit, state }, data) {
-        commit(TYPE.SET_AREA_REPORT_FORM_SHOW, data)
+export const setAreaReportFormShow = function({ dispatch, commit, state }, { isShow, dataId, index }) {
+        commit(TYPE.SET_AREA_REPORT_FORM_SHOW, isShow)
+        if (isShow) {
+            dispatch('getDataFileByCodeAndId', {
+                'areaCode': state.areaList,
+                'dataId': dataId,
+                'index': index
+            })
+        }
     }
     //获取areaCode 和 dataId
 export const getAreaCodeAndDataId = function({ commit, state }, { areaCode, dataId }) {
@@ -559,9 +563,8 @@ export const setFunByReportFormType = function({ dispatch, commit, state }) {
             if (state.reportFormtype == 1) {
                 dispatch('setReportFormShow', true)
             } else if (state.reportFormtype == 2) {
-                dispatch('setAreaReportFormShow', true)
-                dispatch('getDataFileByCodeAndId', {
-                    areaCode: state.areaList,
+                dispatch('setAreaReportFormShow', {
+                    isShow: true,
                     dataId: state.areaCodeAndDataId.idList,
                     index: ''
                 })

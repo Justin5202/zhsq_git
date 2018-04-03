@@ -9,6 +9,7 @@ import {
 import JSZip from 'jszip'
 //获取areaCode 和 dataId
 export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
+        console.log(dataId)
         var AreaCodeAndDataId = []
         var idList = ""
         var type = 0
@@ -77,7 +78,7 @@ export const getReportDataInJS = function(areaCode, dataId) {
             getMsMacroData(areaCode, dataId).then(res => {
                 for (let i in res.data) {
                     if (Object.keys(res.data[i]).length == 0) {
-                        dataList.push({ 'name': '', 'id': i, 'dataByYear': { 'type': '暂无统计数据' } })
+                        dataList.push({ 'name': '', 'id': i, 'dataByYear': [{ 'type': '暂无统计数据' }] })
                     } else {
                         typeNum++
                         areaNum = 0 //只取一次循环的数量

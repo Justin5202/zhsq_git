@@ -71,6 +71,7 @@ function checkData(data, commit, first, type) {
     let cur = Object.assign({}, data)
     let temp = state.activeAreaInfoList.slice()
     let layerIdList = state.layerIdList.slice()
+    let clickType = data.clickType
     let falseLength = 0
     let isGo = true
     if (cur.isActive && cur.children.length > 0) {
@@ -104,15 +105,17 @@ function checkData(data, commit, first, type) {
                     addLayer(v.datapath, v.id)
                     v.isActive = true
                     cur.isActive = true
-                } else if (!first) {
+                    commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
+                    commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+                } else if (!first && !clickType) {
                     v.isActive = false
                     cur.isActive = false
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                     mapHelper.removeLayerByCode(v.id)
                     mapHelper.removeLayerById(v.id)
+                    commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
+                    commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
                 }
-                commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
-                commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
             }
         })
     } else {
@@ -128,14 +131,18 @@ function checkData(data, commit, first, type) {
             if (index < 0) {
                 addLayer(cur.datapath, cur.id)
                 cur.isActive = true
+                commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
+                commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
             } else if (!first) {
                 cur.isActive = false
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 mapHelper.removeLayerByCode(cur.id)
                 mapHelper.removeLayerById(cur.id)
+                if(!clickType) {
+                    commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
+                    commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
+                }
             }
-            commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
-            commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
         }
     }
     return cur
@@ -410,6 +417,7 @@ export const setAreaList = function({ dispatch, commit, state }, { param, type }
                         areaname: data.area.areaname
                     }
                 }
+                dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
             }
         } else {
             checkClickedDataType({ dispatch, data, commit, 'first': false, 'reportType': type })

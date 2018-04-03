@@ -225,7 +225,6 @@ const mutations = {
                     if (state.areaList[i].areacode.length !== areainfo.areacode.length) {
                         // 发现父级，清除父级行政区划
                         mapHelper.removeLayerById(state.areaList[i].areacode.toString())
-                        mapHelper.closePopup()
                         // 存在父级区域，删除父级区域
                         state.areaList.splice(i, 1)
                     }
@@ -236,7 +235,11 @@ const mutations = {
                     // 加载自身
                     mapHelper.addLayerByIdAndGeojson(state.areaDetailInfo.areacode.toString(), state.areaDetailInfo
                         .geojson)
-                    mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
+                    if(state.areaDetailInfo.areacode.length > 6) {
+                        mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 12)
+                    } else {
+                        mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 10)
+                    }
                     if(!type) {
                         mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid, true)
                     }
@@ -263,7 +266,7 @@ const mutations = {
         state.areaList.map(v => {
             if(v.areacode == 500002) {
                 areaTemp = areaTemp.concat(array)
-            } else {
+            } else if(v.areacode !== 500000){
                 temp.push(v.areacode)
             }
         })

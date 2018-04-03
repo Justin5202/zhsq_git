@@ -34,7 +34,7 @@
   </div>
 </template>
 <script>
-  import {mapActions} from 'vuex'
+  import {mapActions, mapMutations} from 'vuex'
   import {getHotAround} from '@/api/datasheets'
 
   export default {
@@ -61,7 +61,7 @@
 					name: this.searchContent,
 					start: 0,
 					rows: 10,
-					type: 1,
+					type: 3,
 					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
 				}
         this.getSearchParams({'typeParams': {}, 'params': params})
@@ -75,7 +75,7 @@
 					name: item.name,
 					start: 0,
 					rows: 10,
-					type: 1,
+					type: 3,
 					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
 				}
         this.getSearchParams({'typeParams': {}, 'params': params})
@@ -89,12 +89,14 @@
           this.list = res.data
         })
       },
+      ...mapMutations({
+        setTopicShow: 'SET_TOPIC_LIST_SHOW'
+      }),
       ...mapActions([
         'setAroundSearchShow',
         'getSearchParams',
         'searchPaneShow',
-        'tablePaneShow',
-        'setTopicShow'
+        'tablePaneShow'
       ])
     }
   }

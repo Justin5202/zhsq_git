@@ -122,7 +122,7 @@
 						</div>
 					</li>
 				</ul>
-				<p v-if="searchList.length >= 10">
+				<p>
 				  <el-button size="mini" icon="el-icon-arrow-left" @click="prev()">上一页</el-button>
 				  <el-button size="mini" @click="next()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 				</p>
@@ -220,7 +220,12 @@ export default {
       searchIndex: -1,
       tourismType: ["全部", "5A", "4A", "3A"],
       tabPaneHeight: window.innerHeight * 0.5 + "px"
-    };
+    }
+  },
+  watch: {
+    arrayData() {
+      this.upOrDown = true
+    }
   },
   computed: {
     ...mapGetters([
@@ -288,6 +293,9 @@ export default {
       this.$mapHelper.setPicPopupToMap(p, id);
     },
     next() {
+      if(this.searchList.length < 10) {
+        return 
+      }
       this.page += 1
       this.getType()
       this.$mapHelper.closePopup()

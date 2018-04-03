@@ -3,9 +3,9 @@
   <div class="pop" v-if="uuidClickedInfo">
     <div>
       <div class="pop-title" v-if="!type">
-        <h3 class="title" v-if="uuidClickedInfo._source.mc">{{uuidClickedInfo._source.mc}}</h3>
+        <h3 class="title" v-if="uuidClickedInfo._source.jc">{{uuidClickedInfo._source.jc}}</h3>
         <h3 class="title" v-else-if="uuidClickedInfo._source.name">{{uuidClickedInfo._source.name}}</h3>
-        <h3 class="title" v-else-if="uuidClickedInfo._source.jc">{{uuidClickedInfo._source.jc}}</h3>
+        <h3 class="title" v-else-if="uuidClickedInfo._source.mc">{{uuidClickedInfo._source.mc}}</h3>
         <h3 class="title" v-else>{{title}}</h3>
         <i class="cross-icon" @click="isShowPop()"></i>
       </div>
@@ -93,7 +93,8 @@ export default {
     checkDataType(data) {
       this.notPoi = false
       this.uuidClickedInfo = data
-      if (!data._source.ztmc || data._source.ztmc=='社区村驻地(未移动版)') {
+      // if (!data._source.ztmc || data._source.ztmc=='社区村驻地(未移动版)') {
+      if (!data._source.ztmc) {
         getThematicMap(data._type).then(res => {
           if (res.data !== "[]") {
             this.showArray = JSON.parse(res.data)

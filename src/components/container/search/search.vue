@@ -23,6 +23,7 @@
 					</li>
 				</ul>
 				<div class="subMenu" v-if="showSubmenu">
+          <p class="click_tip">双击可查看下一级目录</p>
 					<ul class="areas">
 						<li
 							v-for="(item, index) in areaData1"
@@ -351,6 +352,11 @@ export default {
   color: red;
   font-size: 14px;
   margin: 0;
+}
+.subMenu .click_tip {
+  color: red;
+  padding: 2px;
+  background-color: rgba(158, 156, 156, 0.2);
 }
 .areas {
   list-style: none;

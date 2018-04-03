@@ -220,7 +220,12 @@ export default {
       searchIndex: -1,
       tourismType: ["全部", "5A", "4A", "3A"],
       tabPaneHeight: window.innerHeight * 0.5 + "px"
-    };
+    }
+  },
+  watch: {
+    arrayData() {
+      this.upOrDown = true
+    }
   },
   computed: {
     ...mapGetters([

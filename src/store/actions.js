@@ -107,16 +107,14 @@ function checkData(data, commit, first, type) {
                     cur.isActive = true
                     commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
                     commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
-                } else if (!first) {
+                } else if (!first && !clickType) {
                     v.isActive = false
                     cur.isActive = false
                     mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                     mapHelper.removeLayerByCode(v.id)
                     mapHelper.removeLayerById(v.id)
-                    if(!clickType) {
-                        commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
-                        commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
-                    }
+                    commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false })
+                    commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
                 }
             }
         })

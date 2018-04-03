@@ -93,7 +93,8 @@ export default {
     checkDataType(data) {
       this.notPoi = false
       this.uuidClickedInfo = data
-      if (!data._source.ztmc || data._source.ztmc=='社区村驻地(未移动版)') {
+      // if (!data._source.ztmc || data._source.ztmc=='社区村驻地(未移动版)') {
+      if (!data._source.ztmc) {
         getThematicMap(data._type).then(res => {
           if (res.data !== "[]") {
             this.showArray = JSON.parse(res.data)

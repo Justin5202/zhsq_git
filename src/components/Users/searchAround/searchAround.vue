@@ -61,7 +61,7 @@
 					name: this.searchContent,
 					start: 0,
 					rows: 10,
-					type: 1,
+					type: 3,
 					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
 				}
         this.getSearchParams({'typeParams': {}, 'params': params})
@@ -75,7 +75,7 @@
 					name: item.name,
 					start: 0,
 					rows: 10,
-					type: 1,
+					type: 3,
 					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
 				}
         this.getSearchParams({'typeParams': {}, 'params': params})

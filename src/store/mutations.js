@@ -217,6 +217,7 @@ const mutations = {
                 }
                 /*删除行政区划线*/
                 mapHelper.removeLayerById(areainfo.areacode.toString())
+                mapHelper.closePopup()
             } else {
                 state.areaList.push(areainfo)
                 var i = state.areaList.length
@@ -237,7 +238,7 @@ const mutations = {
                     if(state.areaDetailInfo.areacode.length > 6) {
                         mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 12)
                     } else {
-                        mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 8)
+                        mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 10)
                     }
                     if(!type) {
                         mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid, true)
@@ -249,6 +250,7 @@ const mutations = {
             state.areaList.map(v => {
                 mapHelper.removeLayerById(v.areacode.toString())
             })
+            mapHelper.closePopup()
             state.areaList = []
             state.areaInfo = {
                 areacode: 500000,

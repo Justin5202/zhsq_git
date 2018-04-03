@@ -223,7 +223,7 @@ export default {
     openReportForm() {
       if(this.reportFormLength>0){
         this.setReportFormShow(true)
-        this.setAreaReportFormShow(false)
+        this.setAreaReportFormShow({isShow:false})
       }else{
         const h = this.$createElement;
         this.$msgbox({

@@ -64,9 +64,8 @@ export default {
       })
     },
     checkDetail() {
-      this.getAreaPovertyAlleviationDetailByAreaCode({'mc':this.name,'areaCode':this.areacode,'id':this.mapguid})
 			this.setReportFormShow(false)
-			this.setAreaReportFormShow(true)
+			this.setAreaReportFormShow({isShow:true,areaInfo:{'mc':this.name,'areaCode':this.areacode,'id':this.mapguid},type:3})
     },
     _getProvertyInfo(code, id) {
       getProvertyInfo(code, id).then(res => {
@@ -77,7 +76,6 @@ export default {
       })
     },
     ...mapActions([
-			'getAreaPovertyAlleviationDetailByAreaCode',
 			'setReportFormShow',
 			'setAreaReportFormShow'
     ]),

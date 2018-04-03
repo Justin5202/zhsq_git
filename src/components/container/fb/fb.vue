@@ -166,16 +166,13 @@
 			},
 			//获取详情
 			getTopicDetails(item){
-				console.log(item)
-				this.getAreaPovertyAlleviationDetailByAreaCode(item)
 				this.setReportFormShow(false)
-				this.setAreaReportFormShow(true)
+				this.setAreaReportFormShow({isShow:true,areaInfo:item,type:3})
 			},
 			...mapActions([
 				'addProvertyAreaLayer'
 			]),
 			...mapActions([
-			'getAreaPovertyAlleviationDetailByAreaCode',
 			'setReportFormShow',
 			'setAreaReportFormShow',
 			'getProvertyData'

@@ -147,7 +147,7 @@ export default {
     //关闭模态框
     colseDialog() {
       this.setReportFormShow(false);
-      this.setAreaReportFormShow(false);
+      this.setAreaReportFormShow({isShow:false});
       this.activeTab = 0;
       this.activeContent = 0;
       this.tabContext = this.reportFormData.data[0];

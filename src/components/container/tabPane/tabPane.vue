@@ -352,15 +352,14 @@ export default {
           dataId: this.areaCodeAndDataId[1]
         });
         this.setReportFormShow(true);
-        this.setAreaReportFormShow(false);
+        this.setAreaReportFormShow({isShow:false});
       } else if (item.searchType == 2 || item.searchType == 6) {
-        this.getReportDataByAreaCode([
+        this.setReportFormShow(false);
+        this.setAreaReportFormShow({isShow:true,areaInfo:[
           item["area"]["areacode"],
           item["area"]["areaname"],
           item["searchType"]
-        ]);
-        this.setReportFormShow(false);
-        this.setAreaReportFormShow(true);
+        ],type:2});
       }
     },
     ...mapMutations({

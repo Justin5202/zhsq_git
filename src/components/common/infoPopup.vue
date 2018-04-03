@@ -169,7 +169,7 @@ export default {
       if(this.notPoi || this.type){
         this.getReportDataByAreaCode([this.areaInfo.areacode,this.areaInfo.areaname,2])
 				this.setReportFormShow(false)
-				this.setAreaReportFormShow(true)
+				this.setAreaReportFormShow({isShow:true,areaInfo:[this.areaInfo.areacode,this.areaInfo.areaname,2],type:2})
       }else{
         var title = this.uuidClickedInfo._source.name || this.uuidClickedInfo._source.mc || this.uuidClickedInfo._source.jc || this.title
         var dataArray = { 'title': title, 'name': [], 'data': [] }
@@ -178,9 +178,8 @@ export default {
             dataArray.data.push({'name':this.showArray[i]._source.name_a,'context':this.uuidClickedInfo._source[this.showArray[i]._source.name]})
           }
         }
-        this.setReportFormDetails(dataArray)
         this.setReportFormShow(false)
-				this.setAreaReportFormShow(true)
+				this.setAreaReportFormShow({isShow:true,areaInfo:dataArray,type:4})
       }
     },
     ...mapActions([
@@ -188,8 +187,7 @@ export default {
       'setAreaInfo',
       'setReportFormShow',
       'setAreaReportFormShow',
-      'getReportDataByAreaCode',
-      'setReportFormDetails'
+      'getReportDataByAreaCode'
     ])
   }
 }

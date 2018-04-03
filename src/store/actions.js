@@ -138,7 +138,7 @@ function checkData(data, commit, first, type) {
                 mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
                 mapHelper.removeLayerByCode(cur.id)
                 mapHelper.removeLayerById(cur.id)
-                if(!clickType) {
+                if (!clickType) {
                     commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': cur, 'isRemoveAll': false })
                     commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
                 }
@@ -166,7 +166,8 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
             dispatch('setAreaReportFormShow', {
                 isShow: true,
                 dataId: cur.id,
-                index: ''
+                index: '',
+                typeL: 1
             })
             dispatch('setReportFormShow', false)
         }
@@ -195,14 +196,14 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
             }
             commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
             dispatch('setReportFormShow', true)
-            dispatch('setAreaReportFormShow', false)
+            dispatch('setAreaReportFormShow', { isShow: false })
             temp = cur
         } else if (yu === 3) { // yu为3，有空间数据和统计数据，优先加载空间数据
             console.log('有空间数据和统计数据，优先加载空间数据')
             temp = checkData(cur, commit, first, reportType)
             if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
                 dispatch('setReportFormShow', true)
-                dispatch('setAreaReportFormShow', false)
+                dispatch('setAreaReportFormShow', { isShow: false })
             }
         } else if (yu === 4) { // yu为4，仅有文本数据，即加载文本数据
             console.log('仅有文本数据，即加载文本数据')
@@ -212,7 +213,8 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
                 dispatch('setAreaReportFormShow', {
                     isShow: true,
                     dataId: cur.id,
-                    index: ''
+                    index: '',
+                    type: 1
                 })
             } else {
                 cur.isActive = !cur.isActive
@@ -222,7 +224,8 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
                 dispatch('setAreaReportFormShow', {
                     isShow: true,
                     dataId: cur.id,
-                    index: ''
+                    index: '',
+                    type: 1
                 })
             }
             commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
@@ -236,7 +239,7 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
         temp = checkData(cur, commit, first, reportType)
         if (cur.reportShow || cur.clickType === 'details') {
             dispatch('setReportFormShow', true)
-            dispatch('setAreaReportFormShow', false)
+            dispatch('setAreaReportFormShow', { isShow: false })
         }
     } else if (type === 3) { // type为3，即为网页，记载网页
         console.log('即为网页，加载网页')
@@ -523,14 +526,23 @@ export const setReportFormShow = function({ dispatch, commit, state }, isShow) {
         }
     }
     //行政区划详情显示隐藏
-export const setAreaReportFormShow = function({ dispatch, commit, state }, { isShow, dataId, index }) {
+export const setAreaReportFormShow = function({ dispatch, commit, state }, { isShow, dataId, index, areaInfo, type }) {
+        //type的值为1、文本数据，2、通过搜索得到的数据，3、扶贫数据，4、不用搜索得到popup详情数据
         commit(TYPE.SET_AREA_REPORT_FORM_SHOW, isShow)
         if (isShow) {
-            dispatch('getDataFileByCodeAndId', {
-                'areaCode': state.areaList,
-                'dataId': dataId,
-                'index': index
-            })
+            if (type == 1) {
+                dispatch('getDataFileByCodeAndId', {
+                    'areaCode': state.areaList,
+                    'dataId': dataId,
+                    'index': index
+                })
+            } else if (type == 2) {
+                dispatch('getReportDataByAreaCode', areaInfo)
+            } else if (type == 3) {
+                dispatch('getAreaPovertyAlleviationDetailByAreaCode', areaInfo)
+            } else if (type == 4) {
+                dispatch('setReportFormDetails', areaInfo)
+            }
         }
     }
     //获取areaCode 和 dataId

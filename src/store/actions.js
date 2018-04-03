@@ -188,7 +188,7 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
                 cur.isActive = true
                 commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
             } else {
-                if (cur.reportShow) {
+                if (!cur.reportShow) {
                     cur.isActive = !cur.isActive
                 } else {
                     cur.isActive = true
@@ -237,7 +237,7 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
     } else if (type === 2) { // type为2，即为图层，加载图层
         console.log('即为图层，加载图层')
         temp = checkData(cur, commit, first, reportType)
-        if (cur.reportShow || cur.clickType === 'details') {
+        if ((cur.reportShow || cur.clickType === 'details') && !reportType) {
             dispatch('setReportFormShow', true)
             dispatch('setAreaReportFormShow', { isShow: false })
         }

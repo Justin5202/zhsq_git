@@ -156,10 +156,12 @@ export default {
       for(var i in this.areaCodeAndDataId[2]){
         if(this.areaCodeAndDataId[2][i].id){
           if(item.id == this.areaCodeAndDataId[2][i].id){
+            this.areaCodeAndDataId[2][i].clickType = ''
             this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
           }
         }else if(this.areaCodeAndDataId[2][i].macro.dataId){
           if(item.id == this.areaCodeAndDataId[2][i].macro.dataId){
+            this.areaCodeAndDataId[2][i].clickType = ''
             this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
           }
         }

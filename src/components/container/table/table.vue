@@ -55,7 +55,7 @@
 
 <style lang="scss" scoped>
 	.table {
-		max-height: 800px;
+		max-height: 588px;
 		overflow: hidden;
 		border-radius: 4px;
 		.table-header {

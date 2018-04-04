@@ -72,7 +72,6 @@ function checkData(data, commit, first, type) {
     let temp = state.activeAreaInfoList.slice()
     let layerIdList = state.layerIdList.slice()
     let clickType = data.clickType
-    console.log(clickType)
     let falseLength = 0
     let isGo = true
     if (cur.isActive && cur.children.length > 0) {
@@ -255,8 +254,42 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
  *数据添加isActive标志位
  */
 function addIsActive(data) {
+    let temp = state.activeAreaInfoList.slice()
     data.isActive = false
-    if (data.children.length > 0) {
+    if(temp.length > 0) {
+        temp.map(v => {
+            if(data.id == v.id) {
+                data.isActive = true
+            } else {
+                data.isActive = false
+            }
+            data.children.map(h => {
+                if(h.id === v.id) {
+                    h.isActive = true
+                } else {
+                    h.isActive = false
+                }
+                if(h.children && h.children.length > 0) {
+                    h.children.map(n => {
+                        if(n.id === v.id) {
+                            n.isActive = true
+                        } else {
+                            h.isActive = false
+                        }
+                        if(n.children && n.children.length > 0) {
+                            n.children.map(f => {
+                                if(f.id === v.id) {
+                                    f.isActive = true
+                                } else {
+                                    h.isActive = false
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        })
+    } else if (data.children.length > 0) {
         data.children.map(v => {
             v.isActive = false
             if (v.children.length > 0) {
@@ -362,7 +395,9 @@ export const getAreaDetail = function({ dispatch, commit, state }, params) {
             data.isOncilckGet = true
             data.reportShow = state.reportFormShow
             checkClickedDataType({ dispatch, data, commit, "first": true })
-            dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
+            if (areainfo.areacode !== '500000') {
+                dispatch('setAreaInfo', { 'areainfo': areainfo, 'isRemoveAll': false })
+            }
         })
         return
     }

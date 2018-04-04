@@ -40,7 +40,7 @@
 								<i class="poi-icon"></i>
 							</div>
 							<div class="area-content" @click="flyToPoi(item, index)">
-								<h2>{{(page-1)*10+index+1}}.{{item.poi.name}}</h2>
+								<h2>{{index+1}}.{{item.poi.name}}</h2>
 								<p>{{item.poi.address}}</p>
 							</div>
 							<div class="detail">
@@ -99,7 +99,7 @@
 								<i class="macro-icon"></i>
 							</div>
 							<div class="area-content" >
-								<h2>{{(page-1)*10+index+1}}.{{item.element.name}}</h2>
+								<h2>{{index+1}}.{{item.element.name}}</h2>
 								<p>{{item.element.desc}}</p>
 							</div>
 						</div>
@@ -244,6 +244,7 @@ export default {
   methods: {
     getType(index) {
       this.type = index || this.type
+      this.page = !index ? this.page : 1
       const params = {
         type: index || this.type,
         start: (this.page - 1) * 10,

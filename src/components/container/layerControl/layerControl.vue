@@ -65,7 +65,7 @@ export default {
       this.checked = false
     } else if(len1 < len2) {
       this.isIndeterminate = false
-      this.checked = true
+      this.checked = false
     } else {
       this.checked = true
     }

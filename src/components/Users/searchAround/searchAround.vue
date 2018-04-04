@@ -133,6 +133,7 @@
             color: white;
             font-size: 24px;
             padding: 20px 30px;
+            padding-bottom: 0;
             cursor: pointer;
             span {
               display: inline-block;
@@ -146,7 +147,7 @@
               height: 40px;
               width: 240px;
               margin: 20px 0 5px 40px;
-              border-bottom: 1px solid rgb(168, 167, 167);
+              border-bottom: 1px solid #efefef;
               display: flex;
               justify-content: flex-start;
               box-sizing: border-box;
@@ -180,13 +181,9 @@
       }
       .el-main {
         padding: 0;
-        height:85%;
-        background-color: rgb(233, 229, 229);
         .wrap {
           width: 800px;
-          height: 95%;
           box-sizing: border-box;
-          background: #fff;
           .title {
             height: 50px;
             line-height: 50px;
@@ -215,7 +212,6 @@
           .list-box {
             width: 94%;
             margin: 0 auto;
-            margin-top: 20px;
             ul {
               list-style: none;
               padding: 0;
@@ -227,7 +223,7 @@
               justify-content: space-between;
               .list-item {
                 width: 49%;
-                margin-bottom: 20px;
+                margin-bottom: 14px;
                 display: flex;
                 justify-content: flex-start;
                 p {

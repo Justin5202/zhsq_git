@@ -82,6 +82,7 @@ export default {
   },
   beforeMount() {
     this._getQueryOnlineByUuid(this.mapguid)
+    console.log(this.mapguid)
   },
   methods: {
     isShowPop() {
@@ -110,9 +111,9 @@ export default {
         })
       } else {
         let info = data._source
-        let reg1 = RegExp(/市政府驻地\?政府机关/)
-        let reg2 = RegExp(/区县驻地\?政府机关/)
-        let reg3 = RegExp(/乡镇|街|驻地/)
+        let reg1 = RegExp(/市政府驻地\?政府机关$/)
+        let reg2 = RegExp(/区县驻地\?政府机关$/)
+        let reg3 = RegExp(/乡镇\(街\)驻地$/)
         let reg4 = RegExp(/社区村驻地/)
         let code = ""
         if (reg1.exec(info.ztmc)) {
@@ -128,6 +129,7 @@ export default {
           code = info.sqcdm
           this.notPoi = true
         }
+        console.log(code)
         if (!this.notPoi) {
           getThematicMap(data._type).then(res => {
             if (res.data !== "[]") {
@@ -155,6 +157,7 @@ export default {
         if (res.code == "1") {
           if(res.data.data) {
             let data = JSON.parse(res.data.data)
+            console.log(data)
             this.checkDataType(data)
           } else {
             this.$mapHelper.closePopup()

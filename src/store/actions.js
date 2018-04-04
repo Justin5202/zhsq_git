@@ -163,7 +163,7 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
         console.log('仅为目录')
         cur.isActive = false
         temp = cur
-        if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
+        if (((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) && !reportType) {
             dispatch('setAreaReportFormShow', {
                 isShow: true,
                 dataId: cur.id,
@@ -179,7 +179,7 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
             temp = cur
         } else if (yu === 1) { // yu为1，仅有空间数据，即加载空间数据
             temp = checkData(cur, commit, first, reportType)
-            if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
+            if (((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) && !reportType) {
                 dispatch('setReportFormShow', true)
                 dispatch('setAreaReportFormShow', false)
             }
@@ -202,7 +202,7 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
         } else if (yu === 3) { // yu为3，有空间数据和统计数据，优先加载空间数据
             console.log('有空间数据和统计数据，优先加载空间数据')
             temp = checkData(cur, commit, first, reportType)
-            if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
+            if (((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) && !reportType) {
                 dispatch('setReportFormShow', true)
                 dispatch('setAreaReportFormShow', { isShow: false })
             }
@@ -220,7 +220,7 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
             } else {
                 cur.isActive = !cur.isActive
             }
-            if ((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) {
+            if (((cur.reportShow || cur.clickType === 'details') || (cur.isOnCilckGet && cur.reportShow)) && !reportType) {
                 dispatch('setReportFormShow', false)
                 dispatch('setAreaReportFormShow', {
                     isShow: true,

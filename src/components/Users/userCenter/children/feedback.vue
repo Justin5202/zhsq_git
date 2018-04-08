@@ -64,8 +64,8 @@
         suggestList: [],
         page: 1,
         showDialogBox: false,
-        showNext: true,
-        showPre: true
+        showNext: false,
+        showPre: false
       }
     },
     filters: {
@@ -117,6 +117,7 @@
       _getSuggestList() {
         let start = (this.page - 1) * 10
         getSuggestList(start).then(res => {
+          console.log(res)
           this.suggestList = res.data.data.data
           const total = res.data.data.totalRecord
           if (this.page === 1) {

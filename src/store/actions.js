@@ -167,7 +167,7 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
                 isShow: true,
                 dataId: cur.id,
                 index: '',
-                typeL: 1
+                type: 1
             })
             dispatch('setReportFormShow', false)
         }

@@ -9,7 +9,6 @@ import {
 import JSZip from 'jszip'
 //获取areaCode 和 dataId
 export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
-        console.log(dataId)
         var AreaCodeAndDataId = []
         var idList = ""
         var type = 0

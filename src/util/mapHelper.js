@@ -936,7 +936,7 @@ const _setMBVisibility = function () {
             }
         }
     } catch (error) {
-        console.log("地图中出现问题");
+        console.log("地图尚未加载完成，导致蒙版无法控制");
     }
 
 }

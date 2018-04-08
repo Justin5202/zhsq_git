@@ -91,7 +91,6 @@ export default {
     _fetchData() {
       let time = Math.round(new Date() / 1000)
       fetchData(time).then(res => {
-        console.log(res)
         this.datalist = res.data.infos
       })
     },

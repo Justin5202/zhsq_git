@@ -82,7 +82,6 @@ export default {
   },
   beforeMount() {
     this._getQueryOnlineByUuid(this.mapguid)
-    console.log(this.mapguid)
   },
   methods: {
     isShowPop() {
@@ -129,7 +128,6 @@ export default {
           code = info.sqcdm
           this.notPoi = true
         }
-        console.log(code)
         if (!this.notPoi) {
           getThematicMap(data._type).then(res => {
             if (res.data !== "[]") {
@@ -157,7 +155,6 @@ export default {
         if (res.code == "1") {
           if(res.data.data) {
             let data = JSON.parse(res.data.data)
-            console.log(data)
             this.checkDataType(data)
           } else {
             this.$mapHelper.closePopup()

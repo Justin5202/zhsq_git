@@ -25,8 +25,8 @@
             <p class="time">{{item.addtime | formatDate}}</p>
           </li>
           <li class="btn-box">
-            <el-button @click="pre()">上一页</el-button>
-            <el-button @click="next()">下一页</el-button>
+            <el-button @click="pre()" v-show="showPre">上一页</el-button>
+            <el-button @click="next()" v-show="showNext">下一页</el-button>
           </li>
         </ul>
       </div>
@@ -63,7 +63,9 @@
         adminContent: '',
         suggestList: [],
         page: 1,
-        showDialogBox: false
+        showDialogBox: false,
+        showNext: true,
+        showPre: true
       }
     },
     filters: {
@@ -116,6 +118,24 @@
         let start = (this.page - 1) * 10
         getSuggestList(start).then(res => {
           this.suggestList = res.data.data.data
+          const total = res.data.data.totalRecord
+          if (this.page === 1) {
+            this.showPre = false;
+          } else {
+            this.showPre = true
+          }
+          if (total <= 10) {
+            this.showNext = false
+          } else if (total > 10 && total <= this.page * 10) {
+            console.log(this.page * 10)
+            this.showPre = true
+            this.showNext = false
+          } else if (total > 10 && total > this.page * 10) {
+            this.showPre = this.showNext = true
+            if (this.page === 1) {
+              this.showPre = false
+            }
+          }
         })
       },
       pre() {

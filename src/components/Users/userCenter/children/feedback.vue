@@ -127,7 +127,6 @@
           if (total <= 10) {
             this.showNext = false
           } else if (total > 10 && total <= this.page * 10) {
-            console.log(this.page * 10)
             this.showPre = true
             this.showNext = false
           } else if (total > 10 && total > this.page * 10) {

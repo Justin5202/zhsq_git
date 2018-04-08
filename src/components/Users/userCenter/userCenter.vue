@@ -91,6 +91,7 @@ export default {
     _fetchData() {
       let time = Math.round(new Date() / 1000)
       fetchData(time).then(res => {
+        console.log(res)
         this.datalist = res.data.infos
       })
     },
@@ -101,8 +102,8 @@ export default {
     },
     _getContact() {
       getContact().then(res => {
-        this.info.phone = res.data[0].paramvalue
-        this.info.email = res.data[1].paramvalue
+        this.info.email = res.data[0].paramvalue
+        this.info.phone = res.data[1].paramvalue
       })
     },
     _logout() {

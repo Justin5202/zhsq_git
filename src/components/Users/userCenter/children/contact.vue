@@ -2,17 +2,23 @@
   <div class="contact">
     <ul class="list">
       <li class="list-item">
-        Tel: 023-67033881
+        Tel: {{companyInfo.phone}}
       </li>
       <li class="list-item">
-        E-mail: cqdlxxzx@digitalcq.com
+        E-mail: {{companyInfo.email}}
       </li>
     </ul>
   </div>
 </template>
 <script>
   export default {
-    name: 'contact'
+    name: 'contact',
+    props: {
+      companyInfo: {
+        type: Object,
+        default: {}
+      }
+    }
   }
 </script>
 <style lang="scss" scoped>

@@ -1,11 +1,14 @@
 <template>
 	<div class="search">
 	  	<el-input 
-			placeholder="搜地点、查数据" 
-			v-model="searchContent" 
-			@focus="showSearchPane()" 
-			class="input-with-select"
-			@keyup.enter.native="clickSearch(selectStart, selectCode)">
+        placeholder="搜地点、查数据" 
+        v-model="searchContent" 
+        @focus="showSearchPane()" 
+        class="input-with-select"
+        @keyup.enter.native="clickSearch(selectStart, selectCode)"
+        @clear="clearSearchOnMap()"
+        clearable
+      >
 			<el-button slot="prepend" @click="showBox()">{{areaInfo.areaname}}<i class="el-icon-arrow-down"></i></el-button>
 	    	<el-button slot="append" icon="el-icon-search" @click="clickSearch(selectStart, selectCode)"></el-button>
 	  	</el-input>
@@ -284,6 +287,11 @@ export default {
         parentid: parentId
       };
       this.setAreaInfo({ areainfo: areaInfo, isRemoveAll: false });
+    },
+    clearSearchOnMap() {
+      for (let i = 0; i < 10; i++) {
+        this.$mapHelper.removeLayerById((i + 1).toString())
+      }
     }
   }
 };

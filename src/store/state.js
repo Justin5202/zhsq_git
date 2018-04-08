@@ -50,6 +50,7 @@ const state = {
     urlpath: '',
     layerControlShow: false,
     checkedList: [],
+    transparencyArray: [],
     //绘制面板type,1.量算面板,2.统计面板
     drawPanelType: ''
 }

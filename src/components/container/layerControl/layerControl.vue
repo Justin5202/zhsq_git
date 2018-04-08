@@ -23,7 +23,7 @@
               </div>
             </div>
             <div class="slider-box" v-if="checkedTransparency">
-              <el-slider v-model="transparencyArray[index]" @change="setLayerOpacity(index)"></el-slider>
+              <el-slider v-model="transparencyList[index]" @change="setLayerOpacity(index)"></el-slider>
             </div>
           </div>
         </el-checkbox-group>
@@ -43,7 +43,7 @@ export default {
       checkedTransparency: false,
       isIndeterminate: false,
       value1: '',
-      transparencyArray: []
+      transparencyList: this.$store.state.transparencyArray
     }
   },
   watch: {
@@ -69,11 +69,11 @@ export default {
     } else {
       this.checked = true
     }
-    this.checkedList.map(v => this.transparencyArray.push(100))
   },
   computed: {
     ...mapGetters([
       'activeAreaInfoList',
+      'transparencyArray'
     ]),
     checkedList() {
       let temp = []
@@ -91,12 +91,14 @@ export default {
       return len
     }
   },
-  destroyed() {
-    this.checkedList.map(v => this.$mapHelper.setOpacityByCode(v, 1))
-  },
   methods: {
     setLayerOpacity(index) {
-      this.$mapHelper.setOpacityByCode(this.checkedList[index], this.transparencyArray[index]/100)
+      let obj = {
+        index: index,
+        value: this.transparencyList[index]
+      }
+      this.setTransparency(obj)
+      this.$mapHelper.setOpacityByCode(this.checkedList[index], this.transparencyList[index]/100)
     },
     handleCheckAllChange(val) {
       if(val) {
@@ -129,7 +131,8 @@ export default {
       'removeSearchItem'
     ]),
     ...mapMutations({
-      setCheckedList: 'SET_CHECKED_LIST'
+      setCheckedList: 'SET_CHECKED_LIST',
+      setTransparency: 'SET_TRANSPARENCY'
     })
   }
 }

@@ -130,12 +130,15 @@ const mutations = {
             })
             state.searchList.map(v => v.isActive = false)
             state.checkedList = []
+            state.transparencyArray = []
         } else {
             let index = state.activeAreaInfoList.findIndex(v => v.id === item.id)
             if (index < 0) {
                 state.activeAreaInfoList.push(item)
+                state.transparencyArray.push(100)
             } else {
                 state.activeAreaInfoList.splice(index, 1)
+                state.transparencyArray.splice(index, 1)
             }
             let checkedIndex = state.checkedList.findIndex(v => v == item.id)
             if(checkedIndex < 0) {
@@ -150,6 +153,10 @@ const mutations = {
         state.layerIdList = temp
         /*图层过滤*/
         mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
+    },
+    // 设置透明度
+    [TYPE.SET_TRANSPARENCY](state, obj) {
+        state.transparencyArray.splice(obj.index, 1, obj.value)
     },
     [TYPE.SET_CHECKED_LIST](state, list) {
         // 空数组即为全选，非空删除未选中图层

@@ -4,7 +4,7 @@
 			<ul v-show="upOrDown && tableMenuPaneShow && !searchPaneShow">
 				<li class="tab-pane-li" v-for="(item, index) in arrayData">
 					<div class="tab-pane-li-title">
-						<p class="item-title">【{{item.name}}】</p>
+						<p class="item-title" @click="getAreaData(item.id)">【{{item.name}}】</p>
 					</div>
 					<div class="tab-pane-li-content">
 						<span v-for="(i, idx) in item.hot" @click="getAreaData(i.dataCode)">{{i.dataname}}</span>
@@ -400,6 +400,7 @@ export default {
       .tab-pane-li-title {
         padding: 0 15px;
         background-color: #e4e7ed;
+        cursor: pointer;
         .item-title {
           margin: 0;
           padding: 10px 0;

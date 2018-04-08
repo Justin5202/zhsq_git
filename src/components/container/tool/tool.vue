@@ -27,15 +27,21 @@
       </span>
       <span class="circle" v-if="reportFormLength > 0">{{reportFormLength}}</span>
     </div>
-    <span class="tool-item" v-if="isInArray(3, this.userinfo.autuority)">
+    <div class="tool-box">
+      <span class="tool-item" v-if="isInArray(3, this.userinfo.autuority)">
 				<v-measure/>
-			</span>
-    <span class="tool-item" v-if="isInArray(3, this.userinfo.autuority)">
-      <v-statistics/>
-		</span>
-    <span class="tool-item ">
-			<img src="../../../assets/images/map/用户.png" alt="" @click="showUserCenter">
-		</span>
+		  </span>
+    </div>
+    <div class="tool-box">
+      <span class="tool-item" v-if="isInArray(3, this.userinfo.autuority)">
+        <v-statistics/>
+		  </span>
+    </div>
+    <div class="tool-box">
+      <span class="tool-item ">
+        <img src="../../../assets/images/map/用户.png" alt="" @click="showUserCenter">
+      </span>
+    </div>
   </div>
   <div class="tool-compass" @click="resetNorth" v-show="toolCompassVisible"></div>
   <div class="tool-bottom">
@@ -69,12 +75,12 @@
 </div>
 </template>
 <script>
-import vStatistics from '../statistics/statistics'
-import LayerControl from '@/components/container/layerControl/layerControl'
-import AreaControl from '@/components/container/areaControl/areaControl'
-import vMeasure from '@/components/container/measure/measure'
-import vUserCenter from '@/components/Users/userCenter/userCenter'
-import {mapGetters, mapActions} from 'vuex'
+import vStatistics from "../statistics/statistics"
+import LayerControl from "@/components/container/layerControl/layerControl"
+import AreaControl from "@/components/container/areaControl/areaControl"
+import vMeasure from "@/components/container/measure/measure"
+import vUserCenter from "@/components/Users/userCenter/userCenter"
+import { mapGetters, mapActions } from "vuex"
 
 export default {
   components: {
@@ -101,18 +107,18 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'areaList',
-      'activeAreaInfoList',
-      'areaInfoList',
-      'userinfo',
-      'mapJsonAndImg',
-      'layerControlShow',
-      'searchList'
+      "areaList",
+      "activeAreaInfoList",
+      "areaInfoList",
+      "userinfo",
+      "mapJsonAndImg",
+      "layerControlShow",
+      "searchList"
     ]),
     areaListLength() {
       let len = 0
       this.areaList.map(v => {
-        if(v.areacode !== 500000) {
+        if (v.areacode !== 500000) {
           len += 1
         }
       })
@@ -132,22 +138,30 @@ export default {
       let type = 0
       let idArray = []
       for (var i in this.areaInfoList) {
-        type = parseInt(this.areaInfoList[i].type)%10
-        if ((type == 2 || type == 3)&& this.areaInfoList[i].isActive) {
+        type = parseInt(this.areaInfoList[i].type) % 10
+        if ((type == 2 || type == 3) && this.areaInfoList[i].isActive) {
           idArray.push(this.areaInfoList[i].id)
           len++
         }
         if (this.areaInfoList[i].children.length > 0) {
           for (var j in this.areaInfoList[i].children) {
-            type = parseInt(this.areaInfoList[i].children[j].type)%10
-            if ((type == 2 || type == 3) && this.areaInfoList[i].children[j].isActive) {
+            type = parseInt(this.areaInfoList[i].children[j].type) % 10
+            if (
+              (type == 2 || type == 3) &&
+              this.areaInfoList[i].children[j].isActive
+            ) {
               idArray.push(this.areaInfoList[i].children[j].id)
               len++
             }
             if (this.areaInfoList[i].children[j].children.length > 0) {
               for (var k in this.areaInfoList[i].children[j].children) {
-                type = parseInt(this.areaInfoList[i].children[j].children[k].type)%10
-                if ((type == 2 || type == 3) && this.areaInfoList[i].children[j].children[k].isActive) {
+                type =
+                  parseInt(this.areaInfoList[i].children[j].children[k].type) %
+                  10
+                if (
+                  (type == 2 || type == 3) &&
+                  this.areaInfoList[i].children[j].children[k].isActive
+                ) {
                   idArray.push(this.areaInfoList[i].children[j].children[k].id)
                   len++
                 }
@@ -157,15 +171,15 @@ export default {
         }
       }
       this.searchList.map(v => {
-        if(v.macro) {
-          type = parseInt(v.macro.data.type)%10
+        if (v.macro) {
+          type = parseInt(v.macro.data.type) % 10;
           if (v.isActive && (type == 2 || type == 3)) {
-            if(idArray.indexOf(v.macro.dataId) == -1){
+            if (idArray.indexOf(v.macro.dataId) == -1) {
               len += 1
             }
           }
         }
-      })
+      });
       return len
     }
   },
@@ -173,10 +187,16 @@ export default {
     // 全局和局部切换
     toggleShowData() {
       this.IsAll = !this.IsAll
-      if(this.IsAll) {
-        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(this.$store.state.layerIdList, [])
+      if (this.IsAll) {
+        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(
+          this.$store.state.layerIdList,
+          []
+        )
       } else {
-        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(this.$store.state.layerIdList, this.$store.state.areaCodeList)
+        this.$mapHelper.doFilterByCodeArrayAndAreacodeArray(
+          this.$store.state.layerIdList,
+          this.$store.state.areaCodeList
+        )
       }
     },
     //2D 3D切换
@@ -185,7 +205,7 @@ export default {
       if (this.is2Dmap) {
         d2cMap.easeTo({
           pitch: 0
-        })
+        });
       } else {
         d2cMap.easeTo({
           pitch: 60
@@ -193,24 +213,24 @@ export default {
       }
     },
     //地图切换
-    changeBaseMap(type){
-      if(type == '矢量'){
-        this.$mapHelper.setMapFlay('dt')
+    changeBaseMap(type) {
+      if (type == "矢量") {
+        this.$mapHelper.setMapFlay("dt")
         this.$mapHelper.setAllImageMapVisibility(false)
         this.$mapHelper.setAllDemMapVisibility(false)
         this.$mapHelper.setAllHQImageMapVisibility(false)
-      }else if(type == '影像'){
-        this.$mapHelper.setMapFlay('img')
+      } else if (type == "影像") {
+        this.$mapHelper.setMapFlay("img")
         this.$mapHelper.setAllImageMapVisibility(true)
         this.$mapHelper.setAllDemMapVisibility(false)
         this.$mapHelper.setAllHQImageMapVisibility(false)
-      }else if(type == '渲染'){
-        this.$mapHelper.setMapFlay('dem')
+      } else if (type == "渲染") {
+        this.$mapHelper.setMapFlay("dem")
         this.$mapHelper.setAllImageMapVisibility(false)
         this.$mapHelper.setAllDemMapVisibility(true)
         this.$mapHelper.setAllHQImageMapVisibility(false)
-      }else if(type == '高清影像'){
-        this.$mapHelper.setMapFlay('imgHQ')
+      } else if (type == "高清影像") {
+        this.$mapHelper.setMapFlay("imgHQ");
         this.$mapHelper.setAllImageMapVisibility(false)
         this.$mapHelper.setAllDemMapVisibility(false)
         this.$mapHelper.setAllHQImageMapVisibility(true)
@@ -218,23 +238,25 @@ export default {
     },
     //打开图层切换
     openLayerTool() {
-      this.$store.commit('SET_LAYER_CONTROL_SHOW', !this.layerControlShow)
+      this.$store.commit("SET_LAYER_CONTROL_SHOW", !this.layerControlShow)
     },
     openReportForm() {
-      if(this.reportFormLength>0){
+      if (this.reportFormLength > 0) {
         this.setReportFormShow(true)
-        this.setAreaReportFormShow({isShow:false})
-      }else{
-        const h = this.$createElement;
+        this.setAreaReportFormShow({ isShow: false })
+      } else {
+        const h = this.$createElement
         this.$msgbox({
-          title:'',
-            message: 
-            h('span', {style:'font-size:16px'}, '暂未叠加指标数据...')
-            ,
-            showConfirmButton:false,
-            center:true,
-            showClose:true
-          });
+          title: "",
+          message: h(
+            "span",
+            { style: "font-size:16px" },
+            "暂未叠加指标数据..."
+          ),
+          showConfirmButton: false,
+          center: true,
+          showClose: true
+        })
       }
     },
     showAreaBox() {
@@ -244,12 +266,13 @@ export default {
     listenMapRotate() {
       this.$mapHelper.onRotateCallback(this.changeAngle)
     },
-    listenMapChange(){
-      this.$mapHelper.onInteractiveCallback(this.mapChange)  
+    listenMapChange() {
+      this.$mapHelper.onInteractiveCallback(this.mapChange)
     },
     //获取旋转角度值
     changeAngle(angle) {
-      document.getElementsByClassName("tool-compass")[0].style.transform = "rotate(" + -angle + "deg)"
+      document.getElementsByClassName("tool-compass")[0].style.transform =
+        "rotate(" + -angle + "deg)"
       if (angle != 0) {
         this.toolCompassVisible = true
       } else if (angle == 0) {
@@ -257,9 +280,9 @@ export default {
       }
     },
     //监听地图改变
-    mapChange(){
-      if(this.layerControlShow){
-        this.$store.commit('SET_LAYER_CONTROL_SHOW', false)
+    mapChange() {
+      if (this.layerControlShow) {
+        this.$store.commit("SET_LAYER_CONTROL_SHOW", false)
       }
       this.layerToolVisible = false
       this.areaBoxIsShow = false
@@ -267,97 +290,102 @@ export default {
     resetNorth() {
       d2cMap.resetNorth()
     },
-    ...mapActions([
-      'setReportFormShow',
-      'setAreaReportFormShow',
-    ]),
+    ...mapActions(["setReportFormShow", "setAreaReportFormShow"]),
     showUserCenter() {
       this.showCenter = true
     },
     closeUserCenter() {
-      this.showCenter = false
+      this.showCenter = false;
     },
-    isInArray(element, array) { // 根据用户权限控制工具的显示
+    isInArray(element, array) {
+      // 根据用户权限控制工具的显示
       if (!array) {
         return false
       }
-      return array.indexOf(element) != -1 
+      return array.indexOf(element) != -1
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 .circle {
-    position: absolute;
-    top: 5px;
-    right: 0;
-    display: block;
-    width: 16px;
-    height: 16px;
-    border-radius: 100%;
-    background-color: red;
-    color: #fff;
-    font-size: 12px;
-    line-height: 16px;
+  position: absolute;
+  top: 5px;
+  right: 0;
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  background-color: red;
+  color: #fff;
+  font-size: 12px;
+  line-height: 16px;
 }
 .tool {
-    width: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  .tool-top, .tool-bottom {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-end;
-    .tool-box {
-      position: relative;
+  }
+  .tool-box {
+    position: relative;
+  }
+  .tool-item {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    img {
+      margin: 0 auto;
+      display: block;
+      width: 60px;
+      height: 60px;
     }
-    .tool-item {
-        display: inline-block;
-        width: 60px;
-        height: 60px;
+  }
+  .tool-compass {
+    width: 100px;
+    height: 100px;
+    background: url("../../../assets/images/map/Compass@2x.png") no-repeat
+      center;
+    background-size: 100%;
+    position: absolute;
+    top: 10px;
+    right: 60px;
+  }
+
+  .layer-tool-box {
+    display: flex;
+    flex-direction: column;
+    min-width: 310px;
+    background-color: #fff;
+    position: absolute;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    top: 0;
+    right: 70px;
+    .layer-tool-content {
+      display: flex;
+      border-bottom: 1px solid #e4e7ed;
+      .layer-tool-item {
+        margin: 10px;
         cursor: pointer;
         img {
-            margin: 0 auto;
-            display: block;
-            width: 60px;
-            height: 60px;
+          display: block;
         }
+      }
     }
-    .tool-compass {
-        width: 100px;
-        height: 100px;
-        background: url("../../../assets/images/map/Compass@2x.png") no-repeat center;
-        background-size: 100%;
-        position: absolute;
-        top: 10px;
-        right: 60px;
-    }
-
-    .layer-tool-box {
-        display: flex;
-        flex-direction: column;
-        min-width: 310px;
-        background-color: #fff;
-        position: absolute;
-        border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
-        top: 0;
-        right: 70px;
-        .layer-tool-content {
-            display: flex;
-            border-bottom: 1px solid #e4e7ed;
-            .layer-tool-item {
-                margin: 10px;
-                cursor: pointer;
-                img {
-                    display: block;
-                }
-            }
-        }
-    }
-    .area-box {
-        width: 310px;
-        position: absolute;
-        top: 65px;
-        right: 70px;
-    }
+  }
+  .area-box {
+    width: 310px;
+    position: absolute;
+    top: 65px;
+    right: 70px;
+    z-index: 999;
+  }
 }
 </style>

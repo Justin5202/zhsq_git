@@ -5,7 +5,9 @@
       <p @click="checkMorePic()">查看图片</p>
     </div>
     <div v-if="mapguid && areacode">
-      <img :src="thumb2" alt="" @click="goToPage()">
+      <a :href="result.path" target="_blank">
+        <img :src="thumb2" alt="">
+      </a>
       <p @click="checkDetail()">查看详情 ></p>
     </div>
   </div>
@@ -55,12 +57,6 @@ export default {
     checkMorePic() {
       this.$router.push({
         path: `/carousel/${this.mapguid}`
-      })
-    },
-    goToPage() {
-      getProvertyInfo(this.areacode, this.mapguid).then(res => {
-        this.path = res.data.path
-        window.open(this.path)
       })
     },
     checkDetail() {

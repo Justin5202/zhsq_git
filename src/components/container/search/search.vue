@@ -122,8 +122,8 @@ export default {
         { name: "区县", code: "501002" }
       ],
       activeIndex: 0,
-      secAreaIndex: "",
-      thirdAreaIndex: "",
+      secAreaIndex: -1,
+      thirdAreaIndex: -1,
       showSelectBox: false,
       showSubmenu: false, // 是否显示二级菜单
       showSubmenuMore: false, // 是否显示二级菜单“更多...”
@@ -228,13 +228,16 @@ export default {
             areaname: name,
             parentid: parentId
           };
+          this.secAreaIndex = -1
           this.setAreaInfo({ areainfo: areaInfo, isRemoveAll: false });
         } else if (this.clickCount == 2) {
           getSelect(id).then(res => {
             if (level === "third") {
               this.secAreaIndex = index;
+              this.thirdAreaIndex = -1
               this.subAreaData1 = res.data.slice(0, 8);
-              this.subAreaData2 = res.data.slice(8);
+              this.subAreaData2 = res.data.slice(8)
+              this.showFourthLevelMenu = false
               this.showThreeLevelMenu = true;
               this.showSubmenuMore = false;
               this.showThreeLevelMenuMore = false;
@@ -257,7 +260,6 @@ export default {
     },
     handleSubArea(id, name, parentid, index, level) {
       // 三级菜单点击时触发的事件
-
       this.areaClickEvent(id, name, parentid, index, level);
     },
     showSubMore() {

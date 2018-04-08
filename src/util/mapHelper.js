@@ -290,7 +290,7 @@ const _onClick = function (e) {
                             default:
                                 setPopupToMap([
                                     e.lngLat.lng, e.lngLat.lat
-                                ], feature.properties.mapguid,null);
+                                ], feature.properties.mapguid, null);
                                 break;
                         }
                         break;
@@ -299,7 +299,7 @@ const _onClick = function (e) {
                         // 普通POI
                         setPopupToMap([
                             e.lngLat.lng, e.lngLat.lat
-                        ], feature.properties.mapguid,null);
+                        ], feature.properties.mapguid, null);
                         break;
                 }
 
@@ -898,42 +898,47 @@ const _containRelationshipCallback = function () {
  */
 const _setMBVisibility = function () {
 
-    let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", "visibility");
-    let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
-    let imgHQ_visibility = map.getLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
-    if (codeArray.length > 0) {
-        switch (mapFlay) {
-            case "dt":
-                if (visibility != "visible") {
-                    map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'visible');
-                }
-                break;
-            case "img":
-                if (img_visibility != "visible") {
-                    map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'visible');
-                }
-                break;
-            case "imgHQ":
-                if (imgHQ_visibility != "visible") {
-                    map.setLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'visible');
-                }
-                break;
+    try {
+        let visibility = map.getLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", "visibility");
+        let img_visibility = map.getLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
+        let imgHQ_visibility = map.getLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", "visibility");
+        if (codeArray.length > 0) {
+            switch (mapFlay) {
+                case "dt":
+                    if (visibility != "visible") {
+                        map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'visible');
+                    }
+                    break;
+                case "img":
+                    if (img_visibility != "visible") {
+                        map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'visible');
+                    }
+                    break;
+                case "imgHQ":
+                    if (imgHQ_visibility != "visible") {
+                        map.setLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'visible');
+                    }
+                    break;
 
-            default:
-                break;
-        }
+                default:
+                    break;
+            }
 
-    } else {
-        if (visibility != "none") {
-            map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'none');
+        } else {
+            if (visibility != "none") {
+                map.setLayoutProperty("dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'none');
+            }
+            if (img_visibility != "none") {
+                map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'none');
+            }
+            if (imgHQ_visibility != "none") {
+                map.setLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'none');
+            }
         }
-        if (img_visibility != "none") {
-            map.setLayoutProperty("img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'none');
-        }
-        if (imgHQ_visibility != "none") {
-            map.setLayoutProperty("HQ_img_dbsj_xzqhhgldy_qy_py_mb", 'visibility', 'none');
-        }
+    } catch (error) {
+        console.log("地图尚未加载完成，导致蒙版无法控制");
     }
+
 }
 
 /**

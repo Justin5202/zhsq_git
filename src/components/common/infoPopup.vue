@@ -110,9 +110,9 @@ export default {
         })
       } else {
         let info = data._source
-        let reg1 = RegExp(/市政府驻地\?政府机关/)
-        let reg2 = RegExp(/区县驻地\?政府机关/)
-        let reg3 = RegExp(/乡镇|街|驻地/)
+        let reg1 = RegExp(/市政府驻地\?政府机关$/)
+        let reg2 = RegExp(/区县驻地\?政府机关$/)
+        let reg3 = RegExp(/乡镇\(街\)驻地$/)
         let reg4 = RegExp(/社区村驻地/)
         let code = ""
         if (reg1.exec(info.ztmc)) {

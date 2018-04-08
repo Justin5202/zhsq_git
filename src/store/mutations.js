@@ -54,27 +54,6 @@ const mutations = {
         } else {
             state.areaInfoList.push(list)
         }
-        state.activeAreaInfoList.map(v => {
-            state.areaInfoList.map(h => {
-                if(h.id === v.id) {
-                    h.isActive = true
-                }
-                if(h.children && h.children.length > 0) {
-                    h.children.map(n => {
-                        if(n.id === v.id) {
-                            n.isActive = true
-                        }
-                        if(n.children && n.children.length > 0) {
-                            n.children.map(f => {
-                                if(f.id === v.id) {
-                                    f.isActive = true
-                                }
-                            })
-                        }
-                    })
-                }
-            })
-        })
     },
     [TYPE.MODIFY_AREA_INFO_LIST](state, item) {
         let temp = []
@@ -87,25 +66,27 @@ const mutations = {
                 }
             })
         }
-        let list = state.areaInfoList.length > 0 ? state.areaInfoList[0] : state.areaInfoList
+        let list = state.areaInfoList
         let search = state.searchList
         temp.map(n => {
-            if (list.id === n.id) {
-                list.isActive = n.isActive
-            }
-            if (list.children && list.children.length > 0) {
-                list.children.map(v => {
-                    if (v.id === n.id) {
-                        v.isActive = n.isActive
-                    } else if (v.children.length > 0) {
-                        v.children.map(i => {
-                            if (i.id === n.id) {
-                                i.isActive = n.isActive
-                            }
-                        })
-                    }
-                })
-            }
+            list.map(f => {
+                if (f.id === n.id) {
+                    f.isActive = n.isActive
+                }
+                if (f.children && f.children.length > 0) {
+                    f.children.map(v => {
+                        if (v.id === n.id) {
+                            v.isActive = n.isActive
+                        } else if (v.children.length > 0) {
+                            v.children.map(i => {
+                                if (i.id === n.id) {
+                                    i.isActive = n.isActive
+                                }
+                            })
+                        }
+                    })
+                }
+            })
             search.map(v => {
                 if (v.macro) {
                     if (v.macro.dataId === n.id) {

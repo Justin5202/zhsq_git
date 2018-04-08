@@ -118,3 +118,9 @@ export function logout() {
     return Promise.resolve(res.data)
   })
 }
+
+export function getContact() { // 获取公司信息
+  return axios.get(`${url}?method=getCompanyInfo`).then(res => {
+    return Promise.resolve(res.data)
+  })
+}

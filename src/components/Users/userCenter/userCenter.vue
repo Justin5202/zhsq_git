@@ -25,7 +25,7 @@
           <div class="container">
             <v-my-message :data="datalist" v-if="currentIndex === 0"/>
             <v-feedback v-else-if="currentIndex === 1"/>
-            <v-contact v-else-if="currentIndex === 2"/>
+            <v-contact v-else-if="currentIndex === 2" :companyInfo = "info"/>
           </div>
         </div>
       </transition>
@@ -38,7 +38,7 @@ import vFeedback from '@/components/users/userCenter/children/feedback'
 import vContact from '@/components/users/userCenter/children/contact'
 import {fetchData} from '../../../api/user'
 import { Message,MessageBox } from 'element-ui'
-import { logout } from '../../../api/user'
+import { logout, getContact } from '../../../api/user'
 export default {
   name: 'user-center',
   data() {
@@ -53,7 +53,11 @@ export default {
       currentIndex: '',
       showPanel: false,
       datalist: [],
-      username: ''
+      username: '',
+      info: {
+        phone: '',
+        email: ''
+      }
     }
   },
   components: {
@@ -69,6 +73,9 @@ export default {
       }
       if (index === 0) {
         this._fetchData()
+      }
+      if (index === 2) {
+        this._getContact()
       }
       this.showPanel = true
       this.currentIndex = index
@@ -91,6 +98,12 @@ export default {
       this.$alert('缓存清除成功', '清除缓存', {
         confirmButtonText: '确定'}
       )
+    },
+    _getContact() {
+      getContact().then(res => {
+        this.info.phone = res.data[0].paramvalue
+        this.info.email = res.data[1].paramvalue
+      })
     },
     _logout() {
       this.$confirm('退出登录，是否继续？','提示', {

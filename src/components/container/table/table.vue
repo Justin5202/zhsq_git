@@ -55,7 +55,6 @@
 
 <style lang="scss" scoped>
 	.table {
-		max-height: 588px;
 		overflow: hidden;
 		border-radius: 4px;
 		.table-header {
@@ -92,7 +91,7 @@
 		.group {
 			padding: 0;
 			margin: 0;
-			height: 680px;
+			height: 500px;
 			overflow-y: scroll;
 			.list-group {
 				list-style: none;

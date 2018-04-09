@@ -1382,6 +1382,18 @@ const flyByPointAndZoom = function (center, zoom) {
 }
 
 /**
+ * @function 设置小标注点(单点)的图标通过layerid
+ * @param layerId,icon
+ * @returns null
+ */
+const setMarkIconByLayerID = function(layerId,icon){
+    if (map.getLayer(layerId)) {
+        map.setLayoutProperty(layerId, 'icon-image', icon);
+    }
+
+};
+
+/**
  * @function 设置小标注点(单点)
  * @param layerId,geoPoint,_mapguid,text,textSize,icon,iconSize,minzoom,maxzoom
  * @returns null
@@ -1706,6 +1718,7 @@ export default {
 
     setMarkToMap,
     setMarksToMap,
+    setMarkIconByLayerID,
     setPopupToMap,
     closePopup,
     setPicPopupToMap,

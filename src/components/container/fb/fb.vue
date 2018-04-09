@@ -91,205 +91,214 @@
 </template>
 
 <script>
-  import {getNextProvertyData, getRightProvertyData} from '@/api/dataSheets'
-	import {mapGetters, mapActions} from 'vuex'
+import { getNextProvertyData, getRightProvertyData } from '@/api/dataSheets'
+import { mapGetters, mapActions } from 'vuex'
 
-	export default {
-		name: 'tabPane',
-		data() {
-			return {
-        nowIndex: 0,
-				areaIndex: -1,
-				nextListIndex: '',
-				page: 1,
-        nextList: [],
-				areaList: [],
-				rightShow: false,
-				fbHeight:window.innerHeight*0.5 + 'px'
+export default {
+	name: 'tabPane',
+	data() {
+		return {
+			nowIndex: 0,
+			areaIndex: -1,
+			nextListIndex: '',
+			page: 1,
+			nextList: [],
+			areaList: [],
+			rightShow: false,
+			fbHeight: window.innerHeight * 0.5 + 'px'
+		}
+	},
+	computed: {
+		...mapGetters([
+			'topicList',
+		])
+	},
+	methods: {
+		getProvertyType(index, isPage) {
+			this.nowIndex = index
+			let type = isPage || false
+			if (!type) {
+				this.page = 1
+			}
+			if (index == 0) {
+				this.rightShow = false
+				this.nextList = []
+				this.areaList = []
+				let type = 'fp'
+				let start = this.page * 10 - 10
+				this.getProvertyData({ 'type': type, 'start': start })
+			} else {
+				this.rightShow = true
+				this.nextList = []
+				this.areaIndex = -1
+				let start = this.page * 10 - 10
+				this._getRightProvertyData(start)
 			}
 		},
-		computed: {
-			...mapGetters([
-				'topicList',
-			])
+		flyToPoint(item, index) {
+			this.nextListIndex = index
+			this.$mapHelper.flyByPointAndZoom(JSON.parse(item.geopoint), 12)
 		},
-		methods: {
-			getProvertyType(index, isPage) {
-				this.nowIndex = index
-				let type = isPage || false
-				if(!type) {
-					this.page = 1
-				}
-				if(index ==0) {
-					this.rightShow = false
-					this.nextList = []
-					this.areaList= []
-					let type = 'fp'
-					let start = this.page * 10 - 10
-					this.getProvertyData({'type': type, 'start': start})
-				} else {
-					this.rightShow = true
-					this.nextList = []
-					this.areaIndex = -1
-					let start = this.page * 10 - 10
-					this._getRightProvertyData(start)
-				}
-			},
-			flyToPoint(item, index) {
-				this.nextListIndex = index
-				this.$mapHelper.flyByPointAndZoom(JSON.parse(item.geopoint), 12)
-			},
-			getNextData(code) {
-        getNextProvertyData(code).then(res => {
-          this.nextList = res.data.data
-        })
-			},
-			showAreaInMap(item, index) {
-				this.areaIndex = index
-				this.addProvertyAreaLayer(item)
-			},
-			next() {
-				this.page += 1
-				this.getProvertyType(this.nowIndex, true)
-			},
-			prev() {
-				if(this.page === 1) {
-					return
-				}
-				this.page -= 1
-				this.getProvertyType(this.nowIndex, true)
-			},
-			_getRightProvertyData(start) {
-				getRightProvertyData(start).then(res => {
-					this.areaList = res.data
+		getNextData(code) {
+			getNextProvertyData(code).then(res => {
+				this.nextList = res.data.data
+			})
+		},
+		showAreaInMap(item, index) {
+			this.areaIndex = index
+			this.addProvertyAreaLayer(item)
+		},
+		next() {
+			this.page += 1
+			this.getProvertyType(this.nowIndex, true)
+		},
+		prev() {
+			if (this.page === 1) {
+				this.$notify({
+					title: '警告',
+					message: '当前已经在第一页',
+					type: 'warning',
+					position: 'top-left'
 				})
-			},
-			//获取详情
-			getTopicDetails(item){
-				this.setReportFormShow(false)
-				this.setAreaReportFormShow({isShow:true,areaInfo:item,type:3})
-			},
-			...mapActions([
-				'addProvertyAreaLayer'
-			]),
-			...mapActions([
+				return
+			}
+			this.page -= 1
+			this.getProvertyType(this.nowIndex, true)
+		},
+		_getRightProvertyData(start) {
+			getRightProvertyData(start).then(res => {
+				this.areaList = res.data
+			})
+		},
+		//获取详情
+		getTopicDetails(item) {
+			this.setReportFormShow(false)
+			this.setAreaReportFormShow({ isShow: true, areaInfo: item, type: 3 })
+		},
+		...mapActions([
+			'addProvertyAreaLayer'
+		]),
+		...mapActions([
 			'setReportFormShow',
 			'setAreaReportFormShow',
 			'getProvertyData'
-    ]),
-		}
+		]),
 	}
+}
 </script>
 
 <style lang="scss" scoped>
-
-		.fp-pane-content {
-			margin-top: -10px;
-			.fp-type-button {
+.fp-pane-content {
+  margin-top: -10px;
+  .fp-type-button {
+    display: flex;
+    .type-button {
+      flex: 1;
+      line-height: 30px;
+      font-size: 12px;
+      cursor: pointer;
+      background: #fff;
+      border: 1px solid #dcdfe6;
+      border-color: #dcdfe6;
+      color: #606266;
+      box-sizing: border-box;
+    }
+    .clicked {
+      color: #fff;
+      background-color: #909399;
+      border-color: #909399;
+    }
+  }
+  ul {
+    margin: 0;
+    overflow-y: auto;
+    .search-pane-li {
+      list-style: none;
+      border-bottom: 1px solid #dcdfe6;
+      .search-pane-box {
         display: flex;
-				.type-button {
-          flex: 1;
-          line-height: 30px;
-					font-size: 12px;
-					cursor: pointer;
-			    background: #fff;
-			    border: 1px solid #dcdfe6;
-			    border-color: #dcdfe6;
-					color: #606266;
-          box-sizing: border-box;
-				}
-				.clicked {
-					color: #fff;
-			    background-color: #909399;
-			    border-color: #909399;
-				}
-			}
-			ul {
-				margin: 0;
-				overflow-y: auto;
-				.search-pane-li {
-					list-style: none;
-					border-bottom: 1px solid #dcdfe6;
-					.search-pane-box {
-						display: flex;
-						justify-content: space-around;
-						padding: 10px;
-						.icon-box {
-							-webkit-box-flex: 0;
-					    -ms-flex: 0 0 20px;
-					    flex: 0 0 20px;
-					    padding-right: 10px;
-							background: none !important;
-							i {
-								display: block;
-								width: 20px;
-								height: 20px;
-							}
-							.fp-icon {
-								background: url('../../../assets/images/catalog/fp@2x.png') no-repeat;
-								background-size: 100%;
-							}
-						}
-					}
-					.active {
-						background-color: #dcdfe6;
-					}
-					.area-pane-box {
-						padding-bottom: 20px;
-					}
-					.area-content {
-						display: flex;
-						flex: 3;
-						flex-direction: column;
-						text-align: left;
-						h2 {
-							margin: 0;
-							font-size: 14px;
-						}
-						p {
-							margin: 0;
-							margin-top: 5px;
-							font-size: 12px;
-							color: #888;
-						}
-					}
-					.detail {
-						flex: 1;
-						display: flex;
-					  flex-direction: column;
-					  align-items: center;
-						cursor: pointer;
-						.detail-icon {
-							margin-top: 10px;
-							display: block;
-							width: 20px;
-							height: 20px;
-							background: url('../../../assets/images/catalog/数据详情@2x.png') no-repeat;
-							background-size: 100%;
-						}
-						span {
-							font-size: 12px;
-							color: #20be8c;
-						}
-					}
-				}
-				.active {
-					background-color: #dcdfe6;
-				}
-			}
-		}
-		.up-control {
-			.control-icon {
-				margin: 0 auto;
-				display: block;
-				width: 60px;
-				height: 30px;
-				background:transparent url('../../../assets/images/catalog/catalog_close@2x.png') no-repeat;
-				background-size: 100%;
-			}
-			.down {
-				background:transparent url('../../../assets/images/catalog/catalog_expand@2x.png') no-repeat;
-				background-size: 100%;
-			}
-		}
+        justify-content: space-around;
+        padding: 10px;
+        .icon-box {
+          -webkit-box-flex: 0;
+          -ms-flex: 0 0 20px;
+          flex: 0 0 20px;
+          padding-right: 10px;
+          background: none !important;
+          i {
+            display: block;
+            width: 20px;
+            height: 20px;
+          }
+          .fp-icon {
+            background: url("../../../assets/images/catalog/fp@2x.png")
+              no-repeat;
+            background-size: 100%;
+          }
+        }
+      }
+      .active {
+        background-color: #dcdfe6;
+      }
+      .area-pane-box {
+        padding-bottom: 20px;
+      }
+      .area-content {
+        display: flex;
+        flex: 3;
+        flex-direction: column;
+        text-align: left;
+        h2 {
+          margin: 0;
+          font-size: 14px;
+        }
+        p {
+          margin: 0;
+          margin-top: 5px;
+          font-size: 12px;
+          color: #888;
+        }
+      }
+      .detail {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        .detail-icon {
+          margin-top: 10px;
+          display: block;
+          width: 20px;
+          height: 20px;
+          background: url("../../../assets/images/catalog/数据详情@2x.png")
+            no-repeat;
+          background-size: 100%;
+        }
+        span {
+          font-size: 12px;
+          color: #20be8c;
+        }
+      }
+    }
+    .active {
+      background-color: #dcdfe6;
+    }
+  }
+}
+.up-control {
+  .control-icon {
+    margin: 0 auto;
+    display: block;
+    width: 60px;
+    height: 30px;
+    background: transparent
+      url("../../../assets/images/catalog/catalog_close@2x.png") no-repeat;
+    background-size: 100%;
+  }
+  .down {
+    background: transparent
+      url("../../../assets/images/catalog/catalog_expand@2x.png") no-repeat;
+    background-size: 100%;
+  }
+}
 </style>

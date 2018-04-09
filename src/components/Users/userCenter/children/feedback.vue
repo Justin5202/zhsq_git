@@ -25,8 +25,8 @@
             <p class="time">{{item.addtime | formatDate}}</p>
           </li>
           <li class="btn-box">
-            <el-button @click="pre()">上一页</el-button>
-            <el-button @click="next()">下一页</el-button>
+            <el-button v-if="page==1&&suggestList.length < 10" @click="pre()">上一页</el-button>
+            <el-button v-if="suggestList.length < 10" @click="next()">下一页</el-button>
           </li>
         </ul>
       </div>

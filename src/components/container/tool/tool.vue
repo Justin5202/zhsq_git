@@ -60,7 +60,7 @@
 				<img src="../../../assets/images/map/定位.png" alt="">
 			</span> -->
   </div>
-  <div class="layer-tool-box" v-if="layerControlShow">
+  <div class="layer-tool-box" v-if="toolPaneShowIndex.id == 0 && toolPaneShowIndex.isShow">
     <div class="layer-tool-content">
       <div class="layer-tool-item" v-for="(item,index) in mapJsonAndImg.img">
         <img :src="'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test'+ item"  width="90" height="60" alt="" :title=mapJsonAndImg.name[index] @click="changeBaseMap(mapJsonAndImg.name[index])">
@@ -68,10 +68,10 @@
     </div>
     <layer-control></layer-control>
   </div>
-  <div class="area-box" v-show="areaBoxIsShow">
+  <div class="area-box" v-if="toolPaneShowIndex.id == 1 && toolPaneShowIndex.isShow">
     <area-control></area-control>
   </div>
-  <v-user-center v-show="showCenter" @close="closeUserCenter"></v-user-center>
+  <v-user-center v-if="toolPaneShowIndex.id == 5 && toolPaneShowIndex.isShow" @close="closeUserCenter"></v-user-center>
 </div>
 </template>
 <script>
@@ -94,14 +94,12 @@ export default {
     return {
       toolHeight: window.innerHeight * 0.8,
       is2Dmap: true,
-      areaBoxIsShow: false,
       angle: "",
       toolCompassVisible: false,
-      showCenter: false,
       IsAll: false
     }
   },
-  created: function() {
+  created: function () {
     this.listenMapRotate()
     this.listenMapChange()
   },
@@ -112,8 +110,8 @@ export default {
       "areaInfoList",
       "userinfo",
       "mapJsonAndImg",
-      "layerControlShow",
-      "searchList"
+      "searchList",
+      "toolPaneShowIndex"
     ]),
     areaListLength() {
       let len = 0
@@ -184,6 +182,17 @@ export default {
     }
   },
   methods: {
+    //显示点击的tool 
+    showClickedTool(id) {
+      let obj = {
+        id: id,
+        isShow: true
+      }
+      if (id == this.toolPaneShowIndex.id) {
+        obj.isShow = !this.toolPaneShowIndex.isShow
+      }
+      this.$store.commit("SET_TOOL_PANE_SHOW", obj)
+    },
     // 全局和局部切换
     toggleShowData() {
       this.IsAll = !this.IsAll
@@ -238,12 +247,13 @@ export default {
     },
     //打开图层切换
     openLayerTool() {
-      this.$store.commit("SET_LAYER_CONTROL_SHOW", !this.layerControlShow)
+      this.showClickedTool(0)
     },
     openReportForm() {
       if (this.reportFormLength > 0) {
         this.setReportFormShow(true)
         this.setAreaReportFormShow({ isShow: false })
+        this.showClickedTool(2)
       } else {
         const h = this.$createElement
         this.$msgbox({
@@ -260,8 +270,7 @@ export default {
       }
     },
     showAreaBox() {
-      this.layerToolVisible = false
-      this.areaBoxIsShow = !this.areaBoxIsShow
+      this.showClickedTool(1)
     },
     listenMapRotate() {
       this.$mapHelper.onRotateCallback(this.changeAngle)
@@ -281,21 +290,16 @@ export default {
     },
     //监听地图改变
     mapChange() {
-      if (this.layerControlShow) {
-        this.$store.commit("SET_LAYER_CONTROL_SHOW", false)
-      }
-      this.layerToolVisible = false
-      this.areaBoxIsShow = false
+      this.showClickedTool(-1)
     },
     resetNorth() {
       d2cMap.resetNorth()
     },
-    ...mapActions(["setReportFormShow", "setAreaReportFormShow"]),
     showUserCenter() {
-      this.showCenter = true
+      this.showClickedTool(5)
     },
     closeUserCenter() {
-      this.showCenter = false;
+      this.showClickedTool(-1)
     },
     isInArray(element, array) {
       // 根据用户权限控制工具的显示
@@ -303,7 +307,8 @@ export default {
         return false
       }
       return array.indexOf(element) != -1
-    }
+    },
+    ...mapActions(["setReportFormShow", "setAreaReportFormShow"])
   }
 }
 </script>
@@ -326,7 +331,8 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-end;
-  .tool-top, .tool-bottom {
+  .tool-top,
+  .tool-bottom {
     display: flex;
     flex-direction: column;
     justify-content: space-between;

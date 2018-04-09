@@ -295,6 +295,12 @@ export default {
     },
     next() {
       if(this.searchList.length < 10) {
+        this.$notify({
+          title: '警告',
+          message: '暂无更多数据',
+          type: 'warning',
+          position: 'top-left'
+        })
         return 
       }
       this.page += 1
@@ -304,6 +310,12 @@ export default {
     },
     prev() {
       if (this.page === 1) {
+        this.$notify({
+          title: '警告',
+          message: '当前已经在第一页',
+          type: 'warning',
+          position: 'top-left'
+        })
         return
       }
       this.page -= 1
@@ -316,9 +328,13 @@ export default {
         areacode: 500000,
         id: code
       }
+      const obj = {
+        id: -1,
+        isShow: false
+      }
       this.getAreaDetail(params)
       this.setTopicShow(false)
-      this.setLayerControlShow(false)
+      this.setLayerControlShow(obj)
     },
     isActiveItem(item, index) {
       this.searchIndex = index
@@ -365,7 +381,7 @@ export default {
     },
     ...mapMutations({
       setTopicShow: "SET_TOPIC_LIST_SHOW",
-      setLayerControlShow: 'SET_LAYER_CONTROL_SHOW'
+      setLayerControlShow: 'SET_TOOL_PANE_SHOW'
     }),
     ...mapActions([
       "setAreaList",

@@ -23,9 +23,9 @@ const mutations = {
             }
         }
         searchList.map(v => {
-            if(v.searchType === 4) {
+            if (v.searchType === 4) {
                 state.activeAreaInfoList.map(h => {
-                    if(v.macro.data.id === h.id) {
+                    if (v.macro.data.id === h.id) {
                         v.isActive = true
                     }
                 })
@@ -69,18 +69,21 @@ const mutations = {
         let list = state.areaInfoList
         let search = state.searchList
         temp.map(n => {
-            list.map(f => {
+            list.map((f, index) => {
                 if (f.id === n.id) {
                     f.isActive = n.isActive
+                    list.splice(index, 1, f)
                 }
                 if (f.children && f.children.length > 0) {
-                    f.children.map(v => {
+                    f.children.map((v, index) => {
                         if (v.id === n.id) {
                             v.isActive = n.isActive
-                        } else if (v.children.length > 0) {
-                            v.children.map(i => {
+                            f.children.splice(index, 1, v)
+                        } else if (v.children && v.children.length > 0) {
+                            v.children.map((i, index) => {
                                 if (i.id === n.id) {
                                     i.isActive = n.isActive
+                                    v.children.splice(index, 1, i)
                                 }
                             })
                         }
@@ -141,7 +144,7 @@ const mutations = {
                 state.transparencyArray.splice(index, 1)
             }
             let checkedIndex = state.checkedList.findIndex(v => v == item.id)
-            if(checkedIndex < 0) {
+            if (checkedIndex < 0) {
                 state.checkedList.push(item.id)
             } else {
                 state.checkedList.splice(checkedIndex, 1)
@@ -160,18 +163,26 @@ const mutations = {
     },
     [TYPE.SET_CHECKED_LIST](state, list) {
         // 空数组即为全选，非空删除未选中图层
-        if(state.checkedList.length === 0) {
+        if (state.checkedList.length === 0) {
             list.map(v => state.checkedList.push(v))
         } else {
-            let lessArray = state.checkedList.filter(v => !list.includes(v))
-            if(lessArray.length === 0) {
+            let lessArray
+            if (state.checkedList.length < list.length) {
+                lessArray = list.filter(v => !state.checkedList.includes(v))
+            } else {
+                lessArray = state.checkedList.filter(v => !list.includes(v))
+            }
+            console.log(lessArray)
+            if (lessArray.length === 0) {
                 state.checkedList = [].concat(state.layerIdList)
                 return
             }
             lessArray.map(v => {
                 let index = state.checkedList.findIndex(i => i == v)
-                if(index >= 0) {
+                if (index >= 0) {
                     state.checkedList.splice(index, 1)
+                } else {
+                    state.checkedList.push(v)
                 }
             })
         }
@@ -207,14 +218,19 @@ const mutations = {
                 mapHelper.removeLayerById(areainfo.areacode.toString())
                 mapHelper.closePopup()
             } else {
-                state.areaList.push(areainfo)
-                var i = state.areaList.length
-                while (i--) {
-                    if (state.areaList[i].areacode.length !== areainfo.areacode.length) {
-                        // 发现父级，清除父级行政区划
-                        mapHelper.removeLayerById(state.areaList[i].areacode.toString())
-                        // 存在父级区域，删除父级区域
-                        state.areaList.splice(i, 1)
+                if (areainfo.areacode == 500000) {
+                    state.areaList = []
+                    state.areaList.push(areainfo)
+                } else {
+                    state.areaList.push(areainfo)
+                    var i = state.areaList.length
+                    while (i--) {
+                        if (state.areaList[i].areacode.length !== areainfo.areacode.length) {
+                            // 发现父级，清除父级行政区划
+                            mapHelper.removeLayerById(state.areaList[i].areacode.toString())
+                            // 存在父级区域，删除父级区域
+                            state.areaList.splice(i, 1)
+                        }
                     }
                 }
                 /*画行政区划线*/
@@ -223,12 +239,12 @@ const mutations = {
                     // 加载自身
                     mapHelper.addLayerByIdAndGeojson(state.areaDetailInfo.areacode.toString(), state.areaDetailInfo
                         .geojson)
-                    if(state.areaDetailInfo.areacode.length > 6) {
+                    if (state.areaDetailInfo.areacode.length > 6) {
                         mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 12)
                     } else {
                         mapHelper.flyByPointAndZoom(state.areaDetailInfo.geopoint, 10)
                     }
-                    if(!type) {
+                    if (!type) {
                         mapHelper.setPopupToMap(state.areaDetailInfo.geopoint, state.areaDetailInfo.mapguid, true)
                     }
                 }
@@ -252,15 +268,15 @@ const mutations = {
         let array = ["500112", "500109", "500113", "500106", "500105", "500108", "500103", "500107", "500104"]
         let areaTemp = []
         state.areaList.map(v => {
-            if(v.areacode == 500002) {
+            if (v.areacode == 500002) {
                 areaTemp = areaTemp.concat(array)
-            } else if(v.areacode !== 500000){
+            } else if (v.areacode !== 500000) {
                 temp.push(v.areacode)
             }
         })
         state.areaCodeList = temp.concat(areaTemp)
         /*图层过滤*/
-        if(isRemoveAll) {
+        if (isRemoveAll) {
             mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, [])
         } else {
             mapHelper.setFilterByCodeArrayAndAreacodeArray(state.layerIdList, state.areaCodeList)
@@ -320,11 +336,11 @@ const mutations = {
     [TYPE.SET_URL_PATH](state, url) {
         state.urlpath = url
     },
-    [TYPE.SET_LAYER_CONTROL_SHOW](state, flag) {
-        state.layerControlShow = flag
-    },
     [TYPE.SET_DRAW_PANEL_TYPE](state, type) {
         state.drawPanelType = type
+    },
+    [TYPE.SET_TOOL_PANE_SHOW](state, obj) {
+        state.toolPaneShowIndex = obj
     }
 }
 

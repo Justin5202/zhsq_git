@@ -19,6 +19,6 @@
   export const mapJsonAndImg = state => state.mapJsonAndImg
   export const layerIdList = state => state.layerIdList
   export const urlpath = state => state.urlpath
-  export const layerControlShow = state => state.layerControlShow
   export const drawPanelType = state => state.drawPanelType
   export const checkedList = state => state.checkedList
+  export const toolPaneShowIndex = state => state.toolPaneShowIndex

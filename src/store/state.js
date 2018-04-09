@@ -1,11 +1,6 @@
 const state = {
-    sourceLoading: false,
-    styleLoading: false,
-    mapSource: null,
     checkedRows: [],
     activeSource: [],
-    mapStyles: {},
-    mainMap: null,
     searchPaneShow: false,
     tableMenuPaneShow: true,
     areaInfo: {
@@ -48,11 +43,14 @@ const state = {
     //报表类型（1.统计数据,2.文本数据）
     reportFormtype: '',
     urlpath: '',
-    layerControlShow: false,
     checkedList: [],
     transparencyArray: [],
     //绘制面板type,1.量算面板,2.统计面板
-    drawPanelType: ''
+    drawPanelType: '',
+    toolPaneShowIndex: {
+        id: -1,
+        isShow: false
+    }
 }
 
 export default state

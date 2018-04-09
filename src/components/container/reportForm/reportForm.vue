@@ -128,7 +128,7 @@ export default {
     };
   },
   watch: {
-    areaList: function(val) {
+    areaList (val) {
       this.setFunByReportFormType();
       this.activeTab = 0;
     }
@@ -147,22 +147,22 @@ export default {
     //关闭模态框
     colseDialog() {
       this.setReportFormShow(false);
-      this.setAreaReportFormShow({isShow:false});
+      this.setAreaReportFormShow({ isShow: false });
       this.activeTab = 0;
       this.activeContent = 0;
       this.tabContext = this.reportFormData.data[0];
     },
-    clearItem(index,item) {
-      for(var i in this.areaCodeAndDataId[2]){
-        if(this.areaCodeAndDataId[2][i].id){
-          if(item.id == this.areaCodeAndDataId[2][i].id){
+    clearItem(index, item) {
+      for (var i in this.areaCodeAndDataId[2]) {
+        if (this.areaCodeAndDataId[2][i].id) {
+          if (item.id == this.areaCodeAndDataId[2][i].id) {
             this.areaCodeAndDataId[2][i].clickType = ''
-            this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
+            this.setAreaList({ 'param': this.areaCodeAndDataId[2][i], 'type': 'report' })
           }
-        }else if(this.areaCodeAndDataId[2][i].macro.dataId){
-          if(item.id == this.areaCodeAndDataId[2][i].macro.dataId){
+        } else if (this.areaCodeAndDataId[2][i].macro.dataId) {
+          if (item.id == this.areaCodeAndDataId[2][i].macro.dataId) {
             this.areaCodeAndDataId[2][i].clickType = ''
-            this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
+            this.setAreaList({ 'param': this.areaCodeAndDataId[2][i], 'type': 'report' })
           }
         }
       }

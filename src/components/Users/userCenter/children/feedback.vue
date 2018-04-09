@@ -117,11 +117,10 @@
       _getSuggestList() {
         let start = (this.page - 1) * 10
         getSuggestList(start).then(res => {
-          console.log(res)
           this.suggestList = res.data.data.data
           const total = res.data.data.totalRecord
           if (this.page === 1) {
-            this.showPre = false;
+            this.showPre = false
           } else {
             this.showPre = true
           }

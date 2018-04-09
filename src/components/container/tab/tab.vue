@@ -1,7 +1,12 @@
 <template>
 	<div class="tab">
 		<ul>
-			<li class="tab-li" v-for="(item, index) in tabs" :class="{active: nowIndex === index}" @click="handleTabs(index)">
+			<li 
+				class="tab-li" 
+				v-for="(item, index) in tabs" 
+				:class="{active: nowIndex === index}"
+				@click="handleTabs(index)"
+			>
 				<div class="tab-box">
 					<img class="tab-item-img" :src="item.icon" alt="">
 					<p class="tab-title">{{item.title}}</p>

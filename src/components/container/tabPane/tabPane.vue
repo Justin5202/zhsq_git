@@ -223,7 +223,7 @@ export default {
     }
   },
   watch: {
-    arrayData() {
+    arrayData(newV, oldV) {
       this.upOrDown = true
     }
   },
@@ -354,7 +354,7 @@ export default {
       this.setAreaList({'param': item})
     },
     toggleSlide() {
-      this.upOrDown = !this.upOrDown;
+      this.upOrDown = !this.upOrDown
     },
     //点击详情按钮
     getDetails(item) {

@@ -116,7 +116,7 @@ export default {
     areaListLength() {
       let len = 0
       this.areaList.map(v => {
-        if (v.areacode !== 500000) {
+        if (v.areacode != 500000) {
           len += 1
         }
       })

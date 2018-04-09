@@ -63,7 +63,9 @@
         adminContent: '',
         suggestList: [],
         page: 1,
-        showDialogBox: false
+        showDialogBox: false,
+        showNext: false,
+        showPre: false
       }
     },
     filters: {
@@ -116,6 +118,23 @@
         let start = (this.page - 1) * 10
         getSuggestList(start).then(res => {
           this.suggestList = res.data.data.data
+          const total = res.data.data.totalRecord
+          if (this.page === 1) {
+            this.showPre = false
+          } else {
+            this.showPre = true
+          }
+          if (total <= 10) {
+            this.showNext = false
+          } else if (total > 10 && total <= this.page * 10) {
+            this.showPre = true
+            this.showNext = false
+          } else if (total > 10 && total > this.page * 10) {
+            this.showPre = this.showNext = true
+            if (this.page === 1) {
+              this.showPre = false
+            }
+          }
         })
       },
       pre() {

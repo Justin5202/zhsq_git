@@ -219,6 +219,10 @@ const mutations = {
                 mapHelper.closePopup()
             } else {
                 if (areainfo.areacode == 500000) {
+                    /*删除全部行政区划线*/
+                    state.areaList.map(v => {
+                        mapHelper.removeLayerById(v.areacode.toString())
+                    })
                     state.areaList = []
                     state.areaList.push(areainfo)
                 } else {

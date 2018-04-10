@@ -60,9 +60,9 @@ export default {
 					dataArray.img.push(res.data[i].m_image)
 					dataArray.name.push(res.data[i].m_name)
 					var length = res.data.length
-					var name = res.data[i].m_name
-					switch(name){
-						case'矢量':
+					var order = res.data[i].m_order
+					switch(order){
+						case 1:
 						getNewMapJson(res.data[0].m_url).then(res =>{
 							sum ++ 
 							dataArray.json['dt'] = res
@@ -72,7 +72,7 @@ export default {
 							}
 						})
 						break
-						case'影像':
+						case 2:
 						getNewMapJson(res.data[1].m_url).then(res =>{
 							sum ++ 
 							dataArray.json['img'] = res
@@ -82,7 +82,7 @@ export default {
 							}
 						})
 						break
-						case'渲染':
+						case 3:
 						getNewMapJson(res.data[2].m_url).then(res =>{
 							sum ++ 
 							dataArray.json['dem'] = res
@@ -92,7 +92,7 @@ export default {
 							}
 						})
 						break
-						case'高清影像':
+						case 4:
 						getNewMapJson(res.data[3].m_url).then(res =>{
 							sum ++ 
 							dataArray.json['img_HQ'] = res

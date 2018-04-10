@@ -25,6 +25,8 @@
       <div class="right-tool">
         <v-tool/>
       </div>
+      <div class="public-mask" v-show="reportFormShow||areaReportFormShow">
+      </div>
     </div>
 </template>
 
@@ -34,7 +36,7 @@
   import vTab from './tab/tab'
   import vTopic from './topic/topic'
   import vTool from './tool/tool'
-
+  import { mapGetters} from "Vuex";
   export default {
     name: 'container',
     components: {
@@ -43,6 +45,12 @@
       vTopic,
       vTool
     },
+    computed: {
+    ...mapGetters([
+      "reportFormShow",
+      "areaReportFormShow",
+    ])
+  },
     data() {
       return {
         isShow: true
@@ -93,5 +101,13 @@
     position: absolute;
     right: 15px;
     top:30px;
+  }
+  .public-mask{
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color:rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 100%;
   }
 </style>

@@ -10,7 +10,7 @@
         clearable
       >
 			<el-button slot="prepend" @click="showBox()">{{areaInfo.areaname}}<i class="el-icon-arrow-down"></i></el-button>
-	    	<el-button slot="append" icon="el-icon-search" @click="clickSearch(selectStart, selectCode)"></el-button>
+	    	<el-button slot="append" class="search-btn" icon="el-icon-search" @click="clickSearch(selectStart, selectCode)"></el-button>
 	  	</el-input>
 			<div class="select-box" v-show="showSelectBox">
 				<span class="triangle"></span>
@@ -289,7 +289,7 @@ export default {
       this.setAreaInfo({ areainfo: areaInfo, isRemoveAll: false });
     },
     clearSearchOnMap() {
-      for (let i = 0; i < 10; i++) {
+      for (let i = -1; i < 10; i++) {
         this.$mapHelper.removeLayerById((i + 1).toString())
       }
     }
@@ -305,12 +305,15 @@ export default {
 }
 .search {
   position: relative;
-  -webkit-box-shadow: 1px 2px 1px rgba(0,0,0,.15);
-  box-shadow: 1px 2px 1px rgba(0,0,0,.15);
+  -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+  box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
 }
 .el-select .el-input {
   width: 90px;
 }
+.el-input-group__append, .el-input-group__prepend {
+  border-radius: none;
+} 
 .select-box {
   position: absolute;
   top: 50px;

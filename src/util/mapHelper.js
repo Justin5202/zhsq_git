@@ -530,17 +530,17 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
         img
             .layers
             .forEach(element => {
-                map.addLayer(element);
+                map.addLayer(element,"dbsj_xzqhhgldy_qy_py_0");
             })
         imgHQ
             .layers
             .forEach(element => {
-                map.addLayer(element);
+                map.addLayer(element,"dbsj_xzqhhgldy_qy_py_0");
             })
         dem
             .layers
             .forEach(element => {
-                map.addLayer(element);
+                map.addLayer(element,"dbsj_xzqhhgldy_qy_py_0");
             })
         /* 判断是否要 加载天地图 */
 
@@ -628,17 +628,17 @@ const initImageAndDemMap = function (img, dem, imgHQ) {
                 img
                     .layers
                     .forEach(element => {
-                        map.addLayer(element);
+                        map.addLayer(element,"dbsj_xzqhhgldy_qy_py_0");
                     })
                 imgHQ
                     .layers
                     .forEach(element => {
-                        map.addLayer(element);
+                        map.addLayer(element,"dbsj_xzqhhgldy_qy_py_0");
                     })
                 dem
                     .layers
                     .forEach(element => {
-                        map.addLayer(element);
+                        map.addLayer(element,"dbsj_xzqhhgldy_qy_py_0");
                     })
                 /* 判断是否要 加载天地图 */
                 // 缩放结束 判断当前边界是否在 重庆市域内

@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions, mapMutations} from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
   data() {
@@ -50,20 +50,23 @@ export default {
     checkedItem(newV, oldV) {
       // 获取newV少出的部分
       let lessArray = this.checkedList.filter(item => !newV.includes(item))
-      if(lessArray.length > 0) {
+      if (lessArray.length > 0) {
         lessArray.map(v => this.$mapHelper.setVisibilityByCode(v, false))
       } else {
         this.checkedList.map(v => this.$mapHelper.setVisibilityByCode(v, true))
       }
+    },
+    list(newV) {
+      this.checkedItem = newV
     }
   },
   created() {
     // 设置初始透明度100
     let len1 = this.checkedItem.length
     let len2 = this.checkedList.length
-    if(len1 === 0) {
+    if (len1 === 0) {
       this.checked = false
-    } else if(len1 < len2) {
+    } else if (len1 < len2) {
       this.isIndeterminate = false
       this.checked = false
     } else {
@@ -75,6 +78,9 @@ export default {
       'activeAreaInfoList',
       'transparencyArray'
     ]),
+    list() {
+      return this.$store.state.checkedList
+    },
     checkedList() {
       let temp = []
       let list = this.activeAreaInfoList
@@ -84,7 +90,7 @@ export default {
     falseLength() {
       let len = 0
       this.activeAreaInfoList.map(v => {
-        if(!v.isActive) {
+        if (!v.isActive) {
           len += 1
         }
       })
@@ -98,10 +104,10 @@ export default {
         value: this.transparencyList[index]
       }
       this.setTransparency(obj)
-      this.$mapHelper.setOpacityByCode(this.checkedList[index], this.transparencyList[index]/100)
+      this.$mapHelper.setOpacityByCode(this.checkedList[index], this.transparencyList[index] / 100)
     },
     handleCheckAllChange(val) {
-      if(val) {
+      if (val) {
         this.setCheckedList(this.checkedList)
       } else {
         this.setCheckedList([])
@@ -110,6 +116,7 @@ export default {
       this.isIndeterminate = false
     },
     handleCheckedItemsChange(value) {
+      console.log(this.checkedItem)
       let checkedCount = value.length
       this.checked = checkedCount === this.checkedList.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedList.length
@@ -124,7 +131,7 @@ export default {
       this.$store.commit("SET_TOOL_PANE_SHOW", obj)
     },
     removeItem(item) {
-      this.setAreaList({'param': item})
+      this.setAreaList({ 'param': item })
     },
     removeSearchItem(item) {
       this.removeSearchItem(item)
@@ -143,7 +150,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .layer-table {
   .layer-box {
     background-color: #fff;
@@ -159,7 +165,8 @@ export default {
         display: block;
         width: 40px;
         height: 40px;
-        background: url(../../../assets/images/legend/allDelLayers@2x.png) no-repeat;
+        background: url(../../../assets/images/legend/allDelLayers@2x.png)
+          no-repeat;
         background-size: 100%;
         cursor: pointer;
       }
@@ -176,45 +183,46 @@ export default {
       position: relative;
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;
-          .check-box {
-            display: flex;
-            flex-direction: column;
-            border-bottom: 1px solid #e4e7ed;
+      .check-box {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid #e4e7ed;
+      }
+      .check-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 10px;
+        .layer-check {
+          label {
+            margin-left: 5px;
+            font-size: 13px;
           }
-          .check-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-left: 10px;
-            .layer-check {
-              label {
-                margin-left: 5px;
-                font-size: 13px;
-              }
-            }
-            .cross-box {
-              .cross-icon {
-                display: block;
-                width: 40px;
-                height: 40px;
-                background: url('../../../assets/images/catalog/关闭搜索.png') no-repeat;
-                background-size: 100%;
-                cursor: pointer;
-              }
-            }
+        }
+        .cross-box {
+          .cross-icon {
+            display: block;
+            width: 40px;
+            height: 40px;
+            background: url("../../../assets/images/catalog/关闭搜索.png")
+              no-repeat;
+            background-size: 100%;
+            cursor: pointer;
           }
-          .slider-box {
-            padding: 0 20px;
-            padding-left: 10px;
-            .el-slider__button{
-              width: 10px;
-              height: 10px;
-            }
-            .el-slider__runway {
-              margin: 10px 0;
-              padding-bottom: 5px;
-            }
-          }
+        }
+      }
+      .slider-box {
+        padding: 0 20px;
+        padding-left: 10px;
+        .el-slider__button {
+          width: 10px;
+          height: 10px;
+        }
+        .el-slider__runway {
+          margin: 10px 0;
+          padding-bottom: 5px;
+        }
+      }
     }
   }
 }

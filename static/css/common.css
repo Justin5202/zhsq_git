@@ -257,3 +257,7 @@ input[type="checkbox"]:checked:after {
   top: 50%;
   transform: translate(-50%, -50%);
 }
+
+.el-input-group__append, .el-input-group__prepend {
+  border-radius: 0 !important;
+}

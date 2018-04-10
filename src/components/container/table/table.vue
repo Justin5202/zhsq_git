@@ -56,10 +56,10 @@ export default {
 <style lang="scss" scoped>
 .table {
   overflow: hidden;
-  border-radius: 4px;
+  height: 100%;
   .table-header {
-    width: 800px;
-    height: 120px;
+    width: 100%;
+    height: 13%;
     background: transparent
       url("../../../assets/images/catalog/综合市情系统.jpg") no-repeat;
     background-size: 100% 100%;
@@ -93,7 +93,7 @@ export default {
   .group {
     padding: 0;
     margin: 0;
-    height: 500px;
+    height: 87%;
     overflow-y: scroll;
     .list-group {
       list-style: none;

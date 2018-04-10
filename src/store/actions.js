@@ -477,7 +477,12 @@ export const setMeasurNum = function({ commit, state }, data) {
         commit(TYPE.SET_MEASURE_NUM, data)
     }
     // 搜周边显示隐藏
-export const setAroundSearchShow = function({ commit, state }, data) {
+export const setAroundSearchShow = function({ commit, state }, {isShow, point, mapguid}) {
+    let data = {
+        isShow: isShow,
+        point: point,
+        mapguid: mapguid
+    }
     commit(TYPE.SET_SEARCH_AROUND_SHOW, data)
 }
 

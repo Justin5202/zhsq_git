@@ -50,7 +50,8 @@ export default {
       isShow: false,
       notPoi: false,
       dataType:0,
-      title: ''
+      title: '',
+      point: ''
     };
   },
   props: {
@@ -88,7 +89,7 @@ export default {
       this.$mapHelper.closePopup()
     },
     searchAroundShow() {
-      this.setAroundSearchShow(true)
+      this.setAroundSearchShow({'isShow': true, 'point': this.point, 'mapguid': this.mapguid})
     },
     checkDataType(data) {
       this.notPoi = false
@@ -155,6 +156,7 @@ export default {
         if (res.code == "1") {
           if(res.data.data) {
             let data = JSON.parse(res.data.data)
+            this.point = data._source.geopoint
             this.checkDataType(data)
           } else {
             this.$mapHelper.closePopup()

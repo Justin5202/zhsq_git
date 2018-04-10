@@ -14,13 +14,13 @@
 			</li>
 		</ul>
 		<tab-pane :arrayData="arrayData" ref="pane"></tab-pane>
-		<div class="table-box" v-show="nowIndex === 4">
+		<div class="table-box" v-show="nowIndex === 4" :style="style">
 			<v-table :tableData="allData" @handleClick="handleClick"></v-table>
 		</div>
 		<div class="report-box">
 			<report-form></report-form>
 		</div>
-		<div class="search-around-box" v-if="searchAroundShow">
+		<div class="search-around-box" v-if="searchAroundShow.isShow" :style="style">
 			<search-around></search-around>
 		</div>
 	</div>
@@ -68,7 +68,11 @@ export default {
 			],
 			nowIndex: 0,
 			allData: [],
-			arrayData: []
+			arrayData: [],
+			style: {
+				width: window.innerWidth  - 350 - 60 + "px",
+        height: window.innerHeight - 50 + "px"
+			}
 		}
 	},
 	computed: {
@@ -78,6 +82,12 @@ export default {
 	},
 	mounted() {
 		this._getDataSheets()
+		window.onresize = () => {
+      return (() => {
+        (this.style.width = window.innerWidth  - 350 - 60 + "px"),
+        (this.style.height = window.innerHeight - 50 + "px")
+      })();
+    };
 	},
 	methods: {
 		handleTabs(index) {

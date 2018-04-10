@@ -63,7 +63,7 @@
     left: 0;
   }
   .side-top-box {
-    width: 350px;
+    width: 368px;
     position: absolute;
     top: 15px;
     left: 15px;

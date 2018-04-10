@@ -51,7 +51,8 @@
     },
     methods: {
       goback() {
-        this.setAroundSearchShow(false)
+        this.$mapHelper.setMarkToMap('0', this.$store.state.searchAroundShow.point, this.$store.state.searchAroundShow.mapguid, '', 16, 'TS_定位2', 0.6, '', '')
+        this.setAroundSearchShow({'isShow': false})
       },
       search() {
         if(this.searchContent === '') {
@@ -62,13 +63,13 @@
 					start: 0,
 					rows: 10,
 					type: 3,
-					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
+					point: `${this.$store.state.searchAroundShow.point[0]}, ${this.$store.state.searchAroundShow.point[1]}`
 				}
         this.getSearchParams({'typeParams': {}, 'params': params})
         this.searchPaneShow(true)
 				this.tablePaneShow(false)
         this.setTopicShow(false)
-        this.setAroundSearchShow(false)
+        this.goback()
       },
       getSearch(item) {
 				const params = {
@@ -76,13 +77,13 @@
 					start: 0,
 					rows: 10,
 					type: 3,
-					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
+					point: `${this.$store.state.searchAroundShow.point[0]}, ${this.$store.state.searchAroundShow.point[1]}`
 				}
         this.getSearchParams({'typeParams': {}, 'params': params})
         this.searchPaneShow(true)
 				this.tablePaneShow(false)
         this.setTopicShow(false)
-        this.setAroundSearchShow(false)
+        this.goback()
       },
       _getHotAround() {
         getHotAround().then(res => {
@@ -115,9 +116,6 @@
     color: rgb(199, 190, 190);
   }
   .search-around {
-    height: 100%;
-    width: 800px;
-    text-align: left;
     border-radius: 4px;
     .el-container {
       height: 100%;
@@ -135,6 +133,7 @@
             padding: 20px 30px;
             padding-bottom: 0;
             cursor: pointer;
+            text-align: left;
             span {
               display: inline-block;
               padding-left: 15px;
@@ -182,7 +181,7 @@
       .el-main {
         padding: 0;
         .wrap {
-          width: 800px;
+          width: 100%;
           box-sizing: border-box;
           .title {
             height: 50px;
@@ -210,7 +209,7 @@
             }
           }
           .list-box {
-            width: 94%;
+            width: 90%;
             margin: 0 auto;
             ul {
               list-style: none;
@@ -223,11 +222,11 @@
               justify-content: space-between;
               .list-item {
                 width: 49%;
-                margin-bottom: 14px;
+                margin-bottom: 16px;
                 display: flex;
                 justify-content: flex-start;
                 p {
-                  font-size: 15px;
+                  font-size: 16px;
                   width: 77px;
                   margin-right: 20px;
                 }
@@ -237,7 +236,7 @@
                   justify-content: flex-start;
                   width: 80%;
                   li {
-                    font-size: 14px;
+                    font-size: 15px;
                     cursor: pointer;
                     width: 33%;
                     text-align: left;

@@ -166,6 +166,7 @@ const mutations = {
             list.map(v => state.checkedList.push(v))
         } else {
             let lessArray
+            console.log(state.checkedList, list)
             if (state.checkedList.length < list.length) {
                 lessArray = list.filter(v => !state.checkedList.includes(v))
             } else {
@@ -313,8 +314,8 @@ const mutations = {
     [TYPE.SET_AREA_REPORT_FORM_SHOW](state, areaReportFormShow) {
         state.areaReportFormShow = areaReportFormShow
     },
-    [TYPE.SET_SEARCH_AROUND_SHOW](state, flag) {
-        state.searchAroundShow = flag
+    [TYPE.SET_SEARCH_AROUND_SHOW](state, data) {
+        state.searchAroundShow = data
     },
     [TYPE.SET_TOPIC_LIST](state, flag) {
         state.topicList = flag

@@ -62,8 +62,9 @@
   </div>
   <div class="layer-tool-box" v-if="toolPaneShowIndex.id == 0 && toolPaneShowIndex.isShow">
     <div class="layer-tool-content">
-      <div class="layer-tool-item" v-for="(item,index) in mapJsonAndImg.img">
-        <img :src="'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test'+ item"  width="90" height="60" alt="" :title=mapJsonAndImg.name[index] @click="changeBaseMap(mapJsonAndImg.name[index])">
+      <div class="layer-tool-item" v-for="(item,index) in mapJsonAndImg.img" @click="changeBaseMap(mapJsonAndImg.name[index])">
+        <img :src="'http://zhsq.digitalcq.com/cqzhsqd2c_v2_test'+ item"  width="80" height="50" alt="" >
+        <span style="font-size:13px;">{{mapJsonAndImg.name[index]}}</span>
       </div>
     </div>
     <layer-control></layer-control>

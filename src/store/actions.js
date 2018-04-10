@@ -569,8 +569,12 @@ export const setAreaReportFormShow = function ({ dispatch, commit, state }, { is
         if (type == 1) {
             dispatch('getDataFileByCodeAndId', {
                 'areaCode': state.areaList,
-                'dataId': dataId,
-                'index': index
+                'dataId': [state.areaInfoList, state.searchList]
+            })
+            dispatch('getReportData', {
+                'areaCode': state.areaCodeAndDataId[0],
+                'dataId': state.areaCodeAndDataId[1],
+                'itemList': state.areaCodeAndDataId[2]
             })
         } else if (type == 2) {
             dispatch('getReportDataByAreaCode', areaInfo)

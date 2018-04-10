@@ -151,7 +151,7 @@
 	.table-box, .report-box, .search-around-box {
 		position: absolute;
 		top: 0;
-		left: 400px;
+		left: 380px;
 		background-color: #fff;
 		border-radius: 4px;
 		z-index: 1000000;

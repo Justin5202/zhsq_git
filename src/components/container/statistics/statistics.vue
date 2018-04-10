@@ -333,13 +333,13 @@ export default {
 .statistics-draw {
   width: 180px;
   height: 50px;
-  background-color: #fff;
   display: flex;
   position: fixed;
   top: 30px;
   right: 120px;
   border-radius: 4px;
-  background-color: #8b8878;
+  background-color: #8c8c8c;
+  box-shadow: 2px 2px 2px #bebdba;
   .statistics-draw-clear {
     width: 50px;
     height: 50px;

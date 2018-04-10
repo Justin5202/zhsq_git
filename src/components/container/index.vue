@@ -25,8 +25,6 @@
       <div class="right-tool">
         <v-tool/>
       </div>
-      <div class="public-mask" v-show="reportFormShow||areaReportFormShow">
-      </div>
     </div>
 </template>
 
@@ -45,12 +43,6 @@
       vTopic,
       vTool
     },
-    computed: {
-    ...mapGetters([
-      "reportFormShow",
-      "areaReportFormShow",
-    ])
-  },
     data() {
       return {
         isShow: true
@@ -101,13 +93,5 @@
     position: absolute;
     right: 15px;
     top:30px;
-  }
-  .public-mask{
-    position: fixed;
-    left: 0;
-    top: 0;
-    background-color:rgba(0, 0, 0, 0.1);
-    width: 100%;
-    height: 100%;
   }
 </style>

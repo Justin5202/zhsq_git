@@ -20,7 +20,7 @@
 		<div class="report-box">
 			<report-form></report-form>
 		</div>
-		<div class="search-around-box" v-if="searchAroundShow">
+		<div class="search-around-box" v-if="searchAroundShow.isShow">
 			<search-around></search-around>
 		</div>
 	</div>

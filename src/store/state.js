@@ -30,7 +30,11 @@ const state = {
     measureNum: '',
     areaReportFormShow: false,
     /*searchAroundshow*/
-    searchAroundShow: false,
+    searchAroundShow: {
+        isShow: false,
+        point: '',
+        mapguid: ''
+    },
     /*专题列表*/
     topicList: {
         type: '',

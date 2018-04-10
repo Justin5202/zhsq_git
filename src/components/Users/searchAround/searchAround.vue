@@ -51,7 +51,8 @@
     },
     methods: {
       goback() {
-        this.setAroundSearchShow(false)
+        this.$mapHelper.setMarkToMap('0', this.$store.state.searchAroundShow.point, this.$store.state.searchAroundShow.mapguid, '', 16, 'TS_定位2', 0.6, '', '')
+        this.setAroundSearchShow({'isShow': false})
       },
       search() {
         if(this.searchContent === '') {
@@ -62,13 +63,13 @@
 					start: 0,
 					rows: 10,
 					type: 3,
-					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
+					point: `${this.$store.state.searchAroundShow.point[0]}, ${this.$store.state.searchAroundShow.point[1]}`
 				}
         this.getSearchParams({'typeParams': {}, 'params': params})
         this.searchPaneShow(true)
 				this.tablePaneShow(false)
         this.setTopicShow(false)
-        this.setAroundSearchShow(false)
+        this.goback()
       },
       getSearch(item) {
 				const params = {
@@ -76,13 +77,13 @@
 					start: 0,
 					rows: 10,
 					type: 3,
-					point: `${d2cMap.getCenter().lng},${d2cMap.getCenter().lat}`
+					point: `${this.$store.state.searchAroundShow.point[0]}, ${this.$store.state.searchAroundShow.point[1]}`
 				}
         this.getSearchParams({'typeParams': {}, 'params': params})
         this.searchPaneShow(true)
 				this.tablePaneShow(false)
         this.setTopicShow(false)
-        this.setAroundSearchShow(false)
+        this.goback()
       },
       _getHotAround() {
         getHotAround().then(res => {

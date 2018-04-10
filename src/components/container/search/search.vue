@@ -10,7 +10,7 @@
         clearable
       >
 			<el-button slot="prepend" @click="showBox()">{{areaInfo.areaname}}<i class="el-icon-arrow-down"></i></el-button>
-	    	<el-button slot="append" icon="el-icon-search" @click="clickSearch(selectStart, selectCode)"></el-button>
+	    	<el-button slot="append" class="search-btn" icon="el-icon-search" @click="clickSearch(selectStart, selectCode)"></el-button>
 	  	</el-input>
 			<div class="select-box" v-show="showSelectBox">
 				<span class="triangle"></span>
@@ -305,8 +305,8 @@ export default {
 }
 .search {
   position: relative;
-  -webkit-box-shadow: 1px 2px 1px rgba(0,0,0,.15);
-  box-shadow: 1px 2px 1px rgba(0,0,0,.15);
+  -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+  box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
 }
 .el-select .el-input {
   width: 90px;

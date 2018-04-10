@@ -270,8 +270,7 @@ export default {
   position: absolute;
   top: 0;
   right: 80px;
-  -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
-  box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
   .statistics-arrow {
     width: 0;
     height: 0;
@@ -339,7 +338,7 @@ export default {
   top: 30px;
   right: 120px;
   border-radius: 4px;
-  background-color: #8c8c8c;
+   background-color: #8c8c8c;
   box-shadow: 2px 2px 2px #bebdba;
   .statistics-draw-clear {
     width: 50px;

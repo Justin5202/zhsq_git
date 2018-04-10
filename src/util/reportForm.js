@@ -60,7 +60,6 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         } else {
             codeList = ',500000'
         }
-        console.log(itemList)
         AreaCodeAndDataId.push(codeList.substring(1))
         AreaCodeAndDataId.push(idList.substring(1))
         AreaCodeAndDataId.push(itemList)

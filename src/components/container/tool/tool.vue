@@ -189,6 +189,9 @@ export default {
         id: id,
         isShow: true
       }
+      if(id != 4 && id != -1){
+        this.setDrawPanelType('unCheck')
+      }
       if (id == this.toolPaneShowIndex.id) {
         obj.isShow = !this.toolPaneShowIndex.isShow
       }
@@ -309,7 +312,7 @@ export default {
       }
       return array.indexOf(element) != -1
     },
-    ...mapActions(["setReportFormShow", "setAreaReportFormShow"])
+    ...mapActions(["setReportFormShow", "setAreaReportFormShow","setDrawPanelType"])
   }
 }
 </script>

@@ -118,7 +118,6 @@ export default {
 .measure-box {
   width: 385px;
   height: 50px;
-  background-color: #fff;
   display: flex;
   position: fixed;
   top: 30px;

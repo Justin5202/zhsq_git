@@ -111,18 +111,15 @@ export default {
         },
         startDrawArea() {
             var sum = 0;
-            this.dataId = "";
             this.$mapHelper.setIsMeasure(false);
             for (var i = 0; i < this.conditionList.length; i++) {
                 if (this.conditionList[i].isActive) {
                     sum++;
-                    this.dataId += this.conditionList[i].targetId + ",";
                 }
             }
             if (sum > 0) {
-                this.dataId = this.dataId.substring(0, this.dataId.length - 1);
                 this.setDrawPanelType("statistics");
-                this.statisticsConditionShow = false;
+                this.showClickedTool(4)
                 this.$mapHelper.setIsMeasure(true);
                 d2cMap.getCanvas().style.cursor = "crosshair";
                 if (this.draw.drawPlane) {
@@ -168,6 +165,13 @@ export default {
         //获取统计数据
         statisticInfo() {
             if (this.pointNum > 3) {
+                this.dataId = ''
+                for (var i = 0; i < this.conditionList.length; i++) {
+                    if (this.conditionList[i].isActive) {
+                        this.dataId += this.conditionList[i].targetId + ",";
+                    }
+                }
+                this.dataId = this.dataId.substring(0, this.dataId.length - 1);
                 getStatisticsDetails(this.shape, this.dataId).then(res => {
                     this.statisticsList = [];
                     var dataLength = 0;
@@ -175,7 +179,7 @@ export default {
                     for (var m in res.data) {
                         dataLength += res.data[m]["listorder"].length;
                         for (var n = 0; n < res.data[m]["listorder"].length; n++) {
-                            if (res.data[m][res.data[m]["listorder"][n]]["fieldsName"]) {
+                            if (res.data[m][res.data[m]["listorder"][n]]["fieldsName"] ||parseInt(res.data[m][res.data[m]["listorder"][n]]["data"]["doc_count"])) {
                                 var title =
                                     res.data[m]["listorder"][n] +
                                     "（" +
@@ -233,7 +237,7 @@ export default {
         quitDraw() {
             this.clearDrawResult();
             this.dataId = "";
-            this.statisticsConditionShow = false;
+            this.$store.commit("SET_TOOL_PANE_SHOW", {id:4,isShow:false})
             this.setDrawPanelType("unCheck");
             this.$mapHelper.setIsMeasure(false);
             d2cMap.getCanvas().style.cursor = "";
@@ -359,8 +363,7 @@ export default {
 }
 .statistics-dailog {
   width: 390px;
-  height: 500px;
-  position: absolute;
+  position: fixed;
   top: 100px;
   right: 60px;
   background-color: #fff;
@@ -388,7 +391,7 @@ export default {
 }
 .statistics-dailog-context {
   width: 390px;
-  height: 450px;
+  max-height: 450px;
   overflow-y: auto;
   ul {
     list-style: none;

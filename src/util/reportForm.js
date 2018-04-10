@@ -60,13 +60,14 @@ export const getAreaCodeAndDataIdInJS = function(areaCode, dataId) {
         } else {
             codeList = ',500000'
         }
+        console.log(itemList)
         AreaCodeAndDataId.push(codeList.substring(1))
         AreaCodeAndDataId.push(idList.substring(1))
         AreaCodeAndDataId.push(itemList)
         return AreaCodeAndDataId
     }
     //获取报表详情
-export const getReportDataInJS = function(areaCode, dataId) {
+export const getReportDataInJS = function(areaCode, dataId, itemList) {
         var typeNum = 0; //用于保存数据类型数量
         var areaNum = 0; //用于保存不同的地区数量
         var arrayList = []
@@ -76,8 +77,12 @@ export const getReportDataInJS = function(areaCode, dataId) {
         return new Promise(function(resolve) {
             getMsMacroData(areaCode, dataId).then(res => {
                 for (let i in res.data) {
-                    if (Object.keys(res.data[i]).length == 0) {
-                        dataList.push({ 'name': '', 'id': i, 'dataByYear': [{ 'type': '暂无统计数据' }] })
+                    if (Object.keys(res.data[i]).length === 0) {
+                        for (var j = 0; j < itemList.length; j++) {
+                            if (i === itemList[j].id) {
+                                dataList.push({ 'name': itemList[j].name, 'id': i, 'dataByYear': [{ 'type': '暂无统计数据' }] })
+                            }
+                        }
                     } else {
                         typeNum++
                         areaNum = 0 //只取一次循环的数量

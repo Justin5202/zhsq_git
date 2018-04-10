@@ -139,15 +139,14 @@ const mutations = {
             if (index < 0) {
                 state.activeAreaInfoList.push(item)
                 state.transparencyArray.push(100)
+                state.checkedList.push(item.id)
             } else {
                 state.activeAreaInfoList.splice(index, 1)
                 state.transparencyArray.splice(index, 1)
-            }
-            let checkedIndex = state.checkedList.findIndex(v => v == item.id)
-            if (checkedIndex < 0) {
-                state.checkedList.push(item.id)
-            } else {
-                state.checkedList.splice(checkedIndex, 1)
+                let checkedIndex = state.checkedList.findIndex(v => v == item.id)
+                if(checkedIndex >= 0) {
+                    state.checkedList.splice(checkedIndex, 1)
+                }
             }
         }
         // 更新layerIdList
@@ -208,7 +207,7 @@ const mutations = {
                 /* 判断arealist是否为空，空的话，初始化areainfo */
                 if (state.areaList.length === 0) {
                     state.areaInfo = {
-                        areacode: 500000,
+                        areacode: '500000',
                         areaname: '重庆市',
                         parentid: ''
                     }
@@ -223,9 +222,14 @@ const mutations = {
                     state.areaList.map(v => {
                         mapHelper.removeLayerById(v.areacode.toString())
                     })
-                    state.areaList = []
+                    state.areaList = [] 
                     state.areaList.push(areainfo)
                 } else {
+                    state.areaList.map((v, index) => {
+                        if(v.areacode == 500000) {
+                            state.areaList.splice(index, 1)
+                        }
+                    })
                     state.areaList.push(areainfo)
                     var i = state.areaList.length
                     while (i--) {
@@ -261,7 +265,7 @@ const mutations = {
             mapHelper.closePopup()
             state.areaList = []
             state.areaInfo = {
-                areacode: 500000,
+                areacode: '500000',
                 areaname: '重庆市',
                 parentid: ''
             }
@@ -274,7 +278,7 @@ const mutations = {
         state.areaList.map(v => {
             if (v.areacode == 500002) {
                 areaTemp = areaTemp.concat(array)
-            } else if (v.areacode !== 500000) {
+            } else if (v.areacode != '500000') {
                 temp.push(v.areacode)
             }
         })

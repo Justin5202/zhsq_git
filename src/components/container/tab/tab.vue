@@ -68,7 +68,11 @@ export default {
 			],
 			nowIndex: 0,
 			allData: [],
-			arrayData: []
+			arrayData: [],
+			style: {
+				width: window.innerWidth  - 350 - 60 + "px",
+        height: window.innerHeight - 50 + "px"
+			}
 		}
 	},
 	computed: {
@@ -78,6 +82,12 @@ export default {
 	},
 	mounted() {
 		this._getDataSheets()
+		window.onresize = () => {
+      return (() => {
+        (this.style.width = window.innerWidth  - 350 - 60 + "px"),
+        (this.style.height = window.innerHeight - 50 + "px")
+      })();
+    };
 	},
 	methods: {
 		handleTabs(index) {

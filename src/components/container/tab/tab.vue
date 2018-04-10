@@ -93,22 +93,11 @@ export default {
 		handleClick() {
 			this.nowIndex = -1
 		},
-<<<<<<< HEAD
-		mounted() {
-			this._getDataSheets()
-			window.onresize = () => {
-				return (() => {
-					(this.style.width = window.innerWidth - 60 - 350 + "px"),
-					(this.style.height = window.innerHeight - 50 + "px")
-				})();
-			};
-=======
 		_getDataSheets() {
 			getDataSheets().then(res => {
 				this.allData = res.data
 				this.arrayData = this.allData[0].children
 			})
->>>>>>> a4dbe30bb3f29e51fda2d777e16718ec18e373a9
 		},
 		...mapActions([
 			'searchPaneShow',

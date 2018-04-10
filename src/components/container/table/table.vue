@@ -60,7 +60,7 @@ export default {
   height: 100%;
   .table-header {
     width: 100%;
-    height: 120px;
+    height: 13%;
     background: transparent
       url("../../../assets/images/catalog/综合市情系统.jpg") no-repeat;
     background-size: 100% 100%;
@@ -94,7 +94,7 @@ export default {
   .group {
     padding: 0;
     margin: 0;
-    height: 100%;
+    height: 87%;
     overflow-y: scroll;
     .list-group {
       list-style: none;

@@ -303,6 +303,14 @@ const _onClick = function (e) {
                         break;
                 }
 
+                // 判断是否mark 变蓝
+                if (feature.layer["layout"]["icon-image"] =="TS_定位1") {
+                    for (let i = 0; i < 10; i++) {
+                        setMarkIconByLayerID(i.toString(),"TS_定位1");                        
+                    }
+                    setMarkIconByLayerID(feature.layer["id"],"TS_定位2");   
+                }
+
                 // 设置高亮
                 removeHighLight();
 

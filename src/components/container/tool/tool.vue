@@ -371,10 +371,10 @@ export default {
     min-width: 310px;
     background-color: #fff;
     position: absolute;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
     top: 0;
     right: 70px;
+    -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+    box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
     .layer-tool-content {
       display: flex;
       border-bottom: 1px solid #e4e7ed;
@@ -393,6 +393,8 @@ export default {
     top: 65px;
     right: 70px;
     z-index: 999;
+    -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+    box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
   }
 }
 </style>

@@ -28,7 +28,7 @@ export default {
         ...mapGetters(["measureNum", "drawPanelType"])
     },
     watch: {
-        drawPanelType (val) {
+        drawPanelType(val) {
             if (val != "measure") {
                 this.clearMeasureResult();
             }
@@ -123,7 +123,6 @@ export default {
   position: fixed;
   top: 30px;
   right: 120px;
-  border-radius: 4px;
   background-color: #8b8878;
   .measure-num {
     width: 160px;

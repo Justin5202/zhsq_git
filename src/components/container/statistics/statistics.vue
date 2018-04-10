@@ -270,7 +270,8 @@ export default {
   position: absolute;
   top: 0;
   right: 80px;
-  border-radius: 4px;
+  -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+  box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
   .statistics-arrow {
     width: 0;
     height: 0;

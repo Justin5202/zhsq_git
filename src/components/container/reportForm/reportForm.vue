@@ -213,7 +213,6 @@ export default {
     width: 100%;
     display: flex;
     background-color: #ccc;
-    border-radius: 5px 5px 0 0;
     .report-form-title {
       width: 80%;
       text-align: left;

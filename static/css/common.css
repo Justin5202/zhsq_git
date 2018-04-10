@@ -260,4 +260,5 @@ input[type="checkbox"]:checked:after {
 
 .el-input-group__append, .el-input-group__prepend {
   border-radius: 0 !important;
+  border: none !important;
 }

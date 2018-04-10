@@ -55,10 +55,12 @@
 
 <style lang="scss" scoped>
 	.table {
+		width: 100%;
+		height: 100%;
 		overflow: hidden;
-		border-radius: 4px;
+		// border-radius: 4px;
 		.table-header {
-			width: 800px;
+			width: 100%;
 			height: 120px;
 			background:transparent url('../../../assets/images/catalog/综合市情系统.jpg') no-repeat;
 			background-size: 100% 100%;
@@ -91,7 +93,8 @@
 		.group {
 			padding: 0;
 			margin: 0;
-			height: 500px;
+			// height: 500px;
+			height: 100%;
 			overflow-y: scroll;
 			.list-group {
 				list-style: none;

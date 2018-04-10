@@ -289,7 +289,7 @@ export default {
       this.setAreaInfo({ areainfo: areaInfo, isRemoveAll: false });
     },
     clearSearchOnMap() {
-      for (let i = 0; i < 10; i++) {
+      for (let i = -1; i < 10; i++) {
         this.$mapHelper.removeLayerById((i + 1).toString())
       }
     }

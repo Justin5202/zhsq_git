@@ -55,6 +55,9 @@ export default {
       } else {
         this.checkedList.map(v => this.$mapHelper.setVisibilityByCode(v, true))
       }
+    },
+    list(newV) {
+      this.checkedItem = newV
     }
   },
   created() {
@@ -73,9 +76,11 @@ export default {
   computed: {
     ...mapGetters([
       'activeAreaInfoList',
-      'transparencyArray',
-      'checkedList'
+      'transparencyArray'
     ]),
+    list() {
+      return this.$store.state.checkedList
+    },
     checkedList() {
       let temp = []
       let list = this.activeAreaInfoList

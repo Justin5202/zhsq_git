@@ -378,7 +378,7 @@ export default {
     .layer-tool-content {
       display: flex;
       border-bottom: 1px solid #e4e7ed;
-      background-color: #e3e3e3;
+      background-color: #fff;
       .layer-tool-item {
         margin: 10px;
         cursor: pointer;

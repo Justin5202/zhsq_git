@@ -56,7 +56,6 @@ export default {
 <style lang="scss" scoped>
 .table {
   overflow: hidden;
-  border-radius: 4px;
   height: 100%;
   .table-header {
     width: 100%;

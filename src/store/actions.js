@@ -631,3 +631,13 @@ export const setFunByReportFormType = function ({ dispatch, commit, state }) {
 export const setDrawPanelType = function ({ commit, state }, type) {
     commit(TYPE.SET_DRAW_PANEL_TYPE, type)
 }
+
+// 设置地图poi点颜色
+export const setPoiColor = function ({ commit, state }, id) {
+    mapHelper.setMarkIconByLayerID(id.toString(), 'TS_定位2')
+    for(let i = 1; i <= 10; i++) {
+        if(id != i) {
+            mapHelper.setMarkIconByLayerID(i.toString(), 'TS_定位1')
+        }
+    }
+}

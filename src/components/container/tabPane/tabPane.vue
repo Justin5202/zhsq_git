@@ -275,6 +275,7 @@ export default {
         gp = item.poi.geopoint
         uuid = item.poi.uuid
       }
+      this.setPoiColor(index+1)
       this.$mapHelper.flyByPointAndZoom(gp, 16)
       this.$mapHelper.setPopupToMap(gp, uuid)
       if(geojson) {
@@ -353,8 +354,12 @@ export default {
       item.isActive = !item.isActive
       this.setAreaList({'param': item})
     },
-    toggleSlide() {
-      this.upOrDown = !this.upOrDown
+    toggleSlide(flag) {
+      if(flag) {
+        this.upOrDown = true
+      } else {
+        this.upOrDown = !this.upOrDown
+      }
     },
     //点击详情按钮
     getDetails(item) {
@@ -393,7 +398,8 @@ export default {
       "getReportData",
       "getAreaCodeAndDataId",
       "addTourismLayer",
-      "getReportDataByAreaCode"
+      "getReportDataByAreaCode",
+      "setPoiColor"
     ])
   }
 };

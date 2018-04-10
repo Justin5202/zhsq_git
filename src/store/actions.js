@@ -256,29 +256,29 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
 function addIsActive(data) {
     let temp = state.activeAreaInfoList.slice()
     data.isActive = false
-    if(temp.length > 0) {
+    if (temp.length > 0) {
         temp.map(v => {
-            if(data.id == v.id) {
+            if (data.id == v.id) {
                 data.isActive = true
             } else {
                 data.isActive = false
             }
             data.children.map(h => {
-                if(h.id === v.id) {
+                if (h.id === v.id) {
                     h.isActive = true
                 } else {
                     h.isActive = false
                 }
-                if(h.children && h.children.length > 0) {
+                if (h.children && h.children.length > 0) {
                     h.children.map(n => {
-                        if(n.id === v.id) {
+                        if (n.id === v.id) {
                             n.isActive = true
                         } else {
                             h.isActive = false
                         }
-                        if(n.children && n.children.length > 0) {
+                        if (n.children && n.children.length > 0) {
                             n.children.map(f => {
-                                if(f.id === v.id) {
+                                if (f.id === v.id) {
                                     f.isActive = true
                                 } else {
                                     h.isActive = false
@@ -557,7 +557,8 @@ export const setReportFormShow = function({ dispatch, commit, state }, isShow) {
             })
             dispatch('getReportData', {
                 'areaCode': state.areaCodeAndDataId[0],
-                'dataId': state.areaCodeAndDataId[1]
+                'dataId': state.areaCodeAndDataId[1],
+                'itemList': state.areaCodeAndDataId[2]
             })
         }
     }
@@ -587,8 +588,8 @@ export const getAreaCodeAndDataId = function({ commit, state }, { areaCode, data
         commit(TYPE.SET_AREACODE_AND_DATAID, AreaCodeAndDataId)
     }
     //获取报表详情
-export const getReportData = async function({ commit, state }, { areaCode, dataId }) {
-        var dataArray = await getReportDataInJS(areaCode, dataId)
+export const getReportData = async function({ commit, state }, { areaCode, dataId, itemList }) {
+        var dataArray = await getReportDataInJS(areaCode, dataId, itemList)
         commit(TYPE.SET_REPORT_FORM_TYPE, 1)
         commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
     }

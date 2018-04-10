@@ -1,14 +1,19 @@
 <template>
 	<div class="tab">
 		<ul>
-			<li class="tab-li" v-for="(item, index) in tabs" :class="{active: nowIndex === index}" @click="handleTabs(index)">
+			<li 
+				class="tab-li" 
+				v-for="(item, index) in tabs" 
+				:class="{active: nowIndex === index}"
+				@click="handleTabs(index)"
+			>
 				<div class="tab-box">
 					<img class="tab-item-img" :src="item.icon" alt="">
 					<p class="tab-title">{{item.title}}</p>
 				</div>
 			</li>
 		</ul>
-		<tab-pane :arrayData="arrayData"></tab-pane>
+		<tab-pane :arrayData="arrayData" ref="pane"></tab-pane>
 		<div class="table-box" v-show="nowIndex === 4">
 			<v-table :tableData="allData" @handleClick="handleClick"></v-table>
 		</div>
@@ -77,6 +82,7 @@
 		methods: {
 			handleTabs(index) {
 				this.nowIndex = index
+				this.$refs.pane.toggleSlide(true)
 				if(index === 4) {
 					return
 				}

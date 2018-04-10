@@ -10,7 +10,7 @@ const state = {
     },
     areaDetailInfo: '',
     areaList: [{
-        areacode: 500000,
+        areacode: '500000',
         areaname: '重庆市'
     }],
     searchParams: {

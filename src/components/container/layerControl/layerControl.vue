@@ -117,7 +117,11 @@ export default {
     },
     removeAll() {
       this.removeAllAreaList()
-      this.$store.commit('SET_LAYER_CONTROL_SHOW', false)
+      let obj = {
+        id: -1,
+        isShow: false
+      }
+      this.$store.commit("SET_TOOL_PANE_SHOW", obj)
     },
     removeItem(item) {
       this.setAreaList({'param': item})

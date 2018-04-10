@@ -72,11 +72,7 @@ export default {
 							}
 						})
 						break
-<<<<<<< HEAD
-						case'最新影像':
-=======
 						case 2:
->>>>>>> 094a8abe991abeadf06c9be27dc792f16b0794f6
 						getNewMapJson(res.data[1].m_url).then(res =>{
 							sum ++ 
 							dataArray.json['img'] = res

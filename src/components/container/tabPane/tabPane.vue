@@ -252,8 +252,8 @@ export default {
       }
       this.buttonType = "info"
       this.typeIndex = this.type - 1
-      this.topicIndex =  -1
-      this.searchIndex =  -1
+      this.topicIndex = -1
+      this.searchIndex = -1
       this.getSearchParams({ typeParams: params, params: {} })
     },
     getTourismType(index) {
@@ -263,22 +263,22 @@ export default {
     flyToPoi(item, index) {
       this.searchIndex = index
       let gp, uuid, geojson
-      if(item.element) {
+      if (item.element) {
         uuid = item.element.uuid
-        if(item.element.geojson) {
-          geojson = JSON.parse(item.element.geojson)      
+        if (item.element.geojson) {
+          geojson = JSON.parse(item.element.geojson)
         }
-        if(item.element.geopoint) {
+        if (item.element.geopoint) {
           gp = item.element.geopoint
         }
-      } else if(item.poi) {
+      } else if (item.poi) {
         gp = item.poi.geopoint
         uuid = item.poi.uuid
       }
-      this.setPoiColor(index+1)
+      this.setPoiColor(index + 1)
       this.$mapHelper.flyByPointAndZoom(gp, 16)
       this.$mapHelper.setPopupToMap(gp, uuid)
-      if(geojson) {
+      if (geojson) {
         this.$mapHelper.removeHighLight()
         this.$mapHelper.setHighLight(geojson)
       }
@@ -295,14 +295,14 @@ export default {
       this.$mapHelper.setPicPopupToMap(p, id);
     },
     next() {
-      if(this.searchList.length < 10) {
+      if (this.searchList.length < 10) {
         this.$notify({
           title: '警告',
           message: '暂无更多数据',
           type: 'warning',
           position: 'top-left'
         })
-        return 
+        return
       }
       this.page += 1
       this.getType()
@@ -346,16 +346,16 @@ export default {
         this.getAreaDetail(item)
       } else if (i === 2) {
         /*加载空间数据，加入数据table*/
-        this.setAreaList({'param': item})
+        this.setAreaList({ 'param': item })
       }
     },
     setAreaInfo(item, index) {
       this.searchIndex = index
       item.isActive = !item.isActive
-      this.setAreaList({'param': item})
+      this.setAreaList({ 'param': item })
     },
     toggleSlide(flag) {
-      if(flag) {
+      if (flag) {
         this.upOrDown = true
       } else {
         this.upOrDown = !this.upOrDown
@@ -374,14 +374,14 @@ export default {
           dataId: this.areaCodeAndDataId[1]
         });
         this.setReportFormShow(true);
-        this.setAreaReportFormShow({isShow:false});
+        this.setAreaReportFormShow({ isShow: false });
       } else if (item.searchType == 2 || item.searchType == 6) {
         this.setReportFormShow(false);
-        this.setAreaReportFormShow({isShow:true,areaInfo:[
-          item["area"]["areacode"],
-          item["area"]["areaname"],
-          item["searchType"]
-        ],type:2});
+        this.setAreaReportFormShow({          isShow: true, areaInfo: [
+            item["area"]["areacode"],
+            item["area"]["areaname"],
+            item["searchType"]
+          ], type: 2        });
       }
     },
     ...mapMutations({
@@ -407,12 +407,11 @@ export default {
 
 <style lang="scss" scoped>
 .tab-pane {
-  margin-top: 15px;
+  margin-top: 10px;
   .tab-pane-content {
-    border-radius: 4px;
     background-color: #fff;
-    -webkit-box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
-    box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+    box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
   }
   ul {
     margin: 0;
@@ -421,7 +420,8 @@ export default {
       list-style: none;
       .tab-pane-li-title {
         padding: 0 15px;
-        background-color: #e4e7ed;
+        background-color: #f0f1f2;
+        color: #000;
         cursor: pointer;
         .item-title {
           margin: 0;
@@ -440,7 +440,7 @@ export default {
           width: 25%;
           padding: 10px 0;
           font-size: 12px;
-          color: #888;
+          color: #676869;
           cursor: pointer;
           &:hover {
             text-decoration: underline;

@@ -28,7 +28,7 @@ export default {
         ...mapGetters(["measureNum", "drawPanelType"])
     },
     watch: {
-        drawPanelType (val) {
+        drawPanelType(val) {
             if (val != "measure") {
                 this.clearMeasureResult();
             }

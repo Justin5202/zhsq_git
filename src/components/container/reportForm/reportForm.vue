@@ -384,7 +384,7 @@ export default {
       padding: 10px 10px;
     }
     .font-blue {
-      color: #65a1f6;
+      color: #409eff;
     }
   }
   .mask {

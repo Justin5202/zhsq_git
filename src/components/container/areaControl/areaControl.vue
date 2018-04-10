@@ -48,7 +48,6 @@
     .layer-box {
       background-color: #fff;
       font-size: 12px;
-      border-radius: 4px;
       .layer-title-box {
         display: flex;
         justify-content: space-between;

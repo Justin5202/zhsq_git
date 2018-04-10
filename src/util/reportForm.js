@@ -230,6 +230,7 @@ export const getReportDataByAreaCodeInJS = function(data) {
 
 //获取文件数据
 export const getDataFileByCodeAndIdInJS = function(areaCode, dataId, index) {
+        console.log(dataId)
         var codeList = ''
         var dataArray = { 'title': '数据详情', 'name': [], 'code': [], 'data': { dataContex: [], dataType: [] } }
         if (areaCode.length > 0) {

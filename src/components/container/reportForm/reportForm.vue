@@ -112,7 +112,7 @@ export default {
       activeTab: 0,
       activeContent: 0,
       reportFormSize: {
-        width: window.innerWidth - 60 - 350 - 200 + "px",
+        width: window.innerWidth  - 350 - 60 + "px",
         height: window.innerHeight - 50 + "px"
       },
       contentHeight: window.innerHeight - 50 - 90 - 20 + "px"
@@ -121,7 +121,7 @@ export default {
   mounted() {
     window.onresize = () => {
       return (() => {
-        (this.reportFormSize.width = window.innerWidth - 60 - 350 - 200 + "px"),
+        (this.reportFormSize.width = window.innerWidth  - 350 - 60 + "px"),
           (this.reportFormSize.height = window.innerHeight - 50 + "px"),
           (this.contentHeight = window.innerHeight - 50 - 90 - 5 + "px");
       })();
@@ -212,7 +212,7 @@ export default {
   .report-form-header {
     width: 100%;
     display: flex;
-    background-color: #ccc;
+    background-color:#aeaeae;
     border-radius: 5px 5px 0 0;
     .report-form-title {
       width: 80%;
@@ -292,7 +292,7 @@ export default {
               }
             }
             .num-color {
-              color: #409eff;
+              color: #65a1f6;
             }
             .title-item {
               display: flex;
@@ -310,11 +310,11 @@ export default {
       }
       .title-color {
         width: 100%;
-        background-color: #ccc;
+        background-color: #f7f7f7;
       }
       .itemColor {
         width: 100%;
-        background-color: #eee;
+        background-color: #f2f2f2;
       }
       tr {
         width: 100%;
@@ -357,7 +357,7 @@ export default {
         }
         .itemColor {
           width: 100%;
-          background-color: #eee;
+          background-color: #f0f0f0;
         }
       }
     }

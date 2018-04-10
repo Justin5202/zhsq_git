@@ -305,9 +305,8 @@ export default {
 }
 .search {
   position: relative;
-  border-radius: 4px;
-  -webkit-box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
-  box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 1px 2px 1px rgba(0,0,0,.15);
+  box-shadow: 1px 2px 1px rgba(0,0,0,.15);
 }
 .el-select .el-input {
   width: 90px;
@@ -317,7 +316,6 @@ export default {
   top: 50px;
   width: 100%;
   background-color: #fff;
-  border-radius: 4px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
 }

@@ -303,6 +303,14 @@ const _onClick = function (e) {
                         break;
                 }
 
+                // 判断是否mark 变蓝
+                if (feature.layer["layout"]["icon-image"] =="TS_定位1") {
+                    for (let i = 0; i < 10; i++) {
+                        setMarkIconByLayerID(i.toString(),"TS_定位1");                        
+                    }
+                    setMarkIconByLayerID(feature.layer["id"],"TS_定位2");   
+                }
+
                 // 设置高亮
                 removeHighLight();
 
@@ -1382,6 +1390,18 @@ const flyByPointAndZoom = function (center, zoom) {
 }
 
 /**
+ * @function 设置小标注点(单点)的图标通过layerid
+ * @param layerId,icon
+ * @returns null
+ */
+const setMarkIconByLayerID = function(layerId,icon){
+    if (map.getLayer(layerId)) {
+        map.setLayoutProperty(layerId, 'icon-image', icon);
+    }
+
+};
+
+/**
  * @function 设置小标注点(单点)
  * @param layerId,geoPoint,_mapguid,text,textSize,icon,iconSize,minzoom,maxzoom
  * @returns null
@@ -1706,6 +1726,7 @@ export default {
 
     setMarkToMap,
     setMarksToMap,
+    setMarkIconByLayerID,
     setPopupToMap,
     closePopup,
     setPicPopupToMap,

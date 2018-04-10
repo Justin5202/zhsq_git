@@ -1129,6 +1129,8 @@ const addLayerByCodeAndJson = function (code, json) {
                 }
                 // 不可见的图层不要
                 if (flay) {
+                    // 防止图层全中文
+                    element.id += "_zt";
                     // 记录 添加图层 的 fitler
                     filterMap[element.id] = element.filter;
 

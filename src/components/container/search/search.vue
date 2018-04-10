@@ -311,6 +311,9 @@ export default {
 .el-select .el-input {
   width: 90px;
 }
+.el-input-group__append, .el-input-group__prepend {
+  border-radius: none;
+} 
 .select-box {
   position: absolute;
   top: 50px;

@@ -28,7 +28,7 @@ export default {
         ...mapGetters(["measureNum", "drawPanelType"])
     },
     watch: {
-        drawPanelType (val) {
+        drawPanelType(val) {
             if (val != "measure") {
                 this.clearMeasureResult();
             }
@@ -124,7 +124,8 @@ export default {
   top: 30px;
   right: 120px;
   border-radius: 4px;
-  background-color: #8b8878;
+  background-color: #8c8c8c;
+  box-shadow: 2px 2px 2px #bebdba;
   .measure-num {
     width: 160px;
     line-height: 50px;
@@ -147,7 +148,7 @@ export default {
       text-align: center;
     }
     .measureTypeActive {
-      background-color: #fff;
+      background-color: #e6e6e6;
       color: #8b8878;
     }
   }

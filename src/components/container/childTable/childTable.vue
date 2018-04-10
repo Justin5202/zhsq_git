@@ -222,7 +222,7 @@ export default {
     }
   }
   .active {
-    background-color: #dcdfe6;
+    background-color: #ececec;
   }
   .child-li {
     padding: 0;

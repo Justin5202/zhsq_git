@@ -477,7 +477,7 @@ export const setMeasurNum = function({ commit, state }, data) {
         commit(TYPE.SET_MEASURE_NUM, data)
     }
     // 搜周边显示隐藏
-export const setAroundSearchShow = function({ commit, state }, {isShow, point, mapguid}) {
+export const setAroundSearchShow = function({ commit, state }, { isShow, point, mapguid }) {
     let data = {
         isShow: isShow,
         point: point,
@@ -562,7 +562,8 @@ export const setReportFormShow = function({ dispatch, commit, state }, isShow) {
             })
             dispatch('getReportData', {
                 'areaCode': state.areaCodeAndDataId[0],
-                'dataId': state.areaCodeAndDataId[1]
+                'dataId': state.areaCodeAndDataId[1],
+                'itemList': state.areaCodeAndDataId[2]
             })
         }
     }
@@ -591,8 +592,8 @@ export const getAreaCodeAndDataId = function({ commit, state }, { areaCode, data
         commit(TYPE.SET_AREACODE_AND_DATAID, AreaCodeAndDataId)
     }
     //获取报表详情
-export const getReportData = async function({ commit, state }, { areaCode, dataId }) {
-        var dataArray = await getReportDataInJS(areaCode, dataId)
+export const getReportData = async function({ commit, state }, { areaCode, dataId, itemList }) {
+        var dataArray = await getReportDataInJS(areaCode, dataId, itemList)
         commit(TYPE.SET_REPORT_FORM_TYPE, 1)
         commit(TYPE.SET_REPORT_FORM_DATA, dataArray)
     }

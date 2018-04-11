@@ -195,8 +195,10 @@ function checkClickedDataType({ dispatch, data, commit, first, reportType }) {
                 }
             }
             commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
-            dispatch('setReportFormShow', true)
-            dispatch('setAreaReportFormShow', { isShow: false })
+            if (!reportType) {
+                dispatch('setReportFormShow', true)
+                dispatch('setAreaReportFormShow', { isShow: false })
+            }
             temp = cur
         } else if (yu === 3) { // yu为3，有空间数据和统计数据，优先加载空间数据
             console.log('有空间数据和统计数据，优先加载空间数据')

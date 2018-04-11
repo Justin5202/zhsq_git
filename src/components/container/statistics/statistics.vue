@@ -74,10 +74,14 @@ export default {
     },
     watch: {
         drawPanelType: function (val) {
-            if (val != "statistics") {
+            console.log(val)
+            if (val == "unCheck") {
+                this.quitDraw();
+            }else if(val == "measure"){
                 this.clearDrawResult();
                 this.dataId = "";
-                this.statisticsConditionShow = false;
+                this.pointNum = 0;
+                this.conditionList = [];
             }
         }
     },
@@ -123,10 +127,11 @@ export default {
                 this.$mapHelper.setIsMeasure(true);
                 d2cMap.getCanvas().style.cursor = "crosshair";
                 if (this.draw.drawPlane) {
-                } else {
-                    this.draw.drawPlane = new d2c.areaLayer(d2cMap);
-                    this.$mapHelper.measureOnClickCallback(this.getAreaPoint);
+                    this.draw.drawPlane.remove()
+                    this.draw = {}
                 }
+                this.draw.drawPlane = new d2c.areaLayer(d2cMap);
+                this.$mapHelper.measureOnClickCallback(this.getAreaPoint);
             } else {
                 this.setHintInfo("未选择统计指标");
             }
@@ -237,12 +242,12 @@ export default {
         quitDraw() {
             this.clearDrawResult();
             this.dataId = "";
+            this.pointNum = 0;
+            this.conditionList = [];
             this.$store.commit("SET_TOOL_PANE_SHOW", {id:4,isShow:false})
             this.setDrawPanelType("unCheck");
             this.$mapHelper.setIsMeasure(false);
             d2cMap.getCanvas().style.cursor = "";
-            this.pointNum = 0;
-            this.conditionList = [];
         },
         //关闭统计面板
         dailogClose() {

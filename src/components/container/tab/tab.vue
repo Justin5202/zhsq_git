@@ -17,7 +17,7 @@
 		<div class="table-box" v-show="nowIndex === 4" :style="style">
 			<v-table :tableData="allData" @handleClick="handleClick"></v-table>
 		</div>
-		<div class="report-box">
+		<div class="report-box" id="report-box">
 			<report-form></report-form>
 		</div>
 		<div class="search-around-box" v-if="searchAroundShow.isShow" :style="style">
@@ -163,8 +163,11 @@ export default {
   top: 0;
   left: 380px;
   background-color: #fff;
-  z-index: 1000000;
+  z-index: 1000;
   -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
   box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+}
+.report-box{
+	transition: left 0.5s;
 }
 </style>

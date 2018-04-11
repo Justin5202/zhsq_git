@@ -93,7 +93,10 @@
                 <span class="font-blue">{{item.context}}</span>
               </div>
           </div>
-          <div class="mask" v-if="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex"></div>
+          <div class="mask" v-if="reportFormData.data.dataType[index] == 'pdf'&& activeTab == index" v-for="(item,index) in reportFormData.data.dataContex" @click="setFullScreenShow">
+            <img src="../../../assets/images/catalog/zoombigpc@2x.png" width="45" height="45" v-show="!isfull">
+            <img src="../../../assets/images/catalog/zoomsmallpc@2x.png" width="45" height="45" v-show="isfull">
+          </div>
       </div>
     </div>
   </div>
@@ -115,7 +118,8 @@ export default {
         width: window.innerWidth  - 350 - 60 + "px",
         height: window.innerHeight - 50 + "px"
       },
-      contentHeight: window.innerHeight - 50 - 90 - 20 + "px"
+      contentHeight: window.innerHeight - 50 - 90 - 20 + "px",
+      isfull:false
     };
   },
   mounted() {
@@ -199,6 +203,17 @@ export default {
         data: this.reportFormData.data
       });
     },
+    //设置全屏展示
+    setFullScreenShow(){
+      this.isfull = !this.isfull
+      if(this.isfull){
+        this.reportFormSize.width = window.innerWidth  - 30 + "px"
+        document.getElementById("report-box").style.left = 0 + 'px'
+      }else{
+       this.reportFormSize.width = window.innerWidth  - 350 - 60 + "px"
+        document.getElementById("report-box").style.left = 380 + 'px'
+      }
+    },
     ...mapActions([
       "setAreaList",
       "setReportFormShow",
@@ -214,6 +229,7 @@ export default {
 <style lang="scss" scoped>
 .report-form-detail {
   min-width: 600px;
+  transition: width 0.1s;
   .report-form-header {
     width: 100%;
     display: flex;
@@ -392,13 +408,14 @@ export default {
     }
   }
   .mask {
-    width: 98.2%;
-    height: 59px;
-    background-color: #323639;
+    width: 55px;
+    height: 45px;
     position: absolute;
-    top: 96px;
-    left: 0px;
+    top: 97px;
+    left: 5px;
     z-index: 10000;
+    background-color: #515558;
+    cursor: pointer;
   }
 }
 </style>

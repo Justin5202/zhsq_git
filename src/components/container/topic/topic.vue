@@ -40,6 +40,9 @@ export default {
         this.$mapHelper.removeLayerByCode("Z10000")
         this.$mapHelper.removeLayerByCode("Z10001")
         this.$mapHelper.removeLayerByCode("Z10002")
+        this.$mapHelper.removeLayerById('Z10000')
+        this.$mapHelper.removeLayerById('Z10001')
+        this.$mapHelper.removeLayerById('Z10002')
         this.$mapHelper.closePicPopup()
         this.$mapHelper.closePopup()
         this.setTopicShow(false)
@@ -59,6 +62,7 @@ export default {
     getProverty() {
       if (this.type2) {
         this.$mapHelper.removeLayerByCode("Z10003")
+        this.$mapHelper.removeLayerById('Z10003')
         this.$mapHelper.closePicPopup()
         this.$mapHelper.closePopup()
         this.setTopicShow(false)

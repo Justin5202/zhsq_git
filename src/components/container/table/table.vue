@@ -44,7 +44,8 @@ export default {
 				id: code,
 				areacode: 500000
 			}
-			this.getAreaDetail(params)
+      this.getAreaDetail(params)
+      this.handleClick()
 		},
 		...mapActions([
 			'getAreaDetail'

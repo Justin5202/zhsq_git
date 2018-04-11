@@ -434,11 +434,14 @@ export default {
       .tab-pane-li-content {
         display: flex;
         flex-wrap: wrap;
-        padding: 0 15px;
+        padding-left: 15px;
+        align-items: center;
         span {
-          display: inline-block;
-          width: 25%;
-          padding: 10px 0;
+          flex-shrink: 0;
+          text-align: left;
+          display: block;
+          width: 22%;
+          padding: 10px 5px;
           font-size: 12px;
           color: #676869;
           cursor: pointer;

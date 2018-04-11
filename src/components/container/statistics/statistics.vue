@@ -1,7 +1,7 @@
 <template>
   <div>
       <img src="../../../assets/images/map/统计.png"  width="60" height="60" alt="" @click="openStatisticsCondition()">
-      <div class="statistics-condition" v-if="toolPaneShowIndex.id == 4 && toolPaneShowIndex.isShow">
+      <div class="statistics-condition" v-if="statisticsConditionShow">
           <div class="statistics-arrow">
           </div>
           <div class="statistics-item-box scrollStyle">
@@ -12,7 +12,7 @@
               </div>
           </div>
           <div class="statistics-operation">
-              <span class="statistics-operation-item" @click="showClickedTool(4)">取消</span>
+              <span class="statistics-operation-item" @click="statisticsConditionShow = false">取消</span>
               <span class="statistics-operation-item operation-item-border" @click="startDrawArea()">确定</span>
           </div>
       </div>
@@ -86,16 +86,6 @@ export default {
         }
     },
     methods: {
-        showClickedTool(id) {
-            let obj = {
-                id: id,
-                isShow: true
-            }
-            if (id == this.toolPaneShowIndex.id) {
-                obj.isShow = !this.toolPaneShowIndex.isShow
-            }
-            this.$store.commit("SET_TOOL_PANE_SHOW", obj)
-        },
         openStatisticsCondition() {
             if (this.conditionList.length == 0) {
                 getSelectTargetType().then(res => {
@@ -103,10 +93,10 @@ export default {
                     for (var i in this.conditionList) {
                         this.conditionList[i].isActive = false;
                     }
-                    this.showClickedTool(4)
+                    this.statisticsConditionShow = true
                 });
             } else {
-                this.showClickedTool(4)
+                this.statisticsConditionShow = true
             }
         },
         chageImageStatus(index) {
@@ -122,9 +112,14 @@ export default {
                 }
             }
             if (sum > 0) {
+                this.statisticsConditionShow = false 
                 this.setDrawPanelType("statistics");
-                this.showClickedTool(4)
                 this.$mapHelper.setIsMeasure(true);
+                 let obj = {
+                    id: -1,
+                    isShow: false
+                }
+                this.$store.commit("SET_TOOL_PANE_SHOW", obj)
                 d2cMap.getCanvas().style.cursor = "crosshair";
                 if (this.draw.drawPlane) {
                     this.draw.drawPlane.remove()
@@ -244,7 +239,6 @@ export default {
             this.dataId = "";
             this.pointNum = 0;
             this.conditionList = [];
-            this.$store.commit("SET_TOOL_PANE_SHOW", {id:4,isShow:false})
             this.setDrawPanelType("unCheck");
             this.$mapHelper.setIsMeasure(false);
             d2cMap.getCanvas().style.cursor = "";

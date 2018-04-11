@@ -77,7 +77,6 @@ const mutations = {
                 if (f.children && f.children.length > 0) {
                     f.children.map((v, index) => {
                         if (v.id === n.id) {
-                            console.log(n.isActive)
                             v.isActive = n.isActive
                             f.children.splice(index, 1, v)
                         } else if (v.children && v.children.length > 0) {

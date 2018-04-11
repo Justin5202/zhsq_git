@@ -106,7 +106,7 @@ export default {
 		_getDataSheets() {
 			getDataSheets().then(res => {
 				this.allData = res.data
-				this.arrayData = this.allData[0].children
+				this.arrayData = this.allData ? this.allData[0].children : null
 			})
 		},
 		...mapActions([

@@ -29,8 +29,11 @@ export default {
     },
     watch: {
         drawPanelType(val) {
-            if (val != "measure") {
+            console.log(val)
+            if (val == "statistics") {
                 this.clearMeasureResult();
+            }else if(val == "unCheck"){
+                this.quitMeasure()
             }
         }
     },

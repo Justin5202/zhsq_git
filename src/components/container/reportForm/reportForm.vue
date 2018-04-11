@@ -154,13 +154,18 @@ export default {
     },
     clearItem(index,item) {
       for(var i in this.areaCodeAndDataId[2]){
-        if(this.areaCodeAndDataId[2][i].id){
+        if(!this.areaCodeAndDataId[2][i].id){
+        }else {
           if(item.id == this.areaCodeAndDataId[2][i].id){
+            console.log(this.areaCodeAndDataId[2][i])
             this.areaCodeAndDataId[2][i].clickType = ''
             this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
           }
-        }else if(this.areaCodeAndDataId[2][i].macro.dataId){
+        }
+        if(!this.areaCodeAndDataId[2][i].macro){
+        }else{
           if(item.id == this.areaCodeAndDataId[2][i].macro.dataId){
+            console.log(this.areaCodeAndDataId[2][i])
             this.areaCodeAndDataId[2][i].clickType = ''
             this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
           }

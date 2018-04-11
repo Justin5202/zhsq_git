@@ -120,13 +120,18 @@ const mutations = {
                 mapHelper.removeLayerById(v.id)
             })
             state.activeAreaInfoList.splice(0, state.activeAreaInfoList.length)
-            state.areaInfoList.map(v => {
+            state.areaInfoList.map((v, index) => {
                 v.isActive = false
+                state.areaInfoList.splice(index, 1, v)
                 if (v.children) {
-                    v.children.map(i => {
+                    v.children.map((i, index) => {
                         i.isActive = false
+                        v.children.splice(index, 1, i)
                         if (i.children) {
-                            i.children.map(v => v.isActive = false)
+                            i.children.map((v, index) => {
+                                v.isActive = false
+                                i.children.splice(index, 1, v)
+                            })
                         }
                     })
                 }

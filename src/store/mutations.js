@@ -77,7 +77,6 @@ const mutations = {
                 if (f.children && f.children.length > 0) {
                     f.children.map((v, index) => {
                         if (v.id === n.id) {
-                            console.log(n.isActive)
                             v.isActive = n.isActive
                             f.children.splice(index, 1, v)
                         } else if (v.children && v.children.length > 0) {
@@ -121,13 +120,18 @@ const mutations = {
                 mapHelper.removeLayerById(v.id)
             })
             state.activeAreaInfoList.splice(0, state.activeAreaInfoList.length)
-            state.areaInfoList.map(v => {
+            state.areaInfoList.map((v, index) => {
                 v.isActive = false
+                state.areaInfoList.splice(index, 1, v)
                 if (v.children) {
-                    v.children.map(i => {
+                    v.children.map((i, index) => {
                         i.isActive = false
+                        v.children.splice(index, 1, i)
                         if (i.children) {
-                            i.children.map(v => v.isActive = false)
+                            i.children.map((v, index) => {
+                                v.isActive = false
+                                i.children.splice(index, 1, v)
+                            })
                         }
                     })
                 }
@@ -172,7 +176,6 @@ const mutations = {
             } else {
                 lessArray = state.checkedList.filter(v => !list.includes(v))
             }
-            console.log(lessArray)
             if (lessArray.length === 0) {
                 state.checkedList = [].concat(state.layerIdList)
                 return

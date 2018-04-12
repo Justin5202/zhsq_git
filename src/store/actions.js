@@ -42,6 +42,9 @@ function handleArray(array) {
  * 3：无
  */
 function addLayer(datapath, id) {
+    if(!datapath) {
+        return false
+    }
     getJson(datapath).then(res => {
         const result = mapHelper.addLayerByCodeAndJson(id, res)
         getQueryElementByPoint(result).then(res => {
@@ -96,10 +99,13 @@ function checkData(data, commit, first, type) {
             }
             if (!cur.isActive) {
                 cur.children.map(v => {
-                    addLayer(v.datapath, v.id)
                     v.isActive = true
                     cur.isActive = true
-                    commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false, 'first': cur.isActive })
+                    let yu = Number(v.type) % 10
+                    if(yu == 3) {
+                        addLayer(v.datapath, v.id)
+                        commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false, 'first': cur.isActive })
+                    }
                     commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
                 })
             }
@@ -116,10 +122,13 @@ function checkData(data, commit, first, type) {
                 })
             } else if (!cur.isActive) {
                 cur.children.map(v => {
-                    addLayer(v.datapath, v.id)
                     v.isActive = true
                     cur.isActive = true
-                    commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false, 'first': cur.isActive })
+                    let yu = Number(v.type) % 10
+                    if(yu == 3) {
+                        addLayer(v.datapath, v.id)
+                        commit(TYPE.SET_ACTIVE_AREA_LIST, { 'item': v, 'isRemoveAll': false, 'first': cur.isActive })
+                    }
                     commit(TYPE.MODIFY_AREA_INFO_LIST, cur)
                 })
             }

@@ -58,6 +58,12 @@ export default {
     },
     list(newV) {
       this.checkedItem = newV
+    },
+    activeAreaInfoList(newV) {
+      if(newV.length == this.checkedItem.length) {
+        this.checked = true
+        this.isIndeterminate = false
+      }
     }
   },
   created() {
@@ -116,7 +122,6 @@ export default {
       this.isIndeterminate = false
     },
     handleCheckedItemsChange(value) {
-      console.log(this.checkedItem)
       let checkedCount = value.length
       this.checked = checkedCount === this.checkedList.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedList.length

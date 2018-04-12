@@ -176,7 +176,6 @@ const mutations = {
             } else {
                 lessArray = state.checkedList.filter(v => !list.includes(v))
             }
-            console.log(lessArray)
             if (lessArray.length === 0) {
                 state.checkedList = [].concat(state.layerIdList)
                 return

@@ -9,7 +9,7 @@
         @clear="clearSearchOnMap()"
         clearable
       >
-			<el-button slot="prepend" @click="showBox()">{{areaInfo.areaname}}<i class="el-icon-arrow-down"></i></el-button>
+			<el-button slot="prepend" @click="showBox()">{{areaList[areaList.length-1].areaname}}<i class="el-icon-arrow-down"></i></el-button>
 	    	<el-button slot="append" class="search-btn" icon="el-icon-search" @click="clickSearch(selectStart, selectCode)"></el-button>
 	  	</el-input>
 			<div class="select-box" v-show="showSelectBox">
@@ -144,7 +144,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["areaList", "areaInfo", "searchParams"])
+    ...mapGetters(["areaList", "searchParams"])
   },
   watch: {
     searchParams(newV, oldV) {
@@ -311,9 +311,10 @@ export default {
 .el-select .el-input {
   width: 90px;
 }
-.el-input-group__append, .el-input-group__prepend {
+.el-input-group__append,
+.el-input-group__prepend {
   border-radius: none;
-} 
+}
 .select-box {
   position: absolute;
   top: 50px;

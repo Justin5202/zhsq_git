@@ -155,6 +155,10 @@ export default {
       this.activeTab = 0;
       this.activeContent = 0;
       this.tabContext = this.reportFormData.data[0];
+      //关闭时清空全屏
+      this.reportFormSize.width = window.innerWidth  - 350 - 60 + "px"
+      document.getElementById("report-box").style.left = 380 + 'px'
+      this.isfull = false
     },
     clearItem(index,item) {
       for(var i in this.areaCodeAndDataId[2]){

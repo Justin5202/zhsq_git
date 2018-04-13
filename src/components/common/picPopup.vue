@@ -1,8 +1,10 @@
 <template>
   <div class="pic-pop">
     <div v-if="mapguid && !areacode">
-      <img :src="thumb1" alt="" @click="checkMorePic()">
-      <p @click="checkMorePic()">查看图片</p>
+      <a :href="path" target="_blank">
+        <img :src="thumb1" alt="" @click="checkMorePic()">
+        <p @click="checkMorePic()">查看图片</p>
+      </a>
     </div>
     <div v-if="mapguid && areacode">
       <a :href="result.path" target="_blank">
@@ -21,7 +23,8 @@ export default {
   props: {
     mapguid: {},
     name: {},
-    areacode: {}
+    areacode: {},
+    path: ''
   },
   data() {
     return {
@@ -33,7 +36,7 @@ export default {
     thumb1() {
       let temp = ""
       this.topicList.list.map(v => {
-        if (v.id == this.mapguid) {
+        if (v.dataId == this.mapguid) {
           temp =
             "http://zhsq.digitalcq.com/cqzhsqd2c_v2_test" +
             v.filePath +
@@ -55,9 +58,12 @@ export default {
   },
   methods: {
     checkMorePic() {
-      this.$router.push({
-        path: `/carousel/${this.mapguid}`
-      })
+      console.log(this.path)
+      if(!this.path) {
+        this.$router.push({
+          path: `/carousel/${this.mapguid}`
+        })
+      }
     },
     checkDetail() {
 			this.setReportFormShow(false)

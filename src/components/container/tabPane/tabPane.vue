@@ -145,7 +145,7 @@
 						v-for="(item, index) in topicList.list"
 						v-if="topicList.type=='ly'&&nowIndex>0&&item.dj == tourismType[nowIndex]"
 						:class="{active: topicIndex == index}"
-						@click="flyToPoint(item.point, item.id, index)"
+						@click="flyToPoint(item, index)"
 					>
 						<div class="search-pane-box">
 							<div class="icon-box">
@@ -162,7 +162,7 @@
 						v-for="(item, index) in topicList.list"
 						v-if="topicList.type=='ly'&&nowIndex<=0"
 						:class="{active: topicIndex == index}"
-						@click="flyToPoint(item.point, item.id, index)"
+						@click="flyToPoint(item, index)"
 					>
 						<div class="search-pane-box">
 							<div class="icon-box">
@@ -283,16 +283,17 @@ export default {
         this.$mapHelper.setHighLight(geojson)
       }
     },
-    flyToPoint(point, id, index) {
-      let p;
-      if (point instanceof Array) {
-        p = point;
+    flyToPoint(item, index) {
+      let p,
+          path = item.path || null
+      if (item.point instanceof Array) {
+        p = item.point;
       } else {
-        p = JSON.parse(point);
+        p = JSON.parse(item.point);
       }
       this.topicIndex = index;
       this.$mapHelper.flyByPointAndZoom(p, 8);
-      this.$mapHelper.setPicPopupToMap(p, id);
+      this.$mapHelper.setPicPopupToMap(p, item.dataId, '', '', path);
     },
     next() {
       if (this.searchList.length < 10) {

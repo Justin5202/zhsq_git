@@ -1,6 +1,6 @@
 <template>
   <div class="carousel">
-    <div class="carousel-wrap">
+    <div class="carousel-wrap" :style="style">
       <transition>
         <div class="img-container">
           <transition-group tag="ul" class="slide-ul" :name="direction">
@@ -35,7 +35,10 @@
         pic: [],
         currentIndex: 0,
         timer: null,
-        direction: 'left'
+        direction: 'left',
+        style: {
+          height: window.innerHeight - 250 + "px"
+        }
       }
     },
     created() {

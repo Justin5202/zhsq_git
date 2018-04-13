@@ -1560,7 +1560,7 @@ const closePopup = function () {
  * @param 坐标 （数组）， _mapguid
  * @returns null
  */
-const setPicPopupToMap = function (geoPoint, _mapguid, _name, _areacode) {
+const setPicPopupToMap = function (geoPoint, _mapguid, _name, _areacode, _path) {
     closePicPopup();
     picPopup = new window
         .d2c
@@ -1572,9 +1572,9 @@ const setPicPopupToMap = function (geoPoint, _mapguid, _name, _areacode) {
         el: '#picPopup',
         store,
         router,
-        template: '<v-picPopup :mapguid="mapguid" :name="name" :areacode="areacode"/>',
+        template: '<v-picPopup :mapguid="mapguid" :name="name" :areacode="areacode" :path="path"/>',
         data: function () {
-            return {mapguid: _mapguid, name: _name, areacode: _areacode}
+            return {mapguid: _mapguid, name: _name, areacode: _areacode, path: _path}
         },
         components: {
             'v-picPopup': picPopupVm

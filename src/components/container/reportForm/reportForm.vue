@@ -115,24 +115,24 @@ export default {
       activeTab: 0,
       activeContent: 0,
       reportFormSize: {
-        width: window.innerWidth  - 350 - 60 + "px",
+        width: window.innerWidth - 350 - 60 + "px",
         height: window.innerHeight - 50 + "px"
       },
       contentHeight: window.innerHeight - 50 - 90 - 20 + "px",
-      isfull:false
+      isfull: false
     };
   },
   mounted() {
     window.onresize = () => {
       return (() => {
-        (this.reportFormSize.width = window.innerWidth  - 350 - 60 + "px"),
+        (this.reportFormSize.width = window.innerWidth - 350 - 60 + "px"),
           (this.reportFormSize.height = window.innerHeight - 50 + "px"),
           (this.contentHeight = window.innerHeight - 50 - 90 - 5 + "px");
       })();
     };
   },
   watch: {
-    areaList: function(val) {
+    areaList: function (val) {
       this.setFunByReportFormType();
       this.activeTab = 0;
     }
@@ -151,31 +151,29 @@ export default {
     //关闭模态框
     colseDialog() {
       this.setReportFormShow(false);
-      this.setAreaReportFormShow({isShow:false});
+      this.setAreaReportFormShow({ isShow: false });
       this.activeTab = 0;
       this.activeContent = 0;
       this.tabContext = this.reportFormData.data[0];
       //关闭时清空全屏
-      this.reportFormSize.width = window.innerWidth  - 350 - 60 + "px"
+      this.reportFormSize.width = window.innerWidth - 350 - 60 + "px"
       document.getElementById("report-box").style.left = 380 + 'px'
       this.isfull = false
     },
-    clearItem(index,item) {
-      for(var i in this.areaCodeAndDataId[2]){
-        if(!this.areaCodeAndDataId[2][i].id){
-        }else {
-          if(item.id == this.areaCodeAndDataId[2][i].id){
-            console.log(this.areaCodeAndDataId[2][i])
+    clearItem(index, item) {
+      for (var i in this.areaCodeAndDataId[2]) {
+        if (!this.areaCodeAndDataId[2][i].id) {
+        } else {
+          if (item.id == this.areaCodeAndDataId[2][i].id) {
             this.areaCodeAndDataId[2][i].clickType = ''
-            this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
+            this.setAreaList({ 'param': this.areaCodeAndDataId[2][i], 'type': 'report' })
           }
         }
-        if(!this.areaCodeAndDataId[2][i].macro){
-        }else{
-          if(item.id == this.areaCodeAndDataId[2][i].macro.dataId){
-            console.log(this.areaCodeAndDataId[2][i])
+        if (!this.areaCodeAndDataId[2][i].macro) {
+        } else {
+          if (item.id == this.areaCodeAndDataId[2][i].macro.dataId) {
             this.areaCodeAndDataId[2][i].clickType = ''
-            this.setAreaList({'param': this.areaCodeAndDataId[2][i], 'type': 'report'})
+            this.setAreaList({ 'param': this.areaCodeAndDataId[2][i], 'type': 'report' })
           }
         }
       }
@@ -208,13 +206,13 @@ export default {
       });
     },
     //设置全屏展示
-    setFullScreenShow(){
+    setFullScreenShow() {
       this.isfull = !this.isfull
-      if(this.isfull){
-        this.reportFormSize.width = window.innerWidth  - 30 + "px"
+      if (this.isfull) {
+        this.reportFormSize.width = window.innerWidth - 30 + "px"
         document.getElementById("report-box").style.left = 0 + 'px'
-      }else{
-       this.reportFormSize.width = window.innerWidth  - 350 - 60 + "px"
+      } else {
+        this.reportFormSize.width = window.innerWidth - 350 - 60 + "px"
         document.getElementById("report-box").style.left = 380 + 'px'
       }
     },
@@ -237,7 +235,7 @@ export default {
   .report-form-header {
     width: 100%;
     display: flex;
-    background-color:#aeaeae;
+    background-color: #aeaeae;
     .report-form-title {
       width: 80%;
       text-align: left;
@@ -309,7 +307,7 @@ export default {
               // text-align: center;
               line-height: 40px;
               overflow: hidden;
-              text-overflow:ellipsis;
+              text-overflow: ellipsis;
               white-space: nowrap;
               img {
                 cursor: pointer;

@@ -312,7 +312,7 @@ function addIsActive(data) {
     return data
 }
 
-export const searchPaneShow = function ({ commit, state }, isShow) {
+export const searchPaneShow = function ({ dispatch, commit, state }, isShow) {
     commit(TYPE.SEARCH_PANE_IS_SHOW, isShow)
 }
 export const tablePaneShow = function ({ commit, state }, isShow) {
@@ -389,6 +389,9 @@ export const getSearchParams = function ({ dispatch, commit, state }, { typePara
                 }
             })
             commit(TYPE.GET_SEARCH_RESULT, res.data)
+            dispatch('searchPaneShow', true)
+            dispatch('tablePaneShow', false)
+            commit(TYPE.SET_TOPIC_LIST_SHOW, false)
         }
     })
 }

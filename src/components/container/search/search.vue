@@ -159,6 +159,7 @@ export default {
       if (this.searchContent === "") {
         return;
       }
+      this.showSelectBox = false
       const params = {
         name: this.searchContent.toUpperCase(),
         start: 0,
@@ -168,9 +169,9 @@ export default {
       this._getSearchParams(params);
     },
     showSearchPane() {
-      this.searchPaneShow(true);
-      this.tablePaneShow(false);
-      this.setTopicShow(false);
+      // this.searchPaneShow(true);
+      // this.tablePaneShow(false);
+      // this.setTopicShow(false);
     },
     _getSearchParams(params) {
       this.getSearchParams({ typeParams: {}, params: params });
@@ -292,6 +293,8 @@ export default {
       for (let i = -1; i < 10; i++) {
         this.$mapHelper.removeLayerById((i + 1).toString())
       }
+      this.searchPaneShow(false)
+      this.tablePaneShow(true)
     }
   }
 };

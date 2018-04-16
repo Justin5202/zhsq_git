@@ -10,7 +10,7 @@
 				<p class="list-group-title">{{item.name}}</p>
 				<ul>
 					<li class="list-group-item clearfix" v-for="i in item.children">
-						<span class="list-group-item-title">[{{i.name}}]</span>
+						<span class="list-group-item-title" @click="getAreaData(item.id)">[{{i.name}}]</span>
 						<span class="list-group-item-content clearfix">
 							<span v-for="childrenItem in i.hot" @click="getAreaData(childrenItem.dataCode)">{{childrenItem.dataname}}</span>
 						</span>
@@ -142,6 +142,7 @@ export default {
           line-height: 39px;
           text-align: center;
           color: #2475e0;
+          cursor: pointer;
         }
       }
     }
